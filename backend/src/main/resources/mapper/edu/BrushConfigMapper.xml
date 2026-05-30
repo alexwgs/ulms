@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmbccd.ulms.edu.dao.BrushConfigMapper">
+  <resultMap id="BaseResultMap" type="com.cmbccd.ulms.edu.domain.BrushConfig">
+    <id column="BRUSH_CODE" jdbcType="VARCHAR" property="brushCode" />
+    <result column="GROUP_ID" jdbcType="VARCHAR" property="groupId" />
+    <result column="MONTH_LIMIT" jdbcType="DECIMAL" property="monthLimit" />
+    <result column="DAY_LIMIT" jdbcType="DECIMAL" property="dayLimit" />
+    <result column="AUDIO_REPEAT" jdbcType="DECIMAL" property="audioRepeat" />
+    <result column="VIDEO_REPEAT" jdbcType="DECIMAL" property="videoRepeat" />
+    <result column="OPTION_RAND" jdbcType="DECIMAL" property="optionRand" />
+    <result column="MISTAKE_FIRST" jdbcType="DECIMAL" property="mistakeFirst" />
+    <result column="ANSWER_TIME" jdbcType="DECIMAL" property="answerTime" />
+    <result column="LIB_CODE" jdbcType="VARCHAR" property="libCode" />
+    <result column="WRONG_DAY" jdbcType="DECIMAL" property="wrongDay" />
+    <result column="WRONG_LIMIT" jdbcType="DECIMAL" property="wrongLimit" />
+    <result column="COLLECT_DAY" jdbcType="DECIMAL" property="collectDay" />
+    <result column="COLLECT_LIMIT" jdbcType="DECIMAL" property="collectLimit" />
+    <result column="GROUP_NAME" jdbcType="VARCHAR" property="groupName" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    BRUSH_CODE, GROUP_ID, MONTH_LIMIT, DAY_LIMIT, AUDIO_REPEAT, VIDEO_REPEAT, OPTION_RAND, 
+    MISTAKE_FIRST, ANSWER_TIME, LIB_CODE, WRONG_DAY, WRONG_LIMIT, COLLECT_DAY, COLLECT_LIMIT, 
+    GROUP_NAME
+  </sql>
+  <select id="selectByExample" parameterType="com.cmbccd.ulms.edu.domain.BrushConfigExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from TRM_BRUSH_CONFIG
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from TRM_BRUSH_CONFIG
+    where BRUSH_CODE = #{brushCode,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from TRM_BRUSH_CONFIG
+    where BRUSH_CODE = #{brushCode,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.cmbccd.ulms.edu.domain.BrushConfigExample">
+    delete from TRM_BRUSH_CONFIG
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.cmbccd.ulms.edu.domain.BrushConfig">
+    insert into TRM_BRUSH_CONFIG (BRUSH_CODE, GROUP_ID, MONTH_LIMIT, 
+      DAY_LIMIT, AUDIO_REPEAT, VIDEO_REPEAT, 
+      OPTION_RAND, MISTAKE_FIRST, ANSWER_TIME, 
+      LIB_CODE, WRONG_DAY, WRONG_LIMIT, 
+      COLLECT_DAY, COLLECT_LIMIT, GROUP_NAME
+      )
+    values (#{brushCode,jdbcType=VARCHAR}, #{groupId,jdbcType=VARCHAR}, #{monthLimit,jdbcType=DECIMAL}, 
+      #{dayLimit,jdbcType=DECIMAL}, #{audioRepeat,jdbcType=DECIMAL}, #{videoRepeat,jdbcType=DECIMAL}, 
+      #{optionRand,jdbcType=DECIMAL}, #{mistakeFirst,jdbcType=DECIMAL}, #{answerTime,jdbcType=DECIMAL}, 
+      #{libCode,jdbcType=VARCHAR}, #{wrongDay,jdbcType=DECIMAL}, #{wrongLimit,jdbcType=DECIMAL}, 
+      #{collectDay,jdbcType=DECIMAL}, #{collectLimit,jdbcType=DECIMAL}, #{groupName,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.cmbccd.ulms.edu.domain.BrushConfig">
+    insert into TRM_BRUSH_CONFIG
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="brushCode != null">
+        BRUSH_CODE,
+      </if>
+      <if test="groupId != null">
+        GROUP_ID,
+      </if>
+      <if test="monthLimit != null">
+        MONTH_LIMIT,
+      </if>
+      <if test="dayLimit != null">
+        DAY_LIMIT,
+      </if>
+      <if test="audioRepeat != null">
+        AUDIO_REPEAT,
+      </if>
+      <if test="videoRepeat != null">
+        VIDEO_REPEAT,
+      </if>
+      <if test="optionRand != null">
+        OPTION_RAND,
+      </if>
+      <if test="mistakeFirst != null">
+        MISTAKE_FIRST,
+      </if>
+      <if test="answerTime != null">
+        ANSWER_TIME,
+      </if>
+      <if test="libCode != null">
+        LIB_CODE,
+      </if>
+      <if test="wrongDay != null">
+        WRONG_DAY,
+      </if>
+      <if test="wrongLimit != null">
+        WRONG_LIMIT,
+      </if>
+      <if test="collectDay != null">
+        COLLECT_DAY,
+      </if>
+      <if test="collectLimit != null">
+        COLLECT_LIMIT,
+      </if>
+      <if test="groupName != null">
+        GROUP_NAME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="brushCode != null">
+        #{brushCode,jdbcType=VARCHAR},
+      </if>
+      <if test="groupId != null">
+        #{groupId,jdbcType=VARCHAR},
+      </if>
+      <if test="monthLimit != null">
+        #{monthLimit,jdbcType=DECIMAL},
+      </if>
+      <if test="dayLimit != null">
+        #{dayLimit,jdbcType=DECIMAL},
+      </if>
+      <if test="audioRepeat != null">
+        #{audioRepeat,jdbcType=DECIMAL},
+      </if>
+      <if test="videoRepeat != null">
+        #{videoRepeat,jdbcType=DECIMAL},
+      </if>
+      <if test="optionRand != null">
+        #{optionRand,jdbcType=DECIMAL},
+      </if>
+      <if test="mistakeFirst != null">
+        #{mistakeFirst,jdbcType=DECIMAL},
+      </if>
+      <if test="answerTime != null">
+        #{answerTime,jdbcType=DECIMAL},
+      </if>
+      <if test="libCode != null">
+        #{libCode,jdbcType=VARCHAR},
+      </if>
+      <if test="wrongDay != null">
+        #{wrongDay,jdbcType=DECIMAL},
+      </if>
+      <if test="wrongLimit != null">
+        #{wrongLimit,jdbcType=DECIMAL},
+      </if>
+      <if test="collectDay != null">
+        #{collectDay,jdbcType=DECIMAL},
+      </if>
+      <if test="collectLimit != null">
+        #{collectLimit,jdbcType=DECIMAL},
+      </if>
+      <if test="groupName != null">
+        #{groupName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.cmbccd.ulms.edu.domain.BrushConfigExample" resultType="java.lang.Long">
+    select count(*) from TRM_BRUSH_CONFIG
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update TRM_BRUSH_CONFIG
+    <set>
+      <if test="record.brushCode != null">
+        BRUSH_CODE = #{record.brushCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.groupId != null">
+        GROUP_ID = #{record.groupId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.monthLimit != null">
+        MONTH_LIMIT = #{record.monthLimit,jdbcType=DECIMAL},
+      </if>
+      <if test="record.dayLimit != null">
+        DAY_LIMIT = #{record.dayLimit,jdbcType=DECIMAL},
+      </if>
+      <if test="record.audioRepeat != null">
+        AUDIO_REPEAT = #{record.audioRepeat,jdbcType=DECIMAL},
+      </if>
+      <if test="record.videoRepeat != null">
+        VIDEO_REPEAT = #{record.videoRepeat,jdbcType=DECIMAL},
+      </if>
+      <if test="record.optionRand != null">
+        OPTION_RAND = #{record.optionRand,jdbcType=DECIMAL},
+      </if>
+      <if test="record.mistakeFirst != null">
+        MISTAKE_FIRST = #{record.mistakeFirst,jdbcType=DECIMAL},
+      </if>
+      <if test="record.answerTime != null">
+        ANSWER_TIME = #{record.answerTime,jdbcType=DECIMAL},
+      </if>
+      <if test="record.libCode != null">
+        LIB_CODE = #{record.libCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.wrongDay != null">
+        WRONG_DAY = #{record.wrongDay,jdbcType=DECIMAL},
+      </if>
+      <if test="record.wrongLimit != null">
+        WRONG_LIMIT = #{record.wrongLimit,jdbcType=DECIMAL},
+      </if>
+      <if test="record.collectDay != null">
+        COLLECT_DAY = #{record.collectDay,jdbcType=DECIMAL},
+      </if>
+      <if test="record.collectLimit != null">
+        COLLECT_LIMIT = #{record.collectLimit,jdbcType=DECIMAL},
+      </if>
+      <if test="record.groupName != null">
+        GROUP_NAME = #{record.groupName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update TRM_BRUSH_CONFIG
+    set BRUSH_CODE = #{record.brushCode,jdbcType=VARCHAR},
+      GROUP_ID = #{record.groupId,jdbcType=VARCHAR},
+      MONTH_LIMIT = #{record.monthLimit,jdbcType=DECIMAL},
+      DAY_LIMIT = #{record.dayLimit,jdbcType=DECIMAL},
+      AUDIO_REPEAT = #{record.audioRepeat,jdbcType=DECIMAL},
+      VIDEO_REPEAT = #{record.videoRepeat,jdbcType=DECIMAL},
+      OPTION_RAND = #{record.optionRand,jdbcType=DECIMAL},
+      MISTAKE_FIRST = #{record.mistakeFirst,jdbcType=DECIMAL},
+      ANSWER_TIME = #{record.answerTime,jdbcType=DECIMAL},
+      LIB_CODE = #{record.libCode,jdbcType=VARCHAR},
+      WRONG_DAY = #{record.wrongDay,jdbcType=DECIMAL},
+      WRONG_LIMIT = #{record.wrongLimit,jdbcType=DECIMAL},
+      COLLECT_DAY = #{record.collectDay,jdbcType=DECIMAL},
+      COLLECT_LIMIT = #{record.collectLimit,jdbcType=DECIMAL},
+      GROUP_NAME = #{record.groupName,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cmbccd.ulms.edu.domain.BrushConfig">
+    update TRM_BRUSH_CONFIG
+    <set>
+      <if test="groupId != null">
+        GROUP_ID = #{groupId,jdbcType=VARCHAR},
+      </if>
+      <if test="monthLimit != null">
+        MONTH_LIMIT = #{monthLimit,jdbcType=DECIMAL},
+      </if>
+      <if test="dayLimit != null">
+        DAY_LIMIT = #{dayLimit,jdbcType=DECIMAL},
+      </if>
+      <if test="audioRepeat != null">
+        AUDIO_REPEAT = #{audioRepeat,jdbcType=DECIMAL},
+      </if>
+      <if test="videoRepeat != null">
+        VIDEO_REPEAT = #{videoRepeat,jdbcType=DECIMAL},
+      </if>
+      <if test="optionRand != null">
+        OPTION_RAND = #{optionRand,jdbcType=DECIMAL},
+      </if>
+      <if test="mistakeFirst != null">
+        MISTAKE_FIRST = #{mistakeFirst,jdbcType=DECIMAL},
+      </if>
+      <if test="answerTime != null">
+        ANSWER_TIME = #{answerTime,jdbcType=DECIMAL},
+      </if>
+      <if test="libCode != null">
+        LIB_CODE = #{libCode,jdbcType=VARCHAR},
+      </if>
+      <if test="wrongDay != null">
+        WRONG_DAY = #{wrongDay,jdbcType=DECIMAL},
+      </if>
+      <if test="wrongLimit != null">
+        WRONG_LIMIT = #{wrongLimit,jdbcType=DECIMAL},
+      </if>
+      <if test="collectDay != null">
+        COLLECT_DAY = #{collectDay,jdbcType=DECIMAL},
+      </if>
+      <if test="collectLimit != null">
+        COLLECT_LIMIT = #{collectLimit,jdbcType=DECIMAL},
+      </if>
+      <if test="groupName != null">
+        GROUP_NAME = #{groupName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where BRUSH_CODE = #{brushCode,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cmbccd.ulms.edu.domain.BrushConfig">
+    update TRM_BRUSH_CONFIG
+    set GROUP_ID = #{groupId,jdbcType=VARCHAR},
+      MONTH_LIMIT = #{monthLimit,jdbcType=DECIMAL},
+      DAY_LIMIT = #{dayLimit,jdbcType=DECIMAL},
+      AUDIO_REPEAT = #{audioRepeat,jdbcType=DECIMAL},
+      VIDEO_REPEAT = #{videoRepeat,jdbcType=DECIMAL},
+      OPTION_RAND = #{optionRand,jdbcType=DECIMAL},
+      MISTAKE_FIRST = #{mistakeFirst,jdbcType=DECIMAL},
+      ANSWER_TIME = #{answerTime,jdbcType=DECIMAL},
+      LIB_CODE = #{libCode,jdbcType=VARCHAR},
+      WRONG_DAY = #{wrongDay,jdbcType=DECIMAL},
+      WRONG_LIMIT = #{wrongLimit,jdbcType=DECIMAL},
+      COLLECT_DAY = #{collectDay,jdbcType=DECIMAL},
+      COLLECT_LIMIT = #{collectLimit,jdbcType=DECIMAL},
+      GROUP_NAME = #{groupName,jdbcType=VARCHAR}
+    where BRUSH_CODE = #{brushCode,jdbcType=VARCHAR}
+  </update>
+  <select id="getBrushConfig" resultMap="BaseResultMap">
+		select  <include refid="Base_Column_List" /> from TRM_BRUSH_CONFIG where group_id = (
+		select group_id from TRM_DAILY_GROUP where plo_num = #{ploNum,jdbcType=DECIMAL}) 
+  </select>
+</mapper>

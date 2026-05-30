@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmbccd.ulms.edu.dao.QuesDisputeMapper">
+  <resultMap id="BaseResultMap" type="com.cmbccd.ulms.edu.domain.QuesDispute">
+    <id column="JOURNO" jdbcType="VARCHAR" property="journo" />
+    <result column="EXAM_CODE" jdbcType="VARCHAR" property="examCode" />
+    <result column="QUES_CODE" jdbcType="VARCHAR" property="quesCode" />
+    <result column="USER_ANSWER" jdbcType="VARCHAR" property="userAnswer" />
+    <result column="REPLY_ANSWER" jdbcType="VARCHAR" property="replyAnswer" />
+    <result column="DISPUTE_RESULT" jdbcType="DECIMAL" property="disputeResult" />
+    <result column="PLO_NUM" jdbcType="VARCHAR" property="ploNum" />
+    <result column="DATA_DATE" jdbcType="VARCHAR" property="dataDate" />
+    <result column="HANDLE_PLO" jdbcType="VARCHAR" property="handlePlo" />
+    <result column="HANDLE_DATE" jdbcType="VARCHAR" property="handleDate" />
+    <result column="DISPUTE_MEMO" jdbcType="VARCHAR" property="disputeMemo" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    JOURNO, EXAM_CODE, QUES_CODE, USER_ANSWER, REPLY_ANSWER, DISPUTE_RESULT, PLO_NUM, 
+    DATA_DATE, HANDLE_PLO, HANDLE_DATE, DISPUTE_MEMO
+  </sql>
+  <select id="selectByExample" parameterType="com.cmbccd.ulms.edu.domain.QuesDisputeExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from TRM_QUES_DISPUTE
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from TRM_QUES_DISPUTE
+    where JOURNO = #{journo,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from TRM_QUES_DISPUTE
+    where JOURNO = #{journo,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.cmbccd.ulms.edu.domain.QuesDisputeExample">
+    delete from TRM_QUES_DISPUTE
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.cmbccd.ulms.edu.domain.QuesDispute">
+    insert into TRM_QUES_DISPUTE (JOURNO, EXAM_CODE, QUES_CODE, 
+      USER_ANSWER, REPLY_ANSWER, DISPUTE_RESULT, 
+      PLO_NUM, DATA_DATE, HANDLE_PLO, 
+      HANDLE_DATE, DISPUTE_MEMO)
+    values (#{journo,jdbcType=VARCHAR}, #{examCode,jdbcType=VARCHAR}, #{quesCode,jdbcType=VARCHAR}, 
+      #{userAnswer,jdbcType=VARCHAR}, #{replyAnswer,jdbcType=VARCHAR}, #{disputeResult,jdbcType=DECIMAL}, 
+      #{ploNum,jdbcType=VARCHAR}, #{dataDate,jdbcType=VARCHAR}, #{handlePlo,jdbcType=VARCHAR}, 
+      #{handleDate,jdbcType=VARCHAR}, #{disputeMemo,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cmbccd.ulms.edu.domain.QuesDispute">
+    insert into TRM_QUES_DISPUTE
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="journo != null">
+        JOURNO,
+      </if>
+      <if test="examCode != null">
+        EXAM_CODE,
+      </if>
+      <if test="quesCode != null">
+        QUES_CODE,
+      </if>
+      <if test="userAnswer != null">
+        USER_ANSWER,
+      </if>
+      <if test="replyAnswer != null">
+        REPLY_ANSWER,
+      </if>
+      <if test="disputeResult != null">
+        DISPUTE_RESULT,
+      </if>
+      <if test="ploNum != null">
+        PLO_NUM,
+      </if>
+      <if test="dataDate != null">
+        DATA_DATE,
+      </if>
+      <if test="handlePlo != null">
+        HANDLE_PLO,
+      </if>
+      <if test="handleDate != null">
+        HANDLE_DATE,
+      </if>
+      <if test="disputeMemo != null">
+        DISPUTE_MEMO,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="journo != null">
+        #{journo,jdbcType=VARCHAR},
+      </if>
+      <if test="examCode != null">
+        #{examCode,jdbcType=VARCHAR},
+      </if>
+      <if test="quesCode != null">
+        #{quesCode,jdbcType=VARCHAR},
+      </if>
+      <if test="userAnswer != null">
+        #{userAnswer,jdbcType=VARCHAR},
+      </if>
+      <if test="replyAnswer != null">
+        #{replyAnswer,jdbcType=VARCHAR},
+      </if>
+      <if test="disputeResult != null">
+        #{disputeResult,jdbcType=DECIMAL},
+      </if>
+      <if test="ploNum != null">
+        #{ploNum,jdbcType=VARCHAR},
+      </if>
+      <if test="dataDate != null">
+        #{dataDate,jdbcType=VARCHAR},
+      </if>
+      <if test="handlePlo != null">
+        #{handlePlo,jdbcType=VARCHAR},
+      </if>
+      <if test="handleDate != null">
+        #{handleDate,jdbcType=VARCHAR},
+      </if>
+      <if test="disputeMemo != null">
+        #{disputeMemo,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.cmbccd.ulms.edu.domain.QuesDisputeExample" resultType="java.lang.Long">
+    select count(*) from TRM_QUES_DISPUTE
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update TRM_QUES_DISPUTE
+    <set>
+      <if test="record.journo != null">
+        JOURNO = #{record.journo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.examCode != null">
+        EXAM_CODE = #{record.examCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.quesCode != null">
+        QUES_CODE = #{record.quesCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.userAnswer != null">
+        USER_ANSWER = #{record.userAnswer,jdbcType=VARCHAR},
+      </if>
+      <if test="record.replyAnswer != null">
+        REPLY_ANSWER = #{record.replyAnswer,jdbcType=VARCHAR},
+      </if>
+      <if test="record.disputeResult != null">
+        DISPUTE_RESULT = #{record.disputeResult,jdbcType=DECIMAL},
+      </if>
+      <if test="record.ploNum != null">
+        PLO_NUM = #{record.ploNum,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dataDate != null">
+        DATA_DATE = #{record.dataDate,jdbcType=VARCHAR},
+      </if>
+      <if test="record.handlePlo != null">
+        HANDLE_PLO = #{record.handlePlo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.handleDate != null">
+        HANDLE_DATE = #{record.handleDate,jdbcType=VARCHAR},
+      </if>
+      <if test="record.disputeMemo != null">
+        DISPUTE_MEMO = #{record.disputeMemo,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update TRM_QUES_DISPUTE
+    set JOURNO = #{record.journo,jdbcType=VARCHAR},
+      EXAM_CODE = #{record.examCode,jdbcType=VARCHAR},
+      QUES_CODE = #{record.quesCode,jdbcType=VARCHAR},
+      USER_ANSWER = #{record.userAnswer,jdbcType=VARCHAR},
+      REPLY_ANSWER = #{record.replyAnswer,jdbcType=VARCHAR},
+      DISPUTE_RESULT = #{record.disputeResult,jdbcType=DECIMAL},
+      PLO_NUM = #{record.ploNum,jdbcType=VARCHAR},
+      DATA_DATE = #{record.dataDate,jdbcType=VARCHAR},
+      HANDLE_PLO = #{record.handlePlo,jdbcType=VARCHAR},
+      HANDLE_DATE = #{record.handleDate,jdbcType=VARCHAR},
+      DISPUTE_MEMO = #{record.disputeMemo,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cmbccd.ulms.edu.domain.QuesDispute">
+    update TRM_QUES_DISPUTE
+    <set>
+      <if test="examCode != null">
+        EXAM_CODE = #{examCode,jdbcType=VARCHAR},
+      </if>
+      <if test="quesCode != null">
+        QUES_CODE = #{quesCode,jdbcType=VARCHAR},
+      </if>
+      <if test="userAnswer != null">
+        USER_ANSWER = #{userAnswer,jdbcType=VARCHAR},
+      </if>
+      <if test="replyAnswer != null">
+        REPLY_ANSWER = #{replyAnswer,jdbcType=VARCHAR},
+      </if>
+      <if test="disputeResult != null">
+        DISPUTE_RESULT = #{disputeResult,jdbcType=DECIMAL},
+      </if>
+      <if test="ploNum != null">
+        PLO_NUM = #{ploNum,jdbcType=VARCHAR},
+      </if>
+      <if test="dataDate != null">
+        DATA_DATE = #{dataDate,jdbcType=VARCHAR},
+      </if>
+      <if test="handlePlo != null">
+        HANDLE_PLO = #{handlePlo,jdbcType=VARCHAR},
+      </if>
+      <if test="handleDate != null">
+        HANDLE_DATE = #{handleDate,jdbcType=VARCHAR},
+      </if>
+      <if test="disputeMemo != null">
+        DISPUTE_MEMO = #{disputeMemo,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where JOURNO = #{journo,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cmbccd.ulms.edu.domain.QuesDispute">
+    update TRM_QUES_DISPUTE
+    set EXAM_CODE = #{examCode,jdbcType=VARCHAR},
+      QUES_CODE = #{quesCode,jdbcType=VARCHAR},
+      USER_ANSWER = #{userAnswer,jdbcType=VARCHAR},
+      REPLY_ANSWER = #{replyAnswer,jdbcType=VARCHAR},
+      DISPUTE_RESULT = #{disputeResult,jdbcType=DECIMAL},
+      PLO_NUM = #{ploNum,jdbcType=VARCHAR},
+      DATA_DATE = #{dataDate,jdbcType=VARCHAR},
+      HANDLE_PLO = #{handlePlo,jdbcType=VARCHAR},
+      HANDLE_DATE = #{handleDate,jdbcType=VARCHAR},
+      DISPUTE_MEMO = #{disputeMemo,jdbcType=VARCHAR}
+    where JOURNO = #{journo,jdbcType=VARCHAR}
+  </update>
+  
+  <resultMap id="disputeQuestion" type="com.cmbccd.ulms.edu.domain.DisputeQuestion">
+    <result column="QUES_CODE" jdbcType="VARCHAR" property="quesCode" />
+    <result column="DISPUTE_RESULT" jdbcType="DECIMAL" property="disputeResult" />
+    <result column="DISP_NUM" jdbcType="DECIMAL" property="dispNum" />
+    <result column="QUES_TYPE" jdbcType="DECIMAL" property="quesType" />
+    <result column="QUES_STEM" jdbcType="VARCHAR" property="quesStem" />
+    <result column="OPTIONS" jdbcType="VARCHAR" property="options" />
+    <result column="ANSWER" jdbcType="VARCHAR" property="answer" />
+  </resultMap>
+
+ 	<select  id="selectDisputeQuesionByExample"  parameterType="com.cmbccd.ulms.edu.domain.QuesDisputeExample"  resultMap="disputeQuestion">
+ 		select a.QUES_CODE,a.DISPUTE_RESULT,a.DISP_NUM,b.QUES_TYPE,b.QUES_STEM,b.OPTIONS,b.ANSWER from 
+ 		(select QUES_CODE,DISPUTE_RESULT,count(1) DISP_NUM  from TRM_QUES_DISPUTE
+	    <if test="_parameter != null">
+	      <include refid="Example_Where_Clause" />
+	    </if> group by QUES_CODE,DISPUTE_RESULT) a left join TRM_QUES_BANK b on (a.QUES_CODE = b.QUES_CODE)
+ 	</select>  
+</mapper>

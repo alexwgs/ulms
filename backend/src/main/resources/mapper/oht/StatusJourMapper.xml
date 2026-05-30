@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmbccd.ulms.oht.dao.StatusJourMapper">
+  <resultMap id="BaseResultMap" type="com.cmbccd.ulms.oht.domain.StatusJour">
+    <id column="ID" jdbcType="DECIMAL" property="id" />
+    <result column="USER_ID" jdbcType="VARCHAR" property="userId" />
+    <result column="DATA_DATE" jdbcType="VARCHAR" property="dataDate" />
+    <result column="BEG_TIME" jdbcType="VARCHAR" property="begTime" />
+    <result column="END_TIME" jdbcType="VARCHAR" property="endTime" />
+    <result column="STATUS_ID" jdbcType="DECIMAL" property="statusId" />
+    <result column="IDENTITY" jdbcType="VARCHAR" property="identity" />
+    <result column="IP" jdbcType="VARCHAR" property="ip" />
+    <result column="DURATION" jdbcType="DECIMAL" property="duration" />
+    <result column="MEMO" jdbcType="VARCHAR" property="memo" />
+    <result column="OHT_FLAG" jdbcType="DECIMAL" property="ohtFlag" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    ID, USER_ID, DATA_DATE, BEG_TIME, END_TIME, STATUS_ID, IDENTITY, IP, DURATION, MEMO, 
+    OHT_FLAG
+  </sql>
+  <select id="selectByExample" parameterType="com.cmbccd.ulms.oht.domain.StatusJourExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from OTH_STATUS_JOUR
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from OTH_STATUS_JOUR
+    where ID = #{id,jdbcType=DECIMAL}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from OTH_STATUS_JOUR
+    where ID = #{id,jdbcType=DECIMAL}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.cmbccd.ulms.oht.domain.StatusJourExample">
+    delete from OTH_STATUS_JOUR
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.cmbccd.ulms.oht.domain.StatusJour">
+    insert into OTH_STATUS_JOUR (ID, USER_ID, DATA_DATE, 
+      BEG_TIME, END_TIME, STATUS_ID, 
+      IDENTITY, IP, DURATION, 
+      MEMO, OHT_FLAG)
+    values (#{id,jdbcType=DECIMAL}, #{userId,jdbcType=VARCHAR}, #{dataDate,jdbcType=VARCHAR}, 
+      #{begTime,jdbcType=VARCHAR}, #{endTime,jdbcType=VARCHAR}, #{statusId,jdbcType=DECIMAL}, 
+      #{identity,jdbcType=VARCHAR}, #{ip,jdbcType=VARCHAR}, #{duration,jdbcType=DECIMAL}, 
+      #{memo,jdbcType=VARCHAR}, #{ohtFlag,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cmbccd.ulms.oht.domain.StatusJour">
+    insert into OTH_STATUS_JOUR
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="userId != null">
+        USER_ID,
+      </if>
+      <if test="dataDate != null">
+        DATA_DATE,
+      </if>
+      <if test="begTime != null">
+        BEG_TIME,
+      </if>
+      <if test="endTime != null">
+        END_TIME,
+      </if>
+      <if test="statusId != null">
+        STATUS_ID,
+      </if>
+      <if test="identity != null">
+        IDENTITY,
+      </if>
+      <if test="ip != null">
+        IP,
+      </if>
+      <if test="duration != null">
+        DURATION,
+      </if>
+      <if test="memo != null">
+        MEMO,
+      </if>
+      <if test="ohtFlag != null">
+        OHT_FLAG,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=DECIMAL},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="dataDate != null">
+        #{dataDate,jdbcType=VARCHAR},
+      </if>
+      <if test="begTime != null">
+        #{begTime,jdbcType=VARCHAR},
+      </if>
+      <if test="endTime != null">
+        #{endTime,jdbcType=VARCHAR},
+      </if>
+      <if test="statusId != null">
+        #{statusId,jdbcType=DECIMAL},
+      </if>
+      <if test="identity != null">
+        #{identity,jdbcType=VARCHAR},
+      </if>
+      <if test="ip != null">
+        #{ip,jdbcType=VARCHAR},
+      </if>
+      <if test="duration != null">
+        #{duration,jdbcType=DECIMAL},
+      </if>
+      <if test="memo != null">
+        #{memo,jdbcType=VARCHAR},
+      </if>
+      <if test="ohtFlag != null">
+        #{ohtFlag,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.cmbccd.ulms.oht.domain.StatusJourExample" resultType="java.lang.Integer">
+    select count(*) from OTH_STATUS_JOUR
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update OTH_STATUS_JOUR
+    <set>
+      <if test="record.id != null">
+        ID = #{record.id,jdbcType=DECIMAL},
+      </if>
+      <if test="record.userId != null">
+        USER_ID = #{record.userId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dataDate != null">
+        DATA_DATE = #{record.dataDate,jdbcType=VARCHAR},
+      </if>
+      <if test="record.begTime != null">
+        BEG_TIME = #{record.begTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.endTime != null">
+        END_TIME = #{record.endTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.statusId != null">
+        STATUS_ID = #{record.statusId,jdbcType=DECIMAL},
+      </if>
+      <if test="record.identity != null">
+        IDENTITY = #{record.identity,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ip != null">
+        IP = #{record.ip,jdbcType=VARCHAR},
+      </if>
+      <if test="record.duration != null">
+        DURATION = #{record.duration,jdbcType=DECIMAL},
+      </if>
+      <if test="record.memo != null">
+        MEMO = #{record.memo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ohtFlag != null">
+        OHT_FLAG = #{record.ohtFlag,jdbcType=DECIMAL},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update OTH_STATUS_JOUR
+    set ID = #{record.id,jdbcType=DECIMAL},
+      USER_ID = #{record.userId,jdbcType=VARCHAR},
+      DATA_DATE = #{record.dataDate,jdbcType=VARCHAR},
+      BEG_TIME = #{record.begTime,jdbcType=VARCHAR},
+      END_TIME = #{record.endTime,jdbcType=VARCHAR},
+      STATUS_ID = #{record.statusId,jdbcType=DECIMAL},
+      IDENTITY = #{record.identity,jdbcType=VARCHAR},
+      IP = #{record.ip,jdbcType=VARCHAR},
+      DURATION = #{record.duration,jdbcType=DECIMAL},
+      MEMO = #{record.memo,jdbcType=VARCHAR},
+      OHT_FLAG = #{record.ohtFlag,jdbcType=DECIMAL}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cmbccd.ulms.oht.domain.StatusJour">
+    update OTH_STATUS_JOUR
+    <set>
+      <if test="userId != null">
+        USER_ID = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="dataDate != null">
+        DATA_DATE = #{dataDate,jdbcType=VARCHAR},
+      </if>
+      <if test="begTime != null">
+        BEG_TIME = #{begTime,jdbcType=VARCHAR},
+      </if>
+      <if test="endTime != null">
+        END_TIME = #{endTime,jdbcType=VARCHAR},
+      </if>
+      <if test="statusId != null">
+        STATUS_ID = #{statusId,jdbcType=DECIMAL},
+      </if>
+      <if test="identity != null">
+        IDENTITY = #{identity,jdbcType=VARCHAR},
+      </if>
+      <if test="ip != null">
+        IP = #{ip,jdbcType=VARCHAR},
+      </if>
+      <if test="duration != null">
+        DURATION = #{duration,jdbcType=DECIMAL},
+      </if>
+      <if test="memo != null">
+        MEMO = #{memo,jdbcType=VARCHAR},
+      </if>
+      <if test="ohtFlag != null">
+        OHT_FLAG = #{ohtFlag,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cmbccd.ulms.oht.domain.StatusJour">
+    update OTH_STATUS_JOUR
+    set USER_ID = #{userId,jdbcType=VARCHAR},
+      DATA_DATE = #{dataDate,jdbcType=VARCHAR},
+      BEG_TIME = #{begTime,jdbcType=VARCHAR},
+      END_TIME = #{endTime,jdbcType=VARCHAR},
+      STATUS_ID = #{statusId,jdbcType=DECIMAL},
+      IDENTITY = #{identity,jdbcType=VARCHAR},
+      IP = #{ip,jdbcType=VARCHAR},
+      DURATION = #{duration,jdbcType=DECIMAL},
+      MEMO = #{memo,jdbcType=VARCHAR},
+      OHT_FLAG = #{ohtFlag,jdbcType=DECIMAL}
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+  
+    <select id="selectNewId" resultType="java.lang.Integer">
+  	select case when count(*) = 0 then 1 else  max(id)+1 end from OTH_STATUS_JOUR
+  </select>
+  
+  <update id="updateLastStatusJour" parameterType="java.lang.String">
+    update OTH_STATUS_JOUR
+    set DURATION = (to_date(#{endTime,jdbcType=VARCHAR},'hh24:mi:ss')-to_date(beg_time,'hh24:mi:ss'))*3600*24 ,END_TIME = #{endTime,jdbcType=VARCHAR}
+    where ID = (select max(id) from OTH_STATUS_JOUR where user_id = #{userId,jdbcType=VARCHAR} and data_date = to_char(sysdate,'yyyy-mm-dd') and END_TIME IS NULL)
+  </update>
+
+  <select id="getUserStatusTotal"  parameterType="java.lang.String" resultMap="BaseResultMap">
+	select user_id,status_id,nvl(sum(duration),0) as duration from OTH_STATUS_JOUR where USER_ID = #{userId,jdbcType=VARCHAR} and DATA_DATE between #{begDate,jdbcType=VARCHAR} and #{endDate,jdbcType=VARCHAR}  group by user_id, status_id order by status_id 
+  </select>
+  
+  <select id="getUserStatusIdTotal" resultType="java.lang.Integer">
+	select nvl(sum(duration),0) as duration from OTH_STATUS_JOUR where USER_ID = #{userId,jdbcType=VARCHAR} and DATA_DATE between #{begDate,jdbcType=VARCHAR} and #{endDate,jdbcType=VARCHAR} and STATUS_ID = #{statusId,jdbcType=DECIMAL}  group by user_id
+  </select>
+  
+   <resultMap id="userStatusMap" type="java.util.HashMap">
+       <result column="beg_time" property="begTime" jdbcType="VARCHAR" />
+       <result column="end_time" property="endTime" jdbcType="VARCHAR" />
+       <result column="user_id" property="userId" jdbcType="VARCHAR" />
+       <result column="level1" property="level1" jdbcType="VARCHAR" />
+       <result column="level2" property="level2" jdbcType="VARCHAR" />
+       <result column="level3" property="level3" jdbcType="VARCHAR" />
+       <result column="memo" property="memo" jdbcType="VARCHAR" />
+       <result column="identity" property="identity" jdbcType="VARCHAR" />
+   </resultMap>
+  <select id="getStatusDetailByUserId" parameterType="java.lang.String" resultMap="userStatusMap">
+ select a.beg_time,a.end_Time,a.user_id,d.status_name as level1,c.status_name as level2,b.status_name as level3,a.memo,a.identity from  
+ (select * from OTH_STATUS_JOUR where USER_ID = #{userId,jdbcType=VARCHAR} and DATA_DATE = #{dataDate,jdbcType=VARCHAR} order by id ) a
+ left join (select id,pid,status_name,sort from OTH_STATUS_TYPE where data_type = 'status' and level_grade=3) b on (a.status_id = b.id) left join 
+  (select id,pid,status_name,sort from OTH_STATUS_TYPE where data_type = 'status' and level_grade=2) c on (b.pid = c.id) left join
+  (select id,pid,status_name,sort from OTH_STATUS_TYPE where data_type = 'status' and level_grade=1) d on (c.pid = d.id)
+  </select>
+  
+  <select id="getAvailableStatusTimeByUserId" parameterType="java.lang.String" resultType="java.lang.Integer">
+ 	select nvl(sum(duration),0) from OTH_STATUS_JOUR where USER_ID = #{userId,jdbcType=VARCHAR} and DATA_DATE between #{begDate,jdbcType=VARCHAR} and #{endDate,jdbcType=VARCHAR} AND OHT_FLAG=1
+  </select>
+  
+    <select id="getStatusDetailByUserIds" parameterType="com.cmbccd.ulms.oht.domain.StatusJourExample" resultMap="userStatusMap">
+	 select a.beg_time,a.end_Time,a.user_id,d.status_name as level1,c.status_name as level2,b.status_name as level3,a.memo,a.identity from  
+	 (select * from OTH_STATUS_JOUR 
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+ 	) a
+	left join (select id,pid,status_name,sort from OTH_STATUS_TYPE where data_type = 'status' and level_grade=3) b on (a.status_id = b.id) left join 
+  (select id,pid,status_name,sort from OTH_STATUS_TYPE where data_type = 'status' and level_grade=2) c on (b.pid = c.id) left join
+  (select id,pid,status_name,sort from OTH_STATUS_TYPE where data_type = 'status' and level_grade=1) d on (c.pid = d.id)
+  </select>
+  
+  <select id="getStatusDurationByOhtFlag" resultType="java.lang.Integer">
+  	select sum(Duration) from OTH_STATUS_JOUR where ID != 0 and ID != 4 and OHT_FLAG=#{ohtFlag,jdbcType=DECIMAL} and USER_ID = #{userId,jdbcType=VARCHAR} and DATA_DATE between #{begDate,jdbcType=VARCHAR} and #{endDate,jdbcType=VARCHAR}  group by USER_ID
+  </select>
+  <select id="getOnCallDurationByOhtFlag" resultType="java.lang.Integer">
+  	select sum(Duration) from OTH_STATUS_JOUR where ID = 4 and USER_ID = #{userId,jdbcType=VARCHAR} and DATA_DATE between #{begDate,jdbcType=VARCHAR} and #{endDate,jdbcType=VARCHAR}  group by USER_ID
+  </select>
+</mapper>

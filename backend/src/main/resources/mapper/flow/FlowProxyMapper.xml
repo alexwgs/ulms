@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmbccd.ulms.flow.dao.FlowProxyMapper">
+  <resultMap id="BaseResultMap" type="com.cmbccd.ulms.flow.domain.FlowProxy">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="PLO_NUM" jdbcType="VARCHAR" property="ploNum" />
+    <result column="PROXY_NUM" jdbcType="VARCHAR" property="proxyNum" />
+    <result column="BEG_DATE" jdbcType="VARCHAR" property="begDate" />
+    <result column="END_DATE" jdbcType="VARCHAR" property="endDate" />
+    <result column="HANDLE_PLO" jdbcType="VARCHAR" property="handlePlo" />
+    <result column="HANDLE_DATE" jdbcType="VARCHAR" property="handleDate" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    ID, PLO_NUM, PROXY_NUM, BEG_DATE, END_DATE, HANDLE_PLO, HANDLE_DATE
+  </sql>
+  <select id="selectByExample" parameterType="com.cmbccd.ulms.flow.domain.FlowProxyExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from CUS_FLOW_PROXY
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from CUS_FLOW_PROXY
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from CUS_FLOW_PROXY
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.cmbccd.ulms.flow.domain.FlowProxyExample">
+    delete from CUS_FLOW_PROXY
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.cmbccd.ulms.flow.domain.FlowProxy">
+    insert into CUS_FLOW_PROXY (ID, PLO_NUM, PROXY_NUM, 
+      BEG_DATE, END_DATE, HANDLE_PLO, 
+      HANDLE_DATE)
+    values (#{id,jdbcType=VARCHAR}, #{ploNum,jdbcType=VARCHAR}, #{proxyNum,jdbcType=VARCHAR}, 
+      #{begDate,jdbcType=VARCHAR}, #{endDate,jdbcType=VARCHAR}, #{handlePlo,jdbcType=VARCHAR}, 
+      #{handleDate,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cmbccd.ulms.flow.domain.FlowProxy">
+    insert into CUS_FLOW_PROXY
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="ploNum != null">
+        PLO_NUM,
+      </if>
+      <if test="proxyNum != null">
+        PROXY_NUM,
+      </if>
+      <if test="begDate != null">
+        BEG_DATE,
+      </if>
+      <if test="endDate != null">
+        END_DATE,
+      </if>
+      <if test="handlePlo != null">
+        HANDLE_PLO,
+      </if>
+      <if test="handleDate != null">
+        HANDLE_DATE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="ploNum != null">
+        #{ploNum,jdbcType=VARCHAR},
+      </if>
+      <if test="proxyNum != null">
+        #{proxyNum,jdbcType=VARCHAR},
+      </if>
+      <if test="begDate != null">
+        #{begDate,jdbcType=VARCHAR},
+      </if>
+      <if test="endDate != null">
+        #{endDate,jdbcType=VARCHAR},
+      </if>
+      <if test="handlePlo != null">
+        #{handlePlo,jdbcType=VARCHAR},
+      </if>
+      <if test="handleDate != null">
+        #{handleDate,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.cmbccd.ulms.flow.domain.FlowProxyExample" resultType="java.lang.Long">
+    select count(*) from CUS_FLOW_PROXY
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update CUS_FLOW_PROXY
+    <set>
+      <if test="record.id != null">
+        ID = #{record.id,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ploNum != null">
+        PLO_NUM = #{record.ploNum,jdbcType=VARCHAR},
+      </if>
+      <if test="record.proxyNum != null">
+        PROXY_NUM = #{record.proxyNum,jdbcType=VARCHAR},
+      </if>
+      <if test="record.begDate != null">
+        BEG_DATE = #{record.begDate,jdbcType=VARCHAR},
+      </if>
+      <if test="record.endDate != null">
+        END_DATE = #{record.endDate,jdbcType=VARCHAR},
+      </if>
+      <if test="record.handlePlo != null">
+        HANDLE_PLO = #{record.handlePlo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.handleDate != null">
+        HANDLE_DATE = #{record.handleDate,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update CUS_FLOW_PROXY
+    set ID = #{record.id,jdbcType=VARCHAR},
+      PLO_NUM = #{record.ploNum,jdbcType=VARCHAR},
+      PROXY_NUM = #{record.proxyNum,jdbcType=VARCHAR},
+      BEG_DATE = #{record.begDate,jdbcType=VARCHAR},
+      END_DATE = #{record.endDate,jdbcType=VARCHAR},
+      HANDLE_PLO = #{record.handlePlo,jdbcType=VARCHAR},
+      HANDLE_DATE = #{record.handleDate,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cmbccd.ulms.flow.domain.FlowProxy">
+    update CUS_FLOW_PROXY
+    <set>
+      <if test="ploNum != null">
+        PLO_NUM = #{ploNum,jdbcType=VARCHAR},
+      </if>
+      <if test="proxyNum != null">
+        PROXY_NUM = #{proxyNum,jdbcType=VARCHAR},
+      </if>
+      <if test="begDate != null">
+        BEG_DATE = #{begDate,jdbcType=VARCHAR},
+      </if>
+      <if test="endDate != null">
+        END_DATE = #{endDate,jdbcType=VARCHAR},
+      </if>
+      <if test="handlePlo != null">
+        HANDLE_PLO = #{handlePlo,jdbcType=VARCHAR},
+      </if>
+      <if test="handleDate != null">
+        HANDLE_DATE = #{handleDate,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cmbccd.ulms.flow.domain.FlowProxy">
+    update CUS_FLOW_PROXY
+    set PLO_NUM = #{ploNum,jdbcType=VARCHAR},
+      PROXY_NUM = #{proxyNum,jdbcType=VARCHAR},
+      BEG_DATE = #{begDate,jdbcType=VARCHAR},
+      END_DATE = #{endDate,jdbcType=VARCHAR},
+      HANDLE_PLO = #{handlePlo,jdbcType=VARCHAR},
+      HANDLE_DATE = #{handleDate,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

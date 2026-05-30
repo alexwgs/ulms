@@ -1,0 +1,420 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmbccd.ulms.edu.dao.QuesBankMapper">
+  <resultMap id="BaseResultMap" type="com.cmbccd.ulms.edu.domain.QuesBank">
+    <id column="QUES_CODE" jdbcType="VARCHAR" property="quesCode" />
+    <result column="LIB_CODE" jdbcType="VARCHAR" property="libCode" />
+    <result column="QUES_STEM" jdbcType="VARCHAR" property="quesStem" />
+    <result column="QUES_TYPE" jdbcType="DECIMAL" property="quesType" />
+    <result column="FILE_CODE" jdbcType="VARCHAR" property="fileCode" />
+    <result column="FILE_TYPE" jdbcType="VARCHAR" property="fileType" />
+    <result column="FILE_DURATION" jdbcType="DECIMAL" property="fileDuration" />
+    <result column="OPTIONS" jdbcType="VARCHAR" property="options" />
+    <result column="ANSWER" jdbcType="VARCHAR" property="answer" />
+    <result column="QUES_EXPLAIN" jdbcType="VARCHAR" property="quesExplain" />
+    <result column="QUES_STAT" jdbcType="DECIMAL" property="quesStat" />
+    <result column="HANDLE_PLO" jdbcType="VARCHAR" property="handlePlo" />
+    <result column="HANDLE_DATE" jdbcType="VARCHAR" property="handleDate" />
+    <result column="CATEGORY" jdbcType="VARCHAR" property="category" />
+    <result column="KNOWLEDGE" jdbcType="VARCHAR" property="knowledge" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    QUES_CODE, LIB_CODE, QUES_STEM, QUES_TYPE, FILE_CODE, FILE_TYPE, FILE_DURATION, OPTIONS, 
+    ANSWER, QUES_EXPLAIN, QUES_STAT, HANDLE_PLO, HANDLE_DATE, CATEGORY, KNOWLEDGE
+  </sql>
+  <select id="selectByExample" parameterType="com.cmbccd.ulms.edu.domain.QuesBankExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from TRM_QUES_BANK
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from TRM_QUES_BANK
+    where QUES_CODE = #{quesCode,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from TRM_QUES_BANK
+    where QUES_CODE = #{quesCode,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.cmbccd.ulms.edu.domain.QuesBankExample">
+    delete from TRM_QUES_BANK
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.cmbccd.ulms.edu.domain.QuesBank">
+    insert into TRM_QUES_BANK (QUES_CODE, LIB_CODE, QUES_STEM, 
+      QUES_TYPE, FILE_CODE, FILE_TYPE, 
+      FILE_DURATION, OPTIONS, ANSWER, 
+      QUES_EXPLAIN, QUES_STAT, HANDLE_PLO, 
+      HANDLE_DATE, CATEGORY, KNOWLEDGE
+      )
+    values (#{quesCode,jdbcType=VARCHAR}, #{libCode,jdbcType=VARCHAR}, #{quesStem,jdbcType=VARCHAR}, 
+      #{quesType,jdbcType=DECIMAL}, #{fileCode,jdbcType=VARCHAR}, #{fileType,jdbcType=VARCHAR}, 
+      #{fileDuration,jdbcType=DECIMAL}, #{options,jdbcType=VARCHAR}, #{answer,jdbcType=VARCHAR}, 
+      #{quesExplain,jdbcType=VARCHAR}, #{quesStat,jdbcType=DECIMAL}, #{handlePlo,jdbcType=VARCHAR}, 
+      #{handleDate,jdbcType=VARCHAR}, #{category,jdbcType=VARCHAR}, #{knowledge,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.cmbccd.ulms.edu.domain.QuesBank">
+    insert into TRM_QUES_BANK
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="quesCode != null">
+        QUES_CODE,
+      </if>
+      <if test="libCode != null">
+        LIB_CODE,
+      </if>
+      <if test="quesStem != null">
+        QUES_STEM,
+      </if>
+      <if test="quesType != null">
+        QUES_TYPE,
+      </if>
+      <if test="fileCode != null">
+        FILE_CODE,
+      </if>
+      <if test="fileType != null">
+        FILE_TYPE,
+      </if>
+      <if test="fileDuration != null">
+        FILE_DURATION,
+      </if>
+      <if test="options != null">
+        OPTIONS,
+      </if>
+      <if test="answer != null">
+        ANSWER,
+      </if>
+      <if test="quesExplain != null">
+        QUES_EXPLAIN,
+      </if>
+      <if test="quesStat != null">
+        QUES_STAT,
+      </if>
+      <if test="handlePlo != null">
+        HANDLE_PLO,
+      </if>
+      <if test="handleDate != null">
+        HANDLE_DATE,
+      </if>
+      <if test="category != null">
+        CATEGORY,
+      </if>
+      <if test="knowledge != null">
+        KNOWLEDGE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="quesCode != null">
+        #{quesCode,jdbcType=VARCHAR},
+      </if>
+      <if test="libCode != null">
+        #{libCode,jdbcType=VARCHAR},
+      </if>
+      <if test="quesStem != null">
+        #{quesStem,jdbcType=VARCHAR},
+      </if>
+      <if test="quesType != null">
+        #{quesType,jdbcType=DECIMAL},
+      </if>
+      <if test="fileCode != null">
+        #{fileCode,jdbcType=VARCHAR},
+      </if>
+      <if test="fileType != null">
+        #{fileType,jdbcType=VARCHAR},
+      </if>
+      <if test="fileDuration != null">
+        #{fileDuration,jdbcType=DECIMAL},
+      </if>
+      <if test="options != null">
+        #{options,jdbcType=VARCHAR},
+      </if>
+      <if test="answer != null">
+        #{answer,jdbcType=VARCHAR},
+      </if>
+      <if test="quesExplain != null">
+        #{quesExplain,jdbcType=VARCHAR},
+      </if>
+      <if test="quesStat != null">
+        #{quesStat,jdbcType=DECIMAL},
+      </if>
+      <if test="handlePlo != null">
+        #{handlePlo,jdbcType=VARCHAR},
+      </if>
+      <if test="handleDate != null">
+        #{handleDate,jdbcType=VARCHAR},
+      </if>
+      <if test="category != null">
+        #{category,jdbcType=VARCHAR},
+      </if>
+      <if test="knowledge != null">
+        #{knowledge,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.cmbccd.ulms.edu.domain.QuesBankExample" resultType="java.lang.Long">
+    select count(*) from TRM_QUES_BANK
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update TRM_QUES_BANK
+    <set>
+      <if test="record.quesCode != null">
+        QUES_CODE = #{record.quesCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.libCode != null">
+        LIB_CODE = #{record.libCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.quesStem != null">
+        QUES_STEM = #{record.quesStem,jdbcType=VARCHAR},
+      </if>
+      <if test="record.quesType != null">
+        QUES_TYPE = #{record.quesType,jdbcType=DECIMAL},
+      </if>
+      <if test="record.fileCode != null">
+        FILE_CODE = #{record.fileCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.fileType != null">
+        FILE_TYPE = #{record.fileType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.fileDuration != null">
+        FILE_DURATION = #{record.fileDuration,jdbcType=DECIMAL},
+      </if>
+      <if test="record.options != null">
+        OPTIONS = #{record.options,jdbcType=VARCHAR},
+      </if>
+      <if test="record.answer != null">
+        ANSWER = #{record.answer,jdbcType=VARCHAR},
+      </if>
+      <if test="record.quesExplain != null">
+        QUES_EXPLAIN = #{record.quesExplain,jdbcType=VARCHAR},
+      </if>
+      <if test="record.quesStat != null">
+        QUES_STAT = #{record.quesStat,jdbcType=DECIMAL},
+      </if>
+      <if test="record.handlePlo != null">
+        HANDLE_PLO = #{record.handlePlo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.handleDate != null">
+        HANDLE_DATE = #{record.handleDate,jdbcType=VARCHAR},
+      </if>
+      <if test="record.category != null">
+        CATEGORY = #{record.category,jdbcType=VARCHAR},
+      </if>
+      <if test="record.knowledge != null">
+        KNOWLEDGE = #{record.knowledge,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update TRM_QUES_BANK
+    set QUES_CODE = #{record.quesCode,jdbcType=VARCHAR},
+      LIB_CODE = #{record.libCode,jdbcType=VARCHAR},
+      QUES_STEM = #{record.quesStem,jdbcType=VARCHAR},
+      QUES_TYPE = #{record.quesType,jdbcType=DECIMAL},
+      FILE_CODE = #{record.fileCode,jdbcType=VARCHAR},
+      FILE_TYPE = #{record.fileType,jdbcType=VARCHAR},
+      FILE_DURATION = #{record.fileDuration,jdbcType=DECIMAL},
+      OPTIONS = #{record.options,jdbcType=VARCHAR},
+      ANSWER = #{record.answer,jdbcType=VARCHAR},
+      QUES_EXPLAIN = #{record.quesExplain,jdbcType=VARCHAR},
+      QUES_STAT = #{record.quesStat,jdbcType=DECIMAL},
+      HANDLE_PLO = #{record.handlePlo,jdbcType=VARCHAR},
+      HANDLE_DATE = #{record.handleDate,jdbcType=VARCHAR},
+      CATEGORY = #{record.category,jdbcType=VARCHAR},
+      KNOWLEDGE = #{record.knowledge,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cmbccd.ulms.edu.domain.QuesBank">
+    update TRM_QUES_BANK
+    <set>
+      <if test="libCode != null">
+        LIB_CODE = #{libCode,jdbcType=VARCHAR},
+      </if>
+      <if test="quesStem != null">
+        QUES_STEM = #{quesStem,jdbcType=VARCHAR},
+      </if>
+      <if test="quesType != null">
+        QUES_TYPE = #{quesType,jdbcType=DECIMAL},
+      </if>
+      <if test="fileCode != null">
+        FILE_CODE = #{fileCode,jdbcType=VARCHAR},
+      </if>
+      <if test="fileType != null">
+        FILE_TYPE = #{fileType,jdbcType=VARCHAR},
+      </if>
+      <if test="fileDuration != null">
+        FILE_DURATION = #{fileDuration,jdbcType=DECIMAL},
+      </if>
+      <if test="options != null">
+        OPTIONS = #{options,jdbcType=VARCHAR},
+      </if>
+      <if test="answer != null">
+        ANSWER = #{answer,jdbcType=VARCHAR},
+      </if>
+      <if test="quesExplain != null">
+        QUES_EXPLAIN = #{quesExplain,jdbcType=VARCHAR},
+      </if>
+      <if test="quesStat != null">
+        QUES_STAT = #{quesStat,jdbcType=DECIMAL},
+      </if>
+      <if test="handlePlo != null">
+        HANDLE_PLO = #{handlePlo,jdbcType=VARCHAR},
+      </if>
+      <if test="handleDate != null">
+        HANDLE_DATE = #{handleDate,jdbcType=VARCHAR},
+      </if>
+      <if test="category != null">
+        CATEGORY = #{category,jdbcType=VARCHAR},
+      </if>
+      <if test="knowledge != null">
+        KNOWLEDGE = #{knowledge,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where QUES_CODE = #{quesCode,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cmbccd.ulms.edu.domain.QuesBank">
+    update TRM_QUES_BANK
+    set LIB_CODE = #{libCode,jdbcType=VARCHAR},
+      QUES_STEM = #{quesStem,jdbcType=VARCHAR},
+      QUES_TYPE = #{quesType,jdbcType=DECIMAL},
+      FILE_CODE = #{fileCode,jdbcType=VARCHAR},
+      FILE_TYPE = #{fileType,jdbcType=VARCHAR},
+      FILE_DURATION = #{fileDuration,jdbcType=DECIMAL},
+      OPTIONS = #{options,jdbcType=VARCHAR},
+      ANSWER = #{answer,jdbcType=VARCHAR},
+      QUES_EXPLAIN = #{quesExplain,jdbcType=VARCHAR},
+      QUES_STAT = #{quesStat,jdbcType=DECIMAL},
+      HANDLE_PLO = #{handlePlo,jdbcType=VARCHAR},
+      HANDLE_DATE = #{handleDate,jdbcType=VARCHAR},
+      CATEGORY = #{category,jdbcType=VARCHAR},
+      KNOWLEDGE = #{knowledge,jdbcType=VARCHAR}
+    where QUES_CODE = #{quesCode,jdbcType=VARCHAR}
+  </update>
+<select id="selectQuestionByLibs" resultType="java.lang.String">
+	select ques_code from TRM_QUES_BANK a where
+    not exists
+	(select distinct ques_code from TRM_BRUSH_SCORE b where b.data_date between to_char(sysdate-1,'yyyy-MM-dd') and to_char(sysdate,'yyyy-MM-dd') and b.plo_num = #{plo_num, jdbcType=VARCHAR} and a.ques_code=b.ques_code)
+	AND LIB_CODE in
+	<foreach item="item" index="index" collection="libCodes" open="(" separator="," close=")">
+	     #{item}
+	</foreach>
+	and ques_stat = 1 
+</select>
+<!--  <select id="selectWrongQUesLibs" resultType="java.lang.String">-->
+<!--    SELECT-->
+<!--      QUES_CODE-->
+<!--    FROM-->
+<!--      TRM_BRUSH_SCORE-->
+<!--    WHERE-->
+<!--      DATA_DATE BETWEEN to_char( SYSDATE -#{ pastDays, jdbcType = DECIMAL } , 'yyyy-MM-dd' )-->
+<!--        AND to_char( SYSDATE, 'yyyy-MM-dd' )-->
+<!--      AND PLO_NUM = #{ plo_num,jdbcType = VARCHAR }-->
+<!--      AND ANSWER_DATE IS NOT NULL-->
+<!--    GROUP BY-->
+<!--      QUES_CODE-->
+<!--    HAVING-->
+<!--      sum( PASS_FLAG ) = 0-->
+<!--  </select>-->
+<select id="selectNoSensitive" parameterType="com.cmbccd.ulms.edu.domain.QuesBankExample" resultMap="BaseResultMap">
+	SELECT QUES_CODE,LIB_CODE,QUES_STEM,QUES_TYPE,FILE_CODE,FILE_TYPE,FILE_DURATION,OPTIONS,CATEGORY
+    from TRM_QUES_BANK
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+</select>
+
+<update id="updateQuesNumber">
+update trm_ques_lib a 
+set a.ques_num
+= (select ques_num from (select count(*) as ques_num,lib_code from trm_ques_bank where ques_stat=1 group by lib_code) b where a.lib_code=b.lib_code)
+</update>
+
+  <update id="invalidAllQuestionByQuesLib" parameterType="java.lang.String">
+    update TRM_QUES_BANK set QUES_STAT=0,HANDLE_PLO = #{handlePlo,jdbcType=VARCHAR},HANDLE_DATE=to_char(sysdate,'yyyy-MM-dd hh24:mi:ss') where LIB_CODE in (
+      select LIB_CODE from
+        (select LIB_CODE from TRM_QUES_LIB WHERE UP_CODE =  #{libCode,jdbcType=VARCHAR}  or LIB_CODE = #{libCode,jdbcType=VARCHAR}) a
+      union
+      (select LIB_CODE from TRM_QUES_LIB WHERE UP_CODE in (select LIB_CODE from TRM_QUES_LIB WHERE UP_CODE =  #{libCode,jdbcType=VARCHAR}))
+    )
+  </update>
+</mapper>

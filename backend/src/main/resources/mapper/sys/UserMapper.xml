@@ -1,0 +1,501 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmbccd.ulms.sys.dao.UserMapper">
+  <resultMap id="BaseResultMap" type="com.cmbccd.ulms.sys.domain.User">
+    <id column="CZY_CODE" jdbcType="VARCHAR" property="czyCode" />
+    <result column="CODE" jdbcType="VARCHAR" property="code" />
+    <result column="XZJG_CODE" jdbcType="VARCHAR" property="xzjgCode" />
+    <result column="XZJG_JGHM" jdbcType="VARCHAR" property="xzjgJghm" />
+    <result column="NAME" jdbcType="VARCHAR" property="name" />
+    <result column="LXDH" jdbcType="VARCHAR" property="lxdh" />
+    <result column="PASSWORD" jdbcType="VARCHAR" property="password" />
+    <result column="ZJM" jdbcType="VARCHAR" property="zjm" />
+    <result column="AREA_CODE" jdbcType="VARCHAR" property="areaCode" />
+    <result column="MYTS" jdbcType="DECIMAL" property="myts" />
+    <result column="CJSJ" jdbcType="DATE" property="cjsj" />
+    <result column="ROLEID" jdbcType="VARCHAR" property="roleid" />
+    <result column="ZHDL" jdbcType="DATE" property="zhdl" />
+    <result column="SFZX" jdbcType="VARCHAR" property="sfzx" />
+    <result column="IP" jdbcType="VARCHAR" property="ip" />
+    <result column="SF_YXJL" jdbcType="VARCHAR" property="sfYxjl" />
+    <result column="XZCZY_CODE" jdbcType="VARCHAR" property="xzczyCode" />
+    <result column="XZCZY_NAME" jdbcType="VARCHAR" property="xzczyName" />
+    <result column="XZRQ" jdbcType="DATE" property="xzrq" />
+    <result column="XGCZY_CODE" jdbcType="VARCHAR" property="xgczyCode" />
+    <result column="XGCZY_NAME" jdbcType="VARCHAR" property="xgczyName" />
+    <result column="XGRQ" jdbcType="DATE" property="xgrq" />
+    <result column="FACTRQ" jdbcType="DATE" property="factrq" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    CODE, XZJG_CODE, XZJG_JGHM, CZY_CODE, NAME, LXDH, PASSWORD, ZJM, AREA_CODE, MYTS, 
+    CJSJ, ROLEID, ZHDL, SFZX, IP, SF_YXJL, XZCZY_CODE, XZCZY_NAME, XZRQ, XGCZY_CODE, 
+    XGCZY_NAME, XGRQ, FACTRQ
+  </sql>
+  <select id="selectByExample" parameterType="com.cmbccd.ulms.sys.domain.UserExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from CS_CZY
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from CS_CZY
+    where CZY_CODE = #{czyCode,jdbcType=VARCHAR}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from CS_CZY
+    where CZY_CODE = #{czyCode,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.cmbccd.ulms.sys.domain.UserExample">
+    delete from CS_CZY
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.cmbccd.ulms.sys.domain.User">
+    insert into CS_CZY (CODE, XZJG_CODE, XZJG_JGHM, 
+      CZY_CODE, NAME, LXDH, 
+      PASSWORD, ZJM, AREA_CODE, 
+      MYTS, CJSJ, ROLEID, ZHDL, 
+      SFZX, IP, SF_YXJL, XZCZY_CODE, 
+      XZCZY_NAME, XZRQ, XGCZY_CODE, 
+      XGCZY_NAME, XGRQ, FACTRQ)
+    values (#{code,jdbcType=VARCHAR}, #{xzjgCode,jdbcType=VARCHAR}, #{xzjgJghm,jdbcType=VARCHAR}, 
+      #{czyCode,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{lxdh,jdbcType=VARCHAR}, 
+      #{password,jdbcType=VARCHAR}, #{zjm,jdbcType=VARCHAR}, #{areaCode,jdbcType=VARCHAR}, 
+      #{myts,jdbcType=DECIMAL}, #{cjsj,jdbcType=DATE}, #{roleid,jdbcType=VARCHAR}, #{zhdl,jdbcType=DATE}, 
+      #{sfzx,jdbcType=VARCHAR}, #{ip,jdbcType=VARCHAR}, #{sfYxjl,jdbcType=VARCHAR}, #{xzczyCode,jdbcType=VARCHAR}, 
+      #{xzczyName,jdbcType=VARCHAR}, #{xzrq,jdbcType=DATE}, #{xgczyCode,jdbcType=VARCHAR}, 
+      #{xgczyName,jdbcType=VARCHAR}, #{xgrq,jdbcType=DATE}, #{factrq,jdbcType=DATE})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cmbccd.ulms.sys.domain.User">
+    insert into CS_CZY
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="code != null">
+        CODE,
+      </if>
+      <if test="xzjgCode != null">
+        XZJG_CODE,
+      </if>
+      <if test="xzjgJghm != null">
+        XZJG_JGHM,
+      </if>
+      <if test="czyCode != null">
+        CZY_CODE,
+      </if>
+      <if test="name != null">
+        NAME,
+      </if>
+      <if test="lxdh != null">
+        LXDH,
+      </if>
+      <if test="password != null">
+        PASSWORD,
+      </if>
+      <if test="zjm != null">
+        ZJM,
+      </if>
+      <if test="areaCode != null">
+        AREA_CODE,
+      </if>
+      <if test="myts != null">
+        MYTS,
+      </if>
+      <if test="cjsj != null">
+        CJSJ,
+      </if>
+      <if test="roleid != null">
+        ROLEID,
+      </if>
+      <if test="zhdl != null">
+        ZHDL,
+      </if>
+      <if test="sfzx != null">
+        SFZX,
+      </if>
+      <if test="ip != null">
+        IP,
+      </if>
+      <if test="sfYxjl != null">
+        SF_YXJL,
+      </if>
+      <if test="xzczyCode != null">
+        XZCZY_CODE,
+      </if>
+      <if test="xzczyName != null">
+        XZCZY_NAME,
+      </if>
+      <if test="xzrq != null">
+        XZRQ,
+      </if>
+      <if test="xgczyCode != null">
+        XGCZY_CODE,
+      </if>
+      <if test="xgczyName != null">
+        XGCZY_NAME,
+      </if>
+      <if test="xgrq != null">
+        XGRQ,
+      </if>
+      <if test="factrq != null">
+        FACTRQ,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="code != null">
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="xzjgCode != null">
+        #{xzjgCode,jdbcType=VARCHAR},
+      </if>
+      <if test="xzjgJghm != null">
+        #{xzjgJghm,jdbcType=VARCHAR},
+      </if>
+      <if test="czyCode != null">
+        #{czyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="lxdh != null">
+        #{lxdh,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="zjm != null">
+        #{zjm,jdbcType=VARCHAR},
+      </if>
+      <if test="areaCode != null">
+        #{areaCode,jdbcType=VARCHAR},
+      </if>
+      <if test="myts != null">
+        #{myts,jdbcType=DECIMAL},
+      </if>
+      <if test="cjsj != null">
+        #{cjsj,jdbcType=DATE},
+      </if>
+      <if test="roleid != null">
+        #{roleid,jdbcType=VARCHAR},
+      </if>
+      <if test="zhdl != null">
+        #{zhdl,jdbcType=DATE},
+      </if>
+      <if test="sfzx != null">
+        #{sfzx,jdbcType=VARCHAR},
+      </if>
+      <if test="ip != null">
+        #{ip,jdbcType=VARCHAR},
+      </if>
+      <if test="sfYxjl != null">
+        #{sfYxjl,jdbcType=VARCHAR},
+      </if>
+      <if test="xzczyCode != null">
+        #{xzczyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="xzczyName != null">
+        #{xzczyName,jdbcType=VARCHAR},
+      </if>
+      <if test="xzrq != null">
+        #{xzrq,jdbcType=DATE},
+      </if>
+      <if test="xgczyCode != null">
+        #{xgczyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="xgczyName != null">
+        #{xgczyName,jdbcType=VARCHAR},
+      </if>
+      <if test="xgrq != null">
+        #{xgrq,jdbcType=DATE},
+      </if>
+      <if test="factrq != null">
+        #{factrq,jdbcType=DATE},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.cmbccd.ulms.sys.domain.UserExample" resultType="java.lang.Long">
+    select count(*) from CS_CZY
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update CS_CZY
+    <set>
+      <if test="record.code != null">
+        CODE = #{record.code,jdbcType=VARCHAR},
+      </if>
+      <if test="record.xzjgCode != null">
+        XZJG_CODE = #{record.xzjgCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.xzjgJghm != null">
+        XZJG_JGHM = #{record.xzjgJghm,jdbcType=VARCHAR},
+      </if>
+      <if test="record.czyCode != null">
+        CZY_CODE = #{record.czyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.name != null">
+        NAME = #{record.name,jdbcType=VARCHAR},
+      </if>
+      <if test="record.lxdh != null">
+        LXDH = #{record.lxdh,jdbcType=VARCHAR},
+      </if>
+      <if test="record.password != null">
+        PASSWORD = #{record.password,jdbcType=VARCHAR},
+      </if>
+      <if test="record.zjm != null">
+        ZJM = #{record.zjm,jdbcType=VARCHAR},
+      </if>
+      <if test="record.areaCode != null">
+        AREA_CODE = #{record.areaCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.myts != null">
+        MYTS = #{record.myts,jdbcType=DECIMAL},
+      </if>
+      <if test="record.cjsj != null">
+        CJSJ = #{record.cjsj,jdbcType=DATE},
+      </if>
+      <if test="record.roleid != null">
+        ROLEID = #{record.roleid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.zhdl != null">
+        ZHDL = #{record.zhdl,jdbcType=DATE},
+      </if>
+      <if test="record.sfzx != null">
+        SFZX = #{record.sfzx,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ip != null">
+        IP = #{record.ip,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sfYxjl != null">
+        SF_YXJL = #{record.sfYxjl,jdbcType=VARCHAR},
+      </if>
+      <if test="record.xzczyCode != null">
+        XZCZY_CODE = #{record.xzczyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.xzczyName != null">
+        XZCZY_NAME = #{record.xzczyName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.xzrq != null">
+        XZRQ = #{record.xzrq,jdbcType=DATE},
+      </if>
+      <if test="record.xgczyCode != null">
+        XGCZY_CODE = #{record.xgczyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.xgczyName != null">
+        XGCZY_NAME = #{record.xgczyName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.xgrq != null">
+        XGRQ = #{record.xgrq,jdbcType=DATE},
+      </if>
+      <if test="record.factrq != null">
+        FACTRQ = #{record.factrq,jdbcType=DATE},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update CS_CZY
+    set CODE = #{record.code,jdbcType=VARCHAR},
+      XZJG_CODE = #{record.xzjgCode,jdbcType=VARCHAR},
+      XZJG_JGHM = #{record.xzjgJghm,jdbcType=VARCHAR},
+      CZY_CODE = #{record.czyCode,jdbcType=VARCHAR},
+      NAME = #{record.name,jdbcType=VARCHAR},
+      LXDH = #{record.lxdh,jdbcType=VARCHAR},
+      PASSWORD = #{record.password,jdbcType=VARCHAR},
+      ZJM = #{record.zjm,jdbcType=VARCHAR},
+      AREA_CODE = #{record.areaCode,jdbcType=VARCHAR},
+      MYTS = #{record.myts,jdbcType=DECIMAL},
+      CJSJ = #{record.cjsj,jdbcType=DATE},
+      ROLEID = #{record.roleid,jdbcType=VARCHAR},
+      ZHDL = #{record.zhdl,jdbcType=DATE},
+      SFZX = #{record.sfzx,jdbcType=VARCHAR},
+      IP = #{record.ip,jdbcType=VARCHAR},
+      SF_YXJL = #{record.sfYxjl,jdbcType=VARCHAR},
+      XZCZY_CODE = #{record.xzczyCode,jdbcType=VARCHAR},
+      XZCZY_NAME = #{record.xzczyName,jdbcType=VARCHAR},
+      XZRQ = #{record.xzrq,jdbcType=DATE},
+      XGCZY_CODE = #{record.xgczyCode,jdbcType=VARCHAR},
+      XGCZY_NAME = #{record.xgczyName,jdbcType=VARCHAR},
+      XGRQ = #{record.xgrq,jdbcType=DATE},
+      FACTRQ = #{record.factrq,jdbcType=DATE}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cmbccd.ulms.sys.domain.User">
+    update CS_CZY
+    <set>
+      <if test="xzjgCode != null">
+        XZJG_CODE = #{xzjgCode,jdbcType=VARCHAR},
+      </if>
+      <if test="xzjgJghm != null">
+        XZJG_JGHM = #{xzjgJghm,jdbcType=VARCHAR},
+      </if>
+      <if test="czyCode != null">
+        CZY_CODE = #{czyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        NAME = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="lxdh != null">
+        LXDH = #{lxdh,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        PASSWORD = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="zjm != null">
+        ZJM = #{zjm,jdbcType=VARCHAR},
+      </if>
+      <if test="areaCode != null">
+        AREA_CODE = #{areaCode,jdbcType=VARCHAR},
+      </if>
+      <if test="myts != null">
+        MYTS = #{myts,jdbcType=DECIMAL},
+      </if>
+      <if test="cjsj != null">
+        CJSJ = #{cjsj,jdbcType=DATE},
+      </if>
+      <if test="roleid != null">
+        ROLEID = #{roleid,jdbcType=VARCHAR},
+      </if>
+      <if test="zhdl != null">
+        ZHDL = #{zhdl,jdbcType=DATE},
+      </if>
+      <if test="sfzx != null">
+        SFZX = #{sfzx,jdbcType=VARCHAR},
+      </if>
+      <if test="ip != null">
+        IP = #{ip,jdbcType=VARCHAR},
+      </if>
+      <if test="sfYxjl != null">
+        SF_YXJL = #{sfYxjl,jdbcType=VARCHAR},
+      </if>
+      <if test="xzczyCode != null">
+        XZCZY_CODE = #{xzczyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="xzczyName != null">
+        XZCZY_NAME = #{xzczyName,jdbcType=VARCHAR},
+      </if>
+      <if test="xzrq != null">
+        XZRQ = #{xzrq,jdbcType=DATE},
+      </if>
+      <if test="xgczyCode != null">
+        XGCZY_CODE = #{xgczyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="xgczyName != null">
+        XGCZY_NAME = #{xgczyName,jdbcType=VARCHAR},
+      </if>
+      <if test="xgrq != null">
+        XGRQ = #{xgrq,jdbcType=DATE},
+      </if>
+      <if test="factrq != null">
+        FACTRQ = #{factrq,jdbcType=DATE},
+      </if>
+    </set>
+    where CODE = #{code,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cmbccd.ulms.sys.domain.User">
+    update CS_CZY
+    set XZJG_CODE = #{xzjgCode,jdbcType=VARCHAR},
+      XZJG_JGHM = #{xzjgJghm,jdbcType=VARCHAR},
+      CODE = #{code,jdbcType=VARCHAR},
+      NAME = #{name,jdbcType=VARCHAR},
+      LXDH = #{lxdh,jdbcType=VARCHAR},
+      PASSWORD = #{password,jdbcType=VARCHAR},
+      ZJM = #{zjm,jdbcType=VARCHAR},
+      AREA_CODE = #{areaCode,jdbcType=VARCHAR},
+      MYTS = #{myts,jdbcType=DECIMAL},
+      CJSJ = #{cjsj,jdbcType=DATE},
+      ROLEID = #{roleid,jdbcType=VARCHAR},
+      ZHDL = #{zhdl,jdbcType=DATE},
+      SFZX = #{sfzx,jdbcType=VARCHAR},
+      IP = #{ip,jdbcType=VARCHAR},
+      SF_YXJL = #{sfYxjl,jdbcType=VARCHAR},
+      XZCZY_CODE = #{xzczyCode,jdbcType=VARCHAR},
+      XZCZY_NAME = #{xzczyName,jdbcType=VARCHAR},
+      XZRQ = #{xzrq,jdbcType=DATE},
+      XGCZY_CODE = #{xgczyCode,jdbcType=VARCHAR},
+      XGCZY_NAME = #{xgczyName,jdbcType=VARCHAR},
+      XGRQ = #{xgrq,jdbcType=DATE},
+      FACTRQ = #{factrq,jdbcType=DATE}
+    where CZY_CODE = #{czyCode,jdbcType=VARCHAR}
+  </update>
+  
+    <update id="updatePasswordByPrimaryKey" parameterType="com.cmbccd.ulms.sys.domain.User">
+    update CS_CZY
+    set
+      PASSWORD = #{password,jdbcType=VARCHAR}
+    where CZY_CODE = #{czyCode,jdbcType=VARCHAR}
+  </update>
+</mapper>

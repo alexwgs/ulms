@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmbccd.ulms.edu.dao.BookInfoMapper">
+  <resultMap id="BaseResultMap" type="com.cmbccd.ulms.edu.domain.BookInfo">
+    <id column="INFO_CODE" jdbcType="VARCHAR" property="infoCode" />
+    <result column="EXAM_CODE" jdbcType="VARCHAR" property="examCode" />
+    <result column="BOOK_CODE" jdbcType="VARCHAR" property="bookCode" />
+    <result column="BOOK_TYPE" jdbcType="DECIMAL" property="bookType" />
+    <result column="BOOK_DATE" jdbcType="VARCHAR" property="bookDate" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    INFO_CODE, EXAM_CODE, BOOK_CODE, BOOK_TYPE, BOOK_DATE
+  </sql>
+  <select id="selectByExample" parameterType="com.cmbccd.ulms.edu.domain.BookInfoExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from TRM_BOOK_INFO
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from TRM_BOOK_INFO
+    where INFO_CODE = #{infoCode,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from TRM_BOOK_INFO
+    where INFO_CODE = #{infoCode,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.cmbccd.ulms.edu.domain.BookInfoExample">
+    delete from TRM_BOOK_INFO
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.cmbccd.ulms.edu.domain.BookInfo">
+    insert into TRM_BOOK_INFO (INFO_CODE, EXAM_CODE, BOOK_CODE, 
+      BOOK_TYPE, BOOK_DATE)
+    values (#{infoCode,jdbcType=VARCHAR}, #{examCode,jdbcType=VARCHAR}, #{bookCode,jdbcType=VARCHAR}, 
+      #{bookType,jdbcType=DECIMAL}, #{bookDate,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cmbccd.ulms.edu.domain.BookInfo">
+    insert into TRM_BOOK_INFO
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="infoCode != null">
+        INFO_CODE,
+      </if>
+      <if test="examCode != null">
+        EXAM_CODE,
+      </if>
+      <if test="bookCode != null">
+        BOOK_CODE,
+      </if>
+      <if test="bookType != null">
+        BOOK_TYPE,
+      </if>
+      <if test="bookDate != null">
+        BOOK_DATE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="infoCode != null">
+        #{infoCode,jdbcType=VARCHAR},
+      </if>
+      <if test="examCode != null">
+        #{examCode,jdbcType=VARCHAR},
+      </if>
+      <if test="bookCode != null">
+        #{bookCode,jdbcType=VARCHAR},
+      </if>
+      <if test="bookType != null">
+        #{bookType,jdbcType=DECIMAL},
+      </if>
+      <if test="bookDate != null">
+        #{bookDate,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.cmbccd.ulms.edu.domain.BookInfoExample" resultType="java.lang.Long">
+    select count(*) from TRM_BOOK_INFO
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update TRM_BOOK_INFO
+    <set>
+      <if test="record.infoCode != null">
+        INFO_CODE = #{record.infoCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.examCode != null">
+        EXAM_CODE = #{record.examCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.bookCode != null">
+        BOOK_CODE = #{record.bookCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.bookType != null">
+        BOOK_TYPE = #{record.bookType,jdbcType=DECIMAL},
+      </if>
+      <if test="record.bookDate != null">
+        BOOK_DATE = #{record.bookDate,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update TRM_BOOK_INFO
+    set INFO_CODE = #{record.infoCode,jdbcType=VARCHAR},
+      EXAM_CODE = #{record.examCode,jdbcType=VARCHAR},
+      BOOK_CODE = #{record.bookCode,jdbcType=VARCHAR},
+      BOOK_TYPE = #{record.bookType,jdbcType=DECIMAL},
+      BOOK_DATE = #{record.bookDate,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cmbccd.ulms.edu.domain.BookInfo">
+    update TRM_BOOK_INFO
+    <set>
+      <if test="examCode != null">
+        EXAM_CODE = #{examCode,jdbcType=VARCHAR},
+      </if>
+      <if test="bookCode != null">
+        BOOK_CODE = #{bookCode,jdbcType=VARCHAR},
+      </if>
+      <if test="bookType != null">
+        BOOK_TYPE = #{bookType,jdbcType=DECIMAL},
+      </if>
+      <if test="bookDate != null">
+        BOOK_DATE = #{bookDate,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where INFO_CODE = #{infoCode,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cmbccd.ulms.edu.domain.BookInfo">
+    update TRM_BOOK_INFO
+    set EXAM_CODE = #{examCode,jdbcType=VARCHAR},
+      BOOK_CODE = #{bookCode,jdbcType=VARCHAR},
+      BOOK_TYPE = #{bookType,jdbcType=DECIMAL},
+      BOOK_DATE = #{bookDate,jdbcType=VARCHAR}
+    where INFO_CODE = #{infoCode,jdbcType=VARCHAR}
+  </update>
+
+</mapper>

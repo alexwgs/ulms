@@ -1,0 +1,610 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmbccd.ulms.youngTalk.dao.ArticalMapper">
+  <resultMap id="BaseResultMap" type="com.cmbccd.ulms.youngTalk.domain.Artical">
+    <result column="ID" jdbcType="DECIMAL" property="id" />
+    <result column="ARTICAL_TYPE" jdbcType="DECIMAL" property="articalType" />
+    <result column="CATEGORY" jdbcType="DECIMAL" property="category" />
+    <result column="TITLE" jdbcType="VARCHAR" property="title" />
+    <result column="STATUS" jdbcType="DECIMAL" property="status" />
+    <result column="RESP_DEPT" jdbcType="VARCHAR" property="respDept" />
+    <result column="PUB_USER" jdbcType="VARCHAR" property="pubUser" />
+    <result column="PUB_DATE" jdbcType="VARCHAR" property="pubDate" />
+    <result column="COMP_TYPE" jdbcType="DECIMAL" property="compType" />
+    <result column="COMP_DATE" jdbcType="VARCHAR" property="compDate" />
+    <result column="TOP_FLAG" jdbcType="DECIMAL" property="topFlag" />
+    <result column="ELITE_FLAG" jdbcType="DECIMAL" property="eliteFlag" />
+    <result column="ON_STAGE" jdbcType="DECIMAL" property="onStage" />
+    <result column="VIEW_NUM" jdbcType="DECIMAL" property="viewNum" />
+    <result column="COLLECT_NUM" jdbcType="DECIMAL" property="collectNum" />
+    <result column="REPLY_NUM" jdbcType="DECIMAL" property="replyNum" />
+    <result column="LIKE_NUM" jdbcType="DECIMAL" property="likeNum" />
+    <result column="COVER" jdbcType="VARCHAR" property="cover" />
+    <result column="FILES" jdbcType="VARCHAR" property="files" />
+    <result column="COMP_GRADE" jdbcType="DECIMAL" property="compGrade" />
+    <result column="RESP_STATUS" jdbcType="DECIMAL" property="respStatus" />
+    <result column="ANON_FLAG" jdbcType="DECIMAL" property="anonFlag" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.cmbccd.ulms.youngTalk.domain.Artical">
+    <result column="CONTENT" jdbcType="CLOB" property="content" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    ID, ARTICAL_TYPE, CATEGORY, TITLE, STATUS, RESP_DEPT, PUB_USER, PUB_DATE, COMP_TYPE,
+    COMP_DATE, TOP_FLAG, ELITE_FLAG, ON_STAGE, VIEW_NUM, COLLECT_NUM, REPLY_NUM, LIKE_NUM,
+    COVER, FILES, COMP_GRADE, RESP_STATUS, ANON_FLAG
+  </sql>
+  <sql id="Blob_Column_List">
+    CONTENT
+  </sql>
+  <select id="selectByExampleWithBLOBs" parameterType="com.cmbccd.ulms.youngTalk.domain.ArticalExample" resultMap="ResultMapWithBLOBs">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from CYT_ARTICAL_LIST
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" parameterType="com.cmbccd.ulms.youngTalk.domain.ArticalExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from CYT_ARTICAL_LIST
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <delete id="deleteByExample" parameterType="com.cmbccd.ulms.youngTalk.domain.ArticalExample">
+    delete from CYT_ARTICAL_LIST
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.cmbccd.ulms.youngTalk.domain.Artical">
+    insert into CYT_ARTICAL_LIST (ID, ARTICAL_TYPE, CATEGORY,
+                                  TITLE, STATUS, RESP_DEPT,
+                                  PUB_USER, PUB_DATE, COMP_TYPE,
+                                  COMP_DATE, TOP_FLAG, ELITE_FLAG,
+                                  ON_STAGE, VIEW_NUM, COLLECT_NUM,
+                                  REPLY_NUM, LIKE_NUM, COVER,
+                                  FILES, COMP_GRADE, RESP_STATUS,
+                                  ANON_FLAG, CONTENT)
+    values (#{id,jdbcType=DECIMAL}, #{articalType,jdbcType=DECIMAL}, #{category,jdbcType=DECIMAL},
+            #{title,jdbcType=VARCHAR}, #{status,jdbcType=DECIMAL}, #{respDept,jdbcType=VARCHAR},
+            #{pubUser,jdbcType=VARCHAR}, #{pubDate,jdbcType=VARCHAR}, #{compType,jdbcType=DECIMAL},
+            #{compDate,jdbcType=VARCHAR}, #{topFlag,jdbcType=DECIMAL}, #{eliteFlag,jdbcType=DECIMAL},
+            #{onStage,jdbcType=DECIMAL}, #{viewNum,jdbcType=DECIMAL}, #{collectNum,jdbcType=DECIMAL},
+            #{replyNum,jdbcType=DECIMAL}, #{likeNum,jdbcType=DECIMAL}, #{cover,jdbcType=VARCHAR},
+            #{files,jdbcType=VARCHAR}, #{compGrade,jdbcType=DECIMAL}, #{respStatus,jdbcType=DECIMAL},
+            #{anonFlag,jdbcType=DECIMAL}, #{content,jdbcType=CLOB})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cmbccd.ulms.youngTalk.domain.Artical">
+    insert into CYT_ARTICAL_LIST
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="articalType != null">
+        ARTICAL_TYPE,
+      </if>
+      <if test="category != null">
+        CATEGORY,
+      </if>
+      <if test="title != null">
+        TITLE,
+      </if>
+      <if test="status != null">
+        STATUS,
+      </if>
+      <if test="respDept != null">
+        RESP_DEPT,
+      </if>
+      <if test="pubUser != null">
+        PUB_USER,
+      </if>
+      <if test="pubDate != null">
+        PUB_DATE,
+      </if>
+      <if test="compType != null">
+        COMP_TYPE,
+      </if>
+      <if test="compDate != null">
+        COMP_DATE,
+      </if>
+      <if test="topFlag != null">
+        TOP_FLAG,
+      </if>
+      <if test="eliteFlag != null">
+        ELITE_FLAG,
+      </if>
+      <if test="onStage != null">
+        ON_STAGE,
+      </if>
+      <if test="viewNum != null">
+        VIEW_NUM,
+      </if>
+      <if test="collectNum != null">
+        COLLECT_NUM,
+      </if>
+      <if test="replyNum != null">
+        REPLY_NUM,
+      </if>
+      <if test="likeNum != null">
+        LIKE_NUM,
+      </if>
+      <if test="cover != null">
+        COVER,
+      </if>
+      <if test="files != null">
+        FILES,
+      </if>
+      <if test="compGrade != null">
+        COMP_GRADE,
+      </if>
+      <if test="respStatus != null">
+        RESP_STATUS,
+      </if>
+      <if test="anonFlag != null">
+        ANON_FLAG,
+      </if>
+      <if test="content != null">
+        CONTENT,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=DECIMAL},
+      </if>
+      <if test="articalType != null">
+        #{articalType,jdbcType=DECIMAL},
+      </if>
+      <if test="category != null">
+        #{category,jdbcType=DECIMAL},
+      </if>
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=DECIMAL},
+      </if>
+      <if test="respDept != null">
+        #{respDept,jdbcType=VARCHAR},
+      </if>
+      <if test="pubUser != null">
+        #{pubUser,jdbcType=VARCHAR},
+      </if>
+      <if test="pubDate != null">
+        #{pubDate,jdbcType=VARCHAR},
+      </if>
+      <if test="compType != null">
+        #{compType,jdbcType=DECIMAL},
+      </if>
+      <if test="compDate != null">
+        #{compDate,jdbcType=VARCHAR},
+      </if>
+      <if test="topFlag != null">
+        #{topFlag,jdbcType=DECIMAL},
+      </if>
+      <if test="eliteFlag != null">
+        #{eliteFlag,jdbcType=DECIMAL},
+      </if>
+      <if test="onStage != null">
+        #{onStage,jdbcType=DECIMAL},
+      </if>
+      <if test="viewNum != null">
+        #{viewNum,jdbcType=DECIMAL},
+      </if>
+      <if test="collectNum != null">
+        #{collectNum,jdbcType=DECIMAL},
+      </if>
+      <if test="replyNum != null">
+        #{replyNum,jdbcType=DECIMAL},
+      </if>
+      <if test="likeNum != null">
+        #{likeNum,jdbcType=DECIMAL},
+      </if>
+      <if test="cover != null">
+        #{cover,jdbcType=VARCHAR},
+      </if>
+      <if test="files != null">
+        #{files,jdbcType=VARCHAR},
+      </if>
+      <if test="compGrade != null">
+        #{compGrade,jdbcType=DECIMAL},
+      </if>
+      <if test="respStatus != null">
+        #{respStatus,jdbcType=DECIMAL},
+      </if>
+      <if test="anonFlag != null">
+        #{anonFlag,jdbcType=DECIMAL},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=CLOB},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.cmbccd.ulms.youngTalk.domain.ArticalExample" resultType="java.lang.Long">
+    select count(*) from CYT_ARTICAL_LIST
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update CYT_ARTICAL_LIST
+    <set>
+      <if test="record.id != null">
+        ID = #{record.id,jdbcType=DECIMAL},
+      </if>
+      <if test="record.articalType != null">
+        ARTICAL_TYPE = #{record.articalType,jdbcType=DECIMAL},
+      </if>
+      <if test="record.category != null">
+        CATEGORY = #{record.category,jdbcType=DECIMAL},
+      </if>
+      <if test="record.title != null">
+        TITLE = #{record.title,jdbcType=VARCHAR},
+      </if>
+      <if test="record.status != null">
+        STATUS = #{record.status,jdbcType=DECIMAL},
+      </if>
+      <if test="record.respDept != null">
+        RESP_DEPT = #{record.respDept,jdbcType=VARCHAR},
+      </if>
+      <if test="record.pubUser != null">
+        PUB_USER = #{record.pubUser,jdbcType=VARCHAR},
+      </if>
+      <if test="record.pubDate != null">
+        PUB_DATE = #{record.pubDate,jdbcType=VARCHAR},
+      </if>
+      <if test="record.compType != null">
+        COMP_TYPE = #{record.compType,jdbcType=DECIMAL},
+      </if>
+      <if test="record.compDate != null">
+        COMP_DATE = #{record.compDate,jdbcType=VARCHAR},
+      </if>
+      <if test="record.topFlag != null">
+        TOP_FLAG = #{record.topFlag,jdbcType=DECIMAL},
+      </if>
+      <if test="record.eliteFlag != null">
+        ELITE_FLAG = #{record.eliteFlag,jdbcType=DECIMAL},
+      </if>
+      <if test="record.onStage != null">
+        ON_STAGE = #{record.onStage,jdbcType=DECIMAL},
+      </if>
+      <if test="record.viewNum != null">
+        VIEW_NUM = #{record.viewNum,jdbcType=DECIMAL},
+      </if>
+      <if test="record.collectNum != null">
+        COLLECT_NUM = #{record.collectNum,jdbcType=DECIMAL},
+      </if>
+      <if test="record.replyNum != null">
+        REPLY_NUM = #{record.replyNum,jdbcType=DECIMAL},
+      </if>
+      <if test="record.likeNum != null">
+        LIKE_NUM = #{record.likeNum,jdbcType=DECIMAL},
+      </if>
+      <if test="record.cover != null">
+        COVER = #{record.cover,jdbcType=VARCHAR},
+      </if>
+      <if test="record.files != null">
+        FILES = #{record.files,jdbcType=VARCHAR},
+      </if>
+      <if test="record.compGrade != null">
+        COMP_GRADE = #{record.compGrade,jdbcType=DECIMAL},
+      </if>
+      <if test="record.respStatus != null">
+        RESP_STATUS = #{record.respStatus,jdbcType=DECIMAL},
+      </if>
+      <if test="record.anonFlag != null">
+        ANON_FLAG = #{record.anonFlag,jdbcType=DECIMAL},
+      </if>
+      <if test="record.content != null">
+        CONTENT = #{record.content,jdbcType=CLOB},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map">
+    update CYT_ARTICAL_LIST
+    set ID = #{record.id,jdbcType=DECIMAL},
+    ARTICAL_TYPE = #{record.articalType,jdbcType=DECIMAL},
+    CATEGORY = #{record.category,jdbcType=DECIMAL},
+    TITLE = #{record.title,jdbcType=VARCHAR},
+    STATUS = #{record.status,jdbcType=DECIMAL},
+    RESP_DEPT = #{record.respDept,jdbcType=VARCHAR},
+    PUB_USER = #{record.pubUser,jdbcType=VARCHAR},
+    PUB_DATE = #{record.pubDate,jdbcType=VARCHAR},
+    COMP_TYPE = #{record.compType,jdbcType=DECIMAL},
+    COMP_DATE = #{record.compDate,jdbcType=VARCHAR},
+    TOP_FLAG = #{record.topFlag,jdbcType=DECIMAL},
+    ELITE_FLAG = #{record.eliteFlag,jdbcType=DECIMAL},
+    ON_STAGE = #{record.onStage,jdbcType=DECIMAL},
+    VIEW_NUM = #{record.viewNum,jdbcType=DECIMAL},
+    COLLECT_NUM = #{record.collectNum,jdbcType=DECIMAL},
+    REPLY_NUM = #{record.replyNum,jdbcType=DECIMAL},
+    LIKE_NUM = #{record.likeNum,jdbcType=DECIMAL},
+    COVER = #{record.cover,jdbcType=VARCHAR},
+    FILES = #{record.files,jdbcType=VARCHAR},
+    COMP_GRADE = #{record.compGrade,jdbcType=DECIMAL},
+    RESP_STATUS = #{record.respStatus,jdbcType=DECIMAL},
+    ANON_FLAG = #{record.anonFlag,jdbcType=DECIMAL},
+    CONTENT = #{record.content,jdbcType=CLOB}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update CYT_ARTICAL_LIST
+    set ID = #{record.id,jdbcType=DECIMAL},
+    ARTICAL_TYPE = #{record.articalType,jdbcType=DECIMAL},
+    CATEGORY = #{record.category,jdbcType=DECIMAL},
+    TITLE = #{record.title,jdbcType=VARCHAR},
+    STATUS = #{record.status,jdbcType=DECIMAL},
+    RESP_DEPT = #{record.respDept,jdbcType=VARCHAR},
+    PUB_USER = #{record.pubUser,jdbcType=VARCHAR},
+    PUB_DATE = #{record.pubDate,jdbcType=VARCHAR},
+    COMP_TYPE = #{record.compType,jdbcType=DECIMAL},
+    COMP_DATE = #{record.compDate,jdbcType=VARCHAR},
+    TOP_FLAG = #{record.topFlag,jdbcType=DECIMAL},
+    ELITE_FLAG = #{record.eliteFlag,jdbcType=DECIMAL},
+    ON_STAGE = #{record.onStage,jdbcType=DECIMAL},
+    VIEW_NUM = #{record.viewNum,jdbcType=DECIMAL},
+    COLLECT_NUM = #{record.collectNum,jdbcType=DECIMAL},
+    REPLY_NUM = #{record.replyNum,jdbcType=DECIMAL},
+    LIKE_NUM = #{record.likeNum,jdbcType=DECIMAL},
+    COVER = #{record.cover,jdbcType=VARCHAR},
+    FILES = #{record.files,jdbcType=VARCHAR},
+    COMP_GRADE = #{record.compGrade,jdbcType=DECIMAL},
+    RESP_STATUS = #{record.respStatus,jdbcType=DECIMAL},
+    ANON_FLAG = #{record.anonFlag,jdbcType=DECIMAL}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.cmbccd.ulms.youngTalk.domain.Artical">
+    update CYT_ARTICAL_LIST
+    <set>
+      <if test="articalType != null">
+        ARTICAL_TYPE = #{articalType,jdbcType=DECIMAL},
+      </if>
+      <if test="category != null">
+        CATEGORY = #{category,jdbcType=DECIMAL},
+      </if>
+      <if test="title != null">
+        TITLE = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        STATUS = #{status,jdbcType=DECIMAL},
+      </if>
+      <if test="respDept != null">
+        RESP_DEPT = #{respDept,jdbcType=VARCHAR},
+      </if>
+      <if test="pubUser != null">
+        PUB_USER = #{pubUser,jdbcType=VARCHAR},
+      </if>
+      <if test="pubDate != null">
+        PUB_DATE = #{pubDate,jdbcType=VARCHAR},
+      </if>
+      <if test="compType != null">
+        COMP_TYPE = #{compType,jdbcType=DECIMAL},
+      </if>
+      <if test="compDate != null">
+        COMP_DATE = #{compDate,jdbcType=VARCHAR},
+      </if>
+      <if test="topFlag != null">
+        TOP_FLAG = #{topFlag,jdbcType=DECIMAL},
+      </if>
+      <if test="eliteFlag != null">
+        ELITE_FLAG = #{eliteFlag,jdbcType=DECIMAL},
+      </if>
+      <if test="onStage != null">
+        ON_STAGE = #{onStage,jdbcType=DECIMAL},
+      </if>
+      <if test="viewNum != null">
+        VIEW_NUM = #{viewNum,jdbcType=DECIMAL},
+      </if>
+      <if test="collectNum != null">
+        COLLECT_NUM = #{collectNum,jdbcType=DECIMAL},
+      </if>
+      <if test="replyNum != null">
+        REPLY_NUM = #{replyNum,jdbcType=DECIMAL},
+      </if>
+      <if test="likeNum != null">
+        LIKE_NUM = #{likeNum,jdbcType=DECIMAL},
+      </if>
+      <if test="cover != null">
+        COVER = #{cover,jdbcType=VARCHAR},
+      </if>
+      <if test="files != null">
+        FILES = #{files,jdbcType=VARCHAR},
+      </if>
+      <if test="compGrade != null">
+        COMP_GRADE = #{compGrade,jdbcType=DECIMAL},
+      </if>
+      <if test="content != null">
+        CONTENT = #{content,jdbcType=CLOB},
+      </if>
+      <if test="respStatus != null">
+        RESP_STATUS = #{respStatus,jdbcType=DECIMAL},
+      </if>
+      <if test="anonFlag != null">
+        ANON_FLAG = #{anonFlag,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.cmbccd.ulms.youngTalk.domain.Artical">
+    update CYT_ARTICAL_LIST
+    set ARTICAL_TYPE = #{articalType,jdbcType=DECIMAL},
+        CATEGORY = #{category,jdbcType=DECIMAL},
+        TITLE = #{title,jdbcType=VARCHAR},
+        STATUS = #{status,jdbcType=DECIMAL},
+        RESP_DEPT = #{respDept,jdbcType=VARCHAR},
+        PUB_USER = #{pubUser,jdbcType=VARCHAR},
+        PUB_DATE = #{pubDate,jdbcType=VARCHAR},
+        COMP_TYPE = #{compType,jdbcType=DECIMAL},
+        COMP_DATE = #{compDate,jdbcType=VARCHAR},
+        TOP_FLAG = #{topFlag,jdbcType=DECIMAL},
+        ELITE_FLAG = #{eliteFlag,jdbcType=DECIMAL},
+        ON_STAGE = #{onStage,jdbcType=DECIMAL},
+        VIEW_NUM = #{viewNum,jdbcType=DECIMAL},
+        COLLECT_NUM = #{collectNum,jdbcType=DECIMAL},
+        REPLY_NUM = #{replyNum,jdbcType=DECIMAL},
+        LIKE_NUM = #{likeNum,jdbcType=DECIMAL},
+        COVER = #{cover,jdbcType=VARCHAR},
+        FILES = #{files,jdbcType=VARCHAR},
+        COMP_GRADE = #{compGrade,jdbcType=DECIMAL},
+        ANON_FLAG = #{anonFlag,jdbcType=DECIMAL},
+        RESP_STATUS = #{respStatus,jdbcType=DECIMAL},
+        CONTENT = #{content,jdbcType=CLOB}
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cmbccd.ulms.youngTalk.domain.Artical">
+    update CYT_ARTICAL_LIST
+    set ARTICAL_TYPE = #{articalType,jdbcType=DECIMAL},
+        CATEGORY = #{category,jdbcType=DECIMAL},
+        TITLE = #{title,jdbcType=VARCHAR},
+        STATUS = #{status,jdbcType=DECIMAL},
+        RESP_DEPT = #{respDept,jdbcType=VARCHAR},
+        PUB_USER = #{pubUser,jdbcType=VARCHAR},
+        PUB_DATE = #{pubDate,jdbcType=VARCHAR},
+        COMP_TYPE = #{compType,jdbcType=DECIMAL},
+        COMP_DATE = #{compDate,jdbcType=VARCHAR},
+        TOP_FLAG = #{topFlag,jdbcType=DECIMAL},
+        ELITE_FLAG = #{eliteFlag,jdbcType=DECIMAL},
+        ON_STAGE = #{onStage,jdbcType=DECIMAL},
+        VIEW_NUM = #{viewNum,jdbcType=DECIMAL},
+        COLLECT_NUM = #{collectNum,jdbcType=DECIMAL},
+        REPLY_NUM = #{replyNum,jdbcType=DECIMAL},
+        LIKE_NUM = #{likeNum,jdbcType=DECIMAL},
+        COVER = #{cover,jdbcType=VARCHAR},
+        FILES = #{files,jdbcType=VARCHAR},
+        ANON_FLAG = #{anonFlag,jdbcType=DECIMAL},
+        RESP_STATUS = #{respStatus,jdbcType=DECIMAL},
+        COMP_GRADE = #{compGrade,jdbcType=DECIMAL}
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+
+  <select id="creatNewArticalId" resultType="java.lang.Integer">
+    select case when count(*) = 0 then 1 else  max(id)+1 end from CYT_ARTICAL_LIST
+  </select>
+
+  <update id="viewNumIncrease" parameterType="java.lang.Integer">
+    update CYT_ARTICAL_LIST set VIEW_NUM=VIEW_NUM+1 WHERE ID =  #{id,jdbcType=DECIMAL}
+  </update>
+  <update id="replyNumIncrease" parameterType="java.lang.Integer">
+    update CYT_ARTICAL_LIST set REPLY_NUM=REPLY_NUM+1 WHERE ID =  #{id,jdbcType=DECIMAL}
+  </update>
+  <update id="replyNumDecrease" parameterType="java.lang.Integer">
+    update CYT_ARTICAL_LIST set REPLY_NUM=REPLY_NUM-1 WHERE ID =  #{id,jdbcType=DECIMAL}
+  </update>
+  <update id="likeNumIncrease" parameterType="java.lang.Integer">
+    update CYT_ARTICAL_LIST set LIKE_NUM=LIKE_NUM+1 WHERE ID =  #{id,jdbcType=DECIMAL}
+  </update>
+  <update id="collectNumIncrease" parameterType="java.lang.Integer">
+    update CYT_ARTICAL_LIST set COLLECT_NUM=COLLECT_NUM+1 WHERE ID =  #{id,jdbcType=DECIMAL}
+  </update>
+  <update id="collectNumDecrease" parameterType="java.lang.Integer">
+    update CYT_ARTICAL_LIST set COLLECT_NUM=COLLECT_NUM-1 WHERE ID =  #{id,jdbcType=DECIMAL}
+  </update>
+
+  <select id="selectByPrimaryKeyWithNoContent" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from CYT_ARTICAL_LIST
+    where ID = #{id,jdbcType=DECIMAL}
+  </select>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from CYT_ARTICAL_LIST
+    where ID = #{id,jdbcType=DECIMAL}
+  </select>
+
+  <select id="selectWeeklyHotList" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from CYT_ARTICAL_LIST
+    where status=1 and artical_type between 0 and 8  and ID in (
+    select distinct artical_id from CYT_ARTICAL_COMMENT where substr(DATE_TIME,1,10)&gt;=#{dateTime,jdbcType=VARCHAR}
+    )
+    order by view_Num+reply_Num*2+Like_num*2+collect_Num*3 desc
+  </select>
+
+</mapper>

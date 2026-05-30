@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmbccd.ulms.sys.dao.StationMapper">
+  <resultMap id="BaseResultMap" type="com.cmbccd.ulms.sys.domain.Station">
+    <result column="FLOOR_NUM" jdbcType="VARCHAR" property="floorNum" />
+    <result column="POI" jdbcType="VARCHAR" property="poi" />
+    <result column="EXTN_NUM" jdbcType="VARCHAR" property="extnNum" />
+    <result column="EXTN_IP" jdbcType="VARCHAR" property="extnIp" />
+    <result column="PC_IP" jdbcType="VARCHAR" property="pcIp" />
+    <result column="PLO_NUM" jdbcType="VARCHAR" property="ploNum" />
+    <result column="PLO_STATUS" jdbcType="VARCHAR" property="ploStatus" />
+    <result column="POI_STATUS" jdbcType="VARCHAR" property="poiStatus" />
+    <result column="MEMO" jdbcType="VARCHAR" property="memo" />
+    <result column="UPDATE_TIME" jdbcType="VARCHAR" property="updateTime" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    FLOOR_NUM, POI, EXTN_NUM, EXTN_IP, PC_IP, PLO_NUM, PLO_STATUS, POI_STATUS, MEMO, 
+    UPDATE_TIME
+  </sql>
+  <select id="selectByExample" parameterType="com.cmbccd.ulms.sys.domain.StationExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from CUS_STATION
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <delete id="deleteByExample" parameterType="com.cmbccd.ulms.sys.domain.StationExample">
+    delete from CUS_STATION
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.cmbccd.ulms.sys.domain.Station">
+    insert into CUS_STATION (FLOOR_NUM, POI, EXTN_NUM, 
+      EXTN_IP, PC_IP, PLO_NUM, 
+      PLO_STATUS, POI_STATUS, MEMO, 
+      UPDATE_TIME)
+    values (#{floorNum,jdbcType=VARCHAR}, #{poi,jdbcType=VARCHAR}, #{extnNum,jdbcType=VARCHAR}, 
+      #{extnIp,jdbcType=VARCHAR}, #{pcIp,jdbcType=VARCHAR}, #{ploNum,jdbcType=VARCHAR}, 
+      #{ploStatus,jdbcType=VARCHAR}, #{poiStatus,jdbcType=VARCHAR}, #{memo,jdbcType=VARCHAR}, 
+      #{updateTime,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cmbccd.ulms.sys.domain.Station">
+    insert into CUS_STATION
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="floorNum != null">
+        FLOOR_NUM,
+      </if>
+      <if test="poi != null">
+        POI,
+      </if>
+      <if test="extnNum != null">
+        EXTN_NUM,
+      </if>
+      <if test="extnIp != null">
+        EXTN_IP,
+      </if>
+      <if test="pcIp != null">
+        PC_IP,
+      </if>
+      <if test="ploNum != null">
+        PLO_NUM,
+      </if>
+      <if test="ploStatus != null">
+        PLO_STATUS,
+      </if>
+      <if test="poiStatus != null">
+        POI_STATUS,
+      </if>
+      <if test="memo != null">
+        MEMO,
+      </if>
+      <if test="updateTime != null">
+        UPDATE_TIME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="floorNum != null">
+        #{floorNum,jdbcType=VARCHAR},
+      </if>
+      <if test="poi != null">
+        #{poi,jdbcType=VARCHAR},
+      </if>
+      <if test="extnNum != null">
+        #{extnNum,jdbcType=VARCHAR},
+      </if>
+      <if test="extnIp != null">
+        #{extnIp,jdbcType=VARCHAR},
+      </if>
+      <if test="pcIp != null">
+        #{pcIp,jdbcType=VARCHAR},
+      </if>
+      <if test="ploNum != null">
+        #{ploNum,jdbcType=VARCHAR},
+      </if>
+      <if test="ploStatus != null">
+        #{ploStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="poiStatus != null">
+        #{poiStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="memo != null">
+        #{memo,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.cmbccd.ulms.sys.domain.StationExample" resultType="java.lang.Long">
+    select count(*) from CUS_STATION
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update CUS_STATION
+    <set>
+      <if test="record.floorNum != null">
+        FLOOR_NUM = #{record.floorNum,jdbcType=VARCHAR},
+      </if>
+      <if test="record.poi != null">
+        POI = #{record.poi,jdbcType=VARCHAR},
+      </if>
+      <if test="record.extnNum != null">
+        EXTN_NUM = #{record.extnNum,jdbcType=VARCHAR},
+      </if>
+      <if test="record.extnIp != null">
+        EXTN_IP = #{record.extnIp,jdbcType=VARCHAR},
+      </if>
+      <if test="record.pcIp != null">
+        PC_IP = #{record.pcIp,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ploNum != null">
+        PLO_NUM = #{record.ploNum,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ploStatus != null">
+        PLO_STATUS = #{record.ploStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="record.poiStatus != null">
+        POI_STATUS = #{record.poiStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="record.memo != null">
+        MEMO = #{record.memo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.updateTime != null">
+        UPDATE_TIME = #{record.updateTime,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update CUS_STATION
+    set FLOOR_NUM = #{record.floorNum,jdbcType=VARCHAR},
+      POI = #{record.poi,jdbcType=VARCHAR},
+      EXTN_NUM = #{record.extnNum,jdbcType=VARCHAR},
+      EXTN_IP = #{record.extnIp,jdbcType=VARCHAR},
+      PC_IP = #{record.pcIp,jdbcType=VARCHAR},
+      PLO_NUM = #{record.ploNum,jdbcType=VARCHAR},
+      PLO_STATUS = #{record.ploStatus,jdbcType=VARCHAR},
+      POI_STATUS = #{record.poiStatus,jdbcType=VARCHAR},
+      MEMO = #{record.memo,jdbcType=VARCHAR},
+      UPDATE_TIME = #{record.updateTime,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  
+  <select id="selectByIp" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from CUS_STATION
+    where pc_ip = #{ pcIp ,jdbcType=VARCHAR}
+  </select>
+  
+  
+  <select id="selectByIpNoMemo" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    FLOOR_NUM,EXTN_NUM,EXTN_IP,PC_IP
+    from CUS_STATION
+    where pc_ip = #{ pcIp ,jdbcType=VARCHAR}
+  </select>
+  
+  <update id="updateMemoByIp" parameterType="java.lang.String">
+    update CUS_STATION
+    set MEMO = #{memo,jdbcType=VARCHAR},
+    PLO_NUM = #{userId,jdbcType=VARCHAR},
+    UPDATE_TIME = to_char(sysdate,'yyyy-MM-dd hh24:mi:ss')
+    WHERE PC_IP = #{pcIp,jdbcType=VARCHAR}
+  </update>
+  
+</mapper>

@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmbccd.ulms.rpa.dao.ToolReportMapper">
+  <resultMap id="BaseResultMap" type="com.cmbccd.ulms.rpa.domain.ToolReport">
+    <result column="TOOL_ID" jdbcType="VARCHAR" property="toolId" />
+    <result column="USER_ID" jdbcType="VARCHAR" property="userId" />
+    <result column="RUN_TIME" jdbcType="VARCHAR" property="runTime" />
+    <result column="RETURN_CODE" jdbcType="VARCHAR" property="returnCode" />
+    <result column="RETURN_MESSAGE" jdbcType="VARCHAR" property="returnMessage" />
+    <result column="RETURN_TIME" jdbcType="VARCHAR" property="returnTime" />
+    <result column="RUN_PARAM" jdbcType="VARCHAR" property="runParam" />
+    <result column="TOOL_NAME" jdbcType="VARCHAR" property="toolName" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    TOOL_ID, USER_ID, RUN_TIME, RETURN_CODE, RETURN_MESSAGE, RETURN_TIME, RUN_PARAM, 
+    TOOL_NAME
+  </sql>
+  <select id="selectByExample" parameterType="com.cmbccd.ulms.rpa.domain.ToolReportExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from RPA_TOOL_REPORT
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <delete id="deleteByExample" parameterType="com.cmbccd.ulms.rpa.domain.ToolReportExample">
+    delete from RPA_TOOL_REPORT
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.cmbccd.ulms.rpa.domain.ToolReport">
+    insert into RPA_TOOL_REPORT (TOOL_ID, USER_ID, RUN_TIME, 
+      RETURN_CODE, RETURN_MESSAGE, RETURN_TIME, 
+      RUN_PARAM, TOOL_NAME)
+    values (#{toolId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{runTime,jdbcType=VARCHAR}, 
+      #{returnCode,jdbcType=VARCHAR}, #{returnMessage,jdbcType=VARCHAR}, #{returnTime,jdbcType=VARCHAR}, 
+      #{runParam,jdbcType=VARCHAR}, #{toolName,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cmbccd.ulms.rpa.domain.ToolReport">
+    insert into RPA_TOOL_REPORT
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="toolId != null">
+        TOOL_ID,
+      </if>
+      <if test="userId != null">
+        USER_ID,
+      </if>
+      <if test="runTime != null">
+        RUN_TIME,
+      </if>
+      <if test="returnCode != null">
+        RETURN_CODE,
+      </if>
+      <if test="returnMessage != null">
+        RETURN_MESSAGE,
+      </if>
+      <if test="returnTime != null">
+        RETURN_TIME,
+      </if>
+      <if test="runParam != null">
+        RUN_PARAM,
+      </if>
+      <if test="toolName != null">
+        TOOL_NAME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="toolId != null">
+        #{toolId,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="runTime != null">
+        #{runTime,jdbcType=VARCHAR},
+      </if>
+      <if test="returnCode != null">
+        #{returnCode,jdbcType=VARCHAR},
+      </if>
+      <if test="returnMessage != null">
+        #{returnMessage,jdbcType=VARCHAR},
+      </if>
+      <if test="returnTime != null">
+        #{returnTime,jdbcType=VARCHAR},
+      </if>
+      <if test="runParam != null">
+        #{runParam,jdbcType=VARCHAR},
+      </if>
+      <if test="toolName != null">
+        #{toolName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.cmbccd.ulms.rpa.domain.ToolReportExample" resultType="java.lang.Long">
+    select count(*) from RPA_TOOL_REPORT
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update RPA_TOOL_REPORT
+    <set>
+      <if test="row.toolId != null">
+        TOOL_ID = #{row.toolId,jdbcType=VARCHAR},
+      </if>
+      <if test="row.userId != null">
+        USER_ID = #{row.userId,jdbcType=VARCHAR},
+      </if>
+      <if test="row.runTime != null">
+        RUN_TIME = #{row.runTime,jdbcType=VARCHAR},
+      </if>
+      <if test="row.returnCode != null">
+        RETURN_CODE = #{row.returnCode,jdbcType=VARCHAR},
+      </if>
+      <if test="row.returnMessage != null">
+        RETURN_MESSAGE = #{row.returnMessage,jdbcType=VARCHAR},
+      </if>
+      <if test="row.returnTime != null">
+        RETURN_TIME = #{row.returnTime,jdbcType=VARCHAR},
+      </if>
+      <if test="row.runParam != null">
+        RUN_PARAM = #{row.runParam,jdbcType=VARCHAR},
+      </if>
+      <if test="row.toolName != null">
+        TOOL_NAME = #{row.toolName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update RPA_TOOL_REPORT
+    set TOOL_ID = #{row.toolId,jdbcType=VARCHAR},
+      USER_ID = #{row.userId,jdbcType=VARCHAR},
+      RUN_TIME = #{row.runTime,jdbcType=VARCHAR},
+      RETURN_CODE = #{row.returnCode,jdbcType=VARCHAR},
+      RETURN_MESSAGE = #{row.returnMessage,jdbcType=VARCHAR},
+      RETURN_TIME = #{row.returnTime,jdbcType=VARCHAR},
+      RUN_PARAM = #{row.runParam,jdbcType=VARCHAR},
+      TOOL_NAME = #{row.toolName,jdbcType=VARCHAR}
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+
+</mapper>

@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmbccd.ulms.college.dao.TeacherMapper">
+  <resultMap id="BaseResultMap" type="com.cmbccd.ulms.college.domain.Teacher">
+    <id column="PLO_NUM" jdbcType="VARCHAR" property="ploNum" />
+    <result column="SKILL_TYPE" jdbcType="DECIMAL" property="skillType" />
+    <result column="SKILL_NAME" jdbcType="DECIMAL" property="skillName" />
+    <result column="DATA_DATE" jdbcType="VARCHAR" property="dataDate" />
+    <result column="AVATAR" jdbcType="VARCHAR" property="avatar" />
+    <result column="INTRODUCE" jdbcType="VARCHAR" property="introduce" />
+    <result column="COURSE_NUM" jdbcType="DECIMAL" property="courseNum" />
+    <result column="COURSE_HOUR" jdbcType="DECIMAL" property="courseHour" />
+    <result column="SCORE" jdbcType="DECIMAL" property="score" />
+    <result column="STATUS" jdbcType="DECIMAL" property="status" />
+    <result column="PLO_NAME" jdbcType="VARCHAR" property="ploName" />
+    <result column="HONOR" jdbcType="VARCHAR" property="honor" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    PLO_NUM, SKILL_TYPE, SKILL_NAME, DATA_DATE, AVATAR, INTRODUCE, COURSE_NUM, COURSE_HOUR, 
+    SCORE, STATUS, PLO_NAME, HONOR
+  </sql>
+  <select id="selectByExample" parameterType="com.cmbccd.ulms.college.domain.TeacherExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from TRM_COURSE_TEACHER
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from TRM_COURSE_TEACHER
+    where PLO_NUM = #{ploNum,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from TRM_COURSE_TEACHER
+    where PLO_NUM = #{ploNum,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.cmbccd.ulms.college.domain.TeacherExample">
+    delete from TRM_COURSE_TEACHER
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.cmbccd.ulms.college.domain.Teacher">
+    insert into TRM_COURSE_TEACHER (PLO_NUM, SKILL_TYPE, SKILL_NAME, 
+      DATA_DATE, AVATAR, INTRODUCE, 
+      COURSE_NUM, COURSE_HOUR, SCORE, 
+      STATUS, PLO_NAME, HONOR
+      )
+    values (#{ploNum,jdbcType=VARCHAR}, #{skillType,jdbcType=DECIMAL}, #{skillName,jdbcType=DECIMAL}, 
+      #{dataDate,jdbcType=VARCHAR}, #{avatar,jdbcType=VARCHAR}, #{introduce,jdbcType=VARCHAR}, 
+      #{courseNum,jdbcType=DECIMAL}, #{courseHour,jdbcType=DECIMAL}, #{score,jdbcType=DECIMAL}, 
+      #{status,jdbcType=DECIMAL}, #{ploName,jdbcType=VARCHAR}, #{honor,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.cmbccd.ulms.college.domain.Teacher">
+    insert into TRM_COURSE_TEACHER
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="ploNum != null">
+        PLO_NUM,
+      </if>
+      <if test="skillType != null">
+        SKILL_TYPE,
+      </if>
+      <if test="skillName != null">
+        SKILL_NAME,
+      </if>
+      <if test="dataDate != null">
+        DATA_DATE,
+      </if>
+      <if test="avatar != null">
+        AVATAR,
+      </if>
+      <if test="introduce != null">
+        INTRODUCE,
+      </if>
+      <if test="courseNum != null">
+        COURSE_NUM,
+      </if>
+      <if test="courseHour != null">
+        COURSE_HOUR,
+      </if>
+      <if test="score != null">
+        SCORE,
+      </if>
+      <if test="status != null">
+        STATUS,
+      </if>
+      <if test="ploName != null">
+        PLO_NAME,
+      </if>
+      <if test="honor != null">
+        HONOR,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="ploNum != null">
+        #{ploNum,jdbcType=VARCHAR},
+      </if>
+      <if test="skillType != null">
+        #{skillType,jdbcType=DECIMAL},
+      </if>
+      <if test="skillName != null">
+        #{skillName,jdbcType=DECIMAL},
+      </if>
+      <if test="dataDate != null">
+        #{dataDate,jdbcType=VARCHAR},
+      </if>
+      <if test="avatar != null">
+        #{avatar,jdbcType=VARCHAR},
+      </if>
+      <if test="introduce != null">
+        #{introduce,jdbcType=VARCHAR},
+      </if>
+      <if test="courseNum != null">
+        #{courseNum,jdbcType=DECIMAL},
+      </if>
+      <if test="courseHour != null">
+        #{courseHour,jdbcType=DECIMAL},
+      </if>
+      <if test="score != null">
+        #{score,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=DECIMAL},
+      </if>
+      <if test="ploName != null">
+        #{ploName,jdbcType=VARCHAR},
+      </if>
+      <if test="honor != null">
+        #{honor,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.cmbccd.ulms.college.domain.TeacherExample" resultType="java.lang.Long">
+    select count(*) from TRM_COURSE_TEACHER
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update TRM_COURSE_TEACHER
+    <set>
+      <if test="record.ploNum != null">
+        PLO_NUM = #{record.ploNum,jdbcType=VARCHAR},
+      </if>
+      <if test="record.skillType != null">
+        SKILL_TYPE = #{record.skillType,jdbcType=DECIMAL},
+      </if>
+      <if test="record.skillName != null">
+        SKILL_NAME = #{record.skillName,jdbcType=DECIMAL},
+      </if>
+      <if test="record.dataDate != null">
+        DATA_DATE = #{record.dataDate,jdbcType=VARCHAR},
+      </if>
+      <if test="record.avatar != null">
+        AVATAR = #{record.avatar,jdbcType=VARCHAR},
+      </if>
+      <if test="record.introduce != null">
+        INTRODUCE = #{record.introduce,jdbcType=VARCHAR},
+      </if>
+      <if test="record.courseNum != null">
+        COURSE_NUM = #{record.courseNum,jdbcType=DECIMAL},
+      </if>
+      <if test="record.courseHour != null">
+        COURSE_HOUR = #{record.courseHour,jdbcType=DECIMAL},
+      </if>
+      <if test="record.score != null">
+        SCORE = #{record.score,jdbcType=DECIMAL},
+      </if>
+      <if test="record.status != null">
+        STATUS = #{record.status,jdbcType=DECIMAL},
+      </if>
+      <if test="record.ploName != null">
+        PLO_NAME = #{record.ploName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.honor != null">
+        HONOR = #{record.honor,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update TRM_COURSE_TEACHER
+    set PLO_NUM = #{record.ploNum,jdbcType=VARCHAR},
+      SKILL_TYPE = #{record.skillType,jdbcType=DECIMAL},
+      SKILL_NAME = #{record.skillName,jdbcType=DECIMAL},
+      DATA_DATE = #{record.dataDate,jdbcType=VARCHAR},
+      AVATAR = #{record.avatar,jdbcType=VARCHAR},
+      INTRODUCE = #{record.introduce,jdbcType=VARCHAR},
+      COURSE_NUM = #{record.courseNum,jdbcType=DECIMAL},
+      COURSE_HOUR = #{record.courseHour,jdbcType=DECIMAL},
+      SCORE = #{record.score,jdbcType=DECIMAL},
+      STATUS = #{record.status,jdbcType=DECIMAL},
+      PLO_NAME = #{record.ploName,jdbcType=VARCHAR},
+      HONOR = #{record.honor,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cmbccd.ulms.college.domain.Teacher">
+    update TRM_COURSE_TEACHER
+    <set>
+      <if test="skillType != null">
+        SKILL_TYPE = #{skillType,jdbcType=DECIMAL},
+      </if>
+      <if test="skillName != null">
+        SKILL_NAME = #{skillName,jdbcType=DECIMAL},
+      </if>
+      <if test="dataDate != null">
+        DATA_DATE = #{dataDate,jdbcType=VARCHAR},
+      </if>
+      <if test="avatar != null">
+        AVATAR = #{avatar,jdbcType=VARCHAR},
+      </if>
+      <if test="introduce != null">
+        INTRODUCE = #{introduce,jdbcType=VARCHAR},
+      </if>
+      <if test="courseNum != null">
+        COURSE_NUM = #{courseNum,jdbcType=DECIMAL},
+      </if>
+      <if test="courseHour != null">
+        COURSE_HOUR = #{courseHour,jdbcType=DECIMAL},
+      </if>
+      <if test="score != null">
+        SCORE = #{score,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null">
+        STATUS = #{status,jdbcType=DECIMAL},
+      </if>
+      <if test="ploName != null">
+        PLO_NAME = #{ploName,jdbcType=VARCHAR},
+      </if>
+      <if test="honor != null">
+        HONOR = #{honor,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where PLO_NUM = #{ploNum,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cmbccd.ulms.college.domain.Teacher">
+    update TRM_COURSE_TEACHER
+    set SKILL_TYPE = #{skillType,jdbcType=DECIMAL},
+      SKILL_NAME = #{skillName,jdbcType=DECIMAL},
+      DATA_DATE = #{dataDate,jdbcType=VARCHAR},
+      AVATAR = #{avatar,jdbcType=VARCHAR},
+      INTRODUCE = #{introduce,jdbcType=VARCHAR},
+      COURSE_NUM = #{courseNum,jdbcType=DECIMAL},
+      COURSE_HOUR = #{courseHour,jdbcType=DECIMAL},
+      SCORE = #{score,jdbcType=DECIMAL},
+      STATUS = #{status,jdbcType=DECIMAL},
+      PLO_NAME = #{ploName,jdbcType=VARCHAR},
+      HONOR = #{honor,jdbcType=VARCHAR}
+    where PLO_NUM = #{ploNum,jdbcType=VARCHAR}
+  </update>
+  <select id="selectTopTeacher" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from (
+        select
+        <include refid="Base_Column_List" />
+        from TRM_COURSE_TEACHER where STATUS != 0 order by STATUS desc,HONOR,SCORE*COURSE_HOUR*COURSE_NUM desc
+        ) where rownum &lt; 13
+  </select>
+</mapper>

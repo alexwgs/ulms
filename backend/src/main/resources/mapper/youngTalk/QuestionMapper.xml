@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmbccd.ulms.youngTalk.dao.QuestionMapper">
+  <resultMap id="BaseResultMap" type="com.cmbccd.ulms.youngTalk.domain.Question">
+    <id column="ID" jdbcType="DECIMAL" property="id" />
+    <result column="ARTICAL_ID" jdbcType="DECIMAL" property="articalId" />
+    <result column="QUESTION_TYPE" jdbcType="VARCHAR" property="questionType" />
+    <result column="CONTENT" jdbcType="VARCHAR" property="content" />
+    <result column="SORT" jdbcType="DECIMAL" property="sort" />
+  </resultMap>
+  
+  <resultMap id="BaseResultMap2" type="com.cmbccd.ulms.youngTalk.domain.Question">
+    <id column="ID" jdbcType="DECIMAL" property="id" />
+    <result column="ARTICAL_ID" jdbcType="DECIMAL" property="articalId" />
+    <result column="QUESTION_TYPE" jdbcType="VARCHAR" property="questionType" />
+    <result column="CONTENT" jdbcType="VARCHAR" property="content" />
+    <result column="SORT" jdbcType="DECIMAL" property="sort" />
+    <result column="ANSWER" jdbcType="VARCHAR" property="answer"/>
+  </resultMap>
+
+  
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    ID, ARTICAL_ID, QUESTION_TYPE, CONTENT, SORT
+  </sql>
+  <select id="selectByExample" parameterType="com.cmbccd.ulms.youngTalk.domain.QuestionExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from CYT_SURVEY_QUESTION
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from CYT_SURVEY_QUESTION
+    where ID = #{id,jdbcType=DECIMAL}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from CYT_SURVEY_QUESTION
+    where ID = #{id,jdbcType=DECIMAL}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.cmbccd.ulms.youngTalk.domain.QuestionExample">
+    delete from CYT_SURVEY_QUESTION
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.cmbccd.ulms.youngTalk.domain.Question">
+    insert into CYT_SURVEY_QUESTION (ID, ARTICAL_ID, QUESTION_TYPE, 
+      CONTENT, SORT)
+    values (#{id,jdbcType=DECIMAL}, #{articalId,jdbcType=DECIMAL}, #{questionType,jdbcType=VARCHAR}, 
+      #{content,jdbcType=VARCHAR}, #{sort,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cmbccd.ulms.youngTalk.domain.Question">
+    insert into CYT_SURVEY_QUESTION
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="articalId != null">
+        ARTICAL_ID,
+      </if>
+      <if test="questionType != null">
+        QUESTION_TYPE,
+      </if>
+      <if test="content != null">
+        CONTENT,
+      </if>
+      <if test="sort != null">
+        SORT,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=DECIMAL},
+      </if>
+      <if test="articalId != null">
+        #{articalId,jdbcType=DECIMAL},
+      </if>
+      <if test="questionType != null">
+        #{questionType,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null">
+        #{sort,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.cmbccd.ulms.youngTalk.domain.QuestionExample" resultType="java.lang.Integer">
+    select count(*) from CYT_SURVEY_QUESTION
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update CYT_SURVEY_QUESTION
+    <set>
+      <if test="record.id != null">
+        ID = #{record.id,jdbcType=DECIMAL},
+      </if>
+      <if test="record.articalId != null">
+        ARTICAL_ID = #{record.articalId,jdbcType=DECIMAL},
+      </if>
+      <if test="record.questionType != null">
+        QUESTION_TYPE = #{record.questionType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.content != null">
+        CONTENT = #{record.content,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sort != null">
+        SORT = #{record.sort,jdbcType=DECIMAL},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update CYT_SURVEY_QUESTION
+    set ID = #{record.id,jdbcType=DECIMAL},
+      ARTICAL_ID = #{record.articalId,jdbcType=DECIMAL},
+      QUESTION_TYPE = #{record.questionType,jdbcType=VARCHAR},
+      CONTENT = #{record.content,jdbcType=VARCHAR},
+      SORT = #{record.sort,jdbcType=DECIMAL}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cmbccd.ulms.youngTalk.domain.Question">
+    update CYT_SURVEY_QUESTION
+    <set>
+      <if test="articalId != null">
+        ARTICAL_ID = #{articalId,jdbcType=DECIMAL},
+      </if>
+      <if test="questionType != null">
+        QUESTION_TYPE = #{questionType,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        CONTENT = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null">
+        SORT = #{sort,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cmbccd.ulms.youngTalk.domain.Question">
+    update CYT_SURVEY_QUESTION
+    set ARTICAL_ID = #{articalId,jdbcType=DECIMAL},
+      QUESTION_TYPE = #{questionType,jdbcType=VARCHAR},
+      CONTENT = #{content,jdbcType=VARCHAR},
+      SORT = #{sort,jdbcType=DECIMAL}
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+  
+  <select id="creatNewId" resultType="java.lang.Integer">
+  	select case when count(*) = 0 then 1 else  max(id)+1 end from CYT_SURVEY_QUESTION
+  </select>
+  
+  <select id="selectQuestionByArticalId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from CYT_SURVEY_QUESTION
+    where ARTICAL_ID = #{articalId,jdbcType=DECIMAL}
+    order by sort 
+  </select>
+  
+  <select id="selectUserQuestionByArticalId" resultMap="BaseResultMap2">
+     SELECT A.*,B.ANSWER FROM (select
+    <include refid="Base_Column_List" />
+    from CYT_SURVEY_QUESTION
+     WHERE ARTICAL_ID = #{articalId,jdbcType=DECIMAL} ORDER BY SORT
+    ) A
+    LEFT JOIN (SELECT * FROM CYT_SURVEY_ANSWER WHERE USER_ID=#{userId,jdbcType=VARCHAR}) B ON (A.ARTICAL_ID=B.ARTICAL_ID AND A.ID = B.QUESTION_ID)
+  </select>
+</mapper>

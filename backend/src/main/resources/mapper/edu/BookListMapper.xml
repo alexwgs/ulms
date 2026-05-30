@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmbccd.ulms.edu.dao.BookListMapper">
+  <resultMap id="BaseResultMap" type="com.cmbccd.ulms.edu.domain.BookList">
+    <id column="EXAM_CODE" jdbcType="VARCHAR" property="examCode" />
+    <result column="INFO_CODE" jdbcType="VARCHAR" property="infoCode" />
+    <result column="BOOK_CODE" jdbcType="VARCHAR" property="bookCode" />
+    <result column="PLO_NUM" jdbcType="VARCHAR" property="ploNum" />
+    <result column="TIME_CODE" jdbcType="VARCHAR" property="timeCode" />
+    <result column="LIST_STAT" jdbcType="DECIMAL" property="listStat" />
+    <result column="BOOK_DATE" jdbcType="VARCHAR" property="bookDate" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    EXAM_CODE, INFO_CODE, BOOK_CODE, PLO_NUM, TIME_CODE, LIST_STAT, BOOK_DATE
+  </sql>
+  <select id="selectByExample" parameterType="com.cmbccd.ulms.edu.domain.BookListExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from TRM_BOOK_LIST
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from TRM_BOOK_LIST
+    where EXAM_CODE = #{examCode,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from TRM_BOOK_LIST
+    where EXAM_CODE = #{examCode,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.cmbccd.ulms.edu.domain.BookListExample">
+    delete from TRM_BOOK_LIST
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.cmbccd.ulms.edu.domain.BookList">
+    insert into TRM_BOOK_LIST (EXAM_CODE, INFO_CODE, BOOK_CODE, 
+      PLO_NUM, TIME_CODE, LIST_STAT, 
+      BOOK_DATE)
+    values (#{examCode,jdbcType=VARCHAR}, #{infoCode,jdbcType=VARCHAR}, #{bookCode,jdbcType=VARCHAR}, 
+      #{ploNum,jdbcType=VARCHAR}, #{timeCode,jdbcType=VARCHAR}, #{listStat,jdbcType=DECIMAL}, 
+      #{bookDate,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cmbccd.ulms.edu.domain.BookList">
+    insert into TRM_BOOK_LIST
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="examCode != null">
+        EXAM_CODE,
+      </if>
+      <if test="infoCode != null">
+        INFO_CODE,
+      </if>
+      <if test="bookCode != null">
+        BOOK_CODE,
+      </if>
+      <if test="ploNum != null">
+        PLO_NUM,
+      </if>
+      <if test="timeCode != null">
+        TIME_CODE,
+      </if>
+      <if test="listStat != null">
+        LIST_STAT,
+      </if>
+      <if test="bookDate != null">
+        BOOK_DATE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="examCode != null">
+        #{examCode,jdbcType=VARCHAR},
+      </if>
+      <if test="infoCode != null">
+        #{infoCode,jdbcType=VARCHAR},
+      </if>
+      <if test="bookCode != null">
+        #{bookCode,jdbcType=VARCHAR},
+      </if>
+      <if test="ploNum != null">
+        #{ploNum,jdbcType=VARCHAR},
+      </if>
+      <if test="timeCode != null">
+        #{timeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="listStat != null">
+        #{listStat,jdbcType=DECIMAL},
+      </if>
+      <if test="bookDate != null">
+        #{bookDate,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.cmbccd.ulms.edu.domain.BookListExample" resultType="java.lang.Long">
+    select count(*) from TRM_BOOK_LIST
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update TRM_BOOK_LIST
+    <set>
+      <if test="record.examCode != null">
+        EXAM_CODE = #{record.examCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.infoCode != null">
+        INFO_CODE = #{record.infoCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.bookCode != null">
+        BOOK_CODE = #{record.bookCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ploNum != null">
+        PLO_NUM = #{record.ploNum,jdbcType=VARCHAR},
+      </if>
+      <if test="record.timeCode != null">
+        TIME_CODE = #{record.timeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.listStat != null">
+        LIST_STAT = #{record.listStat,jdbcType=DECIMAL},
+      </if>
+      <if test="record.bookDate != null">
+        BOOK_DATE = #{record.bookDate,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update TRM_BOOK_LIST
+    set EXAM_CODE = #{record.examCode,jdbcType=VARCHAR},
+      INFO_CODE = #{record.infoCode,jdbcType=VARCHAR},
+      BOOK_CODE = #{record.bookCode,jdbcType=VARCHAR},
+      PLO_NUM = #{record.ploNum,jdbcType=VARCHAR},
+      TIME_CODE = #{record.timeCode,jdbcType=VARCHAR},
+      LIST_STAT = #{record.listStat,jdbcType=DECIMAL},
+      BOOK_DATE = #{record.bookDate,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cmbccd.ulms.edu.domain.BookList">
+    update TRM_BOOK_LIST
+    <set>
+      <if test="infoCode != null">
+        INFO_CODE = #{infoCode,jdbcType=VARCHAR},
+      </if>
+      <if test="bookCode != null">
+        BOOK_CODE = #{bookCode,jdbcType=VARCHAR},
+      </if>
+      <if test="ploNum != null">
+        PLO_NUM = #{ploNum,jdbcType=VARCHAR},
+      </if>
+      <if test="timeCode != null">
+        TIME_CODE = #{timeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="listStat != null">
+        LIST_STAT = #{listStat,jdbcType=DECIMAL},
+      </if>
+      <if test="bookDate != null">
+        BOOK_DATE = #{bookDate,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where EXAM_CODE = #{examCode,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cmbccd.ulms.edu.domain.BookList">
+    update TRM_BOOK_LIST
+    set INFO_CODE = #{infoCode,jdbcType=VARCHAR},
+      BOOK_CODE = #{bookCode,jdbcType=VARCHAR},
+      PLO_NUM = #{ploNum,jdbcType=VARCHAR},
+      TIME_CODE = #{timeCode,jdbcType=VARCHAR},
+      LIST_STAT = #{listStat,jdbcType=DECIMAL},
+      BOOK_DATE = #{bookDate,jdbcType=VARCHAR}
+    where EXAM_CODE = #{examCode,jdbcType=VARCHAR}
+  </update>
+
+<select id="selectBookTime" resultType="java.lang.String">
+SELECT c.BOOK_DATE||' '||b.BEG_TIME||'~'||b.END_TIME from
+(select TIME_CODE,BOOK_CODE,INFO_CODE from TRM_BOOK_LIST where PLO_NUM = #{ploNum,jdbcType=VARCHAR} and LIST_STAT = 1 and EXAM_CODE=#{examCode,jdbcType=VARCHAR}) a
+left join TRM_BOOK_TIME b on (a.TIME_CODE = b.journo)
+left join TRM_BOOK_INFO c on (a.INFO_CODE = c.INFO_CODE)
+</select>
+
+  <resultMap id="BaseResultMap2" type="com.cmbccd.ulms.edu.domain.BookList">
+    <id column="EXAM_CODE" jdbcType="VARCHAR" property="examCode" />
+    <result column="INFO_CODE" jdbcType="VARCHAR" property="infoCode" />
+    <result column="BOOK_CODE" jdbcType="VARCHAR" property="bookCode" />
+    <result column="PLO_NUM" jdbcType="VARCHAR" property="ploNum" />
+    <result column="TIME_CODE" jdbcType="VARCHAR" property="timeCode" />
+    <result column="LIST_STAT" jdbcType="DECIMAL" property="listStat" />
+    <result column="BOOK_DATE" jdbcType="VARCHAR" property="bookDate" />
+    <result column="DATE_TIME" jdbcType="VARCHAR" property="dateTime" />
+  </resultMap>
+  
+  <select id="selectByExampleWithDateTime" parameterType="com.cmbccd.ulms.edu.domain.BookListExample" resultMap="BaseResultMap2">
+  select a.EXAM_CODE, a.INFO_CODE, a.BOOK_CODE, a.PLO_NUM, a.TIME_CODE, a.LIST_STAT, a.BOOK_DATE,c.BOOK_DATE||' '||b.BEG_TIME||'~'||b.END_TIME as DATE_TIME  from
+   (select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from TRM_BOOK_LIST
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+
+    ) a left join TRM_BOOK_TIME b on (a.TIME_CODE = b.journo)
+left join TRM_BOOK_INFO c on (a.INFO_CODE = c.INFO_CODE)
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+</mapper>

@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmbccd.ulms.college.dao.CollegeReportMapper">
+    <resultMap id="StudyDetailHumtMap" type="com.cmbccd.ulms.college.domain.report.CourseStudyDetail">
+        <id column="PLO_NUM" jdbcType="VARCHAR" property="ploNum" />
+        <result column="PLO_NAME" jdbcType="DECIMAL" property="ploName" />
+        <result column="DEPT_NUM" jdbcType="DECIMAL" property="deptNum" />
+        <result column="DEPT_GROUP" jdbcType="DECIMAL" property="deptGroup" />
+        <result column="COIN" jdbcType="DECIMAL" property="coin" />
+        <result column="HOURS" jdbcType="DECIMAL" property="hours" />
+        <result column="SIGN_DATE" jdbcType="VARCHAR" property="signDate" />
+        <result column="TOTAL_TIME" jdbcType="DECIMAL" property="totalTime" />
+        <result column="CURR_TIME" jdbcType="DECIMAL" property="currTime" />
+        <result column="STUDY_COMP" jdbcType="DECIMAL" property="studyComp" />
+        <result column="IF_EXAM" jdbcType="VARCHAR" property="ifExam" />
+        <result column="EXAM_COMP" jdbcType="VARCHAR" property="examComp" />
+        <result column="IF_EVAL" jdbcType="VARCHAR" property="ifEval" />
+        <result column="EVAL_COMP" jdbcType="VARCHAR" property="evalComp" />
+        <result column="EVAL_DATE" jdbcType="VARCHAR" property="evalDate" />
+        <result column="COURSE_PASS" jdbcType="VARCHAR" property="coursePass" />
+        <result column="COMP_DATE" jdbcType="VARCHAR" property="compDate" />
+    </resultMap>
+
+    <select id="selectCourseStudyDeatilHum" resultMap="StudyDetailHumtMap">
+        SELECT
+            a.PLO_NUM,a.PLO_NAME,a.DEPT_NUM,a.DEPT_GROUP,
+            nvl( b.HANDLE_DATE, '未报名' ) AS SIGN_DATE,
+            nvl( c.STUDY_DATE, '无记录' ) STUDY_DATE,
+            nvl( c.COIN, 0 ) COIN,
+            nvl( c.HOURS, 0 ) HOURS,
+            CASE
+                WHEN c.STUDY_COMP = 1 THEN
+                    '完成'
+                WHEN c.STUDY_COMP = 0 THEN
+                    '未完成' ELSE '未开始'
+                END STUDY_COMP,
+            CASE
+                WHEN c.EVAL_COMP = 1 THEN
+                    '完成'
+                WHEN c.EVAL_COMP = 0 THEN
+                    '未完成' ELSE '未开始'
+                END EVAL_COMP,
+            CASE
+                WHEN c.EXAM_COMP = 1 THEN
+                    '通过'
+                WHEN c.EXAM_COMP = 0 THEN
+                    '不通过' ELSE '未开始'
+                END EXAM_COMP,
+            CASE
+                WHEN c.IF_EVAL = 1 THEN
+                    '需要'
+                WHEN c.IF_EVAL = 0 THEN
+                    '无需' ELSE '未记录'
+                END IF_EVAL,
+            CASE
+                WHEN c.IF_EXAM = 1 THEN
+                    '需要'
+                WHEN c.IF_EXAM = 0 THEN
+                    '无需' ELSE '未记录'
+                END IF_EXAM,
+            CASE
+                WHEN c.COURSE_PASS = 1 THEN
+                    '完成-通过'
+                WHEN c.COURSE_PASS = 0 THEN
+                    '完成-不通过'
+                WHEN c.COURSE_PASS = 2 THEN
+                    '进行中' ELSE '未开始'
+                END COURSE_PASS,
+            c.EVAL_DATE,
+            c.COMP_DATE,
+            nvl( d.CURR_TIME, 0 ) CURR_TIME,
+            nvl( e.TOTAL_TIME, 0 ) TOTAL_TIME
+        FROM
+            (SELECT
+                 DEPT_NUM,DEPT_GROUP,PLO_NUM,PLO_NAME
+             FROM
+                 CUS_EMP_INFO WHERE job_level between '100' and '110' AND PLO_STATUS = '00' AND DEPT_GROUP IS NOT NULL
+        <if test="deptNum != null">
+            and (DEPT_GROUP = #{ deptNum, jdbcType = VARCHAR } or DEPT_NUM = #{ deptNum, jdbcType = VARCHAR })
+        </if>
+                ) a
+                LEFT JOIN ( SELECT PLO_NUM, COURSE_ID, HANDLE_DATE, STATUS FROM trm_course_sign WHERE COURSE_ID = #{ courseId, jdbcType = VARCHAR } ) b ON ( a.PLO_NUM = b.PLO_NUM )
+                LEFT JOIN ( SELECT * FROM TRM_STUDY_LOG WHERE COURSE_ID = #{ courseId, jdbcType = VARCHAR } ) c ON ( a.PLO_NUM = c.PLO_NUM )
+                LEFT JOIN ( SELECT PLO_NUM, sum( CURR_TIME ) AS CURR_TIME FROM TRM_LEARN_PROG WHERE COURSE_ID = #{ courseId, jdbcType = VARCHAR } GROUP BY PLO_NUM ) d ON ( a.PLO_NUM = d.PLO_NUM )
+                LEFT JOIN ( SELECT sum( DURATION ) AS TOTAL_TIME FROM TRM_COURSE_FILE WHERE COURSE_ID = #{ courseId, jdbcType = VARCHAR } ) e ON (1 = 1)
+        order by a.DEPT_NUM,a.DEPT_GROUP
+    </select>
+
+    <resultMap id="CourseLibMap" type="com.cmbccd.ulms.college.domain.report.CourseLib">
+        <id column="COURSE_ID" jdbcType="DECIMAL" property="courseId" />
+        <result column="COURSE_NAME" jdbcType="VARCHAR" property="courseName" />
+        <result column="LECTURER" jdbcType="VARCHAR" property="lecturer" />
+        <result column="COIN" jdbcType="DECIMAL" property="coin" />
+        <result column="HOURS" jdbcType="DECIMAL" property="hours" />
+        <result column="COURSE_TYPE" jdbcType="VARCHAR" property="courseType" />
+        <result column="TEACH_METHOD" jdbcType="VARCHAR" property="teachMethod" />
+        <result column="TEACH_OBJECT" jdbcType="VARCHAR" property="teachObject" />
+        <result column="STUDY_TYPE" jdbcType="VARCHAR" property="studyType" />
+        <result column="BEG_DATE" jdbcType="VARCHAR" property="begDate" />
+        <result column="END_DATE" jdbcType="VARCHAR" property="endDate" />
+        <result column="IF_EXAM" jdbcType="VARCHAR" property="ifExam" />
+        <result column="EXAM_ID" jdbcType="VARCHAR" property="examId" />
+        <result column="IF_EVAL" jdbcType="DECIMAL" property="ifEval" />
+        <result column="TEMP_ID" jdbcType="VARCHAR" property="tempId" />
+        <result column="COVER_IMG" jdbcType="VARCHAR" property="coverImg" />
+        <result column="STATUS" jdbcType="VARCHAR" property="status" />
+        <result column="EVAL_DATE" jdbcType="DECIMAL" property="evalDate" />
+        <result column="COURSE_SCORE" jdbcType="DECIMAL" property="courseScore" />
+        <result column="HANDLE_PLO" jdbcType="VARCHAR" property="handlePlo" />
+        <result column="HANDLE_DATE" jdbcType="VARCHAR" property="handleDate" />
+        <result column="STUDY_NUM" jdbcType="DECIMAL" property="studyNum" />
+        <result column="TOP_FLAG" jdbcType="VARCHAR" property="topFlag" />
+        <result column="RECOMMEND" jdbcType="VARCHAR" property="recommend" />
+        <result column="DURATION" jdbcType="DECIMAL" property="duration" />
+    </resultMap>
+
+    <select id="selectCourseLib" resultMap="CourseLibMap">
+        SELECT
+            a.COURSE_ID,
+            COURSE_NAME,
+            LECTURER,
+            COIN,
+            HOURS,
+            CASE
+                WHEN COURSE_TYPE = 1 THEN
+                    '线上授课' ELSE '线下授课'
+                END COURSE_TYPE,
+            CASE
+                WHEN TEACH_METHOD = 1 THEN
+                    '常规课程' ELSE '任务课程'
+                END TEACH_METHOD,
+            TEACH_OBJECT,
+            STUDY_TYPE,
+            BEG_DATE,
+            END_DATE,
+            CASE
+                WHEN IF_EXAM = 1 THEN
+                    '是' ELSE '否'
+                END IF_EXAM,
+            CASE
+                WHEN IF_EVAL = 1 THEN
+                    '是' ELSE '否'
+                END IF_EVAL,
+            CASE
+                WHEN STATUS = 1 THEN
+                    '已发布' ELSE '未发布'
+                END STATUS,
+            EVAL_DATE,
+            COURSE_SCORE,
+            HANDLE_PLO,
+            HANDLE_DATE,
+            STUDY_NUM,
+            CASE
+
+                WHEN TOP_FLAG = 1 THEN
+                    '是' ELSE '否'
+                END TOP_FLAG,
+            EVAL_SCORE,
+            RECOMMEND,
+            nvl( b.DURATION, 0 ) DURATION
+        FROM
+            TRM_COURSE_LIBS a
+                LEFT JOIN ( SELECT COURSE_ID, sum( DURATION ) AS DURATION FROM TRM_COURSE_FILE GROUP BY COURSE_ID ) b ON (
+                a.COURSE_ID = b.COURSE_ID)
+    </select>
+
+    <resultMap id="CourseExamDetailMap" type="com.cmbccd.ulms.college.domain.report.CourseExamDetail">
+        <result column="PLO_NUM" jdbcType="VARCHAR" property="ploNum" />
+        <result column="BEG_DATE" jdbcType="VARCHAR" property="begDate" />
+        <result column="END_DATE" jdbcType="VARCHAR" property="endDate" />
+        <result column="QUES_NUM" jdbcType="DECIMAL" property="quesNum" />
+        <result column="PASS_NUM" jdbcType="DECIMAL" property="passNum" />
+        <result column="PASS_FLAG" jdbcType="VARCHAR" property="passFlag" />
+        <result column="RIGHT_NUM" jdbcType="DECIMAL" property="rightNum" />
+    </resultMap>
+    <select id="selectCourseExamDetail" resultMap="CourseExamDetailMap">
+        select PLO_NUM,BEG_DATE,END_DATE,QUES_NUM,PASS_NUM,RIGHT_NUM,case when PASS_FLAG=1 then '通过' when PASS_FLAG=0 then '不通过' else '未完成' end PASS_FLAG  from TRM_COURSE_EXAM WHERE COURSE_ID = #{courseId, jdbcType=VARCHAR}
+    </select>
+
+    <resultMap id="evalJournoMap" type="java.lang.String">
+<!--        <result column="TEMP_NO" jdbcType="DECIMAL" javaType="java.lang.Integer" property="key" />-->
+        <result column="CONT" jdbcType="VARCHAR" property="cont" javaType="java.lang.String"/>
+    </resultMap>
+
+    <select id="selectEvalByJourno" resultMap="evalJournoMap">
+        select CONT from TRM_SATISFY_JOURNO WHERE JOURNO = #{journo, jdbcType=VARCHAR} order by TEMP_NO
+    </select>
+
+
+    <resultMap id="courseStudyByDeptMap" type="java.util.HashMap">
+        <result column="DEPT_NUM" jdbcType="VARCHAR" property="deptNum" javaType="java.lang.String"/>
+        <result column="DEPT_GROUP" jdbcType="VARCHAR" property="deptGroup" javaType="java.lang.String"/>
+        <result column="total_num" jdbcType="VARCHAR" javaType="java.lang.String" property="totalNum" />
+        <result column="study_num" jdbcType="VARCHAR" javaType="java.lang.String" property="studyNum" />
+        <result column="rate" jdbcType="VARCHAR" javaType="java.lang.String" property="rate" />
+    </resultMap>
+    <select id="viewCourseStudyByDept" resultMap="courseStudyByDeptMap">
+        select DEPT_NUM,DEPT_GROUP,count(a.PLO_NUM) total_num,count(b.PLO_NUM) study_num,to_char(round(count(b.PLO_NUM)/count(a.PLO_NUM),4),'FM9990.0000')*100 rate from
+            (select DEPT_NUM,DEPT_GROUP,PLO_NUM,PLO_NAME from CUS_EMP_INFO where job_level between '100' and '110' and PLO_STATUS='00' and DEPT_GROUP is not null) a
+                left join (select PLO_NUM from TRM_STUDY_LOG WHERE COURSE_ID = #{courseId, jdbcType=VARCHAR} and STUDY_COMP=1 ) b on (a.PLO_NUM = b.PLO_NUM)
+        group by DEPT_NUM,DEPT_GROUP ORDER BY DEPT_NUM,DEPT_GROUP
+    </select>
+</mapper>

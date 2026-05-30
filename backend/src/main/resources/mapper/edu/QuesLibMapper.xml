@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmbccd.ulms.edu.dao.QuesLibMapper">
+  <resultMap id="BaseResultMap" type="com.cmbccd.ulms.edu.domain.QuesLib">
+    <id column="LIB_CODE" jdbcType="VARCHAR" property="libCode" />
+    <result column="LIB_NAME" jdbcType="VARCHAR" property="libName" />
+    <result column="LIB_LEVEL" jdbcType="DECIMAL" property="libLevel" />
+    <result column="UP_CODE" jdbcType="VARCHAR" property="upCode" />
+    <result column="LIB_DIFF" jdbcType="VARCHAR" property="libDiff" />
+    <result column="QUES_NUM" jdbcType="DECIMAL" property="quesNum" />
+    <result column="LIB_STAT" jdbcType="DECIMAL" property="libStat" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    LIB_CODE, LIB_NAME, LIB_LEVEL, UP_CODE, LIB_DIFF, QUES_NUM, LIB_STAT
+  </sql>
+  <select id="selectByExample" parameterType="com.cmbccd.ulms.edu.domain.QuesLibExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from TRM_QUES_LIB
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from TRM_QUES_LIB
+    where LIB_CODE = #{libCode,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from TRM_QUES_LIB
+    where LIB_CODE = #{libCode,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.cmbccd.ulms.edu.domain.QuesLibExample">
+    delete from TRM_QUES_LIB
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.cmbccd.ulms.edu.domain.QuesLib">
+    insert into TRM_QUES_LIB (LIB_CODE, LIB_NAME, LIB_LEVEL, 
+      UP_CODE, LIB_DIFF, QUES_NUM, 
+      LIB_STAT)
+    values (#{libCode,jdbcType=VARCHAR}, #{libName,jdbcType=VARCHAR}, #{libLevel,jdbcType=DECIMAL}, 
+      #{upCode,jdbcType=VARCHAR}, #{libDiff,jdbcType=VARCHAR}, #{quesNum,jdbcType=DECIMAL}, 
+      #{libStat,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cmbccd.ulms.edu.domain.QuesLib">
+    insert into TRM_QUES_LIB
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="libCode != null">
+        LIB_CODE,
+      </if>
+      <if test="libName != null">
+        LIB_NAME,
+      </if>
+      <if test="libLevel != null">
+        LIB_LEVEL,
+      </if>
+      <if test="upCode != null">
+        UP_CODE,
+      </if>
+      <if test="libDiff != null">
+        LIB_DIFF,
+      </if>
+      <if test="quesNum != null">
+        QUES_NUM,
+      </if>
+      <if test="libStat != null">
+        LIB_STAT,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="libCode != null">
+        #{libCode,jdbcType=VARCHAR},
+      </if>
+      <if test="libName != null">
+        #{libName,jdbcType=VARCHAR},
+      </if>
+      <if test="libLevel != null">
+        #{libLevel,jdbcType=DECIMAL},
+      </if>
+      <if test="upCode != null">
+        #{upCode,jdbcType=VARCHAR},
+      </if>
+      <if test="libDiff != null">
+        #{libDiff,jdbcType=VARCHAR},
+      </if>
+      <if test="quesNum != null">
+        #{quesNum,jdbcType=DECIMAL},
+      </if>
+      <if test="libStat != null">
+        #{libStat,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.cmbccd.ulms.edu.domain.QuesLibExample" resultType="java.lang.Long">
+    select count(*) from TRM_QUES_LIB
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update TRM_QUES_LIB
+    <set>
+      <if test="record.libCode != null">
+        LIB_CODE = #{record.libCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.libName != null">
+        LIB_NAME = #{record.libName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.libLevel != null">
+        LIB_LEVEL = #{record.libLevel,jdbcType=DECIMAL},
+      </if>
+      <if test="record.upCode != null">
+        UP_CODE = #{record.upCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.libDiff != null">
+        LIB_DIFF = #{record.libDiff,jdbcType=VARCHAR},
+      </if>
+      <if test="record.quesNum != null">
+        QUES_NUM = #{record.quesNum,jdbcType=DECIMAL},
+      </if>
+      <if test="record.libStat != null">
+        LIB_STAT = #{record.libStat,jdbcType=DECIMAL},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update TRM_QUES_LIB
+    set LIB_CODE = #{record.libCode,jdbcType=VARCHAR},
+      LIB_NAME = #{record.libName,jdbcType=VARCHAR},
+      LIB_LEVEL = #{record.libLevel,jdbcType=DECIMAL},
+      UP_CODE = #{record.upCode,jdbcType=VARCHAR},
+      LIB_DIFF = #{record.libDiff,jdbcType=VARCHAR},
+      QUES_NUM = #{record.quesNum,jdbcType=DECIMAL},
+      LIB_STAT = #{record.libStat,jdbcType=DECIMAL}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cmbccd.ulms.edu.domain.QuesLib">
+    update TRM_QUES_LIB
+    <set>
+      <if test="libName != null">
+        LIB_NAME = #{libName,jdbcType=VARCHAR},
+      </if>
+      <if test="libLevel != null">
+        LIB_LEVEL = #{libLevel,jdbcType=DECIMAL},
+      </if>
+      <if test="upCode != null">
+        UP_CODE = #{upCode,jdbcType=VARCHAR},
+      </if>
+      <if test="libDiff != null">
+        LIB_DIFF = #{libDiff,jdbcType=VARCHAR},
+      </if>
+      <if test="quesNum != null">
+        QUES_NUM = #{quesNum,jdbcType=DECIMAL},
+      </if>
+      <if test="libStat != null">
+        LIB_STAT = #{libStat,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where LIB_CODE = #{libCode,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cmbccd.ulms.edu.domain.QuesLib">
+    update TRM_QUES_LIB
+    set LIB_NAME = #{libName,jdbcType=VARCHAR},
+      LIB_LEVEL = #{libLevel,jdbcType=DECIMAL},
+      UP_CODE = #{upCode,jdbcType=VARCHAR},
+      LIB_DIFF = #{libDiff,jdbcType=VARCHAR},
+      QUES_NUM = #{quesNum,jdbcType=DECIMAL},
+      LIB_STAT = #{libStat,jdbcType=DECIMAL}
+    where LIB_CODE = #{libCode,jdbcType=VARCHAR}
+  </update>
+
+  <update id="updateLibQuesionInvalid">
+    update TRM_QUES_BANK set QUES_STAT = 0,HANDLE_PLO =  #{handlePlo,jdbcType=VARCHAR}, HANDLE_DATE=to_char(SYSDATE,'yyyy-MM-dd hh24:mi:ss') where LIB_CODE in (
+      select LIB_CODE from
+        (select LIB_CODE from TRM_QUES_LIB WHERE UP_CODE =  #{libCode,jdbcType=VARCHAR}) a
+      union
+      (select LIB_CODE from TRM_QUES_LIB WHERE UP_CODE in (select LIB_CODE from TRM_QUES_LIB WHERE UP_CODE =  #{libCode,jdbcType=VARCHAR}))
+    )
+  </update>
+</mapper>

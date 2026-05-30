@@ -1,0 +1,611 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmbccd.ulms.edu.dao.ExamInfoMapper">
+  <resultMap id="BaseResultMap" type="com.cmbccd.ulms.edu.domain.ExamInfo">
+    <id column="EXAM_CODE" jdbcType="VARCHAR" property="examCode" />
+    <result column="EXAM_NAME" jdbcType="VARCHAR" property="examName" />
+    <result column="BEG_DATE" jdbcType="VARCHAR" property="begDate" />
+    <result column="END_DATE" jdbcType="VARCHAR" property="endDate" />
+    <result column="EXAM_TIME" jdbcType="DECIMAL" property="examTime" />
+    <result column="QUES_TIME" jdbcType="DECIMAL" property="quesTime" />
+    <result column="IF_BREAK" jdbcType="DECIMAL" property="ifBreak" />
+    <result column="IF_AGAIN" jdbcType="DECIMAL" property="ifAgain" />
+    <result column="AUDIO_AGAIN" jdbcType="DECIMAL" property="audioAgain" />
+    <result column="VIDEO_AGAIN" jdbcType="DECIMAL" property="videoAgain" />
+    <result column="SCORE_METHOD" jdbcType="DECIMAL" property="scoreMethod" />
+    <result column="UNIT_SCORE" jdbcType="DECIMAL" property="unitScore" />
+    <result column="QUES_RANDOM" jdbcType="DECIMAL" property="quesRandom" />
+    <result column="OPTION_RANDOM" jdbcType="DECIMAL" property="optionRandom" />
+    <result column="OPTION_ORDER" jdbcType="DECIMAL" property="optionOrder" />
+    <result column="WRONG_BREAK" jdbcType="DECIMAL" property="wrongBreak" />
+    <result column="EXAM_USE" jdbcType="DECIMAL" property="examUse" />
+    <result column="EXAM_STAT" jdbcType="DECIMAL" property="examStat" />
+    <result column="HANDLE_PLO" jdbcType="VARCHAR" property="handlePlo" />
+    <result column="HANDLE_DATE" jdbcType="VARCHAR" property="handleDate" />
+    <result column="EXAM_CONDITION" jdbcType="DECIMAL" property="examCondition" />
+    <result column="PERF_DATE" jdbcType="VARCHAR" property="perfDate" />
+    <result column="QUES_NUM" jdbcType="DECIMAL" property="quesNum" />
+    <result column="SCORE" jdbcType="DECIMAL" property="score" />
+    <result column="IF_READ" jdbcType="DECIMAL" property="ifRead" />
+    <result column="DISPUTE_DATE" jdbcType="VARCHAR" property="disputeDate" />
+    <result column="AREA_CODE" jdbcType="VARCHAR" property="areaCode" />
+    <result column="SKIP_QUES" jdbcType="DECIMAL" property="skipQues" />
+    <result column="BOOK_EXAM" jdbcType="DECIMAL" property="bookExam" />
+    <result column="QUES_TEMPLATE" jdbcType="VARCHAR" property="quesTemplate" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    EXAM_CODE, EXAM_NAME, BEG_DATE, END_DATE, EXAM_TIME, QUES_TIME, IF_BREAK, IF_AGAIN, 
+    AUDIO_AGAIN, VIDEO_AGAIN, SCORE_METHOD, UNIT_SCORE, QUES_RANDOM, OPTION_RANDOM, OPTION_ORDER, 
+    WRONG_BREAK, EXAM_USE, EXAM_STAT, HANDLE_PLO, HANDLE_DATE, EXAM_CONDITION, PERF_DATE, 
+    QUES_NUM, SCORE, IF_READ, DISPUTE_DATE, AREA_CODE, SKIP_QUES, BOOK_EXAM, QUES_TEMPLATE
+  </sql>
+  <select id="selectByExample" parameterType="com.cmbccd.ulms.edu.domain.ExamInfoExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from TRM_QUES_EXAM
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from TRM_QUES_EXAM
+    where EXAM_CODE = #{examCode,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from TRM_QUES_EXAM
+    where EXAM_CODE = #{examCode,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.cmbccd.ulms.edu.domain.ExamInfoExample">
+    delete from TRM_QUES_EXAM
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.cmbccd.ulms.edu.domain.ExamInfo">
+    insert into TRM_QUES_EXAM (EXAM_CODE, EXAM_NAME, BEG_DATE, 
+      END_DATE, EXAM_TIME, QUES_TIME, 
+      IF_BREAK, IF_AGAIN, AUDIO_AGAIN, 
+      VIDEO_AGAIN, SCORE_METHOD, UNIT_SCORE, 
+      QUES_RANDOM, OPTION_RANDOM, OPTION_ORDER, 
+      WRONG_BREAK, EXAM_USE, EXAM_STAT, 
+      HANDLE_PLO, HANDLE_DATE, EXAM_CONDITION, 
+      PERF_DATE, QUES_NUM, SCORE, 
+      IF_READ, DISPUTE_DATE, AREA_CODE, 
+      SKIP_QUES, BOOK_EXAM, QUES_TEMPLATE
+      )
+    values (#{examCode,jdbcType=VARCHAR}, #{examName,jdbcType=VARCHAR}, #{begDate,jdbcType=VARCHAR}, 
+      #{endDate,jdbcType=VARCHAR}, #{examTime,jdbcType=DECIMAL}, #{quesTime,jdbcType=DECIMAL}, 
+      #{ifBreak,jdbcType=DECIMAL}, #{ifAgain,jdbcType=DECIMAL}, #{audioAgain,jdbcType=DECIMAL}, 
+      #{videoAgain,jdbcType=DECIMAL}, #{scoreMethod,jdbcType=DECIMAL}, #{unitScore,jdbcType=DECIMAL}, 
+      #{quesRandom,jdbcType=DECIMAL}, #{optionRandom,jdbcType=DECIMAL}, #{optionOrder,jdbcType=DECIMAL}, 
+      #{wrongBreak,jdbcType=DECIMAL}, #{examUse,jdbcType=DECIMAL}, #{examStat,jdbcType=DECIMAL}, 
+      #{handlePlo,jdbcType=VARCHAR}, #{handleDate,jdbcType=VARCHAR}, #{examCondition,jdbcType=DECIMAL}, 
+      #{perfDate,jdbcType=VARCHAR}, #{quesNum,jdbcType=DECIMAL}, #{score,jdbcType=DECIMAL}, 
+      #{ifRead,jdbcType=DECIMAL}, #{disputeDate,jdbcType=VARCHAR}, #{areaCode,jdbcType=VARCHAR}, 
+      #{skipQues,jdbcType=DECIMAL}, #{bookExam,jdbcType=DECIMAL}, #{quesTemplate,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.cmbccd.ulms.edu.domain.ExamInfo">
+    insert into TRM_QUES_EXAM
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="examCode != null">
+        EXAM_CODE,
+      </if>
+      <if test="examName != null">
+        EXAM_NAME,
+      </if>
+      <if test="begDate != null">
+        BEG_DATE,
+      </if>
+      <if test="endDate != null">
+        END_DATE,
+      </if>
+      <if test="examTime != null">
+        EXAM_TIME,
+      </if>
+      <if test="quesTime != null">
+        QUES_TIME,
+      </if>
+      <if test="ifBreak != null">
+        IF_BREAK,
+      </if>
+      <if test="ifAgain != null">
+        IF_AGAIN,
+      </if>
+      <if test="audioAgain != null">
+        AUDIO_AGAIN,
+      </if>
+      <if test="videoAgain != null">
+        VIDEO_AGAIN,
+      </if>
+      <if test="scoreMethod != null">
+        SCORE_METHOD,
+      </if>
+      <if test="unitScore != null">
+        UNIT_SCORE,
+      </if>
+      <if test="quesRandom != null">
+        QUES_RANDOM,
+      </if>
+      <if test="optionRandom != null">
+        OPTION_RANDOM,
+      </if>
+      <if test="optionOrder != null">
+        OPTION_ORDER,
+      </if>
+      <if test="wrongBreak != null">
+        WRONG_BREAK,
+      </if>
+      <if test="examUse != null">
+        EXAM_USE,
+      </if>
+      <if test="examStat != null">
+        EXAM_STAT,
+      </if>
+      <if test="handlePlo != null">
+        HANDLE_PLO,
+      </if>
+      <if test="handleDate != null">
+        HANDLE_DATE,
+      </if>
+      <if test="examCondition != null">
+        EXAM_CONDITION,
+      </if>
+      <if test="perfDate != null">
+        PERF_DATE,
+      </if>
+      <if test="quesNum != null">
+        QUES_NUM,
+      </if>
+      <if test="score != null">
+        SCORE,
+      </if>
+      <if test="ifRead != null">
+        IF_READ,
+      </if>
+      <if test="disputeDate != null">
+        DISPUTE_DATE,
+      </if>
+      <if test="areaCode != null">
+        AREA_CODE,
+      </if>
+      <if test="skipQues != null">
+        SKIP_QUES,
+      </if>
+      <if test="bookExam != null">
+        BOOK_EXAM,
+      </if>
+      <if test="quesTemplate != null">
+        QUES_TEMPLATE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="examCode != null">
+        #{examCode,jdbcType=VARCHAR},
+      </if>
+      <if test="examName != null">
+        #{examName,jdbcType=VARCHAR},
+      </if>
+      <if test="begDate != null">
+        #{begDate,jdbcType=VARCHAR},
+      </if>
+      <if test="endDate != null">
+        #{endDate,jdbcType=VARCHAR},
+      </if>
+      <if test="examTime != null">
+        #{examTime,jdbcType=DECIMAL},
+      </if>
+      <if test="quesTime != null">
+        #{quesTime,jdbcType=DECIMAL},
+      </if>
+      <if test="ifBreak != null">
+        #{ifBreak,jdbcType=DECIMAL},
+      </if>
+      <if test="ifAgain != null">
+        #{ifAgain,jdbcType=DECIMAL},
+      </if>
+      <if test="audioAgain != null">
+        #{audioAgain,jdbcType=DECIMAL},
+      </if>
+      <if test="videoAgain != null">
+        #{videoAgain,jdbcType=DECIMAL},
+      </if>
+      <if test="scoreMethod != null">
+        #{scoreMethod,jdbcType=DECIMAL},
+      </if>
+      <if test="unitScore != null">
+        #{unitScore,jdbcType=DECIMAL},
+      </if>
+      <if test="quesRandom != null">
+        #{quesRandom,jdbcType=DECIMAL},
+      </if>
+      <if test="optionRandom != null">
+        #{optionRandom,jdbcType=DECIMAL},
+      </if>
+      <if test="optionOrder != null">
+        #{optionOrder,jdbcType=DECIMAL},
+      </if>
+      <if test="wrongBreak != null">
+        #{wrongBreak,jdbcType=DECIMAL},
+      </if>
+      <if test="examUse != null">
+        #{examUse,jdbcType=DECIMAL},
+      </if>
+      <if test="examStat != null">
+        #{examStat,jdbcType=DECIMAL},
+      </if>
+      <if test="handlePlo != null">
+        #{handlePlo,jdbcType=VARCHAR},
+      </if>
+      <if test="handleDate != null">
+        #{handleDate,jdbcType=VARCHAR},
+      </if>
+      <if test="examCondition != null">
+        #{examCondition,jdbcType=DECIMAL},
+      </if>
+      <if test="perfDate != null">
+        #{perfDate,jdbcType=VARCHAR},
+      </if>
+      <if test="quesNum != null">
+        #{quesNum,jdbcType=DECIMAL},
+      </if>
+      <if test="score != null">
+        #{score,jdbcType=DECIMAL},
+      </if>
+      <if test="ifRead != null">
+        #{ifRead,jdbcType=DECIMAL},
+      </if>
+      <if test="disputeDate != null">
+        #{disputeDate,jdbcType=VARCHAR},
+      </if>
+      <if test="areaCode != null">
+        #{areaCode,jdbcType=VARCHAR},
+      </if>
+      <if test="skipQues != null">
+        #{skipQues,jdbcType=DECIMAL},
+      </if>
+      <if test="bookExam != null">
+        #{bookExam,jdbcType=DECIMAL},
+      </if>
+      <if test="quesTemplate != null">
+        #{quesTemplate,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.cmbccd.ulms.edu.domain.ExamInfoExample" resultType="java.lang.Long">
+    select count(*) from TRM_QUES_EXAM
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update TRM_QUES_EXAM
+    <set>
+      <if test="record.examCode != null">
+        EXAM_CODE = #{record.examCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.examName != null">
+        EXAM_NAME = #{record.examName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.begDate != null">
+        BEG_DATE = #{record.begDate,jdbcType=VARCHAR},
+      </if>
+      <if test="record.endDate != null">
+        END_DATE = #{record.endDate,jdbcType=VARCHAR},
+      </if>
+      <if test="record.examTime != null">
+        EXAM_TIME = #{record.examTime,jdbcType=DECIMAL},
+      </if>
+      <if test="record.quesTime != null">
+        QUES_TIME = #{record.quesTime,jdbcType=DECIMAL},
+      </if>
+      <if test="record.ifBreak != null">
+        IF_BREAK = #{record.ifBreak,jdbcType=DECIMAL},
+      </if>
+      <if test="record.ifAgain != null">
+        IF_AGAIN = #{record.ifAgain,jdbcType=DECIMAL},
+      </if>
+      <if test="record.audioAgain != null">
+        AUDIO_AGAIN = #{record.audioAgain,jdbcType=DECIMAL},
+      </if>
+      <if test="record.videoAgain != null">
+        VIDEO_AGAIN = #{record.videoAgain,jdbcType=DECIMAL},
+      </if>
+      <if test="record.scoreMethod != null">
+        SCORE_METHOD = #{record.scoreMethod,jdbcType=DECIMAL},
+      </if>
+      <if test="record.unitScore != null">
+        UNIT_SCORE = #{record.unitScore,jdbcType=DECIMAL},
+      </if>
+      <if test="record.quesRandom != null">
+        QUES_RANDOM = #{record.quesRandom,jdbcType=DECIMAL},
+      </if>
+      <if test="record.optionRandom != null">
+        OPTION_RANDOM = #{record.optionRandom,jdbcType=DECIMAL},
+      </if>
+      <if test="record.optionOrder != null">
+        OPTION_ORDER = #{record.optionOrder,jdbcType=DECIMAL},
+      </if>
+      <if test="record.wrongBreak != null">
+        WRONG_BREAK = #{record.wrongBreak,jdbcType=DECIMAL},
+      </if>
+      <if test="record.examUse != null">
+        EXAM_USE = #{record.examUse,jdbcType=DECIMAL},
+      </if>
+      <if test="record.examStat != null">
+        EXAM_STAT = #{record.examStat,jdbcType=DECIMAL},
+      </if>
+      <if test="record.handlePlo != null">
+        HANDLE_PLO = #{record.handlePlo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.handleDate != null">
+        HANDLE_DATE = #{record.handleDate,jdbcType=VARCHAR},
+      </if>
+      <if test="record.examCondition != null">
+        EXAM_CONDITION = #{record.examCondition,jdbcType=DECIMAL},
+      </if>
+      <if test="record.perfDate != null">
+        PERF_DATE = #{record.perfDate,jdbcType=VARCHAR},
+      </if>
+      <if test="record.quesNum != null">
+        QUES_NUM = #{record.quesNum,jdbcType=DECIMAL},
+      </if>
+      <if test="record.score != null">
+        SCORE = #{record.score,jdbcType=DECIMAL},
+      </if>
+      <if test="record.ifRead != null">
+        IF_READ = #{record.ifRead,jdbcType=DECIMAL},
+      </if>
+      <if test="record.disputeDate != null">
+        DISPUTE_DATE = #{record.disputeDate,jdbcType=VARCHAR},
+      </if>
+      <if test="record.areaCode != null">
+        AREA_CODE = #{record.areaCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.skipQues != null">
+        SKIP_QUES = #{record.skipQues,jdbcType=DECIMAL},
+      </if>
+      <if test="record.bookExam != null">
+        BOOK_EXAM = #{record.bookExam,jdbcType=DECIMAL},
+      </if>
+      <if test="record.quesTemplate != null">
+        QUES_TEMPLATE = #{record.quesTemplate,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update TRM_QUES_EXAM
+    set EXAM_CODE = #{record.examCode,jdbcType=VARCHAR},
+      EXAM_NAME = #{record.examName,jdbcType=VARCHAR},
+      BEG_DATE = #{record.begDate,jdbcType=VARCHAR},
+      END_DATE = #{record.endDate,jdbcType=VARCHAR},
+      EXAM_TIME = #{record.examTime,jdbcType=DECIMAL},
+      QUES_TIME = #{record.quesTime,jdbcType=DECIMAL},
+      IF_BREAK = #{record.ifBreak,jdbcType=DECIMAL},
+      IF_AGAIN = #{record.ifAgain,jdbcType=DECIMAL},
+      AUDIO_AGAIN = #{record.audioAgain,jdbcType=DECIMAL},
+      VIDEO_AGAIN = #{record.videoAgain,jdbcType=DECIMAL},
+      SCORE_METHOD = #{record.scoreMethod,jdbcType=DECIMAL},
+      UNIT_SCORE = #{record.unitScore,jdbcType=DECIMAL},
+      QUES_RANDOM = #{record.quesRandom,jdbcType=DECIMAL},
+      OPTION_RANDOM = #{record.optionRandom,jdbcType=DECIMAL},
+      OPTION_ORDER = #{record.optionOrder,jdbcType=DECIMAL},
+      WRONG_BREAK = #{record.wrongBreak,jdbcType=DECIMAL},
+      EXAM_USE = #{record.examUse,jdbcType=DECIMAL},
+      EXAM_STAT = #{record.examStat,jdbcType=DECIMAL},
+      HANDLE_PLO = #{record.handlePlo,jdbcType=VARCHAR},
+      HANDLE_DATE = #{record.handleDate,jdbcType=VARCHAR},
+      EXAM_CONDITION = #{record.examCondition,jdbcType=DECIMAL},
+      PERF_DATE = #{record.perfDate,jdbcType=VARCHAR},
+      QUES_NUM = #{record.quesNum,jdbcType=DECIMAL},
+      SCORE = #{record.score,jdbcType=DECIMAL},
+      IF_READ = #{record.ifRead,jdbcType=DECIMAL},
+      DISPUTE_DATE = #{record.disputeDate,jdbcType=VARCHAR},
+      AREA_CODE = #{record.areaCode,jdbcType=VARCHAR},
+      SKIP_QUES = #{record.skipQues,jdbcType=DECIMAL},
+      BOOK_EXAM = #{record.bookExam,jdbcType=DECIMAL},
+      QUES_TEMPLATE = #{record.quesTemplate,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cmbccd.ulms.edu.domain.ExamInfo">
+    update TRM_QUES_EXAM
+    <set>
+      <if test="examName != null">
+        EXAM_NAME = #{examName,jdbcType=VARCHAR},
+      </if>
+      <if test="begDate != null">
+        BEG_DATE = #{begDate,jdbcType=VARCHAR},
+      </if>
+      <if test="endDate != null">
+        END_DATE = #{endDate,jdbcType=VARCHAR},
+      </if>
+      <if test="examTime != null">
+        EXAM_TIME = #{examTime,jdbcType=DECIMAL},
+      </if>
+      <if test="quesTime != null">
+        QUES_TIME = #{quesTime,jdbcType=DECIMAL},
+      </if>
+      <if test="ifBreak != null">
+        IF_BREAK = #{ifBreak,jdbcType=DECIMAL},
+      </if>
+      <if test="ifAgain != null">
+        IF_AGAIN = #{ifAgain,jdbcType=DECIMAL},
+      </if>
+      <if test="audioAgain != null">
+        AUDIO_AGAIN = #{audioAgain,jdbcType=DECIMAL},
+      </if>
+      <if test="videoAgain != null">
+        VIDEO_AGAIN = #{videoAgain,jdbcType=DECIMAL},
+      </if>
+      <if test="scoreMethod != null">
+        SCORE_METHOD = #{scoreMethod,jdbcType=DECIMAL},
+      </if>
+      <if test="unitScore != null">
+        UNIT_SCORE = #{unitScore,jdbcType=DECIMAL},
+      </if>
+      <if test="quesRandom != null">
+        QUES_RANDOM = #{quesRandom,jdbcType=DECIMAL},
+      </if>
+      <if test="optionRandom != null">
+        OPTION_RANDOM = #{optionRandom,jdbcType=DECIMAL},
+      </if>
+      <if test="optionOrder != null">
+        OPTION_ORDER = #{optionOrder,jdbcType=DECIMAL},
+      </if>
+      <if test="wrongBreak != null">
+        WRONG_BREAK = #{wrongBreak,jdbcType=DECIMAL},
+      </if>
+      <if test="examUse != null">
+        EXAM_USE = #{examUse,jdbcType=DECIMAL},
+      </if>
+      <if test="examStat != null">
+        EXAM_STAT = #{examStat,jdbcType=DECIMAL},
+      </if>
+      <if test="handlePlo != null">
+        HANDLE_PLO = #{handlePlo,jdbcType=VARCHAR},
+      </if>
+      <if test="handleDate != null">
+        HANDLE_DATE = #{handleDate,jdbcType=VARCHAR},
+      </if>
+      <if test="examCondition != null">
+        EXAM_CONDITION = #{examCondition,jdbcType=DECIMAL},
+      </if>
+      <if test="perfDate != null">
+        PERF_DATE = #{perfDate,jdbcType=VARCHAR},
+      </if>
+      <if test="quesNum != null">
+        QUES_NUM = #{quesNum,jdbcType=DECIMAL},
+      </if>
+      <if test="score != null">
+        SCORE = #{score,jdbcType=DECIMAL},
+      </if>
+      <if test="ifRead != null">
+        IF_READ = #{ifRead,jdbcType=DECIMAL},
+      </if>
+      <if test="disputeDate != null">
+        DISPUTE_DATE = #{disputeDate,jdbcType=VARCHAR},
+      </if>
+      <if test="areaCode != null">
+        AREA_CODE = #{areaCode,jdbcType=VARCHAR},
+      </if>
+      <if test="skipQues != null">
+        SKIP_QUES = #{skipQues,jdbcType=DECIMAL},
+      </if>
+      <if test="bookExam != null">
+        BOOK_EXAM = #{bookExam,jdbcType=DECIMAL},
+      </if>
+      <if test="quesTemplate != null">
+        QUES_TEMPLATE = #{quesTemplate,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where EXAM_CODE = #{examCode,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cmbccd.ulms.edu.domain.ExamInfo">
+    update TRM_QUES_EXAM
+    set EXAM_NAME = #{examName,jdbcType=VARCHAR},
+      BEG_DATE = #{begDate,jdbcType=VARCHAR},
+      END_DATE = #{endDate,jdbcType=VARCHAR},
+      EXAM_TIME = #{examTime,jdbcType=DECIMAL},
+      QUES_TIME = #{quesTime,jdbcType=DECIMAL},
+      IF_BREAK = #{ifBreak,jdbcType=DECIMAL},
+      IF_AGAIN = #{ifAgain,jdbcType=DECIMAL},
+      AUDIO_AGAIN = #{audioAgain,jdbcType=DECIMAL},
+      VIDEO_AGAIN = #{videoAgain,jdbcType=DECIMAL},
+      SCORE_METHOD = #{scoreMethod,jdbcType=DECIMAL},
+      UNIT_SCORE = #{unitScore,jdbcType=DECIMAL},
+      QUES_RANDOM = #{quesRandom,jdbcType=DECIMAL},
+      OPTION_RANDOM = #{optionRandom,jdbcType=DECIMAL},
+      OPTION_ORDER = #{optionOrder,jdbcType=DECIMAL},
+      WRONG_BREAK = #{wrongBreak,jdbcType=DECIMAL},
+      EXAM_USE = #{examUse,jdbcType=DECIMAL},
+      EXAM_STAT = #{examStat,jdbcType=DECIMAL},
+      HANDLE_PLO = #{handlePlo,jdbcType=VARCHAR},
+      HANDLE_DATE = #{handleDate,jdbcType=VARCHAR},
+      EXAM_CONDITION = #{examCondition,jdbcType=DECIMAL},
+      PERF_DATE = #{perfDate,jdbcType=VARCHAR},
+      QUES_NUM = #{quesNum,jdbcType=DECIMAL},
+      SCORE = #{score,jdbcType=DECIMAL},
+      IF_READ = #{ifRead,jdbcType=DECIMAL},
+      DISPUTE_DATE = #{disputeDate,jdbcType=VARCHAR},
+      AREA_CODE = #{areaCode,jdbcType=VARCHAR},
+      SKIP_QUES = #{skipQues,jdbcType=DECIMAL},
+      BOOK_EXAM = #{bookExam,jdbcType=DECIMAL},
+      QUES_TEMPLATE = #{quesTemplate,jdbcType=VARCHAR}
+    where EXAM_CODE = #{examCode,jdbcType=VARCHAR}
+  </update>
+  <select id="selectCurrentExam"  resultMap="BaseResultMap">
+  	select <include refid="Base_Column_List" /> from TRM_QUES_EXAM where to_char(sysdate,'yyyy-MM-dd hh24:mi:ss') between beg_date and end_date and exam_stat=1 and IF_READ = 0  and exam_code in
+  	 (select exam_code from trm_ques_score where comp_stat = 0 and plo_num =#{ploNum,jdbcType=VARCHAR} )
+  </select>
+</mapper>

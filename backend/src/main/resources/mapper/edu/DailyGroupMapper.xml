@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmbccd.ulms.edu.dao.DailyGroupMapper">
+  <resultMap id="BaseResultMap" type="com.cmbccd.ulms.edu.domain.DailyGroup">
+    <id column="PLO_NUM" jdbcType="VARCHAR" property="ploNum" />
+    <result column="PLO_NAME" jdbcType="VARCHAR" property="ploName" />
+    <result column="GROUP_ID" jdbcType="VARCHAR" property="groupId" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    PLO_NUM, PLO_NAME, GROUP_ID
+  </sql>
+  <select id="selectByExample" parameterType="com.cmbccd.ulms.edu.domain.DailyGroupExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from TRM_DAILY_GROUP
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from TRM_DAILY_GROUP
+    where PLO_NUM = #{ploNum,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from TRM_DAILY_GROUP
+    where PLO_NUM = #{ploNum,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.cmbccd.ulms.edu.domain.DailyGroupExample">
+    delete from TRM_DAILY_GROUP
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.cmbccd.ulms.edu.domain.DailyGroup">
+    insert into TRM_DAILY_GROUP (PLO_NUM, PLO_NAME, GROUP_ID
+      )
+    values (#{ploNum,jdbcType=VARCHAR}, #{ploName,jdbcType=VARCHAR}, #{groupId,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.cmbccd.ulms.edu.domain.DailyGroup">
+    insert into TRM_DAILY_GROUP
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="ploNum != null">
+        PLO_NUM,
+      </if>
+      <if test="ploName != null">
+        PLO_NAME,
+      </if>
+      <if test="groupId != null">
+        GROUP_ID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="ploNum != null">
+        #{ploNum,jdbcType=VARCHAR},
+      </if>
+      <if test="ploName != null">
+        #{ploName,jdbcType=VARCHAR},
+      </if>
+      <if test="groupId != null">
+        #{groupId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.cmbccd.ulms.edu.domain.DailyGroupExample" resultType="java.lang.Long">
+    select count(*) from TRM_DAILY_GROUP
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update TRM_DAILY_GROUP
+    <set>
+      <if test="record.ploNum != null">
+        PLO_NUM = #{record.ploNum,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ploName != null">
+        PLO_NAME = #{record.ploName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.groupId != null">
+        GROUP_ID = #{record.groupId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update TRM_DAILY_GROUP
+    set PLO_NUM = #{record.ploNum,jdbcType=VARCHAR},
+      PLO_NAME = #{record.ploName,jdbcType=VARCHAR},
+      GROUP_ID = #{record.groupId,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cmbccd.ulms.edu.domain.DailyGroup">
+    update TRM_DAILY_GROUP
+    <set>
+      <if test="ploName != null">
+        PLO_NAME = #{ploName,jdbcType=VARCHAR},
+      </if>
+      <if test="groupId != null">
+        GROUP_ID = #{groupId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where PLO_NUM = #{ploNum,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cmbccd.ulms.edu.domain.DailyGroup">
+    update TRM_DAILY_GROUP
+    set PLO_NAME = #{ploName,jdbcType=VARCHAR},
+      GROUP_ID = #{groupId,jdbcType=VARCHAR}
+    where PLO_NUM = #{ploNum,jdbcType=VARCHAR}
+  </update>
+  
+  <insert id="batchInsert"  parameterType="java.util.List">
+    insert into TRM_DAILY_GROUP (PLO_NUM, PLO_NAME, GROUP_ID )
+		SELECT * FROM (
+	<foreach collection="list" item="rcd"  index="index" separator="union all">
+	select
+		 #{rcd.ploNum,jdbcType=VARCHAR}, #{rcd.ploName,jdbcType=VARCHAR}, #{rcd.groupId,jdbcType=VARCHAR}
+	 from dual
+	</foreach>)
+</insert>
+<delete id="deleteAll" >
+    delete from TRM_DAILY_GROUP
+  </delete>
+</mapper>

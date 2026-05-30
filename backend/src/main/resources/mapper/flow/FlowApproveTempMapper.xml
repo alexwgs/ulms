@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmbccd.ulms.flow.dao.FlowApproveTempMapper">
+  <resultMap id="BaseResultMap" type="com.cmbccd.ulms.flow.domain.FlowApproveTemp">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="NAME" jdbcType="VARCHAR" property="name" />
+    <result column="APPROVE_LEVEL" jdbcType="DECIMAL" property="approveLevel" />
+    <result column="MODEL" jdbcType="DECIMAL" property="model" />
+    <result column="MODEL_INFO" jdbcType="VARCHAR" property="modelInfo" />
+    <result column="FLOW_ID" jdbcType="VARCHAR" property="flowId" />
+    <result column="STATUS" jdbcType="DECIMAL" property="status" />
+    <result column="REQUIRE" jdbcType="DECIMAL" property="require" />
+    <result column="REQUIRE_INFO" jdbcType="VARCHAR" property="requireInfo" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    ID, NAME, APPROVE_LEVEL, MODEL, MODEL_INFO, FLOW_ID, STATUS, REQUIRE, REQUIRE_INFO
+  </sql>
+  <select id="selectByExample" parameterType="com.cmbccd.ulms.flow.domain.FlowApproveTempExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from CUS_FLOW_APPROVE_TEMP
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from CUS_FLOW_APPROVE_TEMP
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from CUS_FLOW_APPROVE_TEMP
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.cmbccd.ulms.flow.domain.FlowApproveTempExample">
+    delete from CUS_FLOW_APPROVE_TEMP
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.cmbccd.ulms.flow.domain.FlowApproveTemp">
+    insert into CUS_FLOW_APPROVE_TEMP (ID, NAME, APPROVE_LEVEL, 
+      MODEL, MODEL_INFO, FLOW_ID, 
+      STATUS, REQUIRE, REQUIRE_INFO
+      )
+    values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{approveLevel,jdbcType=DECIMAL}, 
+      #{model,jdbcType=DECIMAL}, #{modelInfo,jdbcType=VARCHAR}, #{flowId,jdbcType=VARCHAR}, 
+      #{status,jdbcType=DECIMAL}, #{require,jdbcType=DECIMAL}, #{requireInfo,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.cmbccd.ulms.flow.domain.FlowApproveTemp">
+    insert into CUS_FLOW_APPROVE_TEMP
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="name != null">
+        NAME,
+      </if>
+      <if test="approveLevel != null">
+        APPROVE_LEVEL,
+      </if>
+      <if test="model != null">
+        MODEL,
+      </if>
+      <if test="modelInfo != null">
+        MODEL_INFO,
+      </if>
+      <if test="flowId != null">
+        FLOW_ID,
+      </if>
+      <if test="status != null">
+        STATUS,
+      </if>
+      <if test="require != null">
+        REQUIRE,
+      </if>
+      <if test="requireInfo != null">
+        REQUIRE_INFO,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="approveLevel != null">
+        #{approveLevel,jdbcType=DECIMAL},
+      </if>
+      <if test="model != null">
+        #{model,jdbcType=DECIMAL},
+      </if>
+      <if test="modelInfo != null">
+        #{modelInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="flowId != null">
+        #{flowId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=DECIMAL},
+      </if>
+      <if test="require != null">
+        #{require,jdbcType=DECIMAL},
+      </if>
+      <if test="requireInfo != null">
+        #{requireInfo,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.cmbccd.ulms.flow.domain.FlowApproveTempExample" resultType="java.lang.Long">
+    select count(*) from CUS_FLOW_APPROVE_TEMP
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update CUS_FLOW_APPROVE_TEMP
+    <set>
+      <if test="record.id != null">
+        ID = #{record.id,jdbcType=VARCHAR},
+      </if>
+      <if test="record.name != null">
+        NAME = #{record.name,jdbcType=VARCHAR},
+      </if>
+      <if test="record.approveLevel != null">
+        APPROVE_LEVEL = #{record.approveLevel,jdbcType=DECIMAL},
+      </if>
+      <if test="record.model != null">
+        MODEL = #{record.model,jdbcType=DECIMAL},
+      </if>
+      <if test="record.modelInfo != null">
+        MODEL_INFO = #{record.modelInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.flowId != null">
+        FLOW_ID = #{record.flowId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.status != null">
+        STATUS = #{record.status,jdbcType=DECIMAL},
+      </if>
+      <if test="record.require != null">
+        REQUIRE = #{record.require,jdbcType=DECIMAL},
+      </if>
+      <if test="record.requireInfo != null">
+        REQUIRE_INFO = #{record.requireInfo,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update CUS_FLOW_APPROVE_TEMP
+    set ID = #{record.id,jdbcType=VARCHAR},
+      NAME = #{record.name,jdbcType=VARCHAR},
+      APPROVE_LEVEL = #{record.approveLevel,jdbcType=DECIMAL},
+      MODEL = #{record.model,jdbcType=DECIMAL},
+      MODEL_INFO = #{record.modelInfo,jdbcType=VARCHAR},
+      FLOW_ID = #{record.flowId,jdbcType=VARCHAR},
+      STATUS = #{record.status,jdbcType=DECIMAL},
+      REQUIRE = #{record.require,jdbcType=DECIMAL},
+      REQUIRE_INFO = #{record.requireInfo,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cmbccd.ulms.flow.domain.FlowApproveTemp">
+    update CUS_FLOW_APPROVE_TEMP
+    <set>
+      <if test="name != null">
+        NAME = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="approveLevel != null">
+        APPROVE_LEVEL = #{approveLevel,jdbcType=DECIMAL},
+      </if>
+      <if test="model != null">
+        MODEL = #{model,jdbcType=DECIMAL},
+      </if>
+      <if test="modelInfo != null">
+        MODEL_INFO = #{modelInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="flowId != null">
+        FLOW_ID = #{flowId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        STATUS = #{status,jdbcType=DECIMAL},
+      </if>
+      <if test="require != null">
+        REQUIRE = #{require,jdbcType=DECIMAL},
+      </if>
+      <if test="requireInfo != null">
+        REQUIRE_INFO = #{requireInfo,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cmbccd.ulms.flow.domain.FlowApproveTemp">
+    update CUS_FLOW_APPROVE_TEMP
+    set NAME = #{name,jdbcType=VARCHAR},
+      APPROVE_LEVEL = #{approveLevel,jdbcType=DECIMAL},
+      MODEL = #{model,jdbcType=DECIMAL},
+      MODEL_INFO = #{modelInfo,jdbcType=VARCHAR},
+      FLOW_ID = #{flowId,jdbcType=VARCHAR},
+      STATUS = #{status,jdbcType=DECIMAL},
+      REQUIRE = #{require,jdbcType=DECIMAL},
+      REQUIRE_INFO = #{requireInfo,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

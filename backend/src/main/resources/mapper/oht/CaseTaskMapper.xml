@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmbccd.ulms.oht.dao.CaseTaskMapper">
+  <resultMap id="BaseResultMap" type="com.cmbccd.ulms.oht.domain.CaseTask">
+    <result column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="CASE_ID" jdbcType="VARCHAR" property="caseId" />
+    <result column="DATA_TIME" jdbcType="DECIMAL" property="dataTime" />
+    <result column="USER_ID" jdbcType="VARCHAR" property="userId" />
+    <result column="DEPT_NUM" jdbcType="VARCHAR" property="deptNum" />
+    <result column="GROUP_NUM" jdbcType="VARCHAR" property="groupNum" />
+    <result column="TASK_LEVEL" jdbcType="DECIMAL" property="taskLevel" />
+    <result column="TASK_STATUS" jdbcType="DECIMAL" property="taskStatus" />
+    <result column="MEMO" jdbcType="VARCHAR" property="memo" />
+  </resultMap>
+  
+  <resultMap id="ReportResultMap" type="com.cmbccd.ulms.oht.domain.CaseTaskReport">
+    <result column="USER_ID" jdbcType="VARCHAR" property="userId" />
+    <result column="DEPT_NUM" jdbcType="VARCHAR" property="deptNum" />
+    <result column="GROUP_NUM" jdbcType="VARCHAR" property="groupNum" />
+    <result column="MISS" jdbcType="DECIMAL" property="miss" />
+    <result column="TAKE" jdbcType="DECIMAL" property="take" />
+    <result column="REFUSE" jdbcType="VARCHAR" property="refuse" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    ID, CASE_ID, DATA_TIME, USER_ID, DEPT_NUM, GROUP_NUM, TASK_LEVEL, TASK_STATUS, MEMO
+  </sql>
+  <select id="selectByExample" parameterType="com.cmbccd.ulms.oht.domain.CaseTaskExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from OHT_CASE_TASK
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <delete id="deleteByExample" parameterType="com.cmbccd.ulms.oht.domain.CaseTaskExample">
+    delete from OHT_CASE_TASK
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.cmbccd.ulms.oht.domain.CaseTask">
+    insert into OHT_CASE_TASK (ID, CASE_ID, DATA_TIME, 
+      USER_ID, DEPT_NUM, GROUP_NUM, 
+      TASK_LEVEL, TASK_STATUS, MEMO
+      )
+    values (#{id,jdbcType=VARCHAR}, #{caseId,jdbcType=VARCHAR}, #{dataTime,jdbcType=DECIMAL}, 
+      #{userId,jdbcType=VARCHAR}, #{deptNum,jdbcType=VARCHAR}, #{groupNum,jdbcType=VARCHAR}, 
+      #{taskLevel,jdbcType=DECIMAL}, #{taskStatus,jdbcType=DECIMAL}, #{memo,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.cmbccd.ulms.oht.domain.CaseTask">
+    insert into OHT_CASE_TASK
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="caseId != null">
+        CASE_ID,
+      </if>
+      <if test="dataTime != null">
+        DATA_TIME,
+      </if>
+      <if test="userId != null">
+        USER_ID,
+      </if>
+      <if test="deptNum != null">
+        DEPT_NUM,
+      </if>
+      <if test="groupNum != null">
+        GROUP_NUM,
+      </if>
+      <if test="taskLevel != null">
+        TASK_LEVEL,
+      </if>
+      <if test="taskStatus != null">
+        TASK_STATUS,
+      </if>
+      <if test="memo != null">
+        MEMO,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="caseId != null">
+        #{caseId,jdbcType=VARCHAR},
+      </if>
+      <if test="dataTime != null">
+        #{dataTime,jdbcType=DECIMAL},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="deptNum != null">
+        #{deptNum,jdbcType=VARCHAR},
+      </if>
+      <if test="groupNum != null">
+        #{groupNum,jdbcType=VARCHAR},
+      </if>
+      <if test="taskLevel != null">
+        #{taskLevel,jdbcType=DECIMAL},
+      </if>
+      <if test="taskStatus != null">
+        #{taskStatus,jdbcType=DECIMAL},
+      </if>
+      <if test="memo != null">
+        #{memo,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.cmbccd.ulms.oht.domain.CaseTaskExample" resultType="java.lang.Integer">
+    select count(*) from OHT_CASE_TASK
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update OHT_CASE_TASK
+    <set>
+      <if test="record.id != null">
+        ID = #{record.id,jdbcType=VARCHAR},
+      </if>
+      <if test="record.caseId != null">
+        CASE_ID = #{record.caseId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dataTime != null">
+        DATA_TIME = #{record.dataTime,jdbcType=DECIMAL},
+      </if>
+      <if test="record.userId != null">
+        USER_ID = #{record.userId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.deptNum != null">
+        DEPT_NUM = #{record.deptNum,jdbcType=VARCHAR},
+      </if>
+      <if test="record.groupNum != null">
+        GROUP_NUM = #{record.groupNum,jdbcType=VARCHAR},
+      </if>
+      <if test="record.taskLevel != null">
+        TASK_LEVEL = #{record.taskLevel,jdbcType=DECIMAL},
+      </if>
+      <if test="record.taskStatus != null">
+        TASK_STATUS = #{record.taskStatus,jdbcType=DECIMAL},
+      </if>
+      <if test="record.memo != null">
+        MEMO = #{record.memo,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update OHT_CASE_TASK
+    set ID = #{record.id,jdbcType=VARCHAR},
+      CASE_ID = #{record.caseId,jdbcType=VARCHAR},
+      DATA_TIME = #{record.dataTime,jdbcType=DECIMAL},
+      USER_ID = #{record.userId,jdbcType=VARCHAR},
+      DEPT_NUM = #{record.deptNum,jdbcType=VARCHAR},
+      GROUP_NUM = #{record.groupNum,jdbcType=VARCHAR},
+      TASK_LEVEL = #{record.taskLevel,jdbcType=DECIMAL},
+      TASK_STATUS = #{record.taskStatus,jdbcType=DECIMAL},
+      MEMO = #{record.memo,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  
+  <select id="countTaskByUserIdAndCaseId" parameterType="java.lang.String" resultType="java.lang.Integer">
+    select count(*) from OHT_CASE_TASK
+    where USER_ID = #{userId,jdbcType=VARCHAR} and
+    CASE_ID = #{caseId,jdbcType=VARCHAR}
+  </select>
+  
+  <update id="updateTaskCompleteByUserIdAndCaseId"  parameterType="java.lang.String">
+    update OHT_CASE_TASK
+    set TASK_STATUS = 1
+    where  USER_ID = #{userId,jdbcType=VARCHAR} and CASE_ID = #{caseId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateTaskRefuseByUserIdAndCaseId"  parameterType="java.lang.String">
+    update OHT_CASE_TASK
+    set TASK_STATUS = 2,MEMO = #{memo,jdbcType=VARCHAR}
+    where USER_ID = #{userId,jdbcType=VARCHAR} and CASE_ID = #{caseId,jdbcType=VARCHAR}
+  </update>
+  
+   <resultMap id="userTsakCaseMap" type="java.util.HashMap">
+       <result column="task_status" property="taskStatus" jdbcType="INTEGER" />
+       <result column="task_count" property="taskCount" jdbcType="INTEGER" />
+   </resultMap>
+   
+  <select id="selectTsakCountTodayByUserId" parameterType="java.lang.String" resultMap="userTsakCaseMap">
+	select task_status,count(task_status) as task_count from OHT_CASE_TASK 
+	where to_char((TO_DATE('19700101','yyyymmdd') + data_time/86400 +TO_NUMBER(SUBSTR(TZ_OFFSET(sessiontimezone),1,3))/24),'yyyy-MM-dd') = to_char(sysdate,'yyyy-MM-dd') and USER_ID = #{userId,jdbcType=VARCHAR} group by task_status  
+  </select>
+  
+  <select id="selectTsakByCaseId" parameterType="java.lang.String" resultMap="BaseResultMap">
+	select  <include refid="Base_Column_List" />  from OHT_CASE_TASK WHERE CASE_ID = #{caseId,jdbcType=VARCHAR} ORDER BY DATA_TIME
+  </select>
+  
+  <select id="selectTsaksByDate" parameterType="java.lang.String" resultMap="ReportResultMap">
+	select a.user_id as user_id,nvl(b.miss,0) as miss,nvl(c.take,0) as take,nvl(d.refuse,0) as refuse from
+	(select user_id from OHT_CASE_TASK where to_char((TO_DATE('19700101','yyyymmdd') + data_time/86400 +TO_NUMBER(SUBSTR(TZ_OFFSET(sessiontimezone),1,3))/24),'yyyy-MM-dd') between #{begDate,jdbcType=VARCHAR} and #{endDate,jdbcType=VARCHAR} group by user_id ) a 
+	left join (select user_id,count(task_status) as miss from OHT_CASE_TASK where task_status=0 and to_char((TO_DATE('19700101','yyyymmdd') + data_time/86400 +TO_NUMBER(SUBSTR(TZ_OFFSET(sessiontimezone),1,3))/24),'yyyy-MM-dd') between #{begDate,jdbcType=VARCHAR} and #{endDate,jdbcType=VARCHAR} group by user_id) b on (a.user_id = b.user_id)
+	left join (select user_id,count(task_status) as take from OHT_CASE_TASK where task_status=1 and to_char((TO_DATE('19700101','yyyymmdd') + data_time/86400 +TO_NUMBER(SUBSTR(TZ_OFFSET(sessiontimezone),1,3))/24),'yyyy-MM-dd') between #{begDate,jdbcType=VARCHAR} and #{endDate,jdbcType=VARCHAR} group by user_id) c on (a.user_id = c.user_id)
+	left join (select user_id,count(task_status) as refuse from OHT_CASE_TASK where task_status=2 and to_char((TO_DATE('19700101','yyyymmdd') + data_time/86400 +TO_NUMBER(SUBSTR(TZ_OFFSET(sessiontimezone),1,3))/24),'yyyy-MM-dd') between #{begDate,jdbcType=VARCHAR} and #{endDate,jdbcType=VARCHAR} group by user_id) d on (a.user_id = d.user_id)
+  </select>
+</mapper>

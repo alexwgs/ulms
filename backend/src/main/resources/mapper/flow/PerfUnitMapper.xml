@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmbccd.ulms.flow.dao.PerfUnitMapper">
+  <resultMap id="BaseResultMap" type="com.cmbccd.ulms.flow.domain.PerfUnit">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="CASE_ID" jdbcType="VARCHAR" property="caseId" />
+    <result column="PLO_NUM" jdbcType="VARCHAR" property="ploNum" />
+    <result column="PERF_UNIT" jdbcType="DECIMAL" property="perfUnit" />
+    <result column="IF_PERF" jdbcType="DECIMAL" property="ifPerf" />
+    <result column="BEG_MONTH" jdbcType="VARCHAR" property="begMonth" />
+    <result column="END_MONTH" jdbcType="VARCHAR" property="endMonth" />
+    <result column="MEMO" jdbcType="VARCHAR" property="memo" />
+    <result column="FLOW_STATUS" jdbcType="DECIMAL" property="flowStatus" />
+    <result column="MODIFY_TIME" jdbcType="VARCHAR" property="modifyTime" />
+    <result column="MODIFY_ID" jdbcType="VARCHAR" property="modifyId" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    ID, CASE_ID, PLO_NUM, PERF_UNIT, IF_PERF, BEG_MONTH, END_MONTH, MEMO, FLOW_STATUS, 
+    MODIFY_TIME, MODIFY_ID
+  </sql>
+  <select id="selectByExample" parameterType="com.cmbccd.ulms.flow.domain.PerfUnitExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from CUS_FLOW_PERF_UNIT
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from CUS_FLOW_PERF_UNIT
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from CUS_FLOW_PERF_UNIT
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.cmbccd.ulms.flow.domain.PerfUnitExample">
+    delete from CUS_FLOW_PERF_UNIT
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.cmbccd.ulms.flow.domain.PerfUnit">
+    insert into CUS_FLOW_PERF_UNIT (ID, CASE_ID, PLO_NUM, 
+      PERF_UNIT, IF_PERF, BEG_MONTH, 
+      END_MONTH, MEMO, FLOW_STATUS, 
+      MODIFY_TIME, MODIFY_ID)
+    values (#{id,jdbcType=VARCHAR}, #{caseId,jdbcType=VARCHAR}, #{ploNum,jdbcType=VARCHAR}, 
+      #{perfUnit,jdbcType=DECIMAL}, #{ifPerf,jdbcType=DECIMAL}, #{begMonth,jdbcType=VARCHAR}, 
+      #{endMonth,jdbcType=VARCHAR}, #{memo,jdbcType=VARCHAR}, #{flowStatus,jdbcType=DECIMAL}, 
+      #{modifyTime,jdbcType=VARCHAR}, #{modifyId,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cmbccd.ulms.flow.domain.PerfUnit">
+    insert into CUS_FLOW_PERF_UNIT
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="caseId != null">
+        CASE_ID,
+      </if>
+      <if test="ploNum != null">
+        PLO_NUM,
+      </if>
+      <if test="perfUnit != null">
+        PERF_UNIT,
+      </if>
+      <if test="ifPerf != null">
+        IF_PERF,
+      </if>
+      <if test="begMonth != null">
+        BEG_MONTH,
+      </if>
+      <if test="endMonth != null">
+        END_MONTH,
+      </if>
+      <if test="memo != null">
+        MEMO,
+      </if>
+      <if test="flowStatus != null">
+        FLOW_STATUS,
+      </if>
+      <if test="modifyTime != null">
+        MODIFY_TIME,
+      </if>
+      <if test="modifyId != null">
+        MODIFY_ID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="caseId != null">
+        #{caseId,jdbcType=VARCHAR},
+      </if>
+      <if test="ploNum != null">
+        #{ploNum,jdbcType=VARCHAR},
+      </if>
+      <if test="perfUnit != null">
+        #{perfUnit,jdbcType=DECIMAL},
+      </if>
+      <if test="ifPerf != null">
+        #{ifPerf,jdbcType=DECIMAL},
+      </if>
+      <if test="begMonth != null">
+        #{begMonth,jdbcType=VARCHAR},
+      </if>
+      <if test="endMonth != null">
+        #{endMonth,jdbcType=VARCHAR},
+      </if>
+      <if test="memo != null">
+        #{memo,jdbcType=VARCHAR},
+      </if>
+      <if test="flowStatus != null">
+        #{flowStatus,jdbcType=DECIMAL},
+      </if>
+      <if test="modifyTime != null">
+        #{modifyTime,jdbcType=VARCHAR},
+      </if>
+      <if test="modifyId != null">
+        #{modifyId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.cmbccd.ulms.flow.domain.PerfUnitExample" resultType="java.lang.Long">
+    select count(*) from CUS_FLOW_PERF_UNIT
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update CUS_FLOW_PERF_UNIT
+    <set>
+      <if test="record.id != null">
+        ID = #{record.id,jdbcType=VARCHAR},
+      </if>
+      <if test="record.caseId != null">
+        CASE_ID = #{record.caseId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ploNum != null">
+        PLO_NUM = #{record.ploNum,jdbcType=VARCHAR},
+      </if>
+      <if test="record.perfUnit != null">
+        PERF_UNIT = #{record.perfUnit,jdbcType=DECIMAL},
+      </if>
+      <if test="record.ifPerf != null">
+        IF_PERF = #{record.ifPerf,jdbcType=DECIMAL},
+      </if>
+      <if test="record.begMonth != null">
+        BEG_MONTH = #{record.begMonth,jdbcType=VARCHAR},
+      </if>
+      <if test="record.endMonth != null">
+        END_MONTH = #{record.endMonth,jdbcType=VARCHAR},
+      </if>
+      <if test="record.memo != null">
+        MEMO = #{record.memo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.flowStatus != null">
+        FLOW_STATUS = #{record.flowStatus,jdbcType=DECIMAL},
+      </if>
+      <if test="record.modifyTime != null">
+        MODIFY_TIME = #{record.modifyTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.modifyId != null">
+        MODIFY_ID = #{record.modifyId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update CUS_FLOW_PERF_UNIT
+    set ID = #{record.id,jdbcType=VARCHAR},
+      CASE_ID = #{record.caseId,jdbcType=VARCHAR},
+      PLO_NUM = #{record.ploNum,jdbcType=VARCHAR},
+      PERF_UNIT = #{record.perfUnit,jdbcType=DECIMAL},
+      IF_PERF = #{record.ifPerf,jdbcType=DECIMAL},
+      BEG_MONTH = #{record.begMonth,jdbcType=VARCHAR},
+      END_MONTH = #{record.endMonth,jdbcType=VARCHAR},
+      MEMO = #{record.memo,jdbcType=VARCHAR},
+      FLOW_STATUS = #{record.flowStatus,jdbcType=DECIMAL},
+      MODIFY_TIME = #{record.modifyTime,jdbcType=VARCHAR},
+      MODIFY_ID = #{record.modifyId,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cmbccd.ulms.flow.domain.PerfUnit">
+    update CUS_FLOW_PERF_UNIT
+    <set>
+      <if test="caseId != null">
+        CASE_ID = #{caseId,jdbcType=VARCHAR},
+      </if>
+      <if test="ploNum != null">
+        PLO_NUM = #{ploNum,jdbcType=VARCHAR},
+      </if>
+      <if test="perfUnit != null">
+        PERF_UNIT = #{perfUnit,jdbcType=DECIMAL},
+      </if>
+      <if test="ifPerf != null">
+        IF_PERF = #{ifPerf,jdbcType=DECIMAL},
+      </if>
+      <if test="begMonth != null">
+        BEG_MONTH = #{begMonth,jdbcType=VARCHAR},
+      </if>
+      <if test="endMonth != null">
+        END_MONTH = #{endMonth,jdbcType=VARCHAR},
+      </if>
+      <if test="memo != null">
+        MEMO = #{memo,jdbcType=VARCHAR},
+      </if>
+      <if test="flowStatus != null">
+        FLOW_STATUS = #{flowStatus,jdbcType=DECIMAL},
+      </if>
+      <if test="modifyTime != null">
+        MODIFY_TIME = #{modifyTime,jdbcType=VARCHAR},
+      </if>
+      <if test="modifyId != null">
+        MODIFY_ID = #{modifyId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cmbccd.ulms.flow.domain.PerfUnit">
+    update CUS_FLOW_PERF_UNIT
+    set CASE_ID = #{caseId,jdbcType=VARCHAR},
+      PLO_NUM = #{ploNum,jdbcType=VARCHAR},
+      PERF_UNIT = #{perfUnit,jdbcType=DECIMAL},
+      IF_PERF = #{ifPerf,jdbcType=DECIMAL},
+      BEG_MONTH = #{begMonth,jdbcType=VARCHAR},
+      END_MONTH = #{endMonth,jdbcType=VARCHAR},
+      MEMO = #{memo,jdbcType=VARCHAR},
+      FLOW_STATUS = #{flowStatus,jdbcType=DECIMAL},
+      MODIFY_TIME = #{modifyTime,jdbcType=VARCHAR},
+      MODIFY_ID = #{modifyId,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <select id="check" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List" /> FROM
+    (select rownum,ID, CASE_ID, PLO_NUM, PERF_UNIT, IF_PERF, BEG_MONTH, END_MONTH, MEMO, FLOW_STATUS,
+    MODIFY_TIME, MODIFY_ID FROM CUS_FLOW_PERF_UNIT where PLO_NUM = #{userId,jdbcType=VARCHAR} and FLOW_STATUS in (0,1) ORDER BY MODIFY_TIME DESC)
+    where PLO_NUM = #{userId,jdbcType=VARCHAR} and BEG_MONTH &lt;=#{endMonth,jdbcType=VARCHAR} and END_MONTH &gt;= #{begMonth,jdbcType=VARCHAR} and ROWNUM = 1
+  </select>
+</mapper>

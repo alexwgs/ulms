@@ -1,0 +1,70 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /ulms
+spring:
+  main:
+    # TODO: 存在循环依赖，需要重构消除。暂时禁用Spring校验
+    allow-circular-references: true
+  web:
+    resources:
+      static-locations: classpath:templates/
+  servlet:
+    connection-timeout: 60000
+    multipart:
+      enabled: true
+      max-file-size: 500MB
+      max-request-size: 1024MB
+  devtools:
+    restart:
+      enabled: false
+  profiles:
+    active: uat
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+  mapper-locations: mapper/**/*Mapper.xml
+  typeAliasesPackage: com.cmbccd.ulms.**.domain
+pagehelper:
+  #  helperDialect: mysql
+  helperDialect: oracle
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql
+
+############## Sa-Token 配置 (文档: https://sa-token.cc) ##############
+sa-token:
+  # token 名称（同时也是 cookie 名称）
+  token-name: authorization
+  # token 有效期（单位：秒）默认24小时，-1 代表永久有效
+  timeout: 86400
+  # token 最低活跃频率（单位：秒），如果 token 超过此时间没有访问系统就会被冻结，默认-1 代表不限制，永不冻结
+  active-timeout: -1
+  # 是否允许同一账号多地同时登录 （为 true 时允许一起登录, 为 false 时新登录挤掉旧登录）
+  is-concurrent: true
+  # 在多人登录同一账号时，是否共用一个 token （为 true 时所有登录共用一个 token, 为 false 时每次登录新建一个 token）
+  is-share: true
+  # token 风格（默认可取值：uuid、simple-uuid、random-32、random-64、random-128、tik）
+  token-style: uuid
+  # 是否输出操作日志
+  is-log: true
+  # 日志级别
+  log-level: info
+  # 允许从请求头中读取token
+  is-read-header: true
+  # 允许从请求体中读取token
+  is-read-body: true
+  # 允许从cookie中读取token
+  is-read-cookie: true
+  # 配置是否在登录时自动生成token
+  auto-renew: true
+  # 配置是否在token过期时自动移除
+  is-auto-renew: true
+
+# ========== ULMS 应用配置 ==========
+ulms:
+  # WebSocket 多实例模式开关
+  # false（默认）：单机模式，使用 JVM 内存管理 WebSocket 状态，无需 Redis
+  # true：多实例模式，使用 Redis 存储共享状态 + Pub/Sub 消息中继，需确保 Redis 可用
+  ws:
+    multi-instance: true

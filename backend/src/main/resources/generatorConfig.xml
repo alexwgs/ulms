@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+  PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+  "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+	<!-- 配置数据库连接信息 -->
+	<context id="DB2Tables" targetRuntime="MyBatis3">
+	<!-- 去除自动生成注释 -->
+		<commentGenerator>
+			<property name="suppressAllComments" value="true" />
+		</commentGenerator>
+
+		<jdbcConnection
+			driverClass="oracle.jdbc.driver.OracleDriver"
+			connectionURL="jdbc:oracle:thin:@localhost:1521/city" userId="trmusr"
+			password="trmusr">
+		</jdbcConnection>
+
+		<javaTypeResolver>
+			<property name="forceBigDecimals" value="false" />
+		</javaTypeResolver>
+		<!-- 指定javaBean生成位置 -->
+		<javaModelGenerator
+			targetPackage="com.cmbccd.ulms.helper.domain" targetProject="src/main/java">
+			<property name="enableSubPackages" value="true" />
+			<property name="trimStrings" value="true" />
+		</javaModelGenerator>
+
+		<!-- 指定mapper生成位置 -->
+		<sqlMapGenerator targetPackage="helper"
+			targetProject="src/main/resources/mapper">
+			<property name="enableSubPackages" value="true" />
+		</sqlMapGenerator>
+
+		<!-- 指定dao生成位置 -->
+		<javaClientGenerator type="XMLMAPPER"
+			targetPackage="com.cmbccd.ulms.helper.dao" targetProject="src/main/java">
+			<property name="enableSubPackages" value="true" />
+		</javaClientGenerator>
+
+		<!-- 指定每个表的生成策略 -->
+		<table tableName="PDA_HELPER_ARTICAL"  domainObjectName="HelperArtical"></table>
+	</context>
+</generatorConfiguration>

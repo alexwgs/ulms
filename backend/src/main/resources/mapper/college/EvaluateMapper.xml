@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmbccd.ulms.college.dao.EvaluateMapper">
+  <resultMap id="BaseResultMap" type="com.cmbccd.ulms.college.domain.Evaluate">
+    <id column="JOURNO" jdbcType="VARCHAR" property="journo" />
+    <result column="COURSE_ID" jdbcType="VARCHAR" property="courseId" />
+    <result column="TEMP_ID" jdbcType="VARCHAR" property="tempId" />
+    <result column="PLO_NUM" jdbcType="VARCHAR" property="ploNum" />
+    <result column="HANDLE_DATE" jdbcType="VARCHAR" property="handleDate" />
+    <result column="IF_ANON" jdbcType="DECIMAL" property="ifAnon" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    JOURNO, COURSE_ID, TEMP_ID, PLO_NUM, HANDLE_DATE, IF_ANON
+  </sql>
+  <select id="selectByExample" parameterType="com.cmbccd.ulms.college.domain.EvaluateExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from TRM_SATISFY_LOG
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from TRM_SATISFY_LOG
+    where JOURNO = #{journo,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from TRM_SATISFY_LOG
+    where JOURNO = #{journo,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.cmbccd.ulms.college.domain.EvaluateExample">
+    delete from TRM_SATISFY_LOG
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.cmbccd.ulms.college.domain.Evaluate">
+    insert into TRM_SATISFY_LOG (JOURNO, COURSE_ID, TEMP_ID, 
+      PLO_NUM, HANDLE_DATE, IF_ANON
+      )
+    values (#{journo,jdbcType=VARCHAR}, #{courseId,jdbcType=VARCHAR}, #{tempId,jdbcType=VARCHAR}, 
+      #{ploNum,jdbcType=VARCHAR}, #{handleDate,jdbcType=VARCHAR}, #{ifAnon,jdbcType=DECIMAL}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.cmbccd.ulms.college.domain.Evaluate">
+    insert into TRM_SATISFY_LOG
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="journo != null">
+        JOURNO,
+      </if>
+      <if test="courseId != null">
+        COURSE_ID,
+      </if>
+      <if test="tempId != null">
+        TEMP_ID,
+      </if>
+      <if test="ploNum != null">
+        PLO_NUM,
+      </if>
+      <if test="handleDate != null">
+        HANDLE_DATE,
+      </if>
+      <if test="ifAnon != null">
+        IF_ANON,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="journo != null">
+        #{journo,jdbcType=VARCHAR},
+      </if>
+      <if test="courseId != null">
+        #{courseId,jdbcType=VARCHAR},
+      </if>
+      <if test="tempId != null">
+        #{tempId,jdbcType=VARCHAR},
+      </if>
+      <if test="ploNum != null">
+        #{ploNum,jdbcType=VARCHAR},
+      </if>
+      <if test="handleDate != null">
+        #{handleDate,jdbcType=VARCHAR},
+      </if>
+      <if test="ifAnon != null">
+        #{ifAnon,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.cmbccd.ulms.college.domain.EvaluateExample" resultType="java.lang.Long">
+    select count(*) from TRM_SATISFY_LOG
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update TRM_SATISFY_LOG
+    <set>
+      <if test="record.journo != null">
+        JOURNO = #{record.journo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.courseId != null">
+        COURSE_ID = #{record.courseId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.tempId != null">
+        TEMP_ID = #{record.tempId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ploNum != null">
+        PLO_NUM = #{record.ploNum,jdbcType=VARCHAR},
+      </if>
+      <if test="record.handleDate != null">
+        HANDLE_DATE = #{record.handleDate,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ifAnon != null">
+        IF_ANON = #{record.ifAnon,jdbcType=DECIMAL},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update TRM_SATISFY_LOG
+    set JOURNO = #{record.journo,jdbcType=VARCHAR},
+      COURSE_ID = #{record.courseId,jdbcType=VARCHAR},
+      TEMP_ID = #{record.tempId,jdbcType=VARCHAR},
+      PLO_NUM = #{record.ploNum,jdbcType=VARCHAR},
+      HANDLE_DATE = #{record.handleDate,jdbcType=VARCHAR},
+      IF_ANON = #{record.ifAnon,jdbcType=DECIMAL}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cmbccd.ulms.college.domain.Evaluate">
+    update TRM_SATISFY_LOG
+    <set>
+      <if test="courseId != null">
+        COURSE_ID = #{courseId,jdbcType=VARCHAR},
+      </if>
+      <if test="tempId != null">
+        TEMP_ID = #{tempId,jdbcType=VARCHAR},
+      </if>
+      <if test="ploNum != null">
+        PLO_NUM = #{ploNum,jdbcType=VARCHAR},
+      </if>
+      <if test="handleDate != null">
+        HANDLE_DATE = #{handleDate,jdbcType=VARCHAR},
+      </if>
+      <if test="ifAnon != null">
+        IF_ANON = #{ifAnon,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where JOURNO = #{journo,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cmbccd.ulms.college.domain.Evaluate">
+    update TRM_SATISFY_LOG
+    set COURSE_ID = #{courseId,jdbcType=VARCHAR},
+      TEMP_ID = #{tempId,jdbcType=VARCHAR},
+      PLO_NUM = #{ploNum,jdbcType=VARCHAR},
+      HANDLE_DATE = #{handleDate,jdbcType=VARCHAR},
+      IF_ANON = #{ifAnon,jdbcType=DECIMAL}
+    where JOURNO = #{journo,jdbcType=VARCHAR}
+  </update>
+</mapper>

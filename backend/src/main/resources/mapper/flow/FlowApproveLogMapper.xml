@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmbccd.ulms.flow.dao.FlowApproveLogMapper">
+  <resultMap id="BaseResultMap" type="com.cmbccd.ulms.flow.domain.FlowApproveLog">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="CASE_ID" jdbcType="VARCHAR" property="caseId" />
+    <result column="APPROVE_LEVEL" jdbcType="DECIMAL" property="approveLevel" />
+    <result column="APPROVE_NUM" jdbcType="VARCHAR" property="approveNum" />
+    <result column="HANDLE_NUM" jdbcType="VARCHAR" property="handleNum" />
+    <result column="HANDLE_TIME" jdbcType="VARCHAR" property="handleTime" />
+    <result column="HANDLE_TYPE" jdbcType="DECIMAL" property="handleType" />
+    <result column="MEMO" jdbcType="VARCHAR" property="memo" />
+    <result column="NAME" jdbcType="VARCHAR" property="name" />
+    <result column="MODEL" jdbcType="DECIMAL" property="model" />
+    <result column="MODEL_INFO" jdbcType="VARCHAR" property="modelInfo" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    ID, CASE_ID, APPROVE_LEVEL, APPROVE_NUM, HANDLE_NUM, HANDLE_TIME, HANDLE_TYPE, MEMO, 
+    NAME, MODEL, MODEL_INFO
+  </sql>
+  <select id="selectByExample" parameterType="com.cmbccd.ulms.flow.domain.FlowApproveLogExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from CUS_FLOW_APPROVE_LOG
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from CUS_FLOW_APPROVE_LOG
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from CUS_FLOW_APPROVE_LOG
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.cmbccd.ulms.flow.domain.FlowApproveLogExample">
+    delete from CUS_FLOW_APPROVE_LOG
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.cmbccd.ulms.flow.domain.FlowApproveLog">
+    insert into CUS_FLOW_APPROVE_LOG (ID, CASE_ID, APPROVE_LEVEL, 
+      APPROVE_NUM, HANDLE_NUM, HANDLE_TIME, 
+      HANDLE_TYPE, MEMO, NAME, 
+      MODEL, MODEL_INFO)
+    values (#{id,jdbcType=VARCHAR}, #{caseId,jdbcType=VARCHAR}, #{approveLevel,jdbcType=DECIMAL}, 
+      #{approveNum,jdbcType=VARCHAR}, #{handleNum,jdbcType=VARCHAR}, #{handleTime,jdbcType=VARCHAR}, 
+      #{handleType,jdbcType=DECIMAL}, #{memo,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+      #{model,jdbcType=DECIMAL}, #{modelInfo,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cmbccd.ulms.flow.domain.FlowApproveLog">
+    insert into CUS_FLOW_APPROVE_LOG
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="caseId != null">
+        CASE_ID,
+      </if>
+      <if test="approveLevel != null">
+        APPROVE_LEVEL,
+      </if>
+      <if test="approveNum != null">
+        APPROVE_NUM,
+      </if>
+      <if test="handleNum != null">
+        HANDLE_NUM,
+      </if>
+      <if test="handleTime != null">
+        HANDLE_TIME,
+      </if>
+      <if test="handleType != null">
+        HANDLE_TYPE,
+      </if>
+      <if test="memo != null">
+        MEMO,
+      </if>
+      <if test="name != null">
+        NAME,
+      </if>
+      <if test="model != null">
+        MODEL,
+      </if>
+      <if test="modelInfo != null">
+        MODEL_INFO,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="caseId != null">
+        #{caseId,jdbcType=VARCHAR},
+      </if>
+      <if test="approveLevel != null">
+        #{approveLevel,jdbcType=DECIMAL},
+      </if>
+      <if test="approveNum != null">
+        #{approveNum,jdbcType=VARCHAR},
+      </if>
+      <if test="handleNum != null">
+        #{handleNum,jdbcType=VARCHAR},
+      </if>
+      <if test="handleTime != null">
+        #{handleTime,jdbcType=VARCHAR},
+      </if>
+      <if test="handleType != null">
+        #{handleType,jdbcType=DECIMAL},
+      </if>
+      <if test="memo != null">
+        #{memo,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="model != null">
+        #{model,jdbcType=DECIMAL},
+      </if>
+      <if test="modelInfo != null">
+        #{modelInfo,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.cmbccd.ulms.flow.domain.FlowApproveLogExample" resultType="java.lang.Long">
+    select count(*) from CUS_FLOW_APPROVE_LOG
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update CUS_FLOW_APPROVE_LOG
+    <set>
+      <if test="record.id != null">
+        ID = #{record.id,jdbcType=VARCHAR},
+      </if>
+      <if test="record.caseId != null">
+        CASE_ID = #{record.caseId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.approveLevel != null">
+        APPROVE_LEVEL = #{record.approveLevel,jdbcType=DECIMAL},
+      </if>
+      <if test="record.approveNum != null">
+        APPROVE_NUM = #{record.approveNum,jdbcType=VARCHAR},
+      </if>
+      <if test="record.handleNum != null">
+        HANDLE_NUM = #{record.handleNum,jdbcType=VARCHAR},
+      </if>
+      <if test="record.handleTime != null">
+        HANDLE_TIME = #{record.handleTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.handleType != null">
+        HANDLE_TYPE = #{record.handleType,jdbcType=DECIMAL},
+      </if>
+      <if test="record.memo != null">
+        MEMO = #{record.memo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.name != null">
+        NAME = #{record.name,jdbcType=VARCHAR},
+      </if>
+      <if test="record.model != null">
+        MODEL = #{record.model,jdbcType=DECIMAL},
+      </if>
+      <if test="record.modelInfo != null">
+        MODEL_INFO = #{record.modelInfo,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update CUS_FLOW_APPROVE_LOG
+    set ID = #{record.id,jdbcType=VARCHAR},
+      CASE_ID = #{record.caseId,jdbcType=VARCHAR},
+      APPROVE_LEVEL = #{record.approveLevel,jdbcType=DECIMAL},
+      APPROVE_NUM = #{record.approveNum,jdbcType=VARCHAR},
+      HANDLE_NUM = #{record.handleNum,jdbcType=VARCHAR},
+      HANDLE_TIME = #{record.handleTime,jdbcType=VARCHAR},
+      HANDLE_TYPE = #{record.handleType,jdbcType=DECIMAL},
+      MEMO = #{record.memo,jdbcType=VARCHAR},
+      NAME = #{record.name,jdbcType=VARCHAR},
+      MODEL = #{record.model,jdbcType=DECIMAL},
+      MODEL_INFO = #{record.modelInfo,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cmbccd.ulms.flow.domain.FlowApproveLog">
+    update CUS_FLOW_APPROVE_LOG
+    <set>
+      <if test="caseId != null">
+        CASE_ID = #{caseId,jdbcType=VARCHAR},
+      </if>
+      <if test="approveLevel != null">
+        APPROVE_LEVEL = #{approveLevel,jdbcType=DECIMAL},
+      </if>
+      <if test="approveNum != null">
+        APPROVE_NUM = #{approveNum,jdbcType=VARCHAR},
+      </if>
+      <if test="handleNum != null">
+        HANDLE_NUM = #{handleNum,jdbcType=VARCHAR},
+      </if>
+      <if test="handleTime != null">
+        HANDLE_TIME = #{handleTime,jdbcType=VARCHAR},
+      </if>
+      <if test="handleType != null">
+        HANDLE_TYPE = #{handleType,jdbcType=DECIMAL},
+      </if>
+      <if test="memo != null">
+        MEMO = #{memo,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        NAME = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="model != null">
+        MODEL = #{model,jdbcType=DECIMAL},
+      </if>
+      <if test="modelInfo != null">
+        MODEL_INFO = #{modelInfo,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cmbccd.ulms.flow.domain.FlowApproveLog">
+    update CUS_FLOW_APPROVE_LOG
+    set CASE_ID = #{caseId,jdbcType=VARCHAR},
+      APPROVE_LEVEL = #{approveLevel,jdbcType=DECIMAL},
+      APPROVE_NUM = #{approveNum,jdbcType=VARCHAR},
+      HANDLE_NUM = #{handleNum,jdbcType=VARCHAR},
+      HANDLE_TIME = #{handleTime,jdbcType=VARCHAR},
+      HANDLE_TYPE = #{handleType,jdbcType=DECIMAL},
+      MEMO = #{memo,jdbcType=VARCHAR},
+      NAME = #{name,jdbcType=VARCHAR},
+      MODEL = #{model,jdbcType=DECIMAL},
+      MODEL_INFO = #{modelInfo,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <select id="selectApproveLogList" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT
+      b.id,#{ id,
+	jdbcType = VARCHAR } CASE_ID,
+      a.APPROVE_LEVEL,
+      b.APPROVE_NUM,
+      b.HANDLE_NUM,
+      b.HANDLE_TIME,
+      b.HANDLE_TYPE,
+      b.MEMO,
+      a.Name,
+      a.MODEL,
+      a.MODEL_INFO
+    FROM
+      (
+        SELECT
+          *
+        FROM
+          CUS_FLOW_APPROVE_TEMP
+        WHERE
+            flow_id = ( SELECT flow_id FROM CUS_FLOW_CASE WHERE id =#{ id, jdbcType = VARCHAR } )
+          AND status = 1 ) a
+		LEFT JOIN ( SELECT * FROM CUS_FLOW_APPROVE_LOG WHERE CASE_ID = #{ id, jdbcType = VARCHAR } ) b ON (
+          a.APPROVE_LEVEL = b.APPROVE_LEVEL
+          AND a.name = b.NAME)
+        order by a.APPROVE_LEVEL
+  </select>
+
+  <select id="selectApproveLogListWithProxy" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT
+      DISTINCT
+      ID,
+      CASE_ID,
+      APPROVE_LEVEL,
+      APPROVE_NUM,
+      HANDLE_TIME,
+      HANDLE_TYPE,
+      MEMO,
+      NAME,
+      MODEL,
+      MODEL_INFO,
+      ( CASE WHEN a.APPROVE_NUM = #{userId,jdbcType=VARCHAR} THEN a.APPROVE_NUM WHEN b.PROXY_NUM IS NOT NULL THEN #{userId,jdbcType=VARCHAR} ELSE '' END ) HANDLE_NUM
+    FROM
+      ( SELECT * FROM CUS_FLOW_APPROVE_LOG WHERE CASE_ID = #{caseId,jdbcType=VARCHAR} ) a
+        LEFT JOIN ( SELECT PLO_NUM, PROXY_NUM FROM CUS_FLOW_PROXY WHERE TO_CHAR( SYSDATE, 'YYYY-MM-DD hh24:mi:ss' ) BETWEEN BEG_DATE AND END_DATE AND PROXY_NUM = #{userId,jdbcType=VARCHAR} ) b ON ((
+                                                                                                                                                                              a.approve_num = b.PLO_NUM
+                                                                                                                                                                            OR a.approve_num = b.PROXY_NUM
+                                                                                                                                                                          )
+        AND handle_type IS NULL
+        ) ORDER BY APPROVE_LEVEL
+  </select>
+
+</mapper>

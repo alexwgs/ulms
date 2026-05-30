@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmbccd.ulms.sys.dao.OperateLogMapper">
+  <resultMap id="BaseResultMap" type="com.cmbccd.ulms.sys.domain.OperateLog">
+    <result column="DATA_DATE" jdbcType="VARCHAR" property="dataDate" />
+    <result column="PLO_NUM" jdbcType="VARCHAR" property="ploNum" />
+    <result column="MODULE" jdbcType="VARCHAR" property="module" />
+    <result column="OPERATE" jdbcType="VARCHAR" property="operate" />
+    <result column="DATA_TIME" jdbcType="VARCHAR" property="dataTime" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    DATA_DATE, PLO_NUM, MODULE, OPERATE, DATA_TIME
+  </sql>
+  <select id="selectByExample" parameterType="com.cmbccd.ulms.sys.domain.OperateLogExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from SYS_OPERATE_LOG
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <delete id="deleteByExample" parameterType="com.cmbccd.ulms.sys.domain.OperateLogExample">
+    delete from SYS_OPERATE_LOG
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.cmbccd.ulms.sys.domain.OperateLog">
+    insert into SYS_OPERATE_LOG (DATA_DATE, PLO_NUM, MODULE, 
+      OPERATE, DATA_TIME)
+    values (#{dataDate,jdbcType=VARCHAR}, #{ploNum,jdbcType=VARCHAR}, #{module,jdbcType=VARCHAR}, 
+      #{operate,jdbcType=VARCHAR}, #{dataTime,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cmbccd.ulms.sys.domain.OperateLog">
+    insert into SYS_OPERATE_LOG
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="dataDate != null">
+        DATA_DATE,
+      </if>
+      <if test="ploNum != null">
+        PLO_NUM,
+      </if>
+      <if test="module != null">
+        MODULE,
+      </if>
+      <if test="operate != null">
+        OPERATE,
+      </if>
+      <if test="dataTime != null">
+        DATA_TIME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="dataDate != null">
+        #{dataDate,jdbcType=VARCHAR},
+      </if>
+      <if test="ploNum != null">
+        #{ploNum,jdbcType=VARCHAR},
+      </if>
+      <if test="module != null">
+        #{module,jdbcType=VARCHAR},
+      </if>
+      <if test="operate != null">
+        #{operate,jdbcType=VARCHAR},
+      </if>
+      <if test="dataTime != null">
+        #{dataTime,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.cmbccd.ulms.sys.domain.OperateLogExample" resultType="java.lang.Long">
+    select count(*) from SYS_OPERATE_LOG
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update SYS_OPERATE_LOG
+    <set>
+      <if test="record.dataDate != null">
+        DATA_DATE = #{record.dataDate,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ploNum != null">
+        PLO_NUM = #{record.ploNum,jdbcType=VARCHAR},
+      </if>
+      <if test="record.module != null">
+        MODULE = #{record.module,jdbcType=VARCHAR},
+      </if>
+      <if test="record.operate != null">
+        OPERATE = #{record.operate,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dataTime != null">
+        DATA_TIME = #{record.dataTime,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update SYS_OPERATE_LOG
+    set DATA_DATE = #{record.dataDate,jdbcType=VARCHAR},
+      PLO_NUM = #{record.ploNum,jdbcType=VARCHAR},
+      MODULE = #{record.module,jdbcType=VARCHAR},
+      OPERATE = #{record.operate,jdbcType=VARCHAR},
+      DATA_TIME = #{record.dataTime,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+</mapper>

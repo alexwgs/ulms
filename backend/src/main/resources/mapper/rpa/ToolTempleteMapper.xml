@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmbccd.ulms.rpa.dao.ToolTempleteMapper">
+  <resultMap id="BaseResultMap" type="com.cmbccd.ulms.rpa.domain.ToolTemplete">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="TEMPLETE_ID" jdbcType="VARCHAR" property="templeteId" />
+    <result column="LABEL" jdbcType="VARCHAR" property="label" />
+    <result column="FIELD_NAME" jdbcType="VARCHAR" property="fieldName" />
+    <result column="TYPE" jdbcType="VARCHAR" property="type" />
+    <result column="OPTIONS" jdbcType="VARCHAR" property="options" />
+    <result column="REQUIRED" jdbcType="NUMERIC" property="required" />
+    <result column="ORDER_ID" jdbcType="NUMERIC" property="orderId" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    ID, TEMPLETE_ID, LABEL, FIELD_NAME, TYPE, OPTIONS, REQUIRED, ORDER_ID
+  </sql>
+  <select id="selectByExample" parameterType="com.cmbccd.ulms.rpa.domain.ToolTempleteExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from RPA_TOOL_TEMPLETE
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from RPA_TOOL_TEMPLETE
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from RPA_TOOL_TEMPLETE
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.cmbccd.ulms.rpa.domain.ToolTempleteExample">
+    delete from RPA_TOOL_TEMPLETE
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.cmbccd.ulms.rpa.domain.ToolTemplete">
+    insert into RPA_TOOL_TEMPLETE (ID, TEMPLETE_ID, LABEL, 
+      FIELD_NAME, TYPE, OPTIONS, 
+      REQUIRED, ORDER_ID)
+    values (#{id,jdbcType=VARCHAR}, #{templeteId,jdbcType=VARCHAR}, #{label,jdbcType=VARCHAR}, 
+      #{fieldName,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, #{options,jdbcType=VARCHAR}, 
+      #{required,jdbcType=NUMERIC}, #{orderId,jdbcType=NUMERIC})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cmbccd.ulms.rpa.domain.ToolTemplete">
+    insert into RPA_TOOL_TEMPLETE
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="templeteId != null">
+        TEMPLETE_ID,
+      </if>
+      <if test="label != null">
+        LABEL,
+      </if>
+      <if test="fieldName != null">
+        FIELD_NAME,
+      </if>
+      <if test="type != null">
+        TYPE,
+      </if>
+      <if test="options != null">
+        OPTIONS,
+      </if>
+      <if test="required != null">
+        REQUIRED,
+      </if>
+      <if test="orderId != null">
+        ORDER_ID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="templeteId != null">
+        #{templeteId,jdbcType=VARCHAR},
+      </if>
+      <if test="label != null">
+        #{label,jdbcType=VARCHAR},
+      </if>
+      <if test="fieldName != null">
+        #{fieldName,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="options != null">
+        #{options,jdbcType=VARCHAR},
+      </if>
+      <if test="required != null">
+        #{required,jdbcType=NUMERIC},
+      </if>
+      <if test="orderId != null">
+        #{orderId,jdbcType=NUMERIC},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.cmbccd.ulms.rpa.domain.ToolTempleteExample" resultType="java.lang.Long">
+    select count(*) from RPA_TOOL_TEMPLETE
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update RPA_TOOL_TEMPLETE
+    <set>
+      <if test="row.id != null">
+        ID = #{row.id,jdbcType=VARCHAR},
+      </if>
+      <if test="row.templeteId != null">
+        TEMPLETE_ID = #{row.templeteId,jdbcType=VARCHAR},
+      </if>
+      <if test="row.label != null">
+        LABEL = #{row.label,jdbcType=VARCHAR},
+      </if>
+      <if test="row.fieldName != null">
+        FIELD_NAME = #{row.fieldName,jdbcType=VARCHAR},
+      </if>
+      <if test="row.type != null">
+        TYPE = #{row.type,jdbcType=VARCHAR},
+      </if>
+      <if test="row.options != null">
+        OPTIONS = #{row.options,jdbcType=VARCHAR},
+      </if>
+      <if test="row.required != null">
+        REQUIRED = #{row.required,jdbcType=NUMERIC},
+      </if>
+      <if test="row.orderId != null">
+        ORDER_ID = #{row.orderId,jdbcType=NUMERIC},
+      </if>
+    </set>
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update RPA_TOOL_TEMPLETE
+    set ID = #{row.id,jdbcType=VARCHAR},
+      TEMPLETE_ID = #{row.templeteId,jdbcType=VARCHAR},
+      LABEL = #{row.label,jdbcType=VARCHAR},
+      FIELD_NAME = #{row.fieldName,jdbcType=VARCHAR},
+      TYPE = #{row.type,jdbcType=VARCHAR},
+      OPTIONS = #{row.options,jdbcType=VARCHAR},
+      REQUIRED = #{row.required,jdbcType=NUMERIC},
+      ORDER_ID = #{row.orderId,jdbcType=NUMERIC}
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cmbccd.ulms.rpa.domain.ToolTemplete">
+    update RPA_TOOL_TEMPLETE
+    <set>
+      <if test="templeteId != null">
+        TEMPLETE_ID = #{templeteId,jdbcType=VARCHAR},
+      </if>
+      <if test="label != null">
+        LABEL = #{label,jdbcType=VARCHAR},
+      </if>
+      <if test="fieldName != null">
+        FIELD_NAME = #{fieldName,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        TYPE = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="options != null">
+        OPTIONS = #{options,jdbcType=VARCHAR},
+      </if>
+      <if test="required != null">
+        REQUIRED = #{required,jdbcType=NUMERIC},
+      </if>
+      <if test="orderId != null">
+        ORDER_ID = #{orderId,jdbcType=NUMERIC},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cmbccd.ulms.rpa.domain.ToolTemplete">
+    update RPA_TOOL_TEMPLETE
+    set TEMPLETE_ID = #{templeteId,jdbcType=VARCHAR},
+      LABEL = #{label,jdbcType=VARCHAR},
+      FIELD_NAME = #{fieldName,jdbcType=VARCHAR},
+      TYPE = #{type,jdbcType=VARCHAR},
+      OPTIONS = #{options,jdbcType=VARCHAR},
+      REQUIRED = #{required,jdbcType=NUMERIC},
+      ORDER_ID = #{orderId,jdbcType=NUMERIC}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

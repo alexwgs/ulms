@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmbccd.ulms.edu.dao.QuesCollectMapper">
+  <resultMap id="BaseResultMap" type="com.cmbccd.ulms.edu.domain.QuesCollect">
+    <id column="JOURNO" jdbcType="VARCHAR" property="journo" />
+    <result column="PLO_NUM" jdbcType="VARCHAR" property="ploNum" />
+    <result column="QUES_CODE" jdbcType="VARCHAR" property="quesCode" />
+    <result column="DATA_DATE" jdbcType="VARCHAR" property="dataDate" />
+    <result column="STATUS" jdbcType="DECIMAL" property="status" />
+    <result column="UPDATE_DATE" jdbcType="VARCHAR" property="updateDate" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    JOURNO, PLO_NUM, QUES_CODE, DATA_DATE, STATUS, UPDATE_DATE
+  </sql>
+  <select id="selectByExample" parameterType="com.cmbccd.ulms.edu.domain.QuesCollectExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from TRM_QUES_COLLECT
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from TRM_QUES_COLLECT
+    where JOURNO = #{journo,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from TRM_QUES_COLLECT
+    where JOURNO = #{journo,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.cmbccd.ulms.edu.domain.QuesCollectExample">
+    delete from TRM_QUES_COLLECT
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.cmbccd.ulms.edu.domain.QuesCollect">
+    insert into TRM_QUES_COLLECT (JOURNO, PLO_NUM, QUES_CODE, 
+      DATA_DATE, STATUS, UPDATE_DATE
+      )
+    values (#{journo,jdbcType=VARCHAR}, #{ploNum,jdbcType=VARCHAR}, #{quesCode,jdbcType=VARCHAR}, 
+      #{dataDate,jdbcType=VARCHAR}, #{status,jdbcType=DECIMAL}, #{updateDate,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.cmbccd.ulms.edu.domain.QuesCollect">
+    insert into TRM_QUES_COLLECT
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="journo != null">
+        JOURNO,
+      </if>
+      <if test="ploNum != null">
+        PLO_NUM,
+      </if>
+      <if test="quesCode != null">
+        QUES_CODE,
+      </if>
+      <if test="dataDate != null">
+        DATA_DATE,
+      </if>
+      <if test="status != null">
+        STATUS,
+      </if>
+      <if test="updateDate != null">
+        UPDATE_DATE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="journo != null">
+        #{journo,jdbcType=VARCHAR},
+      </if>
+      <if test="ploNum != null">
+        #{ploNum,jdbcType=VARCHAR},
+      </if>
+      <if test="quesCode != null">
+        #{quesCode,jdbcType=VARCHAR},
+      </if>
+      <if test="dataDate != null">
+        #{dataDate,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=DECIMAL},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.cmbccd.ulms.edu.domain.QuesCollectExample" resultType="java.lang.Long">
+    select count(*) from TRM_QUES_COLLECT
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update TRM_QUES_COLLECT
+    <set>
+      <if test="record.journo != null">
+        JOURNO = #{record.journo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ploNum != null">
+        PLO_NUM = #{record.ploNum,jdbcType=VARCHAR},
+      </if>
+      <if test="record.quesCode != null">
+        QUES_CODE = #{record.quesCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dataDate != null">
+        DATA_DATE = #{record.dataDate,jdbcType=VARCHAR},
+      </if>
+      <if test="record.status != null">
+        STATUS = #{record.status,jdbcType=DECIMAL},
+      </if>
+      <if test="record.updateDate != null">
+        UPDATE_DATE = #{record.updateDate,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update TRM_QUES_COLLECT
+    set JOURNO = #{record.journo,jdbcType=VARCHAR},
+      PLO_NUM = #{record.ploNum,jdbcType=VARCHAR},
+      QUES_CODE = #{record.quesCode,jdbcType=VARCHAR},
+      DATA_DATE = #{record.dataDate,jdbcType=VARCHAR},
+      STATUS = #{record.status,jdbcType=DECIMAL},
+      UPDATE_DATE = #{record.updateDate,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cmbccd.ulms.edu.domain.QuesCollect">
+    update TRM_QUES_COLLECT
+    <set>
+      <if test="ploNum != null">
+        PLO_NUM = #{ploNum,jdbcType=VARCHAR},
+      </if>
+      <if test="quesCode != null">
+        QUES_CODE = #{quesCode,jdbcType=VARCHAR},
+      </if>
+      <if test="dataDate != null">
+        DATA_DATE = #{dataDate,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        STATUS = #{status,jdbcType=DECIMAL},
+      </if>
+      <if test="updateDate != null">
+        UPDATE_DATE = #{updateDate,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where JOURNO = #{journo,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cmbccd.ulms.edu.domain.QuesCollect">
+    update TRM_QUES_COLLECT
+    set PLO_NUM = #{ploNum,jdbcType=VARCHAR},
+      QUES_CODE = #{quesCode,jdbcType=VARCHAR},
+      DATA_DATE = #{dataDate,jdbcType=VARCHAR},
+      STATUS = #{status,jdbcType=DECIMAL},
+      UPDATE_DATE = #{updateDate,jdbcType=VARCHAR}
+    where JOURNO = #{journo,jdbcType=VARCHAR}
+  </update>
+  
+  <select  id="getCollectNumber"  resultType="java.lang.Integer">
+	  	select count(plo_num) from TRM_QUES_COLLECT where status = 1  and  PLO_NUM = #{ploNum,jdbcType=VARCHAR} 
+		   <if test="collectDay != null">
+	        and data_date between to_char(sysdate - #{collectDay,jdbcType=DECIMAL} ,'yyyy-MM-dd')||' 00:00:00'  and to_char(sysdate ,'yyyy-MM-dd hh24:mi:ss')
+	      </if>
+  </select>
+  
+  <select  id="getHaveCollect"  resultType="java.lang.Integer">
+	  	select count(plo_num) from TRM_QUES_COLLECT where status = 1  and  PLO_NUM = #{ploNum,jdbcType=VARCHAR}  and ques_code=#{quesCode,jdbcType=VARCHAR} 
+		   <if test="collectDay != null">
+	        and data_date between to_char(sysdate - #{collectDay,jdbcType=DECIMAL} ,'yyyy-MM-dd')||' 00:00:00'  and to_char(sysdate ,'yyyy-MM-dd hh24:mi:ss')
+	      </if>
+  </select>
+</mapper>

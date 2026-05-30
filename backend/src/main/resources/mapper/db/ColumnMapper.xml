@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmbccd.ulms.db.dao.ColumnMapper">
+  <resultMap id="BaseResultMap" type="com.cmbccd.ulms.db.domain.Column">
+    <id column="ID" jdbcType="DECIMAL" property="id" />
+    <result column="TID" jdbcType="DECIMAL" property="tid" />
+    <result column="COL" jdbcType="VARCHAR" property="col" />
+    <result column="COL_NAME" jdbcType="VARCHAR" property="colName" />
+    <result column="FORMAT_TYPE" jdbcType="VARCHAR" property="formatType" />
+    <result column="FORMAT_SIZE" jdbcType="VARCHAR" property="formatSize" />
+    <result column="PRIMARY_KEY" jdbcType="CHAR" property="primaryKey" />
+    <result column="NOT_NULL" jdbcType="CHAR" property="notNull" />
+    <result column="DESCRIBE" jdbcType="VARCHAR" property="describe" />
+    <result column="STATUS" jdbcType="DECIMAL" property="status" />
+    <result column="SORT" jdbcType="DECIMAL" property="sort" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    ID, TID, COL, COL_NAME, FORMAT_TYPE, FORMAT_SIZE, PRIMARY_KEY, NOT_NULL, DESCRIBE, 
+    STATUS, SORT
+  </sql>
+  <select id="selectByExample" parameterType="com.cmbccd.ulms.db.domain.ColumnExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from PDA_TABLE_COLUMN
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from PDA_TABLE_COLUMN
+    where ID = #{id,jdbcType=DECIMAL}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from PDA_TABLE_COLUMN
+    where ID = #{id,jdbcType=DECIMAL}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.cmbccd.ulms.db.domain.ColumnExample">
+    delete from PDA_TABLE_COLUMN
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.cmbccd.ulms.db.domain.Column">
+    insert into PDA_TABLE_COLUMN (ID, TID, COL, 
+      COL_NAME, FORMAT_TYPE, FORMAT_SIZE, 
+      PRIMARY_KEY, NOT_NULL, DESCRIBE, 
+      STATUS, SORT)
+    values (#{id,jdbcType=DECIMAL}, #{tid,jdbcType=DECIMAL}, #{col,jdbcType=VARCHAR}, 
+      #{colName,jdbcType=VARCHAR}, #{formatType,jdbcType=VARCHAR}, #{formatSize,jdbcType=VARCHAR}, 
+      #{primaryKey,jdbcType=CHAR}, #{notNull,jdbcType=CHAR}, #{describe,jdbcType=VARCHAR}, 
+      #{status,jdbcType=DECIMAL}, #{sort,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cmbccd.ulms.db.domain.Column">
+    insert into PDA_TABLE_COLUMN
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="tid != null">
+        TID,
+      </if>
+      <if test="col != null">
+        COL,
+      </if>
+      <if test="colName != null">
+        COL_NAME,
+      </if>
+      <if test="formatType != null">
+        FORMAT_TYPE,
+      </if>
+      <if test="formatSize != null">
+        FORMAT_SIZE,
+      </if>
+      <if test="primaryKey != null">
+        PRIMARY_KEY,
+      </if>
+      <if test="notNull != null">
+        NOT_NULL,
+      </if>
+      <if test="describe != null">
+        DESCRIBE,
+      </if>
+      <if test="status != null">
+        STATUS,
+      </if>
+      <if test="sort != null">
+        SORT,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=DECIMAL},
+      </if>
+      <if test="tid != null">
+        #{tid,jdbcType=DECIMAL},
+      </if>
+      <if test="col != null">
+        #{col,jdbcType=VARCHAR},
+      </if>
+      <if test="colName != null">
+        #{colName,jdbcType=VARCHAR},
+      </if>
+      <if test="formatType != null">
+        #{formatType,jdbcType=VARCHAR},
+      </if>
+      <if test="formatSize != null">
+        #{formatSize,jdbcType=VARCHAR},
+      </if>
+      <if test="primaryKey != null">
+        #{primaryKey,jdbcType=CHAR},
+      </if>
+      <if test="notNull != null">
+        #{notNull,jdbcType=CHAR},
+      </if>
+      <if test="describe != null">
+        #{describe,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=DECIMAL},
+      </if>
+      <if test="sort != null">
+        #{sort,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.cmbccd.ulms.db.domain.ColumnExample" resultType="java.lang.Long">
+    select count(*) from PDA_TABLE_COLUMN
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update PDA_TABLE_COLUMN
+    <set>
+      <if test="record.id != null">
+        ID = #{record.id,jdbcType=DECIMAL},
+      </if>
+      <if test="record.tid != null">
+        TID = #{record.tid,jdbcType=DECIMAL},
+      </if>
+      <if test="record.col != null">
+        COL = #{record.col,jdbcType=VARCHAR},
+      </if>
+      <if test="record.colName != null">
+        COL_NAME = #{record.colName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.formatType != null">
+        FORMAT_TYPE = #{record.formatType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.formatSize != null">
+        FORMAT_SIZE = #{record.formatSize,jdbcType=VARCHAR},
+      </if>
+      <if test="record.primaryKey != null">
+        PRIMARY_KEY = #{record.primaryKey,jdbcType=CHAR},
+      </if>
+      <if test="record.notNull != null">
+        NOT_NULL = #{record.notNull,jdbcType=CHAR},
+      </if>
+      <if test="record.describe != null">
+        DESCRIBE = #{record.describe,jdbcType=VARCHAR},
+      </if>
+      <if test="record.status != null">
+        STATUS = #{record.status,jdbcType=DECIMAL},
+      </if>
+      <if test="record.sort != null">
+        SORT = #{record.sort,jdbcType=DECIMAL},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update PDA_TABLE_COLUMN
+    set ID = #{record.id,jdbcType=DECIMAL},
+      TID = #{record.tid,jdbcType=DECIMAL},
+      COL = #{record.col,jdbcType=VARCHAR},
+      COL_NAME = #{record.colName,jdbcType=VARCHAR},
+      FORMAT_TYPE = #{record.formatType,jdbcType=VARCHAR},
+      FORMAT_SIZE = #{record.formatSize,jdbcType=VARCHAR},
+      PRIMARY_KEY = #{record.primaryKey,jdbcType=CHAR},
+      NOT_NULL = #{record.notNull,jdbcType=CHAR},
+      DESCRIBE = #{record.describe,jdbcType=VARCHAR},
+      STATUS = #{record.status,jdbcType=DECIMAL},
+      SORT = #{record.sort,jdbcType=DECIMAL}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cmbccd.ulms.db.domain.Column">
+    update PDA_TABLE_COLUMN
+    <set>
+      <if test="tid != null">
+        TID = #{tid,jdbcType=DECIMAL},
+      </if>
+      <if test="col != null">
+        COL = #{col,jdbcType=VARCHAR},
+      </if>
+      <if test="colName != null">
+        COL_NAME = #{colName,jdbcType=VARCHAR},
+      </if>
+      <if test="formatType != null">
+        FORMAT_TYPE = #{formatType,jdbcType=VARCHAR},
+      </if>
+      <if test="formatSize != null">
+        FORMAT_SIZE = #{formatSize,jdbcType=VARCHAR},
+      </if>
+      <if test="primaryKey != null">
+        PRIMARY_KEY = #{primaryKey,jdbcType=CHAR},
+      </if>
+      <if test="notNull != null">
+        NOT_NULL = #{notNull,jdbcType=CHAR},
+      </if>
+      <if test="describe != null">
+        DESCRIBE = #{describe,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        STATUS = #{status,jdbcType=DECIMAL},
+      </if>
+      <if test="sort != null">
+        SORT = #{sort,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cmbccd.ulms.db.domain.Column">
+    update PDA_TABLE_COLUMN
+    set TID = #{tid,jdbcType=DECIMAL},
+      COL = #{col,jdbcType=VARCHAR},
+      COL_NAME = #{colName,jdbcType=VARCHAR},
+      FORMAT_TYPE = #{formatType,jdbcType=VARCHAR},
+      FORMAT_SIZE = #{formatSize,jdbcType=VARCHAR},
+      PRIMARY_KEY = #{primaryKey,jdbcType=CHAR},
+      NOT_NULL = #{notNull,jdbcType=CHAR},
+      DESCRIBE = #{describe,jdbcType=VARCHAR},
+      STATUS = #{status,jdbcType=DECIMAL},
+      SORT = #{sort,jdbcType=DECIMAL}
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+  
+  <select id="selectNewId"   resultType="java.lang.Integer">
+  	select (case when count(*)=0 then 1 else max(id)+1 end) from PDA_TABLE_COLUMN 
+  </select>
+  
+  <select id="selectExistColumn"  resultMap="BaseResultMap">
+ select d.id,d.tid,
+       a.COLUMN_NAME    AS col,
+       ''       AS col_name,
+			 a.DATA_TYPE      AS FORMAT_TYPE,
+			 (case when a.DATA_TYPE = 'NUMBER' then '('||a.DATA_PRECISION||','||a.DATA_SCALE||')' else to_char(a.CHAR_LENGTH) end) AS FORMAT_SIZE,
+			 c.constraint_type as PRIMARY_KEY,
+       a.NULLABLE       AS nullable,
+			 b.COMMENTS       AS DESCRIBE,
+			 1 as status,
+			 a.column_id as sort
+	 from (select TABLE_NAME,COLUMN_NAME,DATA_TYPE,DATA_PRECISION,DATA_SCALE,CHAR_LENGTH,NULLABLE,column_id from user_tab_columns) a
+	 left join user_col_comments b on (a.TABLE_NAME = b.TABLE_NAME and a.COLUMN_NAME = b.COLUMN_NAME )
+	 left join (select con.table_name,col.column_name,con.constraint_type from  user_constraints con,user_cons_columns col
+	 where con.constraint_name=col.constraint_name and con.constraint_type in ('P','U','R')) c on (a.TABLE_NAME = c.TABLE_NAME and a.COLUMN_NAME = c.COLUMN_NAME)
+	 left join (select a.id,a.tid,a.col,b.name from PDA_TABLE_COLUMN a,PDA_TABLES b where a.TID=b.id) d ON (a.TABLE_NAME = d.name and a.COLUMN_NAME = d.col)
+	 where d.col is not null
+	 order by a.TABLE_NAME, a.COLUMN_ID
+  </select>
+  
+    <select id="selectNotExistColumn"  resultMap="BaseResultMap">
+ select d.id as tid,
+       a.COLUMN_NAME    AS col,
+       ''       AS col_name,
+			 a.DATA_TYPE      AS FORMAT_TYPE,
+			 (case when a.DATA_TYPE = 'NUMBER' then '('||a.DATA_PRECISION||','||a.DATA_SCALE||')' else to_char(a.CHAR_LENGTH) end) AS FORMAT_SIZE,
+			 c.constraint_type as PRIMARY_KEY,
+       a.NULLABLE       AS nullable,
+			 b.COMMENTS       AS DESCRIBE,
+			 1 as status,
+			 a.column_id as sort
+	 from (select TABLE_NAME,COLUMN_NAME,DATA_TYPE,DATA_PRECISION,DATA_SCALE,CHAR_LENGTH,NULLABLE,column_id from user_tab_columns) a
+	 left join user_col_comments b on (a.TABLE_NAME = b.TABLE_NAME and a.COLUMN_NAME = b.COLUMN_NAME )
+	 left join (select con.table_name,col.column_name,con.constraint_type from  user_constraints con,user_cons_columns col
+	 where con.constraint_name=col.constraint_name and con.constraint_type in ('P','U','R')) c on (a.TABLE_NAME = c.TABLE_NAME and a.COLUMN_NAME = c.COLUMN_NAME)
+	 left join PDA_TABLES d on (a.TABLE_NAME = d.name)
+	 left join PDA_TABLE_COLUMN e on (d.id = e.tid and a.COLUMN_NAME = e.col)
+	 where e.col is null and d.id is not null
+	 order by a.TABLE_NAME, a.COLUMN_ID
+  </select>
+
+  <select id="selectColumnByTableName" resultMap="BaseResultMap">
+    SELECT
+      a.*,
+      b.COMMENTS DESCRIBE
+    FROM
+      ( SELECT COLUMN_NAME COL_NAME, DATA_TYPE FORMAT_TYPE, DATA_LENGTH FORMAT_SIZE, NULLABLE NOT_NULL FROM user_tab_columns WHERE Table_Name =#{tableName,jdbcType=VARCHAR} ) a
+      LEFT JOIN ( SELECT COLUMN_NAME, COMMENTS FROM user_col_comments WHERE Table_Name = #{tableName,jdbcType=VARCHAR}) b ON (
+      a.COL_NAME = b.COLUMN_NAME)
+  </select>
+
+  <update id="updateColumnComment" parameterType="com.cmbccd.ulms.db.domain.Column">
+    comment on table #{record.,jdbcType=CHAR} is '表的注释信息'
+  </update>
+</mapper>

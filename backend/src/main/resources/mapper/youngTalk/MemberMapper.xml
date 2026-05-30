@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmbccd.ulms.youngTalk.dao.MemberMapper">
+  <resultMap id="BaseResultMap" type="com.cmbccd.ulms.youngTalk.domain.Member">
+    <result column="ID" jdbcType="DECIMAL" property="id" />
+    <result column="ARTICAL_ID" jdbcType="DECIMAL" property="articalId" />
+    <result column="USER_ID" jdbcType="VARCHAR" property="userId" />
+    <result column="ROLE" jdbcType="DECIMAL" property="role" />
+    <result column="DESCRIBE" jdbcType="VARCHAR" property="describe" />
+    <result column="SCORE_RATE" jdbcType="DECIMAL" property="scoreRate" />
+    <result column="STATUS" jdbcType="DECIMAL" property="status" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    ID, ARTICAL_ID, USER_ID, ROLE, DESCRIBE, SCORE_RATE, STATUS
+  </sql>
+  <select id="selectByExample" parameterType="com.cmbccd.ulms.youngTalk.domain.MemberExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from CYT_ITEM_MEMBER
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <delete id="deleteByExample" parameterType="com.cmbccd.ulms.youngTalk.domain.MemberExample">
+    delete from CYT_ITEM_MEMBER
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.cmbccd.ulms.youngTalk.domain.Member">
+    insert into CYT_ITEM_MEMBER (ID, ARTICAL_ID, USER_ID, 
+      ROLE, DESCRIBE, SCORE_RATE, 
+      STATUS)
+    values (#{id,jdbcType=DECIMAL}, #{articalId,jdbcType=DECIMAL}, #{userId,jdbcType=VARCHAR}, 
+      #{role,jdbcType=DECIMAL}, #{describe,jdbcType=VARCHAR}, #{scoreRate,jdbcType=DECIMAL}, 
+      #{status,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cmbccd.ulms.youngTalk.domain.Member">
+    insert into CYT_ITEM_MEMBER
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="articalId != null">
+        ARTICAL_ID,
+      </if>
+      <if test="userId != null">
+        USER_ID,
+      </if>
+      <if test="role != null">
+        ROLE,
+      </if>
+      <if test="describe != null">
+        DESCRIBE,
+      </if>
+      <if test="scoreRate != null">
+        SCORE_RATE,
+      </if>
+      <if test="status != null">
+        STATUS,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=DECIMAL},
+      </if>
+      <if test="articalId != null">
+        #{articalId,jdbcType=DECIMAL},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="role != null">
+        #{role,jdbcType=DECIMAL},
+      </if>
+      <if test="describe != null">
+        #{describe,jdbcType=VARCHAR},
+      </if>
+      <if test="scoreRate != null">
+        #{scoreRate,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.cmbccd.ulms.youngTalk.domain.MemberExample" resultType="java.lang.Integer">
+    select count(*) from CYT_ITEM_MEMBER
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update CYT_ITEM_MEMBER
+    <set>
+      <if test="record.id != null">
+        ID = #{record.id,jdbcType=DECIMAL},
+      </if>
+      <if test="record.articalId != null">
+        ARTICAL_ID = #{record.articalId,jdbcType=DECIMAL},
+      </if>
+      <if test="record.userId != null">
+        USER_ID = #{record.userId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.role != null">
+        ROLE = #{record.role,jdbcType=DECIMAL},
+      </if>
+      <if test="record.describe != null">
+        DESCRIBE = #{record.describe,jdbcType=VARCHAR},
+      </if>
+      <if test="record.scoreRate != null">
+        SCORE_RATE = #{record.scoreRate,jdbcType=DECIMAL},
+      </if>
+      <if test="record.status != null">
+        STATUS = #{record.status,jdbcType=DECIMAL},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update CYT_ITEM_MEMBER
+    set ID = #{record.id,jdbcType=DECIMAL},
+      ARTICAL_ID = #{record.articalId,jdbcType=DECIMAL},
+      USER_ID = #{record.userId,jdbcType=VARCHAR},
+      ROLE = #{record.role,jdbcType=DECIMAL},
+      DESCRIBE = #{record.describe,jdbcType=VARCHAR},
+      SCORE_RATE = #{record.scoreRate,jdbcType=DECIMAL},
+      STATUS = #{record.status,jdbcType=DECIMAL}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  
+   <select id="creatNewId" resultType="java.lang.Integer">
+  	select case when count(*) = 0 then 1 else  max(id)+1 end from CYT_ITEM_MEMBER
+  </select>
+  
+  <select id="selectArticalIdByUserId" parameterType="java.lang.String" resultType="java.lang.Integer">
+    SELECT ARTICAL_ID FROM CYT_ITEM_MEMBER
+	WHERE STATUS=1 and USER_ID = #{userId,jdbcType=VARCHAR}
+  </select>
+  
+  <update id="invalidStatusByArticalId" parameterType="java.lang.Integer">
+    update CYT_ITEM_MEMBER
+    set STATUS = 0
+    where ARTICAL_ID = #{articalId,jdbcType=DECIMAL}
+  </update>
+  
+</mapper>

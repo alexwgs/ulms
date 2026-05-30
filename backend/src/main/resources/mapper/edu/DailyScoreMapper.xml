@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmbccd.ulms.edu.dao.DailyScoreMapper">
+  <resultMap id="BaseResultMap" type="com.cmbccd.ulms.edu.domain.DailyScore">
+    <result column="QUES_DATE" jdbcType="VARCHAR" property="quesDate" />
+    <result column="PLO_NUM" jdbcType="VARCHAR" property="ploNum" />
+    <result column="PLO_NAME" jdbcType="VARCHAR" property="ploName" />
+    <result column="DEPT_NUM" jdbcType="VARCHAR" property="deptNum" />
+    <result column="DEPT_GROUP" jdbcType="VARCHAR" property="deptGroup" />
+    <result column="QUES_CODE" jdbcType="VARCHAR" property="quesCode" />
+    <result column="MISTAKES" jdbcType="DECIMAL" property="mistakes" />
+    <result column="PASS_FLAG" jdbcType="DECIMAL" property="passFlag" />
+    <result column="FIRST_ANSWER" jdbcType="VARCHAR" property="firstAnswer" />
+    <result column="ARTICAL_STATUS" jdbcType="DECIMAL" property="articalStatus" />
+    <result column="STUDY_BEG" jdbcType="VARCHAR" property="studyBeg" />
+    <result column="STUDY_END" jdbcType="VARCHAR" property="studyEnd" />
+    <result column="MOOD_TYPE" jdbcType="VARCHAR" property="moodType" />
+    <result column="MOOD_MEMO" jdbcType="VARCHAR" property="moodMemo" />
+    <result column="MOOD_DATE" jdbcType="VARCHAR" property="moodDate" />
+    <result column="VALID" jdbcType="DECIMAL" property="valid" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    QUES_DATE, PLO_NUM, PLO_NAME, DEPT_NUM, DEPT_GROUP, QUES_CODE, MISTAKES, PASS_FLAG, 
+    FIRST_ANSWER, ARTICAL_STATUS, STUDY_BEG, STUDY_END, MOOD_TYPE, MOOD_MEMO, MOOD_DATE, 
+    VALID
+  </sql>
+  <select id="selectByExample" parameterType="com.cmbccd.ulms.edu.domain.DailyScoreExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from TRM_DAILY_SCORE
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <delete id="deleteByExample" parameterType="com.cmbccd.ulms.edu.domain.DailyScoreExample">
+    delete from TRM_DAILY_SCORE
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.cmbccd.ulms.edu.domain.DailyScore">
+    insert into TRM_DAILY_SCORE (QUES_DATE, PLO_NUM, PLO_NAME, 
+      DEPT_NUM, DEPT_GROUP, QUES_CODE, 
+      MISTAKES, PASS_FLAG, FIRST_ANSWER, 
+      ARTICAL_STATUS, STUDY_BEG, STUDY_END, 
+      MOOD_TYPE, MOOD_MEMO, MOOD_DATE, 
+      VALID)
+    values (#{quesDate,jdbcType=VARCHAR}, #{ploNum,jdbcType=VARCHAR}, #{ploName,jdbcType=VARCHAR}, 
+      #{deptNum,jdbcType=VARCHAR}, #{deptGroup,jdbcType=VARCHAR}, #{quesCode,jdbcType=VARCHAR}, 
+      #{mistakes,jdbcType=DECIMAL}, #{passFlag,jdbcType=DECIMAL}, #{firstAnswer,jdbcType=VARCHAR}, 
+      #{articalStatus,jdbcType=DECIMAL}, #{studyBeg,jdbcType=VARCHAR}, #{studyEnd,jdbcType=VARCHAR}, 
+      #{moodType,jdbcType=VARCHAR}, #{moodMemo,jdbcType=VARCHAR}, #{moodDate,jdbcType=VARCHAR}, 
+      #{valid,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cmbccd.ulms.edu.domain.DailyScore">
+    insert into TRM_DAILY_SCORE
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="quesDate != null">
+        QUES_DATE,
+      </if>
+      <if test="ploNum != null">
+        PLO_NUM,
+      </if>
+      <if test="ploName != null">
+        PLO_NAME,
+      </if>
+      <if test="deptNum != null">
+        DEPT_NUM,
+      </if>
+      <if test="deptGroup != null">
+        DEPT_GROUP,
+      </if>
+      <if test="quesCode != null">
+        QUES_CODE,
+      </if>
+      <if test="mistakes != null">
+        MISTAKES,
+      </if>
+      <if test="passFlag != null">
+        PASS_FLAG,
+      </if>
+      <if test="firstAnswer != null">
+        FIRST_ANSWER,
+      </if>
+      <if test="articalStatus != null">
+        ARTICAL_STATUS,
+      </if>
+      <if test="studyBeg != null">
+        STUDY_BEG,
+      </if>
+      <if test="studyEnd != null">
+        STUDY_END,
+      </if>
+      <if test="moodType != null">
+        MOOD_TYPE,
+      </if>
+      <if test="moodMemo != null">
+        MOOD_MEMO,
+      </if>
+      <if test="moodDate != null">
+        MOOD_DATE,
+      </if>
+      <if test="valid != null">
+        VALID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="quesDate != null">
+        #{quesDate,jdbcType=VARCHAR},
+      </if>
+      <if test="ploNum != null">
+        #{ploNum,jdbcType=VARCHAR},
+      </if>
+      <if test="ploName != null">
+        #{ploName,jdbcType=VARCHAR},
+      </if>
+      <if test="deptNum != null">
+        #{deptNum,jdbcType=VARCHAR},
+      </if>
+      <if test="deptGroup != null">
+        #{deptGroup,jdbcType=VARCHAR},
+      </if>
+      <if test="quesCode != null">
+        #{quesCode,jdbcType=VARCHAR},
+      </if>
+      <if test="mistakes != null">
+        #{mistakes,jdbcType=DECIMAL},
+      </if>
+      <if test="passFlag != null">
+        #{passFlag,jdbcType=DECIMAL},
+      </if>
+      <if test="firstAnswer != null">
+        #{firstAnswer,jdbcType=VARCHAR},
+      </if>
+      <if test="articalStatus != null">
+        #{articalStatus,jdbcType=DECIMAL},
+      </if>
+      <if test="studyBeg != null">
+        #{studyBeg,jdbcType=VARCHAR},
+      </if>
+      <if test="studyEnd != null">
+        #{studyEnd,jdbcType=VARCHAR},
+      </if>
+      <if test="moodType != null">
+        #{moodType,jdbcType=VARCHAR},
+      </if>
+      <if test="moodMemo != null">
+        #{moodMemo,jdbcType=VARCHAR},
+      </if>
+      <if test="moodDate != null">
+        #{moodDate,jdbcType=VARCHAR},
+      </if>
+      <if test="valid != null">
+        #{valid,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.cmbccd.ulms.edu.domain.DailyScoreExample" resultType="java.lang.Long">
+    select count(*) from TRM_DAILY_SCORE
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update TRM_DAILY_SCORE
+    <set>
+      <if test="record.quesDate != null">
+        QUES_DATE = #{record.quesDate,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ploNum != null">
+        PLO_NUM = #{record.ploNum,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ploName != null">
+        PLO_NAME = #{record.ploName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.deptNum != null">
+        DEPT_NUM = #{record.deptNum,jdbcType=VARCHAR},
+      </if>
+      <if test="record.deptGroup != null">
+        DEPT_GROUP = #{record.deptGroup,jdbcType=VARCHAR},
+      </if>
+      <if test="record.quesCode != null">
+        QUES_CODE = #{record.quesCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mistakes != null">
+        MISTAKES = #{record.mistakes,jdbcType=DECIMAL},
+      </if>
+      <if test="record.passFlag != null">
+        PASS_FLAG = #{record.passFlag,jdbcType=DECIMAL},
+      </if>
+      <if test="record.firstAnswer != null">
+        FIRST_ANSWER = #{record.firstAnswer,jdbcType=VARCHAR},
+      </if>
+      <if test="record.articalStatus != null">
+        ARTICAL_STATUS = #{record.articalStatus,jdbcType=DECIMAL},
+      </if>
+      <if test="record.studyBeg != null">
+        STUDY_BEG = #{record.studyBeg,jdbcType=VARCHAR},
+      </if>
+      <if test="record.studyEnd != null">
+        STUDY_END = #{record.studyEnd,jdbcType=VARCHAR},
+      </if>
+      <if test="record.moodType != null">
+        MOOD_TYPE = #{record.moodType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.moodMemo != null">
+        MOOD_MEMO = #{record.moodMemo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.moodDate != null">
+        MOOD_DATE = #{record.moodDate,jdbcType=VARCHAR},
+      </if>
+      <if test="record.valid != null">
+        VALID = #{record.valid,jdbcType=DECIMAL},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update TRM_DAILY_SCORE
+    set QUES_DATE = #{record.quesDate,jdbcType=VARCHAR},
+      PLO_NUM = #{record.ploNum,jdbcType=VARCHAR},
+      PLO_NAME = #{record.ploName,jdbcType=VARCHAR},
+      DEPT_NUM = #{record.deptNum,jdbcType=VARCHAR},
+      DEPT_GROUP = #{record.deptGroup,jdbcType=VARCHAR},
+      QUES_CODE = #{record.quesCode,jdbcType=VARCHAR},
+      MISTAKES = #{record.mistakes,jdbcType=DECIMAL},
+      PASS_FLAG = #{record.passFlag,jdbcType=DECIMAL},
+      FIRST_ANSWER = #{record.firstAnswer,jdbcType=VARCHAR},
+      ARTICAL_STATUS = #{record.articalStatus,jdbcType=DECIMAL},
+      STUDY_BEG = #{record.studyBeg,jdbcType=VARCHAR},
+      STUDY_END = #{record.studyEnd,jdbcType=VARCHAR},
+      MOOD_TYPE = #{record.moodType,jdbcType=VARCHAR},
+      MOOD_MEMO = #{record.moodMemo,jdbcType=VARCHAR},
+      MOOD_DATE = #{record.moodDate,jdbcType=VARCHAR},
+      VALID = #{record.valid,jdbcType=DECIMAL}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+
+
+  <resultMap id="reportResultMap" type="com.cmbccd.ulms.edu.domain.report.DailyScoreSummary">
+    <result column="PLO_NUM" jdbcType="VARCHAR" property="ploNum" />
+    <result column="PLO_NAME" jdbcType="VARCHAR" property="ploName" />
+    <result column="DEPT_NUM" jdbcType="VARCHAR" property="deptNum" />
+    <result column="DEPT_GROUP" jdbcType="VARCHAR" property="deptGroup" />
+    <result column="PUNCH_DAYS" jdbcType="DECIMAL" property="punchDays" />
+    <result column="SIGN_DAYS" jdbcType="DECIMAL" property="signDays" />
+    <result column="FIRST_RIGHT_NUM" jdbcType="DECIMAL" property="firstRightNum" />
+    <result column="FIRST_RIGHT_RATE" jdbcType="DECIMAL" property="firstRightRate" />
+    <result column="STUDY_NUM" jdbcType="DECIMAL" property="studyNum" />
+    <result column="STUDY_TIME" jdbcType="DECIMAL" property="studyTime" />
+  </resultMap>
+  <select id="SelectDailyScoreSummay" resultMap="reportResultMap">
+    select
+    <if test="groupBy == 'hum'.toString()">
+      plo_num,plo_name,dept_num,dept_group,
+    </if>
+    <if test="groupBy == 'dept'.toString()">
+      dept_num,
+    </if>
+    <if test="groupBy == 'group'.toString()">
+      dept_num,dept_group,
+    </if>
+    count(1) as PUNCH_DAYS,count(mood_type) as SIGN_DAYS,sum(PASS_FLAG) as FIRST_RIGHT_NUM,case when count(1) &lt; 1 then 0 else round(sum(PASS_FLAG)/count(1),4) end as FIRST_RIGHT_RATE,count(STUDY_END) as STUDY_NUM,round(avg(to_date(study_end,'yyyy-MM-dd hh24:mi:ss') - to_date(study_beg,'yyyy-MM-dd hh24:mi:ss'))*24*3600,2) as STUDY_TIME
+    from TRM_DAILY_SCORE
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+    group by
+    <if test="groupBy == 'hum'.toString()">
+      plo_num,plo_name,dept_num,dept_group
+    </if>
+    <if test="groupBy == 'dept'.toString()">
+      dept_num
+    </if>
+    <if test="groupBy == 'group'.toString()">
+      dept_num,dept_group
+    </if>
+    <if test="example.orderByClause != null">
+      order by ${example.orderByClause}
+    </if>
+  </select>
+
+  <select id="getDailyScore" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+      distinct
+    <include refid="Base_Column_List" />
+    from TRM_DAILY_SCORE
+    where QUES_DATE=#{quesDate, jdbcType=VARCHAR} and PLO_NUM = #{userId, jdbcType=VARCHAR}
+  </select>
+</mapper>

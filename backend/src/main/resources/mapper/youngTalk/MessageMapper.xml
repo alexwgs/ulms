@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmbccd.ulms.youngTalk.dao.MessageMapper">
+  <resultMap id="BaseResultMap" type="com.cmbccd.ulms.youngTalk.domain.Message">
+    <id column="ID" jdbcType="DECIMAL" property="id" />
+    <result column="ARTICAL_ID" jdbcType="DECIMAL" property="articalId" />
+    <result column="MESSAGE_TYPE" jdbcType="DECIMAL" property="messageType" />
+    <result column="MESSAGE_ID" jdbcType="DECIMAL" property="messageId" />
+    <result column="FROM_USER" jdbcType="VARCHAR" property="fromUser" />
+    <result column="TO_USER" jdbcType="VARCHAR" property="toUser" />
+    <result column="IS_READ" jdbcType="DECIMAL" property="isRead" />
+    <result column="DATE_TIME" jdbcType="VARCHAR" property="dateTime" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    ID, ARTICAL_ID, MESSAGE_TYPE, MESSAGE_ID, FROM_USER, TO_USER, IS_READ, DATE_TIME
+  </sql>
+  <select id="selectByExample" parameterType="com.cmbccd.ulms.youngTalk.domain.MessageExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from CYT_MESSAGE
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from CYT_MESSAGE
+    where ID = #{id,jdbcType=DECIMAL}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from CYT_MESSAGE
+    where ID = #{id,jdbcType=DECIMAL}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.cmbccd.ulms.youngTalk.domain.MessageExample">
+    delete from CYT_MESSAGE
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.cmbccd.ulms.youngTalk.domain.Message">
+    insert into CYT_MESSAGE (ID, ARTICAL_ID, MESSAGE_TYPE, 
+      MESSAGE_ID, FROM_USER, TO_USER, 
+      IS_READ, DATE_TIME)
+    values (#{id,jdbcType=DECIMAL}, #{articalId,jdbcType=DECIMAL}, #{messageType,jdbcType=DECIMAL}, 
+      #{messageId,jdbcType=DECIMAL}, #{fromUser,jdbcType=VARCHAR}, #{toUser,jdbcType=VARCHAR}, 
+      #{isRead,jdbcType=DECIMAL}, #{dateTime,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cmbccd.ulms.youngTalk.domain.Message">
+    insert into CYT_MESSAGE
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="articalId != null">
+        ARTICAL_ID,
+      </if>
+      <if test="messageType != null">
+        MESSAGE_TYPE,
+      </if>
+      <if test="messageId != null">
+        MESSAGE_ID,
+      </if>
+      <if test="fromUser != null">
+        FROM_USER,
+      </if>
+      <if test="toUser != null">
+        TO_USER,
+      </if>
+      <if test="isRead != null">
+        IS_READ,
+      </if>
+      <if test="dateTime != null">
+        DATE_TIME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=DECIMAL},
+      </if>
+      <if test="articalId != null">
+        #{articalId,jdbcType=DECIMAL},
+      </if>
+      <if test="messageType != null">
+        #{messageType,jdbcType=DECIMAL},
+      </if>
+      <if test="messageId != null">
+        #{messageId,jdbcType=DECIMAL},
+      </if>
+      <if test="fromUser != null">
+        #{fromUser,jdbcType=VARCHAR},
+      </if>
+      <if test="toUser != null">
+        #{toUser,jdbcType=VARCHAR},
+      </if>
+      <if test="isRead != null">
+        #{isRead,jdbcType=DECIMAL},
+      </if>
+      <if test="dateTime != null">
+        #{dateTime,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.cmbccd.ulms.youngTalk.domain.MessageExample" resultType="java.lang.Integer">
+    select count(*) from CYT_MESSAGE
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update CYT_MESSAGE
+    <set>
+      <if test="record.id != null">
+        ID = #{record.id,jdbcType=DECIMAL},
+      </if>
+      <if test="record.articalId != null">
+        ARTICAL_ID = #{record.articalId,jdbcType=DECIMAL},
+      </if>
+      <if test="record.messageType != null">
+        MESSAGE_TYPE = #{record.messageType,jdbcType=DECIMAL},
+      </if>
+      <if test="record.messageId != null">
+        MESSAGE_ID = #{record.messageId,jdbcType=DECIMAL},
+      </if>
+      <if test="record.fromUser != null">
+        FROM_USER = #{record.fromUser,jdbcType=VARCHAR},
+      </if>
+      <if test="record.toUser != null">
+        TO_USER = #{record.toUser,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isRead != null">
+        IS_READ = #{record.isRead,jdbcType=DECIMAL},
+      </if>
+      <if test="record.dateTime != null">
+        DATE_TIME = #{record.dateTime,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update CYT_MESSAGE
+    set ID = #{record.id,jdbcType=DECIMAL},
+      ARTICAL_ID = #{record.articalId,jdbcType=DECIMAL},
+      MESSAGE_TYPE = #{record.messageType,jdbcType=DECIMAL},
+      MESSAGE_ID = #{record.messageId,jdbcType=DECIMAL},
+      FROM_USER = #{record.fromUser,jdbcType=VARCHAR},
+      TO_USER = #{record.toUser,jdbcType=VARCHAR},
+      IS_READ = #{record.isRead,jdbcType=DECIMAL},
+      DATE_TIME = #{record.dateTime,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cmbccd.ulms.youngTalk.domain.Message">
+    update CYT_MESSAGE
+    <set>
+      <if test="articalId != null">
+        ARTICAL_ID = #{articalId,jdbcType=DECIMAL},
+      </if>
+      <if test="messageType != null">
+        MESSAGE_TYPE = #{messageType,jdbcType=DECIMAL},
+      </if>
+      <if test="messageId != null">
+        MESSAGE_ID = #{messageId,jdbcType=DECIMAL},
+      </if>
+      <if test="fromUser != null">
+        FROM_USER = #{fromUser,jdbcType=VARCHAR},
+      </if>
+      <if test="toUser != null">
+        TO_USER = #{toUser,jdbcType=VARCHAR},
+      </if>
+      <if test="isRead != null">
+        IS_READ = #{isRead,jdbcType=DECIMAL},
+      </if>
+      <if test="dateTime != null">
+        DATE_TIME = #{dateTime,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cmbccd.ulms.youngTalk.domain.Message">
+    update CYT_MESSAGE
+    set ARTICAL_ID = #{articalId,jdbcType=DECIMAL},
+      MESSAGE_TYPE = #{messageType,jdbcType=DECIMAL},
+      MESSAGE_ID = #{messageId,jdbcType=DECIMAL},
+      FROM_USER = #{fromUser,jdbcType=VARCHAR},
+      TO_USER = #{toUser,jdbcType=VARCHAR},
+      IS_READ = #{isRead,jdbcType=DECIMAL},
+      DATE_TIME = #{dateTime,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+  
+  <select id="creatNewId" resultType="java.lang.Integer">
+  	select case when count(*) = 0 then 1 else  max(id)+1 end from CYT_MESSAGE
+  </select>
+  
+    <update id="setReadById" parameterType="java.lang.Integer">
+    update CYT_MESSAGE
+    set  IS_READ = 1
+    where ID = #{id,jdbcType=DECIMAL},
+  </update>
+  
+</mapper>

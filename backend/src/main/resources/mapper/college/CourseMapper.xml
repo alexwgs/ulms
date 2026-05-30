@@ -1,0 +1,625 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmbccd.ulms.college.dao.CourseMapper">
+  <resultMap id="BaseResultMap" type="com.cmbccd.ulms.college.domain.Course">
+    <id column="COURSE_ID" jdbcType="VARCHAR" property="courseId" />
+    <result column="COURSE_NAME" jdbcType="VARCHAR" property="courseName" />
+    <result column="LECTURER" jdbcType="VARCHAR" property="lecturer" />
+    <result column="COIN" jdbcType="DECIMAL" property="coin" />
+    <result column="HOURS" jdbcType="DECIMAL" property="hours" />
+    <result column="COURSE_TYPE" jdbcType="DECIMAL" property="courseType" />
+    <result column="TEACH_METHOD" jdbcType="DECIMAL" property="teachMethod" />
+    <result column="TEACH_OBJECT" jdbcType="VARCHAR" property="teachObject" />
+    <result column="STUDY_TYPE" jdbcType="DECIMAL" property="studyType" />
+    <result column="BEG_DATE" jdbcType="VARCHAR" property="begDate" />
+    <result column="END_DATE" jdbcType="VARCHAR" property="endDate" />
+    <result column="IF_EXAM" jdbcType="DECIMAL" property="ifExam" />
+    <result column="EXAM_ID" jdbcType="VARCHAR" property="examId" />
+    <result column="IF_EVAL" jdbcType="DECIMAL" property="ifEval" />
+    <result column="TEMP_ID" jdbcType="VARCHAR" property="tempId" />
+    <result column="COVER_IMG" jdbcType="VARCHAR" property="coverImg" />
+    <result column="STATUS" jdbcType="DECIMAL" property="status" />
+    <result column="EVAL_DATE" jdbcType="DECIMAL" property="evalDate" />
+    <result column="COURSE_SCORE" jdbcType="DECIMAL" property="courseScore" />
+    <result column="HANDLE_PLO" jdbcType="VARCHAR" property="handlePlo" />
+    <result column="HANDLE_DATE" jdbcType="VARCHAR" property="handleDate" />
+    <result column="STUDY_NUM" jdbcType="DECIMAL" property="studyNum" />
+    <result column="TOP_FLAG" jdbcType="DECIMAL" property="topFlag" />
+    <result column="RECOMMEND_FLAG" jdbcType="DECIMAL" property="recommendFlag" />
+    <result column="RECOMMEND" jdbcType="VARCHAR" property="recommend" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.cmbccd.ulms.college.domain.Course">
+    <result column="COURSE_DES" jdbcType="CLOB" property="courseDes" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    COURSE_ID, COURSE_NAME, LECTURER, COIN, HOURS, COURSE_TYPE, TEACH_METHOD, TEACH_OBJECT, 
+    STUDY_TYPE, BEG_DATE, END_DATE, IF_EXAM, EXAM_ID, IF_EVAL, TEMP_ID, COVER_IMG, STATUS, 
+    EVAL_DATE, COURSE_SCORE, HANDLE_PLO, HANDLE_DATE, STUDY_NUM, TOP_FLAG, RECOMMEND_FLAG, 
+    RECOMMEND
+  </sql>
+  <sql id="Blob_Column_List">
+    COURSE_DES
+  </sql>
+  <select id="selectByExampleWithBLOBs" parameterType="com.cmbccd.ulms.college.domain.CourseExample" resultMap="ResultMapWithBLOBs">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from TRM_COURSE_LIBS
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" parameterType="com.cmbccd.ulms.college.domain.CourseExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from TRM_COURSE_LIBS
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from TRM_COURSE_LIBS
+    where COURSE_ID = #{courseId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from TRM_COURSE_LIBS
+    where COURSE_ID = #{courseId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.cmbccd.ulms.college.domain.CourseExample">
+    delete from TRM_COURSE_LIBS
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.cmbccd.ulms.college.domain.Course">
+    insert into TRM_COURSE_LIBS (COURSE_ID, COURSE_NAME, LECTURER, 
+      COIN, HOURS, COURSE_TYPE, 
+      TEACH_METHOD, TEACH_OBJECT, STUDY_TYPE, 
+      BEG_DATE, END_DATE, IF_EXAM, 
+      EXAM_ID, IF_EVAL, TEMP_ID, 
+      COVER_IMG, STATUS, EVAL_DATE, 
+      COURSE_SCORE, HANDLE_PLO, HANDLE_DATE, 
+      STUDY_NUM, TOP_FLAG, RECOMMEND_FLAG, 
+      RECOMMEND, COURSE_DES)
+    values (#{courseId,jdbcType=VARCHAR}, #{courseName,jdbcType=VARCHAR}, #{lecturer,jdbcType=VARCHAR}, 
+      #{coin,jdbcType=DECIMAL}, #{hours,jdbcType=DECIMAL}, #{courseType,jdbcType=DECIMAL}, 
+      #{teachMethod,jdbcType=DECIMAL}, #{teachObject,jdbcType=VARCHAR}, #{studyType,jdbcType=DECIMAL}, 
+      #{begDate,jdbcType=VARCHAR}, #{endDate,jdbcType=VARCHAR}, #{ifExam,jdbcType=DECIMAL}, 
+      #{examId,jdbcType=VARCHAR}, #{ifEval,jdbcType=DECIMAL}, #{tempId,jdbcType=VARCHAR}, 
+      #{coverImg,jdbcType=VARCHAR}, #{status,jdbcType=DECIMAL}, #{evalDate,jdbcType=DECIMAL}, 
+      #{courseScore,jdbcType=DECIMAL}, #{handlePlo,jdbcType=VARCHAR}, #{handleDate,jdbcType=VARCHAR}, 
+      #{studyNum,jdbcType=DECIMAL}, #{topFlag,jdbcType=DECIMAL}, #{recommendFlag,jdbcType=DECIMAL}, 
+      #{recommend,jdbcType=VARCHAR}, #{courseDes,jdbcType=CLOB})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cmbccd.ulms.college.domain.Course">
+    insert into TRM_COURSE_LIBS
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="courseId != null">
+        COURSE_ID,
+      </if>
+      <if test="courseName != null">
+        COURSE_NAME,
+      </if>
+      <if test="lecturer != null">
+        LECTURER,
+      </if>
+      <if test="coin != null">
+        COIN,
+      </if>
+      <if test="hours != null">
+        HOURS,
+      </if>
+      <if test="courseType != null">
+        COURSE_TYPE,
+      </if>
+      <if test="teachMethod != null">
+        TEACH_METHOD,
+      </if>
+      <if test="teachObject != null">
+        TEACH_OBJECT,
+      </if>
+      <if test="studyType != null">
+        STUDY_TYPE,
+      </if>
+      <if test="begDate != null">
+        BEG_DATE,
+      </if>
+      <if test="endDate != null">
+        END_DATE,
+      </if>
+      <if test="ifExam != null">
+        IF_EXAM,
+      </if>
+      <if test="examId != null">
+        EXAM_ID,
+      </if>
+      <if test="ifEval != null">
+        IF_EVAL,
+      </if>
+      <if test="tempId != null">
+        TEMP_ID,
+      </if>
+      <if test="coverImg != null">
+        COVER_IMG,
+      </if>
+      <if test="status != null">
+        STATUS,
+      </if>
+      <if test="evalDate != null">
+        EVAL_DATE,
+      </if>
+      <if test="courseScore != null">
+        COURSE_SCORE,
+      </if>
+      <if test="handlePlo != null">
+        HANDLE_PLO,
+      </if>
+      <if test="handleDate != null">
+        HANDLE_DATE,
+      </if>
+      <if test="studyNum != null">
+        STUDY_NUM,
+      </if>
+      <if test="topFlag != null">
+        TOP_FLAG,
+      </if>
+      <if test="recommendFlag != null">
+        RECOMMEND_FLAG,
+      </if>
+      <if test="recommend != null">
+        RECOMMEND,
+      </if>
+      <if test="courseDes != null">
+        COURSE_DES,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="courseId != null">
+        #{courseId,jdbcType=VARCHAR},
+      </if>
+      <if test="courseName != null">
+        #{courseName,jdbcType=VARCHAR},
+      </if>
+      <if test="lecturer != null">
+        #{lecturer,jdbcType=VARCHAR},
+      </if>
+      <if test="coin != null">
+        #{coin,jdbcType=DECIMAL},
+      </if>
+      <if test="hours != null">
+        #{hours,jdbcType=DECIMAL},
+      </if>
+      <if test="courseType != null">
+        #{courseType,jdbcType=DECIMAL},
+      </if>
+      <if test="teachMethod != null">
+        #{teachMethod,jdbcType=DECIMAL},
+      </if>
+      <if test="teachObject != null">
+        #{teachObject,jdbcType=VARCHAR},
+      </if>
+      <if test="studyType != null">
+        #{studyType,jdbcType=DECIMAL},
+      </if>
+      <if test="begDate != null">
+        #{begDate,jdbcType=VARCHAR},
+      </if>
+      <if test="endDate != null">
+        #{endDate,jdbcType=VARCHAR},
+      </if>
+      <if test="ifExam != null">
+        #{ifExam,jdbcType=DECIMAL},
+      </if>
+      <if test="examId != null">
+        #{examId,jdbcType=VARCHAR},
+      </if>
+      <if test="ifEval != null">
+        #{ifEval,jdbcType=DECIMAL},
+      </if>
+      <if test="tempId != null">
+        #{tempId,jdbcType=VARCHAR},
+      </if>
+      <if test="coverImg != null">
+        #{coverImg,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=DECIMAL},
+      </if>
+      <if test="evalDate != null">
+        #{evalDate,jdbcType=DECIMAL},
+      </if>
+      <if test="courseScore != null">
+        #{courseScore,jdbcType=DECIMAL},
+      </if>
+      <if test="handlePlo != null">
+        #{handlePlo,jdbcType=VARCHAR},
+      </if>
+      <if test="handleDate != null">
+        #{handleDate,jdbcType=VARCHAR},
+      </if>
+      <if test="studyNum != null">
+        #{studyNum,jdbcType=DECIMAL},
+      </if>
+      <if test="topFlag != null">
+        #{topFlag,jdbcType=DECIMAL},
+      </if>
+      <if test="recommendFlag != null">
+        #{recommendFlag,jdbcType=DECIMAL},
+      </if>
+      <if test="recommend != null">
+        #{recommend,jdbcType=VARCHAR},
+      </if>
+      <if test="courseDes != null">
+        #{courseDes,jdbcType=CLOB},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.cmbccd.ulms.college.domain.CourseExample" resultType="java.lang.Long">
+    select count(*) from TRM_COURSE_LIBS
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update TRM_COURSE_LIBS
+    <set>
+      <if test="record.courseId != null">
+        COURSE_ID = #{record.courseId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.courseName != null">
+        COURSE_NAME = #{record.courseName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.lecturer != null">
+        LECTURER = #{record.lecturer,jdbcType=VARCHAR},
+      </if>
+      <if test="record.coin != null">
+        COIN = #{record.coin,jdbcType=DECIMAL},
+      </if>
+      <if test="record.hours != null">
+        HOURS = #{record.hours,jdbcType=DECIMAL},
+      </if>
+      <if test="record.courseType != null">
+        COURSE_TYPE = #{record.courseType,jdbcType=DECIMAL},
+      </if>
+      <if test="record.teachMethod != null">
+        TEACH_METHOD = #{record.teachMethod,jdbcType=DECIMAL},
+      </if>
+      <if test="record.teachObject != null">
+        TEACH_OBJECT = #{record.teachObject,jdbcType=VARCHAR},
+      </if>
+      <if test="record.studyType != null">
+        STUDY_TYPE = #{record.studyType,jdbcType=DECIMAL},
+      </if>
+      <if test="record.begDate != null">
+        BEG_DATE = #{record.begDate,jdbcType=VARCHAR},
+      </if>
+      <if test="record.endDate != null">
+        END_DATE = #{record.endDate,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ifExam != null">
+        IF_EXAM = #{record.ifExam,jdbcType=DECIMAL},
+      </if>
+      <if test="record.examId != null">
+        EXAM_ID = #{record.examId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ifEval != null">
+        IF_EVAL = #{record.ifEval,jdbcType=DECIMAL},
+      </if>
+      <if test="record.tempId != null">
+        TEMP_ID = #{record.tempId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.coverImg != null">
+        COVER_IMG = #{record.coverImg,jdbcType=VARCHAR},
+      </if>
+      <if test="record.status != null">
+        STATUS = #{record.status,jdbcType=DECIMAL},
+      </if>
+      <if test="record.evalDate != null">
+        EVAL_DATE = #{record.evalDate,jdbcType=DECIMAL},
+      </if>
+      <if test="record.courseScore != null">
+        COURSE_SCORE = #{record.courseScore,jdbcType=DECIMAL},
+      </if>
+      <if test="record.handlePlo != null">
+        HANDLE_PLO = #{record.handlePlo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.handleDate != null">
+        HANDLE_DATE = #{record.handleDate,jdbcType=VARCHAR},
+      </if>
+      <if test="record.studyNum != null">
+        STUDY_NUM = #{record.studyNum,jdbcType=DECIMAL},
+      </if>
+      <if test="record.topFlag != null">
+        TOP_FLAG = #{record.topFlag,jdbcType=DECIMAL},
+      </if>
+      <if test="record.recommendFlag != null">
+        RECOMMEND_FLAG = #{record.recommendFlag,jdbcType=DECIMAL},
+      </if>
+      <if test="record.recommend != null">
+        RECOMMEND = #{record.recommend,jdbcType=VARCHAR},
+      </if>
+      <if test="record.courseDes != null">
+        COURSE_DES = #{record.courseDes,jdbcType=CLOB},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map">
+    update TRM_COURSE_LIBS
+    set COURSE_ID = #{record.courseId,jdbcType=VARCHAR},
+      COURSE_NAME = #{record.courseName,jdbcType=VARCHAR},
+      LECTURER = #{record.lecturer,jdbcType=VARCHAR},
+      COIN = #{record.coin,jdbcType=DECIMAL},
+      HOURS = #{record.hours,jdbcType=DECIMAL},
+      COURSE_TYPE = #{record.courseType,jdbcType=DECIMAL},
+      TEACH_METHOD = #{record.teachMethod,jdbcType=DECIMAL},
+      TEACH_OBJECT = #{record.teachObject,jdbcType=VARCHAR},
+      STUDY_TYPE = #{record.studyType,jdbcType=DECIMAL},
+      BEG_DATE = #{record.begDate,jdbcType=VARCHAR},
+      END_DATE = #{record.endDate,jdbcType=VARCHAR},
+      IF_EXAM = #{record.ifExam,jdbcType=DECIMAL},
+      EXAM_ID = #{record.examId,jdbcType=VARCHAR},
+      IF_EVAL = #{record.ifEval,jdbcType=DECIMAL},
+      TEMP_ID = #{record.tempId,jdbcType=VARCHAR},
+      COVER_IMG = #{record.coverImg,jdbcType=VARCHAR},
+      STATUS = #{record.status,jdbcType=DECIMAL},
+      EVAL_DATE = #{record.evalDate,jdbcType=DECIMAL},
+      COURSE_SCORE = #{record.courseScore,jdbcType=DECIMAL},
+      HANDLE_PLO = #{record.handlePlo,jdbcType=VARCHAR},
+      HANDLE_DATE = #{record.handleDate,jdbcType=VARCHAR},
+      STUDY_NUM = #{record.studyNum,jdbcType=DECIMAL},
+      TOP_FLAG = #{record.topFlag,jdbcType=DECIMAL},
+      RECOMMEND_FLAG = #{record.recommendFlag,jdbcType=DECIMAL},
+      RECOMMEND = #{record.recommend,jdbcType=VARCHAR},
+      COURSE_DES = #{record.courseDes,jdbcType=CLOB}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update TRM_COURSE_LIBS
+    set COURSE_ID = #{record.courseId,jdbcType=VARCHAR},
+      COURSE_NAME = #{record.courseName,jdbcType=VARCHAR},
+      LECTURER = #{record.lecturer,jdbcType=VARCHAR},
+      COIN = #{record.coin,jdbcType=DECIMAL},
+      HOURS = #{record.hours,jdbcType=DECIMAL},
+      COURSE_TYPE = #{record.courseType,jdbcType=DECIMAL},
+      TEACH_METHOD = #{record.teachMethod,jdbcType=DECIMAL},
+      TEACH_OBJECT = #{record.teachObject,jdbcType=VARCHAR},
+      STUDY_TYPE = #{record.studyType,jdbcType=DECIMAL},
+      BEG_DATE = #{record.begDate,jdbcType=VARCHAR},
+      END_DATE = #{record.endDate,jdbcType=VARCHAR},
+      IF_EXAM = #{record.ifExam,jdbcType=DECIMAL},
+      EXAM_ID = #{record.examId,jdbcType=VARCHAR},
+      IF_EVAL = #{record.ifEval,jdbcType=DECIMAL},
+      TEMP_ID = #{record.tempId,jdbcType=VARCHAR},
+      COVER_IMG = #{record.coverImg,jdbcType=VARCHAR},
+      STATUS = #{record.status,jdbcType=DECIMAL},
+      EVAL_DATE = #{record.evalDate,jdbcType=DECIMAL},
+      COURSE_SCORE = #{record.courseScore,jdbcType=DECIMAL},
+      HANDLE_PLO = #{record.handlePlo,jdbcType=VARCHAR},
+      HANDLE_DATE = #{record.handleDate,jdbcType=VARCHAR},
+      STUDY_NUM = #{record.studyNum,jdbcType=DECIMAL},
+      TOP_FLAG = #{record.topFlag,jdbcType=DECIMAL},
+      RECOMMEND_FLAG = #{record.recommendFlag,jdbcType=DECIMAL},
+      RECOMMEND = #{record.recommend,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cmbccd.ulms.college.domain.Course">
+    update TRM_COURSE_LIBS
+    <set>
+      <if test="courseName != null">
+        COURSE_NAME = #{courseName,jdbcType=VARCHAR},
+      </if>
+      <if test="lecturer != null">
+        LECTURER = #{lecturer,jdbcType=VARCHAR},
+      </if>
+      <if test="coin != null">
+        COIN = #{coin,jdbcType=DECIMAL},
+      </if>
+      <if test="hours != null">
+        HOURS = #{hours,jdbcType=DECIMAL},
+      </if>
+      <if test="courseType != null">
+        COURSE_TYPE = #{courseType,jdbcType=DECIMAL},
+      </if>
+      <if test="teachMethod != null">
+        TEACH_METHOD = #{teachMethod,jdbcType=DECIMAL},
+      </if>
+      <if test="teachObject != null">
+        TEACH_OBJECT = #{teachObject,jdbcType=VARCHAR},
+      </if>
+      <if test="studyType != null">
+        STUDY_TYPE = #{studyType,jdbcType=DECIMAL},
+      </if>
+      <if test="begDate != null">
+        BEG_DATE = #{begDate,jdbcType=VARCHAR},
+      </if>
+      <if test="endDate != null">
+        END_DATE = #{endDate,jdbcType=VARCHAR},
+      </if>
+      <if test="ifExam != null">
+        IF_EXAM = #{ifExam,jdbcType=DECIMAL},
+      </if>
+      <if test="examId != null">
+        EXAM_ID = #{examId,jdbcType=VARCHAR},
+      </if>
+      <if test="ifEval != null">
+        IF_EVAL = #{ifEval,jdbcType=DECIMAL},
+      </if>
+      <if test="tempId != null">
+        TEMP_ID = #{tempId,jdbcType=VARCHAR},
+      </if>
+      <if test="coverImg != null">
+        COVER_IMG = #{coverImg,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        STATUS = #{status,jdbcType=DECIMAL},
+      </if>
+      <if test="evalDate != null">
+        EVAL_DATE = #{evalDate,jdbcType=DECIMAL},
+      </if>
+      <if test="courseScore != null">
+        COURSE_SCORE = #{courseScore,jdbcType=DECIMAL},
+      </if>
+      <if test="handlePlo != null">
+        HANDLE_PLO = #{handlePlo,jdbcType=VARCHAR},
+      </if>
+      <if test="handleDate != null">
+        HANDLE_DATE = #{handleDate,jdbcType=VARCHAR},
+      </if>
+      <if test="studyNum != null">
+        STUDY_NUM = #{studyNum,jdbcType=DECIMAL},
+      </if>
+      <if test="topFlag != null">
+        TOP_FLAG = #{topFlag,jdbcType=DECIMAL},
+      </if>
+      <if test="recommendFlag != null">
+        RECOMMEND_FLAG = #{recommendFlag,jdbcType=DECIMAL},
+      </if>
+      <if test="recommend != null">
+        RECOMMEND = #{recommend,jdbcType=VARCHAR},
+      </if>
+      <if test="courseDes != null">
+        COURSE_DES = #{courseDes,jdbcType=CLOB},
+      </if>
+    </set>
+    where COURSE_ID = #{courseId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.cmbccd.ulms.college.domain.Course">
+    update TRM_COURSE_LIBS
+    set COURSE_NAME = #{courseName,jdbcType=VARCHAR},
+      LECTURER = #{lecturer,jdbcType=VARCHAR},
+      COIN = #{coin,jdbcType=DECIMAL},
+      HOURS = #{hours,jdbcType=DECIMAL},
+      COURSE_TYPE = #{courseType,jdbcType=DECIMAL},
+      TEACH_METHOD = #{teachMethod,jdbcType=DECIMAL},
+      TEACH_OBJECT = #{teachObject,jdbcType=VARCHAR},
+      STUDY_TYPE = #{studyType,jdbcType=DECIMAL},
+      BEG_DATE = #{begDate,jdbcType=VARCHAR},
+      END_DATE = #{endDate,jdbcType=VARCHAR},
+      IF_EXAM = #{ifExam,jdbcType=DECIMAL},
+      EXAM_ID = #{examId,jdbcType=VARCHAR},
+      IF_EVAL = #{ifEval,jdbcType=DECIMAL},
+      TEMP_ID = #{tempId,jdbcType=VARCHAR},
+      COVER_IMG = #{coverImg,jdbcType=VARCHAR},
+      STATUS = #{status,jdbcType=DECIMAL},
+      EVAL_DATE = #{evalDate,jdbcType=DECIMAL},
+      COURSE_SCORE = #{courseScore,jdbcType=DECIMAL},
+      HANDLE_PLO = #{handlePlo,jdbcType=VARCHAR},
+      HANDLE_DATE = #{handleDate,jdbcType=VARCHAR},
+      STUDY_NUM = #{studyNum,jdbcType=DECIMAL},
+      TOP_FLAG = #{topFlag,jdbcType=DECIMAL},
+      RECOMMEND_FLAG = #{recommendFlag,jdbcType=DECIMAL},
+      RECOMMEND = #{recommend,jdbcType=VARCHAR},
+      COURSE_DES = #{courseDes,jdbcType=CLOB}
+    where COURSE_ID = #{courseId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cmbccd.ulms.college.domain.Course">
+    update TRM_COURSE_LIBS
+    set COURSE_NAME = #{courseName,jdbcType=VARCHAR},
+      LECTURER = #{lecturer,jdbcType=VARCHAR},
+      COIN = #{coin,jdbcType=DECIMAL},
+      HOURS = #{hours,jdbcType=DECIMAL},
+      COURSE_TYPE = #{courseType,jdbcType=DECIMAL},
+      TEACH_METHOD = #{teachMethod,jdbcType=DECIMAL},
+      TEACH_OBJECT = #{teachObject,jdbcType=VARCHAR},
+      STUDY_TYPE = #{studyType,jdbcType=DECIMAL},
+      BEG_DATE = #{begDate,jdbcType=VARCHAR},
+      END_DATE = #{endDate,jdbcType=VARCHAR},
+      IF_EXAM = #{ifExam,jdbcType=DECIMAL},
+      EXAM_ID = #{examId,jdbcType=VARCHAR},
+      IF_EVAL = #{ifEval,jdbcType=DECIMAL},
+      TEMP_ID = #{tempId,jdbcType=VARCHAR},
+      COVER_IMG = #{coverImg,jdbcType=VARCHAR},
+      STATUS = #{status,jdbcType=DECIMAL},
+      EVAL_DATE = #{evalDate,jdbcType=DECIMAL},
+      COURSE_SCORE = #{courseScore,jdbcType=DECIMAL},
+      HANDLE_PLO = #{handlePlo,jdbcType=VARCHAR},
+      HANDLE_DATE = #{handleDate,jdbcType=VARCHAR},
+      STUDY_NUM = #{studyNum,jdbcType=DECIMAL},
+      TOP_FLAG = #{topFlag,jdbcType=DECIMAL},
+      RECOMMEND_FLAG = #{recommendFlag,jdbcType=DECIMAL},
+      RECOMMEND = #{recommend,jdbcType=VARCHAR}
+    where COURSE_ID = #{courseId,jdbcType=VARCHAR}
+  </update>
+</mapper>

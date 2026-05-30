@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmbccd.ulms.db.dao.TableMapper">
+  <resultMap id="BaseResultMap" type="com.cmbccd.ulms.db.domain.Table">
+    <id column="ID" jdbcType="DECIMAL" property="id" />
+    <result column="NAME" jdbcType="VARCHAR" property="name" />
+    <result column="TABLE_NAME" jdbcType="VARCHAR" property="tableName" />
+    <result column="ROW_NUM" jdbcType="DECIMAL" property="rowNum" />
+    <result column="LAST_ANALYZED" jdbcType="VARCHAR" property="lastAnalyzed" />
+    <result column="TABLE_INDEX" jdbcType="VARCHAR" property="tableIndex" />
+    <result column="MEMO" jdbcType="VARCHAR" property="memo" />
+    <result column="CLICK_NUM" jdbcType="DECIMAL" property="clickNum" />
+    <result column="STATUS" jdbcType="DECIMAL" property="status" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    ID, NAME, TABLE_NAME, ROW_NUM, LAST_ANALYZED, TABLE_INDEX, MEMO, CLICK_NUM, STATUS
+  </sql>
+  <select id="selectByExample" parameterType="com.cmbccd.ulms.db.domain.TableExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from PDA_TABLES
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from PDA_TABLES
+    where ID = #{id,jdbcType=DECIMAL}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from PDA_TABLES
+    where ID = #{id,jdbcType=DECIMAL}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.cmbccd.ulms.db.domain.TableExample">
+    delete from PDA_TABLES
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.cmbccd.ulms.db.domain.Table">
+    insert into PDA_TABLES (ID, NAME, TABLE_NAME, 
+      ROW_NUM, LAST_ANALYZED, TABLE_INDEX, 
+      MEMO, CLICK_NUM, STATUS
+      )
+    values (#{id,jdbcType=DECIMAL}, #{name,jdbcType=VARCHAR}, #{tableName,jdbcType=VARCHAR}, 
+      #{rowNum,jdbcType=DECIMAL}, #{lastAnalyzed,jdbcType=VARCHAR}, #{tableIndex,jdbcType=VARCHAR}, 
+      #{memo,jdbcType=VARCHAR}, #{clickNum,jdbcType=DECIMAL}, #{status,jdbcType=DECIMAL}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.cmbccd.ulms.db.domain.Table">
+    insert into PDA_TABLES
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="name != null">
+        NAME,
+      </if>
+      <if test="tableName != null">
+        TABLE_NAME,
+      </if>
+      <if test="rowNum != null">
+        ROW_NUM,
+      </if>
+      <if test="lastAnalyzed != null">
+        LAST_ANALYZED,
+      </if>
+      <if test="tableIndex != null">
+        TABLE_INDEX,
+      </if>
+      <if test="memo != null">
+        MEMO,
+      </if>
+      <if test="clickNum != null">
+        CLICK_NUM,
+      </if>
+      <if test="status != null">
+        STATUS,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=DECIMAL},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="tableName != null">
+        #{tableName,jdbcType=VARCHAR},
+      </if>
+      <if test="rowNum != null">
+        #{rowNum,jdbcType=DECIMAL},
+      </if>
+      <if test="lastAnalyzed != null">
+        #{lastAnalyzed,jdbcType=VARCHAR},
+      </if>
+      <if test="tableIndex != null">
+        #{tableIndex,jdbcType=VARCHAR},
+      </if>
+      <if test="memo != null">
+        #{memo,jdbcType=VARCHAR},
+      </if>
+      <if test="clickNum != null">
+        #{clickNum,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.cmbccd.ulms.db.domain.TableExample" resultType="java.lang.Long">
+    select count(*) from PDA_TABLES
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update PDA_TABLES
+    <set>
+      <if test="record.id != null">
+        ID = #{record.id,jdbcType=DECIMAL},
+      </if>
+      <if test="record.name != null">
+        NAME = #{record.name,jdbcType=VARCHAR},
+      </if>
+      <if test="record.tableName != null">
+        TABLE_NAME = #{record.tableName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.rowNum != null">
+        ROW_NUM = #{record.rowNum,jdbcType=DECIMAL},
+      </if>
+      <if test="record.lastAnalyzed != null">
+        LAST_ANALYZED = #{record.lastAnalyzed,jdbcType=VARCHAR},
+      </if>
+      <if test="record.tableIndex != null">
+        TABLE_INDEX = #{record.tableIndex,jdbcType=VARCHAR},
+      </if>
+      <if test="record.memo != null">
+        MEMO = #{record.memo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.clickNum != null">
+        CLICK_NUM = #{record.clickNum,jdbcType=DECIMAL},
+      </if>
+      <if test="record.status != null">
+        STATUS = #{record.status,jdbcType=DECIMAL},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update PDA_TABLES
+    set ID = #{record.id,jdbcType=DECIMAL},
+      NAME = #{record.name,jdbcType=VARCHAR},
+      TABLE_NAME = #{record.tableName,jdbcType=VARCHAR},
+      ROW_NUM = #{record.rowNum,jdbcType=DECIMAL},
+      LAST_ANALYZED = #{record.lastAnalyzed,jdbcType=VARCHAR},
+      TABLE_INDEX = #{record.tableIndex,jdbcType=VARCHAR},
+      MEMO = #{record.memo,jdbcType=VARCHAR},
+      CLICK_NUM = #{record.clickNum,jdbcType=DECIMAL},
+      STATUS = #{record.status,jdbcType=DECIMAL}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cmbccd.ulms.db.domain.Table">
+    update PDA_TABLES
+    <set>
+      <if test="name != null">
+        NAME = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="tableName != null">
+        TABLE_NAME = #{tableName,jdbcType=VARCHAR},
+      </if>
+      <if test="rowNum != null">
+        ROW_NUM = #{rowNum,jdbcType=DECIMAL},
+      </if>
+      <if test="lastAnalyzed != null">
+        LAST_ANALYZED = #{lastAnalyzed,jdbcType=VARCHAR},
+      </if>
+      <if test="tableIndex != null">
+        TABLE_INDEX = #{tableIndex,jdbcType=VARCHAR},
+      </if>
+      <if test="memo != null">
+        MEMO = #{memo,jdbcType=VARCHAR},
+      </if>
+      <if test="clickNum != null">
+        CLICK_NUM = #{clickNum,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null">
+        STATUS = #{status,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cmbccd.ulms.db.domain.Table">
+    update PDA_TABLES
+    set NAME = #{name,jdbcType=VARCHAR},
+      TABLE_NAME = #{tableName,jdbcType=VARCHAR},
+      ROW_NUM = #{rowNum,jdbcType=DECIMAL},
+      LAST_ANALYZED = #{lastAnalyzed,jdbcType=VARCHAR},
+      TABLE_INDEX = #{tableIndex,jdbcType=VARCHAR},
+      MEMO = #{memo,jdbcType=VARCHAR},
+      CLICK_NUM = #{clickNum,jdbcType=DECIMAL},
+      STATUS = #{status,jdbcType=DECIMAL}
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+
+
+  <select id="updateClickNumIncreaseById" parameterType="java.lang.Integer">
+    update PDA_TABLES set CLICK_NUM = CLICK_NUM+1 where ID = #{id,jdbcType=DECIMAL}
+  </select>
+
+  <select id="selectNewId"   resultType="java.lang.Integer">
+    select (case when count(*)=0 then 100000 else max(id)+1 end) from PDA_TABLES
+    where id between 100000 and 1000000
+  </select>
+
+  <select id="selectTablesNotSorted"  resultMap="BaseResultMap">
+    select  a.* from
+    (select *  from PDA_TABLES) a left join (select ID,NAME from PDA_TABLE_TREE where TREE_LEVEL = 3 )  b  on (a.id = b.id)
+    where b.name is  null
+    <if test="keyWord != null">
+      and (a.TABLE_NAME like concat('%',concat(#{keyWord,jdbcType=VARCHAR}, '%'))  or a.NAME like concat('%',concat(#{keyWord,jdbcType=VARCHAR}, '%')) )
+    </if>
+  </select>
+
+  <select id="selectTablesSorted"   resultMap="BaseResultMap">
+    select  a.*  from
+    (select * from PDA_TABLES) a left join (select ID,NAME from PDA_TABLE_TREE where TREE_LEVEL = 3 )  b  on (a.id = b.id)
+    where b.name is not null
+    <if test="keyWord != null">
+      and (a.TABLE_NAME like concat('%',concat(#{keyWord,jdbcType=VARCHAR}, '%'))  or a.NAME like concat('%',concat(#{keyWord,jdbcType=VARCHAR}, '%')) )
+    </if>
+  </select>
+
+  <update id="updateExistTables">
+    update pda_tables u1 set (u1.ROW_NUM,u1.LAST_ANALYZED,u1.TABLE_INDEX) = (select distinct a.num_rows,to_char(a.LAST_ANALYZED,'yyyy-MM-dd hh24:mi:ss'),b.tab_index from (select table_name,num_rows,LAST_ANALYZED from user_tables) a left join
+                                                                                                                                                                          (select TABLE_NAME,listagg('名称:'||INDEX_NAME||',唯一性:'||uniqueness, ';')  WITHIN GROUP (ORDER BY TABLE_NAME) as tab_index from user_indexes group by TABLE_NAME) b
+                                                                                                                                                                          on (a.TABLE_NAME = b.TABLE_NAME) where u1.name = a.TABLE_NAME)
+  </update>
+  <select id="selectNotExistTables" resultMap="BaseResultMap">
+    select distinct  a.TABLE_NAME as name,'' as table_name,a.num_rows,a.LAST_ANALYZED,b.tab_index,'',0 as CLICK_NUM,1 as status from (select table_name,'',num_rows,LAST_ANALYZED from user_tables where TABLE_NAME not in (select name from PDA_TABLES)) a left join
+                                                                                                                                     (select TABLE_NAME,listagg('名称:'||INDEX_NAME||',唯一性:'||uniqueness, ';')  WITHIN GROUP (ORDER BY TABLE_NAME) as tab_index from user_indexes group by TABLE_NAME) b
+                                                                                                                                     on (a.TABLE_NAME = b.TABLE_NAME)
+  </select>
+</mapper>

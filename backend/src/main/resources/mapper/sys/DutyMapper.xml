@@ -1,0 +1,718 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmbccd.ulms.sys.dao.DutyMapper">
+  <resultMap id="BaseResultMap" type="com.cmbccd.ulms.sys.domain.Duty">
+    <id column="DUTY_DATE" jdbcType="VARCHAR" property="dutyDate" />
+    <id column="DUTY_TYPE" jdbcType="VARCHAR" property="dutyType" />
+    <id column="PLO_NUM" jdbcType="VARCHAR" property="ploNum" />
+    <result column="DUTY_FLAG" jdbcType="VARCHAR" property="dutyFlag" />
+    <result column="DUTY_DAY01" jdbcType="VARCHAR" property="dutyDay01" />
+    <result column="DUTY_DAY02" jdbcType="VARCHAR" property="dutyDay02" />
+    <result column="DUTY_DAY03" jdbcType="VARCHAR" property="dutyDay03" />
+    <result column="DUTY_DAY04" jdbcType="VARCHAR" property="dutyDay04" />
+    <result column="DUTY_DAY05" jdbcType="VARCHAR" property="dutyDay05" />
+    <result column="DUTY_DAY06" jdbcType="VARCHAR" property="dutyDay06" />
+    <result column="DUTY_DAY07" jdbcType="VARCHAR" property="dutyDay07" />
+    <result column="DUTY_DAY08" jdbcType="VARCHAR" property="dutyDay08" />
+    <result column="DUTY_DAY09" jdbcType="VARCHAR" property="dutyDay09" />
+    <result column="DUTY_DAY10" jdbcType="VARCHAR" property="dutyDay10" />
+    <result column="DUTY_DAY11" jdbcType="VARCHAR" property="dutyDay11" />
+    <result column="DUTY_DAY12" jdbcType="VARCHAR" property="dutyDay12" />
+    <result column="DUTY_DAY13" jdbcType="VARCHAR" property="dutyDay13" />
+    <result column="DUTY_DAY14" jdbcType="VARCHAR" property="dutyDay14" />
+    <result column="DUTY_DAY15" jdbcType="VARCHAR" property="dutyDay15" />
+    <result column="DUTY_DAY16" jdbcType="VARCHAR" property="dutyDay16" />
+    <result column="DUTY_DAY17" jdbcType="VARCHAR" property="dutyDay17" />
+    <result column="DUTY_DAY18" jdbcType="VARCHAR" property="dutyDay18" />
+    <result column="DUTY_DAY19" jdbcType="VARCHAR" property="dutyDay19" />
+    <result column="DUTY_DAY20" jdbcType="VARCHAR" property="dutyDay20" />
+    <result column="DUTY_DAY21" jdbcType="VARCHAR" property="dutyDay21" />
+    <result column="DUTY_DAY22" jdbcType="VARCHAR" property="dutyDay22" />
+    <result column="DUTY_DAY23" jdbcType="VARCHAR" property="dutyDay23" />
+    <result column="DUTY_DAY24" jdbcType="VARCHAR" property="dutyDay24" />
+    <result column="DUTY_DAY25" jdbcType="VARCHAR" property="dutyDay25" />
+    <result column="DUTY_DAY26" jdbcType="VARCHAR" property="dutyDay26" />
+    <result column="DUTY_DAY27" jdbcType="VARCHAR" property="dutyDay27" />
+    <result column="DUTY_DAY28" jdbcType="VARCHAR" property="dutyDay28" />
+    <result column="DUTY_DAY29" jdbcType="VARCHAR" property="dutyDay29" />
+    <result column="DUTY_DAY30" jdbcType="VARCHAR" property="dutyDay30" />
+    <result column="DUTY_DAY31" jdbcType="VARCHAR" property="dutyDay31" />
+    <result column="WORK_TIME" jdbcType="VARCHAR" property="workTime" />
+    <result column="DUTY_MEM" jdbcType="VARCHAR" property="dutyMem" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    DUTY_DATE, DUTY_TYPE, PLO_NUM, DUTY_FLAG, DUTY_DAY01, DUTY_DAY02, DUTY_DAY03, DUTY_DAY04, 
+    DUTY_DAY05, DUTY_DAY06, DUTY_DAY07, DUTY_DAY08, DUTY_DAY09, DUTY_DAY10, DUTY_DAY11, 
+    DUTY_DAY12, DUTY_DAY13, DUTY_DAY14, DUTY_DAY15, DUTY_DAY16, DUTY_DAY17, DUTY_DAY18, 
+    DUTY_DAY19, DUTY_DAY20, DUTY_DAY21, DUTY_DAY22, DUTY_DAY23, DUTY_DAY24, DUTY_DAY25, 
+    DUTY_DAY26, DUTY_DAY27, DUTY_DAY28, DUTY_DAY29, DUTY_DAY30, DUTY_DAY31, WORK_TIME, 
+    DUTY_MEM
+  </sql>
+  <select id="selectByExample" parameterType="com.cmbccd.ulms.sys.domain.DutyExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from CUS_CUST_DUTY
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="com.cmbccd.ulms.sys.domain.DutyKey" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from CUS_CUST_DUTY
+    where DUTY_DATE = #{dutyDate,jdbcType=VARCHAR}
+      and DUTY_TYPE = #{dutyType,jdbcType=VARCHAR}
+      and PLO_NUM = #{ploNum,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.cmbccd.ulms.sys.domain.DutyKey">
+    delete from CUS_CUST_DUTY
+    where DUTY_DATE = #{dutyDate,jdbcType=VARCHAR}
+      and DUTY_TYPE = #{dutyType,jdbcType=VARCHAR}
+      and PLO_NUM = #{ploNum,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.cmbccd.ulms.sys.domain.DutyExample">
+    delete from CUS_CUST_DUTY
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.cmbccd.ulms.sys.domain.Duty">
+    insert into CUS_CUST_DUTY (DUTY_DATE, DUTY_TYPE, PLO_NUM, 
+      DUTY_FLAG, DUTY_DAY01, DUTY_DAY02, 
+      DUTY_DAY03, DUTY_DAY04, DUTY_DAY05, 
+      DUTY_DAY06, DUTY_DAY07, DUTY_DAY08, 
+      DUTY_DAY09, DUTY_DAY10, DUTY_DAY11, 
+      DUTY_DAY12, DUTY_DAY13, DUTY_DAY14, 
+      DUTY_DAY15, DUTY_DAY16, DUTY_DAY17, 
+      DUTY_DAY18, DUTY_DAY19, DUTY_DAY20, 
+      DUTY_DAY21, DUTY_DAY22, DUTY_DAY23, 
+      DUTY_DAY24, DUTY_DAY25, DUTY_DAY26, 
+      DUTY_DAY27, DUTY_DAY28, DUTY_DAY29, 
+      DUTY_DAY30, DUTY_DAY31, WORK_TIME, 
+      DUTY_MEM)
+    values (#{dutyDate,jdbcType=VARCHAR}, #{dutyType,jdbcType=VARCHAR}, #{ploNum,jdbcType=VARCHAR}, 
+      #{dutyFlag,jdbcType=VARCHAR}, #{dutyDay01,jdbcType=VARCHAR}, #{dutyDay02,jdbcType=VARCHAR}, 
+      #{dutyDay03,jdbcType=VARCHAR}, #{dutyDay04,jdbcType=VARCHAR}, #{dutyDay05,jdbcType=VARCHAR}, 
+      #{dutyDay06,jdbcType=VARCHAR}, #{dutyDay07,jdbcType=VARCHAR}, #{dutyDay08,jdbcType=VARCHAR}, 
+      #{dutyDay09,jdbcType=VARCHAR}, #{dutyDay10,jdbcType=VARCHAR}, #{dutyDay11,jdbcType=VARCHAR}, 
+      #{dutyDay12,jdbcType=VARCHAR}, #{dutyDay13,jdbcType=VARCHAR}, #{dutyDay14,jdbcType=VARCHAR}, 
+      #{dutyDay15,jdbcType=VARCHAR}, #{dutyDay16,jdbcType=VARCHAR}, #{dutyDay17,jdbcType=VARCHAR}, 
+      #{dutyDay18,jdbcType=VARCHAR}, #{dutyDay19,jdbcType=VARCHAR}, #{dutyDay20,jdbcType=VARCHAR}, 
+      #{dutyDay21,jdbcType=VARCHAR}, #{dutyDay22,jdbcType=VARCHAR}, #{dutyDay23,jdbcType=VARCHAR}, 
+      #{dutyDay24,jdbcType=VARCHAR}, #{dutyDay25,jdbcType=VARCHAR}, #{dutyDay26,jdbcType=VARCHAR}, 
+      #{dutyDay27,jdbcType=VARCHAR}, #{dutyDay28,jdbcType=VARCHAR}, #{dutyDay29,jdbcType=VARCHAR}, 
+      #{dutyDay30,jdbcType=VARCHAR}, #{dutyDay31,jdbcType=VARCHAR}, #{workTime,jdbcType=VARCHAR}, 
+      #{dutyMem,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cmbccd.ulms.sys.domain.Duty">
+    insert into CUS_CUST_DUTY
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="dutyDate != null">
+        DUTY_DATE,
+      </if>
+      <if test="dutyType != null">
+        DUTY_TYPE,
+      </if>
+      <if test="ploNum != null">
+        PLO_NUM,
+      </if>
+      <if test="dutyFlag != null">
+        DUTY_FLAG,
+      </if>
+      <if test="dutyDay01 != null">
+        DUTY_DAY01,
+      </if>
+      <if test="dutyDay02 != null">
+        DUTY_DAY02,
+      </if>
+      <if test="dutyDay03 != null">
+        DUTY_DAY03,
+      </if>
+      <if test="dutyDay04 != null">
+        DUTY_DAY04,
+      </if>
+      <if test="dutyDay05 != null">
+        DUTY_DAY05,
+      </if>
+      <if test="dutyDay06 != null">
+        DUTY_DAY06,
+      </if>
+      <if test="dutyDay07 != null">
+        DUTY_DAY07,
+      </if>
+      <if test="dutyDay08 != null">
+        DUTY_DAY08,
+      </if>
+      <if test="dutyDay09 != null">
+        DUTY_DAY09,
+      </if>
+      <if test="dutyDay10 != null">
+        DUTY_DAY10,
+      </if>
+      <if test="dutyDay11 != null">
+        DUTY_DAY11,
+      </if>
+      <if test="dutyDay12 != null">
+        DUTY_DAY12,
+      </if>
+      <if test="dutyDay13 != null">
+        DUTY_DAY13,
+      </if>
+      <if test="dutyDay14 != null">
+        DUTY_DAY14,
+      </if>
+      <if test="dutyDay15 != null">
+        DUTY_DAY15,
+      </if>
+      <if test="dutyDay16 != null">
+        DUTY_DAY16,
+      </if>
+      <if test="dutyDay17 != null">
+        DUTY_DAY17,
+      </if>
+      <if test="dutyDay18 != null">
+        DUTY_DAY18,
+      </if>
+      <if test="dutyDay19 != null">
+        DUTY_DAY19,
+      </if>
+      <if test="dutyDay20 != null">
+        DUTY_DAY20,
+      </if>
+      <if test="dutyDay21 != null">
+        DUTY_DAY21,
+      </if>
+      <if test="dutyDay22 != null">
+        DUTY_DAY22,
+      </if>
+      <if test="dutyDay23 != null">
+        DUTY_DAY23,
+      </if>
+      <if test="dutyDay24 != null">
+        DUTY_DAY24,
+      </if>
+      <if test="dutyDay25 != null">
+        DUTY_DAY25,
+      </if>
+      <if test="dutyDay26 != null">
+        DUTY_DAY26,
+      </if>
+      <if test="dutyDay27 != null">
+        DUTY_DAY27,
+      </if>
+      <if test="dutyDay28 != null">
+        DUTY_DAY28,
+      </if>
+      <if test="dutyDay29 != null">
+        DUTY_DAY29,
+      </if>
+      <if test="dutyDay30 != null">
+        DUTY_DAY30,
+      </if>
+      <if test="dutyDay31 != null">
+        DUTY_DAY31,
+      </if>
+      <if test="workTime != null">
+        WORK_TIME,
+      </if>
+      <if test="dutyMem != null">
+        DUTY_MEM,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="dutyDate != null">
+        #{dutyDate,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyType != null">
+        #{dutyType,jdbcType=VARCHAR},
+      </if>
+      <if test="ploNum != null">
+        #{ploNum,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyFlag != null">
+        #{dutyFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay01 != null">
+        #{dutyDay01,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay02 != null">
+        #{dutyDay02,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay03 != null">
+        #{dutyDay03,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay04 != null">
+        #{dutyDay04,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay05 != null">
+        #{dutyDay05,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay06 != null">
+        #{dutyDay06,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay07 != null">
+        #{dutyDay07,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay08 != null">
+        #{dutyDay08,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay09 != null">
+        #{dutyDay09,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay10 != null">
+        #{dutyDay10,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay11 != null">
+        #{dutyDay11,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay12 != null">
+        #{dutyDay12,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay13 != null">
+        #{dutyDay13,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay14 != null">
+        #{dutyDay14,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay15 != null">
+        #{dutyDay15,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay16 != null">
+        #{dutyDay16,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay17 != null">
+        #{dutyDay17,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay18 != null">
+        #{dutyDay18,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay19 != null">
+        #{dutyDay19,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay20 != null">
+        #{dutyDay20,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay21 != null">
+        #{dutyDay21,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay22 != null">
+        #{dutyDay22,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay23 != null">
+        #{dutyDay23,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay24 != null">
+        #{dutyDay24,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay25 != null">
+        #{dutyDay25,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay26 != null">
+        #{dutyDay26,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay27 != null">
+        #{dutyDay27,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay28 != null">
+        #{dutyDay28,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay29 != null">
+        #{dutyDay29,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay30 != null">
+        #{dutyDay30,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay31 != null">
+        #{dutyDay31,jdbcType=VARCHAR},
+      </if>
+      <if test="workTime != null">
+        #{workTime,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyMem != null">
+        #{dutyMem,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.cmbccd.ulms.sys.domain.DutyExample" resultType="java.lang.Long">
+    select count(*) from CUS_CUST_DUTY
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update CUS_CUST_DUTY
+    <set>
+      <if test="record.dutyDate != null">
+        DUTY_DATE = #{record.dutyDate,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dutyType != null">
+        DUTY_TYPE = #{record.dutyType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ploNum != null">
+        PLO_NUM = #{record.ploNum,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dutyFlag != null">
+        DUTY_FLAG = #{record.dutyFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dutyDay01 != null">
+        DUTY_DAY01 = #{record.dutyDay01,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dutyDay02 != null">
+        DUTY_DAY02 = #{record.dutyDay02,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dutyDay03 != null">
+        DUTY_DAY03 = #{record.dutyDay03,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dutyDay04 != null">
+        DUTY_DAY04 = #{record.dutyDay04,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dutyDay05 != null">
+        DUTY_DAY05 = #{record.dutyDay05,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dutyDay06 != null">
+        DUTY_DAY06 = #{record.dutyDay06,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dutyDay07 != null">
+        DUTY_DAY07 = #{record.dutyDay07,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dutyDay08 != null">
+        DUTY_DAY08 = #{record.dutyDay08,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dutyDay09 != null">
+        DUTY_DAY09 = #{record.dutyDay09,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dutyDay10 != null">
+        DUTY_DAY10 = #{record.dutyDay10,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dutyDay11 != null">
+        DUTY_DAY11 = #{record.dutyDay11,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dutyDay12 != null">
+        DUTY_DAY12 = #{record.dutyDay12,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dutyDay13 != null">
+        DUTY_DAY13 = #{record.dutyDay13,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dutyDay14 != null">
+        DUTY_DAY14 = #{record.dutyDay14,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dutyDay15 != null">
+        DUTY_DAY15 = #{record.dutyDay15,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dutyDay16 != null">
+        DUTY_DAY16 = #{record.dutyDay16,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dutyDay17 != null">
+        DUTY_DAY17 = #{record.dutyDay17,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dutyDay18 != null">
+        DUTY_DAY18 = #{record.dutyDay18,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dutyDay19 != null">
+        DUTY_DAY19 = #{record.dutyDay19,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dutyDay20 != null">
+        DUTY_DAY20 = #{record.dutyDay20,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dutyDay21 != null">
+        DUTY_DAY21 = #{record.dutyDay21,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dutyDay22 != null">
+        DUTY_DAY22 = #{record.dutyDay22,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dutyDay23 != null">
+        DUTY_DAY23 = #{record.dutyDay23,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dutyDay24 != null">
+        DUTY_DAY24 = #{record.dutyDay24,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dutyDay25 != null">
+        DUTY_DAY25 = #{record.dutyDay25,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dutyDay26 != null">
+        DUTY_DAY26 = #{record.dutyDay26,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dutyDay27 != null">
+        DUTY_DAY27 = #{record.dutyDay27,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dutyDay28 != null">
+        DUTY_DAY28 = #{record.dutyDay28,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dutyDay29 != null">
+        DUTY_DAY29 = #{record.dutyDay29,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dutyDay30 != null">
+        DUTY_DAY30 = #{record.dutyDay30,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dutyDay31 != null">
+        DUTY_DAY31 = #{record.dutyDay31,jdbcType=VARCHAR},
+      </if>
+      <if test="record.workTime != null">
+        WORK_TIME = #{record.workTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dutyMem != null">
+        DUTY_MEM = #{record.dutyMem,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update CUS_CUST_DUTY
+    set DUTY_DATE = #{record.dutyDate,jdbcType=VARCHAR},
+      DUTY_TYPE = #{record.dutyType,jdbcType=VARCHAR},
+      PLO_NUM = #{record.ploNum,jdbcType=VARCHAR},
+      DUTY_FLAG = #{record.dutyFlag,jdbcType=VARCHAR},
+      DUTY_DAY01 = #{record.dutyDay01,jdbcType=VARCHAR},
+      DUTY_DAY02 = #{record.dutyDay02,jdbcType=VARCHAR},
+      DUTY_DAY03 = #{record.dutyDay03,jdbcType=VARCHAR},
+      DUTY_DAY04 = #{record.dutyDay04,jdbcType=VARCHAR},
+      DUTY_DAY05 = #{record.dutyDay05,jdbcType=VARCHAR},
+      DUTY_DAY06 = #{record.dutyDay06,jdbcType=VARCHAR},
+      DUTY_DAY07 = #{record.dutyDay07,jdbcType=VARCHAR},
+      DUTY_DAY08 = #{record.dutyDay08,jdbcType=VARCHAR},
+      DUTY_DAY09 = #{record.dutyDay09,jdbcType=VARCHAR},
+      DUTY_DAY10 = #{record.dutyDay10,jdbcType=VARCHAR},
+      DUTY_DAY11 = #{record.dutyDay11,jdbcType=VARCHAR},
+      DUTY_DAY12 = #{record.dutyDay12,jdbcType=VARCHAR},
+      DUTY_DAY13 = #{record.dutyDay13,jdbcType=VARCHAR},
+      DUTY_DAY14 = #{record.dutyDay14,jdbcType=VARCHAR},
+      DUTY_DAY15 = #{record.dutyDay15,jdbcType=VARCHAR},
+      DUTY_DAY16 = #{record.dutyDay16,jdbcType=VARCHAR},
+      DUTY_DAY17 = #{record.dutyDay17,jdbcType=VARCHAR},
+      DUTY_DAY18 = #{record.dutyDay18,jdbcType=VARCHAR},
+      DUTY_DAY19 = #{record.dutyDay19,jdbcType=VARCHAR},
+      DUTY_DAY20 = #{record.dutyDay20,jdbcType=VARCHAR},
+      DUTY_DAY21 = #{record.dutyDay21,jdbcType=VARCHAR},
+      DUTY_DAY22 = #{record.dutyDay22,jdbcType=VARCHAR},
+      DUTY_DAY23 = #{record.dutyDay23,jdbcType=VARCHAR},
+      DUTY_DAY24 = #{record.dutyDay24,jdbcType=VARCHAR},
+      DUTY_DAY25 = #{record.dutyDay25,jdbcType=VARCHAR},
+      DUTY_DAY26 = #{record.dutyDay26,jdbcType=VARCHAR},
+      DUTY_DAY27 = #{record.dutyDay27,jdbcType=VARCHAR},
+      DUTY_DAY28 = #{record.dutyDay28,jdbcType=VARCHAR},
+      DUTY_DAY29 = #{record.dutyDay29,jdbcType=VARCHAR},
+      DUTY_DAY30 = #{record.dutyDay30,jdbcType=VARCHAR},
+      DUTY_DAY31 = #{record.dutyDay31,jdbcType=VARCHAR},
+      WORK_TIME = #{record.workTime,jdbcType=VARCHAR},
+      DUTY_MEM = #{record.dutyMem,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cmbccd.ulms.sys.domain.Duty">
+    update CUS_CUST_DUTY
+    <set>
+      <if test="dutyFlag != null">
+        DUTY_FLAG = #{dutyFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay01 != null">
+        DUTY_DAY01 = #{dutyDay01,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay02 != null">
+        DUTY_DAY02 = #{dutyDay02,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay03 != null">
+        DUTY_DAY03 = #{dutyDay03,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay04 != null">
+        DUTY_DAY04 = #{dutyDay04,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay05 != null">
+        DUTY_DAY05 = #{dutyDay05,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay06 != null">
+        DUTY_DAY06 = #{dutyDay06,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay07 != null">
+        DUTY_DAY07 = #{dutyDay07,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay08 != null">
+        DUTY_DAY08 = #{dutyDay08,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay09 != null">
+        DUTY_DAY09 = #{dutyDay09,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay10 != null">
+        DUTY_DAY10 = #{dutyDay10,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay11 != null">
+        DUTY_DAY11 = #{dutyDay11,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay12 != null">
+        DUTY_DAY12 = #{dutyDay12,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay13 != null">
+        DUTY_DAY13 = #{dutyDay13,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay14 != null">
+        DUTY_DAY14 = #{dutyDay14,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay15 != null">
+        DUTY_DAY15 = #{dutyDay15,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay16 != null">
+        DUTY_DAY16 = #{dutyDay16,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay17 != null">
+        DUTY_DAY17 = #{dutyDay17,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay18 != null">
+        DUTY_DAY18 = #{dutyDay18,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay19 != null">
+        DUTY_DAY19 = #{dutyDay19,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay20 != null">
+        DUTY_DAY20 = #{dutyDay20,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay21 != null">
+        DUTY_DAY21 = #{dutyDay21,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay22 != null">
+        DUTY_DAY22 = #{dutyDay22,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay23 != null">
+        DUTY_DAY23 = #{dutyDay23,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay24 != null">
+        DUTY_DAY24 = #{dutyDay24,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay25 != null">
+        DUTY_DAY25 = #{dutyDay25,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay26 != null">
+        DUTY_DAY26 = #{dutyDay26,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay27 != null">
+        DUTY_DAY27 = #{dutyDay27,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay28 != null">
+        DUTY_DAY28 = #{dutyDay28,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay29 != null">
+        DUTY_DAY29 = #{dutyDay29,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay30 != null">
+        DUTY_DAY30 = #{dutyDay30,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyDay31 != null">
+        DUTY_DAY31 = #{dutyDay31,jdbcType=VARCHAR},
+      </if>
+      <if test="workTime != null">
+        WORK_TIME = #{workTime,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyMem != null">
+        DUTY_MEM = #{dutyMem,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where DUTY_DATE = #{dutyDate,jdbcType=VARCHAR}
+      and DUTY_TYPE = #{dutyType,jdbcType=VARCHAR}
+      and PLO_NUM = #{ploNum,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cmbccd.ulms.sys.domain.Duty">
+    update CUS_CUST_DUTY
+    set DUTY_FLAG = #{dutyFlag,jdbcType=VARCHAR},
+      DUTY_DAY01 = #{dutyDay01,jdbcType=VARCHAR},
+      DUTY_DAY02 = #{dutyDay02,jdbcType=VARCHAR},
+      DUTY_DAY03 = #{dutyDay03,jdbcType=VARCHAR},
+      DUTY_DAY04 = #{dutyDay04,jdbcType=VARCHAR},
+      DUTY_DAY05 = #{dutyDay05,jdbcType=VARCHAR},
+      DUTY_DAY06 = #{dutyDay06,jdbcType=VARCHAR},
+      DUTY_DAY07 = #{dutyDay07,jdbcType=VARCHAR},
+      DUTY_DAY08 = #{dutyDay08,jdbcType=VARCHAR},
+      DUTY_DAY09 = #{dutyDay09,jdbcType=VARCHAR},
+      DUTY_DAY10 = #{dutyDay10,jdbcType=VARCHAR},
+      DUTY_DAY11 = #{dutyDay11,jdbcType=VARCHAR},
+      DUTY_DAY12 = #{dutyDay12,jdbcType=VARCHAR},
+      DUTY_DAY13 = #{dutyDay13,jdbcType=VARCHAR},
+      DUTY_DAY14 = #{dutyDay14,jdbcType=VARCHAR},
+      DUTY_DAY15 = #{dutyDay15,jdbcType=VARCHAR},
+      DUTY_DAY16 = #{dutyDay16,jdbcType=VARCHAR},
+      DUTY_DAY17 = #{dutyDay17,jdbcType=VARCHAR},
+      DUTY_DAY18 = #{dutyDay18,jdbcType=VARCHAR},
+      DUTY_DAY19 = #{dutyDay19,jdbcType=VARCHAR},
+      DUTY_DAY20 = #{dutyDay20,jdbcType=VARCHAR},
+      DUTY_DAY21 = #{dutyDay21,jdbcType=VARCHAR},
+      DUTY_DAY22 = #{dutyDay22,jdbcType=VARCHAR},
+      DUTY_DAY23 = #{dutyDay23,jdbcType=VARCHAR},
+      DUTY_DAY24 = #{dutyDay24,jdbcType=VARCHAR},
+      DUTY_DAY25 = #{dutyDay25,jdbcType=VARCHAR},
+      DUTY_DAY26 = #{dutyDay26,jdbcType=VARCHAR},
+      DUTY_DAY27 = #{dutyDay27,jdbcType=VARCHAR},
+      DUTY_DAY28 = #{dutyDay28,jdbcType=VARCHAR},
+      DUTY_DAY29 = #{dutyDay29,jdbcType=VARCHAR},
+      DUTY_DAY30 = #{dutyDay30,jdbcType=VARCHAR},
+      DUTY_DAY31 = #{dutyDay31,jdbcType=VARCHAR},
+      WORK_TIME = #{workTime,jdbcType=VARCHAR},
+      DUTY_MEM = #{dutyMem,jdbcType=VARCHAR}
+    where DUTY_DATE = #{dutyDate,jdbcType=VARCHAR}
+      and DUTY_TYPE = #{dutyType,jdbcType=VARCHAR}
+      and PLO_NUM = #{ploNum,jdbcType=VARCHAR}
+  </update>
+</mapper>

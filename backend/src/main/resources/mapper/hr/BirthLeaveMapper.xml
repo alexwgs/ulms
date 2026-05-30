@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmbccd.ulms.hr.dao.BirthLeaveMapper">
+  <resultMap id="BaseResultMap" type="com.cmbccd.ulms.hr.domain.BirthLeave">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="PLO_NUM" jdbcType="VARCHAR" property="ploNum" />
+    <result column="LABEL_ID" jdbcType="DECIMAL" property="labelId" />
+    <result column="LABEL_NAME" jdbcType="VARCHAR" property="labelName" />
+    <result column="BEG_DATE" jdbcType="VARCHAR" property="begDate" />
+    <result column="END_DATE" jdbcType="VARCHAR" property="endDate" />
+    <result column="MODIFY_ID" jdbcType="VARCHAR" property="modifyId" />
+    <result column="MODIFY_TIME" jdbcType="VARCHAR" property="modifyTime" />
+    <result column="GROUP_ID" jdbcType="DECIMAL" property="groupId" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    ID, PLO_NUM, LABEL_ID, LABEL_NAME, BEG_DATE, END_DATE, MODIFY_ID, MODIFY_TIME, GROUP_ID
+  </sql>
+  <select id="selectByExample" parameterType="com.cmbccd.ulms.hr.domain.BirthLeaveExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from CUS_HR_BIRTH_LEAVE
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from CUS_HR_BIRTH_LEAVE
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from CUS_HR_BIRTH_LEAVE
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.cmbccd.ulms.hr.domain.BirthLeaveExample">
+    delete from CUS_HR_BIRTH_LEAVE
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.cmbccd.ulms.hr.domain.BirthLeave">
+    insert into CUS_HR_BIRTH_LEAVE (ID, PLO_NUM, LABEL_ID, 
+      LABEL_NAME, BEG_DATE, END_DATE, 
+      MODIFY_ID, MODIFY_TIME, GROUP_ID
+      )
+    values (#{id,jdbcType=VARCHAR}, #{ploNum,jdbcType=VARCHAR}, #{labelId,jdbcType=DECIMAL}, 
+      #{labelName,jdbcType=VARCHAR}, #{begDate,jdbcType=VARCHAR}, #{endDate,jdbcType=VARCHAR}, 
+      #{modifyId,jdbcType=VARCHAR}, #{modifyTime,jdbcType=VARCHAR}, #{groupId,jdbcType=DECIMAL}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.cmbccd.ulms.hr.domain.BirthLeave">
+    insert into CUS_HR_BIRTH_LEAVE
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="ploNum != null">
+        PLO_NUM,
+      </if>
+      <if test="labelId != null">
+        LABEL_ID,
+      </if>
+      <if test="labelName != null">
+        LABEL_NAME,
+      </if>
+      <if test="begDate != null">
+        BEG_DATE,
+      </if>
+      <if test="endDate != null">
+        END_DATE,
+      </if>
+      <if test="modifyId != null">
+        MODIFY_ID,
+      </if>
+      <if test="modifyTime != null">
+        MODIFY_TIME,
+      </if>
+      <if test="groupId != null">
+        GROUP_ID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="ploNum != null">
+        #{ploNum,jdbcType=VARCHAR},
+      </if>
+      <if test="labelId != null">
+        #{labelId,jdbcType=DECIMAL},
+      </if>
+      <if test="labelName != null">
+        #{labelName,jdbcType=VARCHAR},
+      </if>
+      <if test="begDate != null">
+        #{begDate,jdbcType=VARCHAR},
+      </if>
+      <if test="endDate != null">
+        #{endDate,jdbcType=VARCHAR},
+      </if>
+      <if test="modifyId != null">
+        #{modifyId,jdbcType=VARCHAR},
+      </if>
+      <if test="modifyTime != null">
+        #{modifyTime,jdbcType=VARCHAR},
+      </if>
+      <if test="groupId != null">
+        #{groupId,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.cmbccd.ulms.hr.domain.BirthLeaveExample" resultType="java.lang.Long">
+    select count(*) from CUS_HR_BIRTH_LEAVE
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update CUS_HR_BIRTH_LEAVE
+    <set>
+      <if test="record.id != null">
+        ID = #{record.id,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ploNum != null">
+        PLO_NUM = #{record.ploNum,jdbcType=VARCHAR},
+      </if>
+      <if test="record.labelId != null">
+        LABEL_ID = #{record.labelId,jdbcType=DECIMAL},
+      </if>
+      <if test="record.labelName != null">
+        LABEL_NAME = #{record.labelName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.begDate != null">
+        BEG_DATE = #{record.begDate,jdbcType=VARCHAR},
+      </if>
+      <if test="record.endDate != null">
+        END_DATE = #{record.endDate,jdbcType=VARCHAR},
+      </if>
+      <if test="record.modifyId != null">
+        MODIFY_ID = #{record.modifyId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.modifyTime != null">
+        MODIFY_TIME = #{record.modifyTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.groupId != null">
+        GROUP_ID = #{record.groupId,jdbcType=DECIMAL},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update CUS_HR_BIRTH_LEAVE
+    set ID = #{record.id,jdbcType=VARCHAR},
+      PLO_NUM = #{record.ploNum,jdbcType=VARCHAR},
+      LABEL_ID = #{record.labelId,jdbcType=DECIMAL},
+      LABEL_NAME = #{record.labelName,jdbcType=VARCHAR},
+      BEG_DATE = #{record.begDate,jdbcType=VARCHAR},
+      END_DATE = #{record.endDate,jdbcType=VARCHAR},
+      MODIFY_ID = #{record.modifyId,jdbcType=VARCHAR},
+      MODIFY_TIME = #{record.modifyTime,jdbcType=VARCHAR},
+      GROUP_ID = #{record.groupId,jdbcType=DECIMAL}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cmbccd.ulms.hr.domain.BirthLeave">
+    update CUS_HR_BIRTH_LEAVE
+    <set>
+      <if test="ploNum != null">
+        PLO_NUM = #{ploNum,jdbcType=VARCHAR},
+      </if>
+      <if test="labelId != null">
+        LABEL_ID = #{labelId,jdbcType=DECIMAL},
+      </if>
+      <if test="labelName != null">
+        LABEL_NAME = #{labelName,jdbcType=VARCHAR},
+      </if>
+      <if test="begDate != null">
+        BEG_DATE = #{begDate,jdbcType=VARCHAR},
+      </if>
+      <if test="endDate != null">
+        END_DATE = #{endDate,jdbcType=VARCHAR},
+      </if>
+      <if test="modifyId != null">
+        MODIFY_ID = #{modifyId,jdbcType=VARCHAR},
+      </if>
+      <if test="modifyTime != null">
+        MODIFY_TIME = #{modifyTime,jdbcType=VARCHAR},
+      </if>
+      <if test="groupId != null">
+        GROUP_ID = #{groupId,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cmbccd.ulms.hr.domain.BirthLeave">
+    update CUS_HR_BIRTH_LEAVE
+    set PLO_NUM = #{ploNum,jdbcType=VARCHAR},
+      LABEL_ID = #{labelId,jdbcType=DECIMAL},
+      LABEL_NAME = #{labelName,jdbcType=VARCHAR},
+      BEG_DATE = #{begDate,jdbcType=VARCHAR},
+      END_DATE = #{endDate,jdbcType=VARCHAR},
+      MODIFY_ID = #{modifyId,jdbcType=VARCHAR},
+      MODIFY_TIME = #{modifyTime,jdbcType=VARCHAR},
+      GROUP_ID = #{groupId,jdbcType=DECIMAL}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <select id="selectCurrentLabel" parameterType="java.lang.String">
+    select * from CUS_HR_BIRTH_LEAVE where to_char(sysdate, 'yyyy-MM-dd') between nvl(BEG_DATE,'2999-12-12') and nvl(END_DATE,'2999-12-12') and plo_num = #{ploNum,jdbcType=VARCHAR}  and rownum = 1 order by LABEL_ID desc
+  </select>
+  <select id="listBirthLeave" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT
+    a.PLO_NUM,
+    a.GROUP_ID,
+    b.LABEL_ID,
+    b.LABEL_NAME,
+    b.BEG_DATE,
+    b.END_DATE
+    FROM
+    ( SELECT PLO_NUM, max( group_id ) group_id FROM CUS_HR_BIRTH_LEAVE
+    <if test="ploNum != null">
+      where
+      PLO_NUM = #{ploNum,jdbcType=VARCHAR}
+    </if>
+    GROUP BY PLO_NUM ) a
+    LEFT JOIN (
+    SELECT
+    *
+    FROM
+    CUS_HR_BIRTH_LEAVE
+    WHERE
+    to_char( SYSDATE, 'yyyy-MM-dd' ) BETWEEN nvl( BEG_DATE, '2999-12-12' )
+    AND nvl( END_DATE, '2999-12-12' )
+    ORDER BY
+    LABEL_ID DESC
+    ) b ON (
+    a.PLO_NUM = b.PLO_NUM)
+  </select>
+</mapper>

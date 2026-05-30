@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmbccd.ulms.edu.dao.QuesTestMapper">
+  <resultMap id="BaseResultMap" type="com.cmbccd.ulms.edu.domain.QuesTest">
+    <id column="JOURNO" jdbcType="VARCHAR" property="journo" />
+    <result column="EXAM_CODE" jdbcType="VARCHAR" property="examCode" />
+    <result column="PLO_NUM" jdbcType="VARCHAR" property="ploNum" />
+    <result column="QUES_CODE" jdbcType="VARCHAR" property="quesCode" />
+    <result column="TEST_STAT" jdbcType="DECIMAL" property="testStat" />
+    <result column="USER_ANSWER" jdbcType="VARCHAR" property="userAnswer" />
+    <result column="IF_CORRECT" jdbcType="DECIMAL" property="ifCorrect" />
+    <result column="SCORE" jdbcType="DECIMAL" property="score" />
+    <result column="HANDLE_DATE" jdbcType="VARCHAR" property="handleDate" />
+    <result column="QUES_ORDER" jdbcType="DECIMAL" property="quesOrder" />
+  </resultMap>
+  
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    JOURNO, EXAM_CODE, PLO_NUM, QUES_CODE, TEST_STAT, USER_ANSWER, IF_CORRECT, SCORE, 
+    HANDLE_DATE, QUES_ORDER
+  </sql>
+  <select id="selectByExample" parameterType="com.cmbccd.ulms.edu.domain.QuesTestExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from TRM_QUES_TEST
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from TRM_QUES_TEST
+    where JOURNO = #{journo,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from TRM_QUES_TEST
+    where JOURNO = #{journo,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.cmbccd.ulms.edu.domain.QuesTestExample">
+    delete from TRM_QUES_TEST
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.cmbccd.ulms.edu.domain.QuesTest">
+    insert into TRM_QUES_TEST (JOURNO, EXAM_CODE, PLO_NUM, 
+      QUES_CODE, TEST_STAT, USER_ANSWER, 
+      IF_CORRECT, SCORE, HANDLE_DATE, 
+      QUES_ORDER)
+    values (#{journo,jdbcType=VARCHAR}, #{examCode,jdbcType=VARCHAR}, #{ploNum,jdbcType=VARCHAR}, 
+      #{quesCode,jdbcType=VARCHAR}, #{testStat,jdbcType=DECIMAL}, #{userAnswer,jdbcType=VARCHAR}, 
+      #{ifCorrect,jdbcType=DECIMAL}, #{score,jdbcType=DECIMAL}, #{handleDate,jdbcType=VARCHAR}, 
+      #{quesOrder,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cmbccd.ulms.edu.domain.QuesTest">
+    insert into TRM_QUES_TEST
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="journo != null">
+        JOURNO,
+      </if>
+      <if test="examCode != null">
+        EXAM_CODE,
+      </if>
+      <if test="ploNum != null">
+        PLO_NUM,
+      </if>
+      <if test="quesCode != null">
+        QUES_CODE,
+      </if>
+      <if test="testStat != null">
+        TEST_STAT,
+      </if>
+      <if test="userAnswer != null">
+        USER_ANSWER,
+      </if>
+      <if test="ifCorrect != null">
+        IF_CORRECT,
+      </if>
+      <if test="score != null">
+        SCORE,
+      </if>
+      <if test="handleDate != null">
+        HANDLE_DATE,
+      </if>
+      <if test="quesOrder != null">
+        QUES_ORDER,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="journo != null">
+        #{journo,jdbcType=VARCHAR},
+      </if>
+      <if test="examCode != null">
+        #{examCode,jdbcType=VARCHAR},
+      </if>
+      <if test="ploNum != null">
+        #{ploNum,jdbcType=VARCHAR},
+      </if>
+      <if test="quesCode != null">
+        #{quesCode,jdbcType=VARCHAR},
+      </if>
+      <if test="testStat != null">
+        #{testStat,jdbcType=DECIMAL},
+      </if>
+      <if test="userAnswer != null">
+        #{userAnswer,jdbcType=VARCHAR},
+      </if>
+      <if test="ifCorrect != null">
+        #{ifCorrect,jdbcType=DECIMAL},
+      </if>
+      <if test="score != null">
+        #{score,jdbcType=DECIMAL},
+      </if>
+      <if test="handleDate != null">
+        #{handleDate,jdbcType=VARCHAR},
+      </if>
+      <if test="quesOrder != null">
+        #{quesOrder,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.cmbccd.ulms.edu.domain.QuesTestExample" resultType="java.lang.Long">
+    select count(*) from TRM_QUES_TEST
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update TRM_QUES_TEST
+    <set>
+      <if test="record.journo != null">
+        JOURNO = #{record.journo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.examCode != null">
+        EXAM_CODE = #{record.examCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ploNum != null">
+        PLO_NUM = #{record.ploNum,jdbcType=VARCHAR},
+      </if>
+      <if test="record.quesCode != null">
+        QUES_CODE = #{record.quesCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.testStat != null">
+        TEST_STAT = #{record.testStat,jdbcType=DECIMAL},
+      </if>
+      <if test="record.userAnswer != null">
+        USER_ANSWER = #{record.userAnswer,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ifCorrect != null">
+        IF_CORRECT = #{record.ifCorrect,jdbcType=DECIMAL},
+      </if>
+      <if test="record.score != null">
+        SCORE = #{record.score,jdbcType=DECIMAL},
+      </if>
+      <if test="record.handleDate != null">
+        HANDLE_DATE = #{record.handleDate,jdbcType=VARCHAR},
+      </if>
+      <if test="record.quesOrder != null">
+        QUES_ORDER = #{record.quesOrder,jdbcType=DECIMAL},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update TRM_QUES_TEST
+    set JOURNO = #{record.journo,jdbcType=VARCHAR},
+      EXAM_CODE = #{record.examCode,jdbcType=VARCHAR},
+      PLO_NUM = #{record.ploNum,jdbcType=VARCHAR},
+      QUES_CODE = #{record.quesCode,jdbcType=VARCHAR},
+      TEST_STAT = #{record.testStat,jdbcType=DECIMAL},
+      USER_ANSWER = #{record.userAnswer,jdbcType=VARCHAR},
+      IF_CORRECT = #{record.ifCorrect,jdbcType=DECIMAL},
+      SCORE = #{record.score,jdbcType=DECIMAL},
+      HANDLE_DATE = #{record.handleDate,jdbcType=VARCHAR},
+      QUES_ORDER = #{record.quesOrder,jdbcType=DECIMAL}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cmbccd.ulms.edu.domain.QuesTest">
+    update TRM_QUES_TEST
+    <set>
+      <if test="examCode != null">
+        EXAM_CODE = #{examCode,jdbcType=VARCHAR},
+      </if>
+      <if test="ploNum != null">
+        PLO_NUM = #{ploNum,jdbcType=VARCHAR},
+      </if>
+      <if test="quesCode != null">
+        QUES_CODE = #{quesCode,jdbcType=VARCHAR},
+      </if>
+      <if test="testStat != null">
+        TEST_STAT = #{testStat,jdbcType=DECIMAL},
+      </if>
+      <if test="userAnswer != null">
+        USER_ANSWER = #{userAnswer,jdbcType=VARCHAR},
+      </if>
+      <if test="ifCorrect != null">
+        IF_CORRECT = #{ifCorrect,jdbcType=DECIMAL},
+      </if>
+      <if test="score != null">
+        SCORE = #{score,jdbcType=DECIMAL},
+      </if>
+      <if test="handleDate != null">
+        HANDLE_DATE = #{handleDate,jdbcType=VARCHAR},
+      </if>
+      <if test="quesOrder != null">
+        QUES_ORDER = #{quesOrder,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where JOURNO = #{journo,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cmbccd.ulms.edu.domain.QuesTest">
+    update TRM_QUES_TEST
+    set EXAM_CODE = #{examCode,jdbcType=VARCHAR},
+      PLO_NUM = #{ploNum,jdbcType=VARCHAR},
+      QUES_CODE = #{quesCode,jdbcType=VARCHAR},
+      TEST_STAT = #{testStat,jdbcType=DECIMAL},
+      USER_ANSWER = #{userAnswer,jdbcType=VARCHAR},
+      IF_CORRECT = #{ifCorrect,jdbcType=DECIMAL},
+      SCORE = #{score,jdbcType=DECIMAL},
+      HANDLE_DATE = #{handleDate,jdbcType=VARCHAR},
+      QUES_ORDER = #{quesOrder,jdbcType=DECIMAL}
+    where JOURNO = #{journo,jdbcType=VARCHAR}
+  </update>
+  <select id="getUserScore"  resultType="java.lang.Double">
+  	select  sum(SCORE) from TRM_QUES_TEST where EXAM_CODE = #{examCode,jdbcType=VARCHAR} and PLO_NUM = #{ploNum,jdbcType=VARCHAR} and IF_CORRECT=1 group by PLO_NUM
+  </select>
+ 
+   <resultMap id="reportQuesTestDetailMap" type="com.cmbccd.ulms.edu.domain.report.QuesTestDetail">
+    <result column="DEPT_NUM" jdbcType="VARCHAR" property="deptNum" />
+    <result column="DEPT_GROUP" jdbcType="VARCHAR" property="deptGroup" />
+    <result column="PLO_NUM" jdbcType="VARCHAR" property="ploNum" />
+    <result column="PLO_NAME" jdbcType="VARCHAR" property="ploName" />
+    <result column="BATCH_GROUP" jdbcType="VARCHAR" property="batchGroup" />
+    <result column="QUES_CODE" jdbcType="VARCHAR" property="quesCode" />
+    <result column="USER_ANSWER" jdbcType="VARCHAR" property="userAnswer" />
+    <result column="IF_CORRECT" jdbcType="VARCHAR" property="ifCorrect" />
+    <result column="SCORE" jdbcType="DECIMAL" property="score" />
+    <result column="HANDLE_DATE" jdbcType="VARCHAR" property="handleDate" />
+    <result column="QUES_ORDER" jdbcType="DECIMAL" property="quesOrder" />
+    <result column="QUES_TYPE" jdbcType="VARCHAR" property="quesType" />
+    <result column="QUES_STEM" jdbcType="VARCHAR" property="quesStem" />
+    <result column="OPTIONS" jdbcType="VARCHAR" property="options" />
+    <result column="ANSWER" jdbcType="VARCHAR" property="answer" />
+    
+  </resultMap>
+<select id="reportQuesTestDetail" resultMap="reportQuesTestDetailMap">
+select a.QUES_CODE,a.PLO_NUM,a.QUES_ORDER,a.USER_ANSWER,case when a.IF_CORRECT = 0 then '错误' else '正确' end IF_CORRECT,a.SCORE,a.HANDLE_DATE,case when b.QUES_TYPE = 1 then '单选题' when b.QUES_TYPE = 2 then '多选题' when b.QUES_TYPE =3 then '判断题' else concat('未定义-',b.QUES_TYPE) end as QUES_TYPE,b.QUES_STEM,b.OPTIONS,b.ANSWER from 
+(select QUES_CODE,PLO_NUM,QUES_ORDER,USER_ANSWER,IF_CORRECT,SCORE,HANDLE_DATE from TRM_QUES_TEST where EXAM_CODE = #{examCode,jdbcType=VARCHAR} and TEST_STAT = 1 order BY PLO_NUM,QUES_ORDER) a
+left join TRM_QUES_BANK b on (a.QUES_CODE = b.QUES_CODE)
+</select>
+</mapper>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmbccd.ulms.college.dao.EvaluateTempleteMapper">
+  <resultMap id="BaseResultMap" type="com.cmbccd.ulms.college.domain.EvaluateTemplete">
+    <id column="TEMP_ID" jdbcType="VARCHAR" property="tempId" />
+    <result column="TEMP_NAME" jdbcType="VARCHAR" property="tempName" />
+    <result column="TEMP_NO" jdbcType="DECIMAL" property="tempNo" />
+    <result column="QUES_TYPE" jdbcType="DECIMAL" property="quesType" />
+    <result column="TEMP_STAT" jdbcType="DECIMAL" property="tempStat" />
+    <result column="QUES_CONT" jdbcType="VARCHAR" property="quesCont" />
+    <result column="CONT" jdbcType="VARCHAR" property="cont" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    TEMP_ID, TEMP_NAME, TEMP_NO, QUES_TYPE, TEMP_STAT, QUES_CONT
+  </sql>
+
+  <select id="group" resultMap="BaseResultMap">
+    SELECT DISTINCT TEMP_ID,TEMP_NAME,TEMP_STAT FROM TRM_SATISFY_TEMP
+    <if test="quesType != null">
+      where TEMP_STAT = #{tempStat,jdbcType=DECIMAL}
+    </if>
+    order by TEMP_ID
+  </select>
+
+  <select id="select" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM TRM_SATISFY_TEMP where temp_id = #{tempId,jdbcType=VARCHAR}
+    order by temp_no
+  </select>
+
+  <update id="update" parameterType="com.cmbccd.ulms.college.domain.EvaluateTemplete">
+    update TRM_SATISFY_TEMP
+    set TEMP_NAME = #{tempName,jdbcType=DECIMAL},
+        QUES_TYPE = #{quesType,jdbcType=DECIMAL},
+        TEMP_STAT = #{tempStat,jdbcType=DECIMAL},
+        QUES_CONT = #{quesCont,jdbcType=VARCHAR}
+    where TEMP_ID = #{tempId,jdbcType=VARCHAR}
+    and TEMP_NO =  #{tempNo,jdbcType=DECIMAL}
+  </update>
+
+  <insert id="insert" parameterType="com.cmbccd.ulms.college.domain.EvaluateTemplete">
+    insert into TRM_SATISFY_TEMP (TEMP_ID, TEMP_NAME, TEMP_NO, QUES_TYPE, TEMP_STAT, QUES_CONT) values
+    (#{tempId,jdbcType=VARCHAR},#{tempName,jdbcType=DECIMAL},#{tempNo,jdbcType=DECIMAL},#{quesType,jdbcType=DECIMAL},#{tempStat,jdbcType=DECIMAL},#{quesCont,jdbcType=VARCHAR})
+  </insert>
+
+  <select id="selectByJourno" resultMap="BaseResultMap">
+    SELECT b.TEMP_ID, b.TEMP_NAME, b.TEMP_NO, b.QUES_TYPE, b.TEMP_STAT, b.QUES_CONT, a.CONT FROM
+    (SELECT
+      TEMP_NO,CONT
+    FROM TRM_SATISFY_JOURNO where JOURNO = #{journo,jdbcType=VARCHAR}
+    order by temp_no) a
+    LEFT JOIN (SELECT TEMP_ID, TEMP_NAME, TEMP_NO, QUES_TYPE, TEMP_STAT, QUES_CONT FROM TRM_SATISFY_TEMP WHERE TEMP_ID = #{tempId,jdbcType=VARCHAR}) b
+    on (a.TEMP_NO = b.TEMP_NO)
+    order by TEMP_NO
+  </select>
+
+  <insert id="insertJourno">
+    insert into TRM_SATISFY_JOURNO (JOURNO, TEMP_NO, QUES_TYPE, CONT) values
+      (#{journo,jdbcType=VARCHAR},#{tempNo,jdbcType=DECIMAL},#{quesType,jdbcType=DECIMAL},#{cont,jdbcType=VARCHAR})
+  </insert>
+
+  <update id="updateCourseEvaluate">
+    update trm_course_libs set course_score = (select avg(cont) as eval_score from trm_satisfy_journo where journo in (select journo from trm_satisfy_log where course_id = #{courseId,jdbcType=VARCHAR}) and ques_type = 1 )
+    where course_id = #{courseId,jdbcType=VARCHAR}
+  </update>
+</mapper>

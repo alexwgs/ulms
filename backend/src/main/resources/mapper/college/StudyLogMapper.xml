@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmbccd.ulms.college.dao.StudyLogMapper">
+  <resultMap id="BaseResultMap" type="com.cmbccd.ulms.college.domain.StudyLog">
+    <result column="COURSE_ID" jdbcType="VARCHAR" property="courseId" />
+    <result column="PLO_NUM" jdbcType="VARCHAR" property="ploNum" />
+    <result column="STUDY_DATE" jdbcType="VARCHAR" property="studyDate" />
+    <result column="LECTURER" jdbcType="VARCHAR" property="lecturer" />
+    <result column="COIN" jdbcType="DECIMAL" property="coin" />
+    <result column="HOURS" jdbcType="DECIMAL" property="hours" />
+    <result column="TEACH_METHOD" jdbcType="DECIMAL" property="teachMethod" />
+    <result column="STUDY_COMP" jdbcType="DECIMAL" property="studyComp" />
+    <result column="IF_EXAM" jdbcType="DECIMAL" property="ifExam" />
+    <result column="EXAM_ID" jdbcType="VARCHAR" property="examId" />
+    <result column="EXAM_COMP" jdbcType="DECIMAL" property="examComp" />
+    <result column="IF_EVAL" jdbcType="DECIMAL" property="ifEval" />
+    <result column="EVAL_DATE" jdbcType="VARCHAR" property="evalDate" />
+    <result column="EVAL_COMP" jdbcType="DECIMAL" property="evalComp" />
+    <result column="COURSE_PASS" jdbcType="DECIMAL" property="coursePass" />
+    <result column="COMP_DATE" jdbcType="VARCHAR" property="compDate" />
+    <result column="TEMP_ID" jdbcType="VARCHAR" property="tempId" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    COURSE_ID, PLO_NUM, STUDY_DATE, LECTURER, COIN, HOURS, TEACH_METHOD, STUDY_COMP, 
+    IF_EXAM, EXAM_ID, EXAM_COMP, IF_EVAL, EVAL_DATE, EVAL_COMP, COURSE_PASS, COMP_DATE, 
+    TEMP_ID
+  </sql>
+  <select id="selectByExample" parameterType="com.cmbccd.ulms.college.domain.StudyLogExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from TRM_STUDY_LOG
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <delete id="deleteByExample" parameterType="com.cmbccd.ulms.college.domain.StudyLogExample">
+    delete from TRM_STUDY_LOG
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.cmbccd.ulms.college.domain.StudyLog">
+    insert into TRM_STUDY_LOG (COURSE_ID, PLO_NUM, STUDY_DATE, 
+      LECTURER, COIN, HOURS, 
+      TEACH_METHOD, STUDY_COMP, IF_EXAM, 
+      EXAM_ID, EXAM_COMP, IF_EVAL, 
+      EVAL_DATE, EVAL_COMP, COURSE_PASS, 
+      COMP_DATE, TEMP_ID)
+    values (#{courseId,jdbcType=VARCHAR}, #{ploNum,jdbcType=VARCHAR}, #{studyDate,jdbcType=VARCHAR}, 
+      #{lecturer,jdbcType=VARCHAR}, #{coin,jdbcType=DECIMAL}, #{hours,jdbcType=DECIMAL}, 
+      #{teachMethod,jdbcType=DECIMAL}, #{studyComp,jdbcType=DECIMAL}, #{ifExam,jdbcType=DECIMAL}, 
+      #{examId,jdbcType=VARCHAR}, #{examComp,jdbcType=DECIMAL}, #{ifEval,jdbcType=DECIMAL}, 
+      #{evalDate,jdbcType=VARCHAR}, #{evalComp,jdbcType=DECIMAL}, #{coursePass,jdbcType=DECIMAL}, 
+      #{compDate,jdbcType=VARCHAR}, #{tempId,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cmbccd.ulms.college.domain.StudyLog">
+    insert into TRM_STUDY_LOG
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="courseId != null">
+        COURSE_ID,
+      </if>
+      <if test="ploNum != null">
+        PLO_NUM,
+      </if>
+      <if test="studyDate != null">
+        STUDY_DATE,
+      </if>
+      <if test="lecturer != null">
+        LECTURER,
+      </if>
+      <if test="coin != null">
+        COIN,
+      </if>
+      <if test="hours != null">
+        HOURS,
+      </if>
+      <if test="teachMethod != null">
+        TEACH_METHOD,
+      </if>
+      <if test="studyComp != null">
+        STUDY_COMP,
+      </if>
+      <if test="ifExam != null">
+        IF_EXAM,
+      </if>
+      <if test="examId != null">
+        EXAM_ID,
+      </if>
+      <if test="examComp != null">
+        EXAM_COMP,
+      </if>
+      <if test="ifEval != null">
+        IF_EVAL,
+      </if>
+      <if test="evalDate != null">
+        EVAL_DATE,
+      </if>
+      <if test="evalComp != null">
+        EVAL_COMP,
+      </if>
+      <if test="coursePass != null">
+        COURSE_PASS,
+      </if>
+      <if test="compDate != null">
+        COMP_DATE,
+      </if>
+      <if test="tempId != null">
+        TEMP_ID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="courseId != null">
+        #{courseId,jdbcType=VARCHAR},
+      </if>
+      <if test="ploNum != null">
+        #{ploNum,jdbcType=VARCHAR},
+      </if>
+      <if test="studyDate != null">
+        #{studyDate,jdbcType=VARCHAR},
+      </if>
+      <if test="lecturer != null">
+        #{lecturer,jdbcType=VARCHAR},
+      </if>
+      <if test="coin != null">
+        #{coin,jdbcType=DECIMAL},
+      </if>
+      <if test="hours != null">
+        #{hours,jdbcType=DECIMAL},
+      </if>
+      <if test="teachMethod != null">
+        #{teachMethod,jdbcType=DECIMAL},
+      </if>
+      <if test="studyComp != null">
+        #{studyComp,jdbcType=DECIMAL},
+      </if>
+      <if test="ifExam != null">
+        #{ifExam,jdbcType=DECIMAL},
+      </if>
+      <if test="examId != null">
+        #{examId,jdbcType=VARCHAR},
+      </if>
+      <if test="examComp != null">
+        #{examComp,jdbcType=DECIMAL},
+      </if>
+      <if test="ifEval != null">
+        #{ifEval,jdbcType=DECIMAL},
+      </if>
+      <if test="evalDate != null">
+        #{evalDate,jdbcType=VARCHAR},
+      </if>
+      <if test="evalComp != null">
+        #{evalComp,jdbcType=DECIMAL},
+      </if>
+      <if test="coursePass != null">
+        #{coursePass,jdbcType=DECIMAL},
+      </if>
+      <if test="compDate != null">
+        #{compDate,jdbcType=VARCHAR},
+      </if>
+      <if test="tempId != null">
+        #{tempId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.cmbccd.ulms.college.domain.StudyLogExample" resultType="java.lang.Long">
+    select count(*) from TRM_STUDY_LOG
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update TRM_STUDY_LOG
+    <set>
+      <if test="record.courseId != null">
+        COURSE_ID = #{record.courseId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ploNum != null">
+        PLO_NUM = #{record.ploNum,jdbcType=VARCHAR},
+      </if>
+      <if test="record.studyDate != null">
+        STUDY_DATE = #{record.studyDate,jdbcType=VARCHAR},
+      </if>
+      <if test="record.lecturer != null">
+        LECTURER = #{record.lecturer,jdbcType=VARCHAR},
+      </if>
+      <if test="record.coin != null">
+        COIN = #{record.coin,jdbcType=DECIMAL},
+      </if>
+      <if test="record.hours != null">
+        HOURS = #{record.hours,jdbcType=DECIMAL},
+      </if>
+      <if test="record.teachMethod != null">
+        TEACH_METHOD = #{record.teachMethod,jdbcType=DECIMAL},
+      </if>
+      <if test="record.studyComp != null">
+        STUDY_COMP = #{record.studyComp,jdbcType=DECIMAL},
+      </if>
+      <if test="record.ifExam != null">
+        IF_EXAM = #{record.ifExam,jdbcType=DECIMAL},
+      </if>
+      <if test="record.examId != null">
+        EXAM_ID = #{record.examId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.examComp != null">
+        EXAM_COMP = #{record.examComp,jdbcType=DECIMAL},
+      </if>
+      <if test="record.ifEval != null">
+        IF_EVAL = #{record.ifEval,jdbcType=DECIMAL},
+      </if>
+      <if test="record.evalDate != null">
+        EVAL_DATE = #{record.evalDate,jdbcType=VARCHAR},
+      </if>
+      <if test="record.evalComp != null">
+        EVAL_COMP = #{record.evalComp,jdbcType=DECIMAL},
+      </if>
+      <if test="record.coursePass != null">
+        COURSE_PASS = #{record.coursePass,jdbcType=DECIMAL},
+      </if>
+      <if test="record.compDate != null">
+        COMP_DATE = #{record.compDate,jdbcType=VARCHAR},
+      </if>
+      <if test="record.tempId != null">
+        TEMP_ID = #{record.tempId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update TRM_STUDY_LOG
+    set COURSE_ID = #{record.courseId,jdbcType=VARCHAR},
+      PLO_NUM = #{record.ploNum,jdbcType=VARCHAR},
+      STUDY_DATE = #{record.studyDate,jdbcType=VARCHAR},
+      LECTURER = #{record.lecturer,jdbcType=VARCHAR},
+      COIN = #{record.coin,jdbcType=DECIMAL},
+      HOURS = #{record.hours,jdbcType=DECIMAL},
+      TEACH_METHOD = #{record.teachMethod,jdbcType=DECIMAL},
+      STUDY_COMP = #{record.studyComp,jdbcType=DECIMAL},
+      IF_EXAM = #{record.ifExam,jdbcType=DECIMAL},
+      EXAM_ID = #{record.examId,jdbcType=VARCHAR},
+      EXAM_COMP = #{record.examComp,jdbcType=DECIMAL},
+      IF_EVAL = #{record.ifEval,jdbcType=DECIMAL},
+      EVAL_DATE = #{record.evalDate,jdbcType=VARCHAR},
+      EVAL_COMP = #{record.evalComp,jdbcType=DECIMAL},
+      COURSE_PASS = #{record.coursePass,jdbcType=DECIMAL},
+      COMP_DATE = #{record.compDate,jdbcType=VARCHAR},
+      TEMP_ID = #{record.tempId,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <!-- 获取学习积分排名的名单及积分 -->
+
+  <select id="selectPointRankUser">
+    select plo_num,sum(hours)*sum(coin) as point from TRM_STUDY_LOG WHERE COURSE_PASS=1 group by plo_num order by point desc
+  </select>
+</mapper>

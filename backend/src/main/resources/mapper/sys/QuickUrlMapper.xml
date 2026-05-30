@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmbccd.ulms.sys.dao.QuickUrlMapper">
+  <resultMap id="BaseResultMap" type="com.cmbccd.ulms.sys.domain.QuickUrl">
+    <id column="ID" jdbcType="NUMERIC" property="id" />
+    <result column="NAME" jdbcType="VARCHAR" property="name" />
+    <result column="URL" jdbcType="VARCHAR" property="url" />
+    <result column="ICON_URL" jdbcType="VARCHAR" property="iconUrl" />
+    <result column="SYS_TYPE" jdbcType="VARCHAR" property="sysType" />
+    <result column="USER_FLAG" jdbcType="CHAR" property="userFlag" />
+    <result column="TOKEN_FLAG" jdbcType="CHAR" property="tokenFlag" />
+    <result column="SORT" jdbcType="NUMERIC" property="sort" />
+    <result column="STATUS" jdbcType="NUMERIC" property="status" />
+    <result column="AREA" jdbcType="VARCHAR" property="area" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    ID, NAME, URL, ICON_URL, SYS_TYPE, USER_FLAG, TOKEN_FLAG, SORT, STATUS, AREA
+  </sql>
+  <select id="selectByExample" parameterType="com.cmbccd.ulms.sys.domain.QuickUrlExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from SYS_QUICK_URL
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from SYS_QUICK_URL
+    where ID = #{id,jdbcType=NUMERIC}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from SYS_QUICK_URL
+    where ID = #{id,jdbcType=NUMERIC}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.cmbccd.ulms.sys.domain.QuickUrlExample">
+    delete from SYS_QUICK_URL
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.cmbccd.ulms.sys.domain.QuickUrl">
+    insert into SYS_QUICK_URL (ID, NAME, URL, 
+      ICON_URL, SYS_TYPE, USER_FLAG, 
+      TOKEN_FLAG, SORT, STATUS, 
+      AREA)
+    values (#{id,jdbcType=NUMERIC}, #{name,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, 
+      #{iconUrl,jdbcType=VARCHAR}, #{sysType,jdbcType=VARCHAR}, #{userFlag,jdbcType=CHAR}, 
+      #{tokenFlag,jdbcType=CHAR}, #{sort,jdbcType=NUMERIC}, #{status,jdbcType=NUMERIC}, 
+      #{area,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cmbccd.ulms.sys.domain.QuickUrl">
+    insert into SYS_QUICK_URL
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="name != null">
+        NAME,
+      </if>
+      <if test="url != null">
+        URL,
+      </if>
+      <if test="iconUrl != null">
+        ICON_URL,
+      </if>
+      <if test="sysType != null">
+        SYS_TYPE,
+      </if>
+      <if test="userFlag != null">
+        USER_FLAG,
+      </if>
+      <if test="tokenFlag != null">
+        TOKEN_FLAG,
+      </if>
+      <if test="sort != null">
+        SORT,
+      </if>
+      <if test="status != null">
+        STATUS,
+      </if>
+      <if test="area != null">
+        AREA,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=NUMERIC},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="iconUrl != null">
+        #{iconUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="sysType != null">
+        #{sysType,jdbcType=VARCHAR},
+      </if>
+      <if test="userFlag != null">
+        #{userFlag,jdbcType=CHAR},
+      </if>
+      <if test="tokenFlag != null">
+        #{tokenFlag,jdbcType=CHAR},
+      </if>
+      <if test="sort != null">
+        #{sort,jdbcType=NUMERIC},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=NUMERIC},
+      </if>
+      <if test="area != null">
+        #{area,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.cmbccd.ulms.sys.domain.QuickUrlExample" resultType="java.lang.Long">
+    select count(*) from SYS_QUICK_URL
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update SYS_QUICK_URL
+    <set>
+      <if test="row.id != null">
+        ID = #{row.id,jdbcType=NUMERIC},
+      </if>
+      <if test="row.name != null">
+        NAME = #{row.name,jdbcType=VARCHAR},
+      </if>
+      <if test="row.url != null">
+        URL = #{row.url,jdbcType=VARCHAR},
+      </if>
+      <if test="row.iconUrl != null">
+        ICON_URL = #{row.iconUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="row.sysType != null">
+        SYS_TYPE = #{row.sysType,jdbcType=VARCHAR},
+      </if>
+      <if test="row.userFlag != null">
+        USER_FLAG = #{row.userFlag,jdbcType=CHAR},
+      </if>
+      <if test="row.tokenFlag != null">
+        TOKEN_FLAG = #{row.tokenFlag,jdbcType=CHAR},
+      </if>
+      <if test="row.sort != null">
+        SORT = #{row.sort,jdbcType=NUMERIC},
+      </if>
+      <if test="row.status != null">
+        STATUS = #{row.status,jdbcType=NUMERIC},
+      </if>
+      <if test="row.area != null">
+        AREA = #{row.area,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update SYS_QUICK_URL
+    set ID = #{row.id,jdbcType=NUMERIC},
+      NAME = #{row.name,jdbcType=VARCHAR},
+      URL = #{row.url,jdbcType=VARCHAR},
+      ICON_URL = #{row.iconUrl,jdbcType=VARCHAR},
+      SYS_TYPE = #{row.sysType,jdbcType=VARCHAR},
+      USER_FLAG = #{row.userFlag,jdbcType=CHAR},
+      TOKEN_FLAG = #{row.tokenFlag,jdbcType=CHAR},
+      SORT = #{row.sort,jdbcType=NUMERIC},
+      STATUS = #{row.status,jdbcType=NUMERIC},
+      AREA = #{row.area,jdbcType=VARCHAR}
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cmbccd.ulms.sys.domain.QuickUrl">
+    update SYS_QUICK_URL
+    <set>
+      <if test="name != null">
+        NAME = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        URL = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="iconUrl != null">
+        ICON_URL = #{iconUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="sysType != null">
+        SYS_TYPE = #{sysType,jdbcType=VARCHAR},
+      </if>
+      <if test="userFlag != null">
+        USER_FLAG = #{userFlag,jdbcType=CHAR},
+      </if>
+      <if test="tokenFlag != null">
+        TOKEN_FLAG = #{tokenFlag,jdbcType=CHAR},
+      </if>
+      <if test="sort != null">
+        SORT = #{sort,jdbcType=NUMERIC},
+      </if>
+      <if test="status != null">
+        STATUS = #{status,jdbcType=NUMERIC},
+      </if>
+      <if test="area != null">
+        AREA = #{area,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=NUMERIC}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cmbccd.ulms.sys.domain.QuickUrl">
+    update SYS_QUICK_URL
+    set NAME = #{name,jdbcType=VARCHAR},
+      URL = #{url,jdbcType=VARCHAR},
+      ICON_URL = #{iconUrl,jdbcType=VARCHAR},
+      SYS_TYPE = #{sysType,jdbcType=VARCHAR},
+      USER_FLAG = #{userFlag,jdbcType=CHAR},
+      TOKEN_FLAG = #{tokenFlag,jdbcType=CHAR},
+      SORT = #{sort,jdbcType=NUMERIC},
+      STATUS = #{status,jdbcType=NUMERIC},
+      AREA = #{area,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=NUMERIC}
+  </update>
+
+  <select id="getNewId" resultType="java.lang.Integer">
+    select case when count(*) = 0 then 1 else  max(id)+1 end from SYS_QUICK_URL
+  </select>
+
+
+</mapper>

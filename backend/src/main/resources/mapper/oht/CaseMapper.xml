@@ -1,0 +1,568 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmbccd.ulms.oht.dao.CaseMapper">
+  <resultMap id="BaseResultMap" type="com.cmbccd.ulms.oht.domain.Case">
+    <id column="CASE_ID" jdbcType="VARCHAR" property="caseId" />
+    <result column="DATA_TIME" jdbcType="VARCHAR" property="dataTime" />
+    <result column="BUILD_ID" jdbcType="VARCHAR" property="buildId" />
+    <result column="BUILD_DEPT" jdbcType="VARCHAR" property="buildDept" />
+    <result column="BUILD_GROUP" jdbcType="VARCHAR" property="buildGroup" />
+    <result column="BUILD_EXTN" jdbcType="VARCHAR" property="buildExtn" />
+    <result column="BUILD_TIME" jdbcType="DECIMAL" property="buildTime" />
+    <result column="BCOMP_TYPE" jdbcType="DECIMAL" property="bcompType" />
+    <result column="BCOMP_MEMO" jdbcType="VARCHAR" property="bcompMemo" />
+    <result column="BCOMP_TIME" jdbcType="VARCHAR" property="bcompTime" />
+    <result column="WAIT_TIME" jdbcType="DECIMAL" property="waitTime" />
+    <result column="CASE_TYPE" jdbcType="DECIMAL" property="caseType" />
+    <result column="PICK_ID" jdbcType="VARCHAR" property="pickId" />
+    <result column="PICK_DEPT" jdbcType="VARCHAR" property="pickDept" />
+    <result column="PICK_GROUP" jdbcType="VARCHAR" property="pickGroup" />
+    <result column="PICK_EXTN" jdbcType="VARCHAR" property="pickExtn" />
+    <result column="PICK_TIME" jdbcType="DECIMAL" property="pickTime" />
+    <result column="CUST_ID" jdbcType="VARCHAR" property="custId" />
+    <result column="PCOMP_TYPE" jdbcType="DECIMAL" property="pcompType" />
+    <result column="PCOMP_MEMO" jdbcType="VARCHAR" property="pcompMemo" />
+    <result column="PCOMP_TIME" jdbcType="VARCHAR" property="pcompTime" />
+    <result column="CASE_STATUS" jdbcType="DECIMAL" property="caseStatus" />
+  </resultMap>
+  
+    <resultMap id="BaseResultMapReport" type="com.cmbccd.ulms.oht.domain.CaseReport">
+    <id column="CASE_ID" jdbcType="VARCHAR" property="caseId" />
+    <result column="DATA_TIME" jdbcType="VARCHAR" property="dataTime" />
+    <result column="BUILD_ID" jdbcType="VARCHAR" property="buildId" />
+    <result column="BUILD_DEPT" jdbcType="VARCHAR" property="buildDept" />
+    <result column="BUILD_GROUP" jdbcType="VARCHAR" property="buildGroup" />
+    <result column="BUILD_EXTN" jdbcType="VARCHAR" property="buildExtn" />
+    <result column="BUILD_TIME" jdbcType="VARCHAR" property="buildTime" />
+    <result column="BCOMP_TYPE" jdbcType="DECIMAL" property="bcompType" />
+    <result column="BCOMP_MEMO" jdbcType="VARCHAR" property="bcompMemo" />
+    <result column="BCOMP_TIME" jdbcType="VARCHAR" property="bcompTime" />
+    <result column="WAIT_TIME" jdbcType="DECIMAL" property="waitTime" />
+    <result column="CASE_TYPE" jdbcType="DECIMAL" property="caseType" />
+    <result column="PICK_ID" jdbcType="VARCHAR" property="pickId" />
+    <result column="PICK_DEPT" jdbcType="VARCHAR" property="pickDept" />
+    <result column="PICK_GROUP" jdbcType="VARCHAR" property="pickGroup" />
+    <result column="PICK_EXTN" jdbcType="VARCHAR" property="pickExtn" />
+    <result column="PICK_TIME" jdbcType="VARCHAR" property="pickTime" />
+    <result column="CUST_ID" jdbcType="VARCHAR" property="custId" />
+    <result column="PCOMP_TYPE" jdbcType="DECIMAL" property="pcompType" />
+    <result column="PCOMP_MEMO" jdbcType="VARCHAR" property="pcompMemo" />
+    <result column="PCOMP_TIME" jdbcType="VARCHAR" property="pcompTime" />
+    <result column="CASE_STATUS" jdbcType="DECIMAL" property="caseStatus" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    CASE_ID, DATA_TIME, BUILD_ID, BUILD_DEPT, BUILD_GROUP, BUILD_EXTN, BUILD_TIME, BCOMP_TYPE, 
+    BCOMP_MEMO, BCOMP_TIME, WAIT_TIME, CASE_TYPE, PICK_ID, PICK_DEPT, PICK_GROUP, PICK_EXTN, 
+    PICK_TIME, CUST_ID, PCOMP_TYPE, PCOMP_MEMO, PCOMP_TIME, CASE_STATUS
+  </sql>
+  <select id="selectByExample" parameterType="com.cmbccd.ulms.oht.domain.CaseExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from OHT_CASE
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from OHT_CASE
+    where CASE_ID = #{caseId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from OHT_CASE
+    where CASE_ID = #{caseId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.cmbccd.ulms.oht.domain.CaseExample">
+    delete from OHT_CASE
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.cmbccd.ulms.oht.domain.Case">
+    insert into OHT_CASE (CASE_ID, DATA_TIME, BUILD_ID, 
+      BUILD_DEPT, BUILD_GROUP, BUILD_EXTN, 
+      BUILD_TIME, BCOMP_TYPE, BCOMP_MEMO, 
+      BCOMP_TIME, WAIT_TIME, CASE_TYPE, 
+      PICK_ID, PICK_DEPT, PICK_GROUP, 
+      PICK_EXTN, PICK_TIME, CUST_ID, 
+      PCOMP_TYPE, PCOMP_MEMO, PCOMP_TIME, 
+      CASE_STATUS)
+    values (#{caseId,jdbcType=VARCHAR}, #{dataTime,jdbcType=VARCHAR}, #{buildId,jdbcType=VARCHAR}, 
+      #{buildDept,jdbcType=VARCHAR}, #{buildGroup,jdbcType=VARCHAR}, #{buildExtn,jdbcType=VARCHAR}, 
+      #{buildTime,jdbcType=DECIMAL}, #{bcompType,jdbcType=DECIMAL}, #{bcompMemo,jdbcType=VARCHAR}, 
+      #{bcompTime,jdbcType=VARCHAR}, #{waitTime,jdbcType=DECIMAL}, #{caseType,jdbcType=DECIMAL}, 
+      #{pickId,jdbcType=VARCHAR}, #{pickDept,jdbcType=VARCHAR}, #{pickGroup,jdbcType=VARCHAR}, 
+      #{pickExtn,jdbcType=VARCHAR}, #{pickTime,jdbcType=DECIMAL}, #{custId,jdbcType=VARCHAR}, 
+      #{pcompType,jdbcType=DECIMAL}, #{pcompMemo,jdbcType=VARCHAR}, #{pcompTime,jdbcType=VARCHAR}, 
+      #{caseStatus,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cmbccd.ulms.oht.domain.Case">
+    insert into OHT_CASE
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="caseId != null">
+        CASE_ID,
+      </if>
+      <if test="dataTime != null">
+        DATA_TIME,
+      </if>
+      <if test="buildId != null">
+        BUILD_ID,
+      </if>
+      <if test="buildDept != null">
+        BUILD_DEPT,
+      </if>
+      <if test="buildGroup != null">
+        BUILD_GROUP,
+      </if>
+      <if test="buildExtn != null">
+        BUILD_EXTN,
+      </if>
+      <if test="buildTime != null">
+        BUILD_TIME,
+      </if>
+      <if test="bcompType != null">
+        BCOMP_TYPE,
+      </if>
+      <if test="bcompMemo != null">
+        BCOMP_MEMO,
+      </if>
+      <if test="bcompTime != null">
+        BCOMP_TIME,
+      </if>
+      <if test="waitTime != null">
+        WAIT_TIME,
+      </if>
+      <if test="caseType != null">
+        CASE_TYPE,
+      </if>
+      <if test="pickId != null">
+        PICK_ID,
+      </if>
+      <if test="pickDept != null">
+        PICK_DEPT,
+      </if>
+      <if test="pickGroup != null">
+        PICK_GROUP,
+      </if>
+      <if test="pickExtn != null">
+        PICK_EXTN,
+      </if>
+      <if test="pickTime != null">
+        PICK_TIME,
+      </if>
+      <if test="custId != null">
+        CUST_ID,
+      </if>
+      <if test="pcompType != null">
+        PCOMP_TYPE,
+      </if>
+      <if test="pcompMemo != null">
+        PCOMP_MEMO,
+      </if>
+      <if test="pcompTime != null">
+        PCOMP_TIME,
+      </if>
+      <if test="caseStatus != null">
+        CASE_STATUS,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="caseId != null">
+        #{caseId,jdbcType=VARCHAR},
+      </if>
+      <if test="dataTime != null">
+        #{dataTime,jdbcType=VARCHAR},
+      </if>
+      <if test="buildId != null">
+        #{buildId,jdbcType=VARCHAR},
+      </if>
+      <if test="buildDept != null">
+        #{buildDept,jdbcType=VARCHAR},
+      </if>
+      <if test="buildGroup != null">
+        #{buildGroup,jdbcType=VARCHAR},
+      </if>
+      <if test="buildExtn != null">
+        #{buildExtn,jdbcType=VARCHAR},
+      </if>
+      <if test="buildTime != null">
+        #{buildTime,jdbcType=DECIMAL},
+      </if>
+      <if test="bcompType != null">
+        #{bcompType,jdbcType=DECIMAL},
+      </if>
+      <if test="bcompMemo != null">
+        #{bcompMemo,jdbcType=VARCHAR},
+      </if>
+      <if test="bcompTime != null">
+        #{bcompTime,jdbcType=VARCHAR},
+      </if>
+      <if test="waitTime != null">
+        #{waitTime,jdbcType=DECIMAL},
+      </if>
+      <if test="caseType != null">
+        #{caseType,jdbcType=DECIMAL},
+      </if>
+      <if test="pickId != null">
+        #{pickId,jdbcType=VARCHAR},
+      </if>
+      <if test="pickDept != null">
+        #{pickDept,jdbcType=VARCHAR},
+      </if>
+      <if test="pickGroup != null">
+        #{pickGroup,jdbcType=VARCHAR},
+      </if>
+      <if test="pickExtn != null">
+        #{pickExtn,jdbcType=VARCHAR},
+      </if>
+      <if test="pickTime != null">
+        #{pickTime,jdbcType=DECIMAL},
+      </if>
+      <if test="custId != null">
+        #{custId,jdbcType=VARCHAR},
+      </if>
+      <if test="pcompType != null">
+        #{pcompType,jdbcType=DECIMAL},
+      </if>
+      <if test="pcompMemo != null">
+        #{pcompMemo,jdbcType=VARCHAR},
+      </if>
+      <if test="pcompTime != null">
+        #{pcompTime,jdbcType=VARCHAR},
+      </if>
+      <if test="caseStatus != null">
+        #{caseStatus,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.cmbccd.ulms.oht.domain.CaseExample" resultType="java.lang.Integer">
+    select count(*) from OHT_CASE
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update OHT_CASE
+    <set>
+      <if test="record.caseId != null">
+        CASE_ID = #{record.caseId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dataTime != null">
+        DATA_TIME = #{record.dataTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.buildId != null">
+        BUILD_ID = #{record.buildId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.buildDept != null">
+        BUILD_DEPT = #{record.buildDept,jdbcType=VARCHAR},
+      </if>
+      <if test="record.buildGroup != null">
+        BUILD_GROUP = #{record.buildGroup,jdbcType=VARCHAR},
+      </if>
+      <if test="record.buildExtn != null">
+        BUILD_EXTN = #{record.buildExtn,jdbcType=VARCHAR},
+      </if>
+      <if test="record.buildTime != null">
+        BUILD_TIME = #{record.buildTime,jdbcType=DECIMAL},
+      </if>
+      <if test="record.bcompType != null">
+        BCOMP_TYPE = #{record.bcompType,jdbcType=DECIMAL},
+      </if>
+      <if test="record.bcompMemo != null">
+        BCOMP_MEMO = #{record.bcompMemo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.bcompTime != null">
+        BCOMP_TIME = #{record.bcompTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.waitTime != null">
+        WAIT_TIME = #{record.waitTime,jdbcType=DECIMAL},
+      </if>
+      <if test="record.caseType != null">
+        CASE_TYPE = #{record.caseType,jdbcType=DECIMAL},
+      </if>
+      <if test="record.pickId != null">
+        PICK_ID = #{record.pickId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.pickDept != null">
+        PICK_DEPT = #{record.pickDept,jdbcType=VARCHAR},
+      </if>
+      <if test="record.pickGroup != null">
+        PICK_GROUP = #{record.pickGroup,jdbcType=VARCHAR},
+      </if>
+      <if test="record.pickExtn != null">
+        PICK_EXTN = #{record.pickExtn,jdbcType=VARCHAR},
+      </if>
+      <if test="record.pickTime != null">
+        PICK_TIME = #{record.pickTime,jdbcType=DECIMAL},
+      </if>
+      <if test="record.custId != null">
+        CUST_ID = #{record.custId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.pcompType != null">
+        PCOMP_TYPE = #{record.pcompType,jdbcType=DECIMAL},
+      </if>
+      <if test="record.pcompMemo != null">
+        PCOMP_MEMO = #{record.pcompMemo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.pcompTime != null">
+        PCOMP_TIME = #{record.pcompTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.caseStatus != null">
+        CASE_STATUS = #{record.caseStatus,jdbcType=DECIMAL},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update OHT_CASE
+    set CASE_ID = #{record.caseId,jdbcType=VARCHAR},
+      DATA_TIME = #{record.dataTime,jdbcType=VARCHAR},
+      BUILD_ID = #{record.buildId,jdbcType=VARCHAR},
+      BUILD_DEPT = #{record.buildDept,jdbcType=VARCHAR},
+      BUILD_GROUP = #{record.buildGroup,jdbcType=VARCHAR},
+      BUILD_EXTN = #{record.buildExtn,jdbcType=VARCHAR},
+      BUILD_TIME = #{record.buildTime,jdbcType=DECIMAL},
+      BCOMP_TYPE = #{record.bcompType,jdbcType=DECIMAL},
+      BCOMP_MEMO = #{record.bcompMemo,jdbcType=VARCHAR},
+      BCOMP_TIME = #{record.bcompTime,jdbcType=VARCHAR},
+      WAIT_TIME = #{record.waitTime,jdbcType=DECIMAL},
+      CASE_TYPE = #{record.caseType,jdbcType=DECIMAL},
+      PICK_ID = #{record.pickId,jdbcType=VARCHAR},
+      PICK_DEPT = #{record.pickDept,jdbcType=VARCHAR},
+      PICK_GROUP = #{record.pickGroup,jdbcType=VARCHAR},
+      PICK_EXTN = #{record.pickExtn,jdbcType=VARCHAR},
+      PICK_TIME = #{record.pickTime,jdbcType=DECIMAL},
+      CUST_ID = #{record.custId,jdbcType=VARCHAR},
+      PCOMP_TYPE = #{record.pcompType,jdbcType=DECIMAL},
+      PCOMP_MEMO = #{record.pcompMemo,jdbcType=VARCHAR},
+      PCOMP_TIME = #{record.pcompTime,jdbcType=VARCHAR},
+      CASE_STATUS = #{record.caseStatus,jdbcType=DECIMAL}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cmbccd.ulms.oht.domain.Case">
+    update OHT_CASE
+    <set>
+      <if test="dataTime != null">
+        DATA_TIME = #{dataTime,jdbcType=VARCHAR},
+      </if>
+      <if test="buildId != null">
+        BUILD_ID = #{buildId,jdbcType=VARCHAR},
+      </if>
+      <if test="buildDept != null">
+        BUILD_DEPT = #{buildDept,jdbcType=VARCHAR},
+      </if>
+      <if test="buildGroup != null">
+        BUILD_GROUP = #{buildGroup,jdbcType=VARCHAR},
+      </if>
+      <if test="buildExtn != null">
+        BUILD_EXTN = #{buildExtn,jdbcType=VARCHAR},
+      </if>
+      <if test="buildTime != null">
+        BUILD_TIME = #{buildTime,jdbcType=DECIMAL},
+      </if>
+      <if test="bcompType != null">
+        BCOMP_TYPE = #{bcompType,jdbcType=DECIMAL},
+      </if>
+      <if test="bcompMemo != null">
+        BCOMP_MEMO = #{bcompMemo,jdbcType=VARCHAR},
+      </if>
+      <if test="bcompTime != null">
+        BCOMP_TIME = #{bcompTime,jdbcType=VARCHAR},
+      </if>
+      <if test="waitTime != null">
+        WAIT_TIME = #{waitTime,jdbcType=DECIMAL},
+      </if>
+      <if test="caseType != null">
+        CASE_TYPE = #{caseType,jdbcType=DECIMAL},
+      </if>
+      <if test="pickId != null">
+        PICK_ID = #{pickId,jdbcType=VARCHAR},
+      </if>
+      <if test="pickDept != null">
+        PICK_DEPT = #{pickDept,jdbcType=VARCHAR},
+      </if>
+      <if test="pickGroup != null">
+        PICK_GROUP = #{pickGroup,jdbcType=VARCHAR},
+      </if>
+      <if test="pickExtn != null">
+        PICK_EXTN = #{pickExtn,jdbcType=VARCHAR},
+      </if>
+      <if test="pickTime != null">
+        PICK_TIME = #{pickTime,jdbcType=DECIMAL},
+      </if>
+      <if test="custId != null">
+        CUST_ID = #{custId,jdbcType=VARCHAR},
+      </if>
+      <if test="pcompType != null">
+        PCOMP_TYPE = #{pcompType,jdbcType=DECIMAL},
+      </if>
+      <if test="pcompMemo != null">
+        PCOMP_MEMO = #{pcompMemo,jdbcType=VARCHAR},
+      </if>
+      <if test="pcompTime != null">
+        PCOMP_TIME = #{pcompTime,jdbcType=VARCHAR},
+      </if>
+      <if test="caseStatus != null">
+        CASE_STATUS = #{caseStatus,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where CASE_ID = #{caseId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cmbccd.ulms.oht.domain.Case">
+    update OHT_CASE
+    set DATA_TIME = #{dataTime,jdbcType=VARCHAR},
+      BUILD_ID = #{buildId,jdbcType=VARCHAR},
+      BUILD_DEPT = #{buildDept,jdbcType=VARCHAR},
+      BUILD_GROUP = #{buildGroup,jdbcType=VARCHAR},
+      BUILD_EXTN = #{buildExtn,jdbcType=VARCHAR},
+      BUILD_TIME = #{buildTime,jdbcType=DECIMAL},
+      BCOMP_TYPE = #{bcompType,jdbcType=DECIMAL},
+      BCOMP_MEMO = #{bcompMemo,jdbcType=VARCHAR},
+      BCOMP_TIME = #{bcompTime,jdbcType=VARCHAR},
+      WAIT_TIME = #{waitTime,jdbcType=DECIMAL},
+      CASE_TYPE = #{caseType,jdbcType=DECIMAL},
+      PICK_ID = #{pickId,jdbcType=VARCHAR},
+      PICK_DEPT = #{pickDept,jdbcType=VARCHAR},
+      PICK_GROUP = #{pickGroup,jdbcType=VARCHAR},
+      PICK_EXTN = #{pickExtn,jdbcType=VARCHAR},
+      PICK_TIME = #{pickTime,jdbcType=DECIMAL},
+      CUST_ID = #{custId,jdbcType=VARCHAR},
+      PCOMP_TYPE = #{pcompType,jdbcType=DECIMAL},
+      PCOMP_MEMO = #{pcompMemo,jdbcType=VARCHAR},
+      PCOMP_TIME = #{pcompTime,jdbcType=VARCHAR},
+      CASE_STATUS = #{caseStatus,jdbcType=DECIMAL}
+    where CASE_ID = #{caseId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateDisconnectCaseStatus"  parameterType="java.lang.String">
+    update OHT_CASE
+    set CASE_STATUS = -1
+    where  BUILD_ID = #{buildId,jdbcType=VARCHAR} and CASE_STATUS = 0
+  </update>
+  
+  <select id="selectPickIdByDateTime"  parameterType="java.lang.String" resultType="java.lang.String">
+    SELECT PICK_ID FROM OHT_CASE
+    where DATA_TIME between #{begTime,jdbcType=VARCHAR} and #{endTime,jdbcType=VARCHAR} AND case_status=3  group by PICK_ID
+  </select>
+  
+   <resultMap id="userDirCaseMap" type="java.util.HashMap">
+       <result column="userId" property="userId" jdbcType="VARCHAR" />
+       <result column="level1" property="level1" jdbcType="INTEGER" />
+       <result column="level2" property="level2" jdbcType="INTEGER" />
+       <result column="level3" property="level3" jdbcType="INTEGER" />
+       <result column="takeTime" property="takeTime" jdbcType="DECIMAL" />
+   </resultMap>
+   
+  <select id="selectCaseCompleteCountByCaseType" parameterType="java.lang.String" resultMap="userDirCaseMap">
+	select pick_id as userId,avg(take_time) as takeTime,count(level1) as level1,count(level2) as level2,count(level3) as level3 from (
+	select a.pick_id,a.case_type,a.take_time,b.case_id as level1,c.case_id as level2,d.case_id as level3 from 
+	(select pick_id,case_id,case_type,((to_date(pcomp_time,'yyyy-MM-dd HH24:mi:ss')-to_date('1970-01-01','yyyy-mm-dd'))*86400 -
+	  to_number(substr(tz_offset(sessiontimezone),1,3))*3600-pick_time) as take_time from oht_case where data_time between #{begTime,jdbcType=VARCHAR} and #{endTime,jdbcType=VARCHAR} and case_type=#{caseType,jdbcType=VARCHAR} and pick_id = #{pickId,jdbcType=VARCHAR} and case_status=3 and pcomp_type is not null) a 
+	left join (select case_id from oht_case_task where task_level=1 and task_status=1) b on (a.case_id = b.case_id)
+	left join (select case_id from oht_case_task where task_level=2 and task_status=1) c on (a.case_id = c.case_id)
+	left join (select case_id from oht_case_task where task_level=3 and task_status=1) d on (a.case_id = d.case_id)
+	) group by pick_id
+  </select>
+  
+     <resultMap id="centerCaseMap" type="java.util.HashMap">
+       <result column="hour" property="hour" jdbcType="INTEGER" />
+       <result column="hold_num" property="holdNum" jdbcType="INTEGER" />
+       <result column="level1" property="level1" jdbcType="INTEGER" />
+       <result column="level2" property="level2" jdbcType="INTEGER" />
+       <result column="level3" property="level3" jdbcType="INTEGER" />
+       <result column="waitTime" property="waitTime" jdbcType="DECIMAL" />
+   </resultMap>
+   
+  <select id="selectStartCaseCenterByCaseType" resultMap="centerCaseMap">
+	  	select to_number(substr(data_time,12,2)) as hour,count(case_type) as hold_num,avg(wait_time) as waitTime,count(level1) as level1,count(level2) as level2,count(level3) as level3 from (
+	  select a.data_time,a.pick_id,a.case_type,a.wait_time,b.case_id as level1,c.case_id as level2,d.case_id as level3 from 
+	  (select data_time,pick_id,case_id,case_type,wait_time from oht_case where data_time between #{begTime,jdbcType=VARCHAR} and #{endTime,jdbcType=VARCHAR} and case_type=#{caseType,jdbcType=VARCHAR} and case_status!=-1 ) a 
+	  left join (select case_id from oht_case_task where task_level=1 and task_status=1) b on (a.case_id = b.case_id)
+	  left join (select case_id from oht_case_task where task_level=2 and task_status=1) c on (a.case_id = c.case_id)
+	  left join (select case_id from oht_case_task where task_level=3 and task_status=1) d on (a.case_id = d.case_id)
+	  ) group by substr(data_time,12,2)
+  </select>
+  
+  <select id="selectByExampleReport" parameterType="com.cmbccd.ulms.oht.domain.CaseExample" resultMap="BaseResultMapReport">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from OHT_CASE
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+</mapper>

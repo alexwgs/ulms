@@ -1,0 +1,630 @@
+<template>
+  <div class="oht-chat-container">
+    <el-row :gutter="15" class="main-row">
+      <!-- 左侧聊天区域 -->
+      <el-col :span="16">
+        <div class="chat-wrapper">
+          <!-- 状态栏 - 融入操作bar -->
+          <div class="chat-status-bar">
+            <CommandBar></CommandBar>
+          </div>
+
+          <!-- 聊天窗口 -->
+          <el-card class="chat-card" shadow="hover">
+            <!-- 聊天头部 -->
+            <div class="chat-header">
+              <div class="chat-title">
+                <el-icon>
+                  <ChatDotRound />
+                </el-icon>
+                <span>在线沟通</span>
+              </div>
+              <div class="chat-tips">
+                <el-icon>
+                  <InfoFilled />
+                </el-icon>
+                <span>消息最多保留100条</span>
+              </div>
+            </div>
+
+            <!-- 消息区域 -->
+            <div class="message-container" ref="messageDiv">
+              <el-scrollbar ref="messageScrollbar" height="100%">
+                <div class="message-list">
+                  <div v-for="(item, index) in messageCont" :key="index" class="message-item"
+                    :class="[getMessageClass(item.direction)]">
+                    <!-- 时间显示 -->
+                    <div class="message-time" v-if="shouldShowTime(index)">
+                      <span>{{ item.ctime }}</span>
+                    </div>
+
+                    <!-- 接收的消息 -->
+                    <div v-if="item.direction === 2" class="message-content send">
+                      <div class="avatar">
+                        <img :src="(item.avatar ? fsURL + item.avatar : defaultAvatar)" alt="头像"
+                          @error="($event.target.src = defaultAvatar)" />
+                      </div>
+                      <div class="bubble">
+                        <div class="sender-name">{{ item.sendName }}</div>
+                        <div class="bubble-content">
+                          <div class="bubble-arrow"></div>
+                          {{ item.content }}
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- 发送的消息 -->
+                    <div v-if="item.direction === 1" class="message-content receive">
+                      <div class="bubble">
+                        <div class="bubble-content">
+                          <div class="bubble-arrow"></div>
+                          {{ item.content }}
+                        </div>
+                      </div>
+                      <div class="avatar">
+                        <img :src="(item.avatar ? fsURL + item.avatar : defaultAvatar)" alt="头像"
+                          @error="($event.target.src = defaultAvatar)" />
+                      </div>
+                    </div>
+                    <!-- 系统消息 -->
+                    <div v-if="item.direction === 3" class="message-content system">
+                      <el-tag type="info" effect="dark" size="small">
+                        {{ item.content }}
+                      </el-tag>
+                    </div>
+                  </div>
+                </div>
+              </el-scrollbar>
+            </div>
+
+            <!-- 输入区域 -->
+            <div class="input-area">
+              <!-- 工具栏 -->
+              <div class="toolbar">
+                <div class="toolbar-left">
+                  <!-- Emoji按钮 -->
+                  <div class="tool-item">
+                    <el-popover placement="top-start" :width="320" trigger="click">
+                      <template #reference>
+                        <el-button text @click="toggleEmoji">
+                          <el-icon size="20">
+                            <Sunny />
+                          </el-icon>
+                        </el-button>
+                      </template>
+                      <div class="emoji-picker-container">
+                        <emoji-picker v-if="showEmoji" @select="onEmojiSelect" />
+                      </div>
+                    </el-popover>
+                  </div>
+
+                  <!-- 快捷消息 -->
+                  <div class="tool-item">
+                    <el-dropdown @command="selectQuickMemo" trigger="click">
+                      <el-button text>
+                        <el-icon size="20">
+                          <Document />
+                        </el-icon>
+                        <span class="btn-text">快捷消息</span>
+                      </el-button>
+                      <template #dropdown>
+                        <el-dropdown-menu>
+                          <el-dropdown-item v-for="item in quickMemo" :key="item.journo" :command="item.memo">
+                            {{ item.memo }}
+                          </el-dropdown-item>
+                        </el-dropdown-menu>
+                      </template>
+                    </el-dropdown>
+                  </div>
+                </div>
+
+                <div class="toolbar-right">
+                  <el-button text type="danger" @click="clearChatMessage">
+                    <el-icon size="18">
+                      <Delete />
+                    </el-icon>
+                    <span class="btn-text">清屏</span>
+                  </el-button>
+                </div>
+              </div>
+
+              <!-- 输入框 -->
+              <div class="input-wrapper">
+                <el-input v-model="chatContent" type="textarea" :rows="3" placeholder="请输入消息内容..."
+                  @keyup.enter="handleMessage" resize="none" />
+              </div>
+
+              <!-- 发送按钮 -->
+              <div class="send-area">
+                <span class="tips">Enter 发送消息</span>
+                <el-button type="success" @click="handleMessage" :disabled="!chatContent.trim()" :loading="sending">
+                  <el-icon>
+                    <Promotion />
+                  </el-icon>
+                  发送
+                </el-button>
+              </div>
+            </div>
+          </el-card>
+        </div>
+      </el-col>
+
+      <!-- 右侧基本信息 -->
+      <el-col :span="8">
+        <div class="right-panel">
+          <!-- 基本信息卡片 -->
+          <el-card class="info-card" shadow="hover">
+            <template #header>
+              <div class="card-header">
+                <el-icon>
+                  <UserFilled />
+                </el-icon>
+                <span>基本信息</span>
+              </div>
+            </template>
+
+            <div class="info-content">
+              <div class="info-item">
+                <span class="label">角色类型：{{ dictStore.getDictLabel('oht_role_type', ohtStore.ohtRole.roleType) }}</span>
+              </div>
+
+              <div class="info-item" v-if="ohtStore.station">
+                <span class="label">位置信息：</span>
+                <div class="tags">
+                  <el-tag type="primary" effect="dark" size="small">
+                    EXT: {{ ohtStore.station.extnNum }}
+                  </el-tag>
+                  <el-tag type="success" effect="dark" size="small">
+                    楼层: {{ ohtStore.station.floorNum }}
+                  </el-tag>
+                </div>
+                <el-button type="primary" link @click="stationRef.openDialog()">
+                  修改
+                </el-button>
+              </div>
+
+              <div class="info-item" v-if="ohtStore.ohtRole.roleType === 1">
+                <span class="label">接单数据：</span>
+                <div class="tags">
+                  <el-tag type="success" effect="light">接起: {{ ohtStore.taskCaseNum.takeNum }}</el-tag>
+                  <el-tag type="warning" effect="light">忽略: {{ ohtStore.taskCaseNum.ignoreNum }}</el-tag>
+                  <el-tag type="danger" effect="light">拒绝: {{ ohtStore.taskCaseNum.refuseNum }}</el-tag>
+                </div>
+              </div>
+
+              <div class="info-item">
+                <span class="label">快捷操作：</span>
+                <el-button type="primary" size="small" @click="historyCaseRef.viewHistoryCase()">
+                  <el-icon>
+                    <Clock />
+                  </el-icon>
+                  历史案件
+                </el-button>
+              </div>
+            </div>
+          </el-card>
+          <!-- 用户列表 -->
+          <UserList />
+        </div>
+      </el-col>
+    </el-row>
+
+    <!-- 弹窗组件 -->
+    <Station ref="stationRef" />
+    <HistoryCase ref="historyCaseRef" />
+  </div>
+</template>
+
+<script setup>
+import { ref, reactive, onMounted, nextTick, computed } from 'vue'
+import { ElMessage } from 'element-plus'
+import {
+  ChatDotRound,
+  InfoFilled,
+  Document,
+  Delete,
+  Promotion,
+  UserFilled,
+  Clock,
+  Sunny
+} from '@element-plus/icons-vue'
+import EmojiPicker from 'vue3-emoji-picker'
+import 'vue3-emoji-picker/css'
+import CommandBar from './components/CommandBar.vue'
+import UserList from './components/UserList.vue'
+import Station from './components/Station.vue'
+import HistoryCase from './components/HistoryCase.vue'
+import { useOhtStore, useDictStore, useUserStore, useWsStore } from '@/stores'
+import { quickMemoApi } from '@/api/oht/quickMemo'
+
+const ohtStore = useOhtStore()
+const wsStore = useWsStore()
+const dictStore = useDictStore()
+const userStore = useUserStore()
+const historyCaseRef = ref(null)
+const stationRef = ref(null)
+
+const messageScrollbar = ref(null)
+
+const chatContent = ref('')
+const quickMemo = ref([])
+const messageCont = ref([])
+const sending = ref(false)
+const showEmoji = ref(false)
+
+const fsURL = import.meta.env.VITE_FILE_MANAGE_BASE || import.meta.env.VITE_API_BASE_URL
+const defaultAvatar = new URL('@/assets/img/default_avatar.png', import.meta.url).href
+
+const message = reactive({
+  modal: 'oht',
+  type: 'message',
+  content: '',
+  avatar: ''
+})
+
+const getMessageClass = (direction) => {
+  const classes = {
+    1: 'send',
+    2: 'receive',
+    3: 'system'
+  }
+  return classes[direction] || ''
+}
+
+const shouldShowTime = (index) => {
+  if (index === 0) return true
+  const currentMsg = messageCont.value[index]
+  const prevMsg = messageCont.value[index - 1]
+  if (!currentMsg || !prevMsg) return true
+  return currentMsg.ctime !== prevMsg.ctime
+}
+
+const handleMessage = () => {
+  if (chatContent.value.trim() === '') {
+    return ElMessage.warning('请输入要发送的内容！')
+  }
+  if (wsStore.connectionStatus === 'connected') {
+    sending.value = true
+    message.avatar = userStore.avatar
+    message.content = chatContent.value.trim()
+    wsStore.sendMessage(message)
+    chatContent.value = ''
+    sending.value = false
+  }
+
+  setScrollTop()
+}
+
+const setScrollTop = () => {
+  nextTick(() => {
+    setTimeout(() => {
+      if (messageScrollbar.value && messageScrollbar.value.wrap) {
+        messageScrollbar.value.wrap.scrollTop =
+          messageScrollbar.value.wrap.scrollHeight
+      }
+    }, 10)
+  })
+}
+
+const getQuickMemo = async () => {
+  try {
+    const res = await quickMemoApi.getQuickMemoList({ type: 1 })
+    if (res.code !== 200) return ElMessage.error('获取信息失败！')
+    quickMemo.value = res.data.list
+  } catch (error) {
+    ElMessage.error('获取快捷消息失败！')
+  }
+}
+
+const selectQuickMemo = (data) => {
+  chatContent.value = data
+}
+
+const clearChatMessage = () => {
+  wsStore.message = []
+  messageCont.value = wsStore.message
+  ElMessage.success('聊天记录已清空')
+}
+
+const toggleEmoji = () => {
+  showEmoji.value = !showEmoji.value
+}
+
+const onEmojiSelect = (emoji) => {
+  chatContent.value += emoji.i
+  showEmoji.value = false
+}
+
+onMounted(() => {
+  messageCont.value = wsStore.message
+  getQuickMemo()
+  setScrollTop()
+})
+</script>
+
+<style lang="less" scoped>
+.oht-chat-container {
+  padding: 0;
+  min-height: 50vh;
+
+  .main-row {
+    height: calc(100vh - 200px);
+  }
+}
+
+.chat-wrapper {
+  height: calc(100vh - 190px);
+  display: flex;
+  flex-direction: column;
+
+  .chat-status-bar {
+    margin-bottom: 15px;
+  }
+}
+
+.chat-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  border-radius: 12px;
+  overflow: hidden;
+
+  .chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: linear-gradient(135deg, #409eff 0%, #67c23a 100%);
+    color: white;
+
+    .chat-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .chat-tips {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      opacity: 0.9;
+    }
+  }
+}
+
+.message-container {
+  height: calc(100vh - 580px);
+  min-height: 300px;
+  overflow: hidden;
+  background: var(--el-bg-color);
+  padding: 15px;
+
+  .message-list {
+    .message-item {
+      margin-bottom: 15px;
+
+      &.receive {
+        .message-content {
+          display: flex;
+          justify-content: flex-start;
+
+          .avatar {
+            margin-right: 10px;
+          }
+
+          .bubble {
+            .bubble-content {
+              background: white;
+              border: 1px solid #e8e8e8;
+
+              .bubble-arrow {
+                left: -8px;
+                border-right-color: white;
+              }
+            }
+          }
+        }
+      }
+
+      &.send {
+        .message-content {
+          display: flex;
+          justify-content: flex-end;
+
+          .avatar {
+            margin-left: 10px;
+          }
+
+          .bubble {
+            .bubble-content {
+              background: #95ec69;
+              border: 1px solid #95ec69;
+
+              .bubble-arrow {
+                right: -8px;
+                left: auto;
+                border-left-color: #95ec69;
+                border-right-color: transparent;
+              }
+            }
+          }
+        }
+      }
+
+      &.system {
+        .message-content {
+          justify-content: center;
+        }
+      }
+    }
+
+    .message-time {
+      text-align: center;
+      margin-bottom: 10px;
+
+      span {
+        background: #dadada;
+        color: white;
+        padding: 2px 10px;
+        border-radius: 3px;
+        font-size: 12px;
+      }
+    }
+
+    .message-content {
+      display: flex;
+      align-items: flex-start;
+
+      .avatar {
+        flex-shrink: 0;
+
+        img {
+          width: 40px;
+          height: 40px;
+          border-radius: 4px;
+          object-fit: cover;
+        }
+      }
+
+      .bubble {
+        max-width: 70%;
+
+        .sender-name {
+          font-size: 12px;
+          color: #999;
+          margin-bottom: 4px;
+        }
+
+        .bubble-content {
+          position: relative;
+          padding: 10px 14px;
+          border-radius: 8px;
+          line-height: 1.5;
+          font-size: 14px;
+          word-break: break-all;
+          white-space: pre-wrap;
+
+          .bubble-arrow {
+            position: absolute;
+            top: 10px;
+            border: 6px solid transparent;
+          }
+        }
+      }
+    }
+  }
+}
+
+.input-area {
+  border-top: 1px solid #e8e8e8;
+  background: var(--el-bg-color);
+  padding: 10px 15px;
+
+  .toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #f0f0f0;
+
+    .toolbar-left,
+    .toolbar-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tool-item {
+      .btn-text {
+        margin-left: 4px;
+        font-size: 13px;
+      }
+    }
+  }
+
+  .input-wrapper {
+    margin-bottom: 10px;
+  }
+
+  .send-area {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .tips {
+      font-size: 12px;
+      color: #999;
+    }
+  }
+}
+
+.emoji-picker-container {
+  :deep(.emoji-picker) {
+    --ep-bg-color: white;
+    --ep-border-color: #e8e8e8;
+    --ep-text-color: #333;
+    --ep-secondary-bg-color: #f5f7fa;
+  }
+}
+
+.right-panel {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+
+  .info-card {
+    border-radius: 12px;
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+    }
+
+    .info-content {
+      .info-item {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 10px 0;
+        border-bottom: 1px solid #f0f0f0;
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        .label {
+          font-size: 13px;
+          color: #666;
+          min-width: 70px;
+        }
+
+        .tags {
+          display: flex;
+          gap: 5px;
+          flex-wrap: wrap;
+        }
+      }
+    }
+  }
+}
+
+:deep(.el-card) {
+  border-radius: 12px;
+}
+
+:deep(.el-scrollbar__wrap) {
+  overflow-x: hidden;
+}
+
+:deep(.el-textarea__inner) {
+  border-radius: 8px;
+}
+</style>

@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmbccd.ulms.youngTalk.dao.CommentMapper">
+  <resultMap id="BaseResultMap" type="com.cmbccd.ulms.youngTalk.domain.Comment">
+    <id column="ID" jdbcType="DECIMAL" property="id" />
+    <result column="ARTICAL_ID" jdbcType="DECIMAL" property="articalId" />
+    <result column="CONTENT" jdbcType="VARCHAR" property="content" />
+    <result column="LIKE_NUM" jdbcType="DECIMAL" property="likeNum" />
+    <result column="USERID" jdbcType="VARCHAR" property="userid" />
+    <result column="DATE_TIME" jdbcType="VARCHAR" property="dateTime" />
+    <result column="STATUS" jdbcType="DECIMAL" property="status" />
+    <result column="ANON_FLAG" jdbcType="DECIMAL" property="anonFlag" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    ID, ARTICAL_ID, CONTENT, LIKE_NUM, USERID, DATE_TIME, STATUS, ANON_FLAG
+  </sql>
+  <select id="selectByExample" parameterType="com.cmbccd.ulms.youngTalk.domain.CommentExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from CYT_ARTICAL_COMMENT
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from CYT_ARTICAL_COMMENT
+    where ID = #{id,jdbcType=DECIMAL}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from CYT_ARTICAL_COMMENT
+    where ID = #{id,jdbcType=DECIMAL}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.cmbccd.ulms.youngTalk.domain.CommentExample">
+    delete from CYT_ARTICAL_COMMENT
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.cmbccd.ulms.youngTalk.domain.Comment">
+    insert into CYT_ARTICAL_COMMENT (ID, ARTICAL_ID, CONTENT, 
+      LIKE_NUM, USERID, DATE_TIME, 
+      STATUS, ANON_FLAG)
+    values (#{id,jdbcType=DECIMAL}, #{articalId,jdbcType=DECIMAL}, #{content,jdbcType=VARCHAR}, 
+      #{likeNum,jdbcType=DECIMAL}, #{userid,jdbcType=VARCHAR}, #{dateTime,jdbcType=VARCHAR}, 
+      #{status,jdbcType=DECIMAL}, #{anonFlag,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cmbccd.ulms.youngTalk.domain.Comment">
+    insert into CYT_ARTICAL_COMMENT
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="articalId != null">
+        ARTICAL_ID,
+      </if>
+      <if test="content != null">
+        CONTENT,
+      </if>
+      <if test="likeNum != null">
+        LIKE_NUM,
+      </if>
+      <if test="userid != null">
+        USERID,
+      </if>
+      <if test="dateTime != null">
+        DATE_TIME,
+      </if>
+      <if test="status != null">
+        STATUS,
+      </if>
+      <if test="anonFlag != null">
+        ANON_FLAG,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=DECIMAL},
+      </if>
+      <if test="articalId != null">
+        #{articalId,jdbcType=DECIMAL},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="likeNum != null">
+        #{likeNum,jdbcType=DECIMAL},
+      </if>
+      <if test="userid != null">
+        #{userid,jdbcType=VARCHAR},
+      </if>
+      <if test="dateTime != null">
+        #{dateTime,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=DECIMAL},
+      </if>
+      <if test="anonFlag != null">
+        #{anonFlag,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.cmbccd.ulms.youngTalk.domain.CommentExample" resultType="java.lang.Integer">
+    select count(*) from CYT_ARTICAL_COMMENT
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update CYT_ARTICAL_COMMENT
+    <set>
+      <if test="record.id != null">
+        ID = #{record.id,jdbcType=DECIMAL},
+      </if>
+      <if test="record.articalId != null">
+        ARTICAL_ID = #{record.articalId,jdbcType=DECIMAL},
+      </if>
+      <if test="record.content != null">
+        CONTENT = #{record.content,jdbcType=VARCHAR},
+      </if>
+      <if test="record.likeNum != null">
+        LIKE_NUM = #{record.likeNum,jdbcType=DECIMAL},
+      </if>
+      <if test="record.userid != null">
+        USERID = #{record.userid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dateTime != null">
+        DATE_TIME = #{record.dateTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.status != null">
+        STATUS = #{record.status,jdbcType=DECIMAL},
+      </if>
+      <if test="record.anonFlag != null">
+        ANON_FLAG = #{record.anonFlag,jdbcType=DECIMAL},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update CYT_ARTICAL_COMMENT
+    set ID = #{record.id,jdbcType=DECIMAL},
+      ARTICAL_ID = #{record.articalId,jdbcType=DECIMAL},
+      CONTENT = #{record.content,jdbcType=VARCHAR},
+      LIKE_NUM = #{record.likeNum,jdbcType=DECIMAL},
+      USERID = #{record.userid,jdbcType=VARCHAR},
+      DATE_TIME = #{record.dateTime,jdbcType=VARCHAR},
+      STATUS = #{record.status,jdbcType=DECIMAL},
+      ANON_FLAG = #{record.anonFlag,jdbcType=DECIMAL}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cmbccd.ulms.youngTalk.domain.Comment">
+    update CYT_ARTICAL_COMMENT
+    <set>
+      <if test="articalId != null">
+        ARTICAL_ID = #{articalId,jdbcType=DECIMAL},
+      </if>
+      <if test="content != null">
+        CONTENT = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="likeNum != null">
+        LIKE_NUM = #{likeNum,jdbcType=DECIMAL},
+      </if>
+      <if test="userid != null">
+        USERID = #{userid,jdbcType=VARCHAR},
+      </if>
+      <if test="dateTime != null">
+        DATE_TIME = #{dateTime,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        STATUS = #{status,jdbcType=DECIMAL},
+      </if>
+      <if test="anonFlag != null">
+        ANON_FLAG = #{anonFlag,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cmbccd.ulms.youngTalk.domain.Comment">
+    update CYT_ARTICAL_COMMENT
+    set ARTICAL_ID = #{articalId,jdbcType=DECIMAL},
+      CONTENT = #{content,jdbcType=VARCHAR},
+      LIKE_NUM = #{likeNum,jdbcType=DECIMAL},
+      USERID = #{userid,jdbcType=VARCHAR},
+      DATE_TIME = #{dateTime,jdbcType=VARCHAR},
+      STATUS = #{status,jdbcType=DECIMAL},
+      ANON_FLAG = #{anonFlag,jdbcType=DECIMAL}
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+  
+  <select id="creatNewId" resultType="java.lang.Integer">
+  	select case when count(*) = 0 then 1 else  max(id)+1 end from CYT_ARTICAL_COMMENT
+  </select>
+    
+  <update id="increaseLikeNum" parameterType="java.lang.Integer">
+  	update CYT_ARTICAL_COMMENT SET LIKE_NUM=LIKE_NUM+1  where ID = #{id,jdbcType=DECIMAL}
+  </update>
+  
+  <select id="getCommentCountRank" resultType="java.util.HashMap">
+  select USERID as "userid",count(0) as "count" from (select USERID from (select USERID from CYT_ARTICAL_COMMENT where status =1 )
+	UNION ALL (select USERID from cyt_artical_reply where status = 1))
+	GROUP BY USERID ORDER BY COUNT(0) DESC
+  </select>
+ 
+</mapper>

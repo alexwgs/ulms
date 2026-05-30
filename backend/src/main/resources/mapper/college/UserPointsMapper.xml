@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmbccd.ulms.college.dao.UserPointMapper">
+    <resultMap id="BaseResultMap" type="com.cmbccd.ulms.college.domain.UserPoint">
+        <id column="PLO_NUM" jdbcType="VARCHAR" property="ploNum" />
+        <result column="SIGN_NUM" jdbcType="DECIMAL" property="signNum" />
+        <result column="STUDY_NUM" jdbcType="DECIMAL" property="studyNum" />
+        <result column="HOURS" jdbcType="DECIMAL" property="hours" />
+        <result column="COIN" jdbcType="DECIMAL" property="coin" />
+        <result column="POINT" jdbcType="DECIMAL" property="point" />
+    </resultMap>
+
+
+
+    <select id="selectUserStudyPointRank" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select * from (
+        select a.PLO_NUM,a.sign_num,nvl( b.study_num, 0 ) AS STUDY_NUM,nvl( b.hours, 0 ) AS HOURS,nvl( c.coin, 0 ) AS COIN,nvl( b.hours, 0 ) * nvl( c.coin, 0 ) AS POINT  from
+            (select plo_num,count(1) as sign_num from TRM_COURSE_SIGN where status > 0  group by plo_num) a
+                left join (select plo_num, count( * ) AS study_num,sum( hours ) hours from TRM_STUDY_LOG where study_comp = 1  group by PLO_NUM ) b on (a.PLO_NUM = b.PLO_NUM)
+                left join (select plo_num,sum( coin ) AS coin from TRM_STUDY_LOG WHERE COURSE_PASS=1 group by plo_num ) c on (a.PLO_NUM = c.PLO_NUM)
+                left join (select plo_num from cus_emp_info where plo_status = '00' ) d on (a.PLO_NUM = d.PLO_NUM)
+        where d.plo_num is not null
+            order by point desc
+        )
+        <if test="allFlag != 0">
+            where rownum &lt; #{allFlag,jdbcType=DECIMAL}
+        </if>
+    </select>
+
+    <select id="selectMyStudyPoint" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select a.PLO_NUM,a.sign_num,nvl( b.study_num, 0 ) AS STUDY_NUM,nvl( b.hours, 0 ) AS HOURS,nvl( c.coin, 0 ) AS COIN,nvl( b.hours, 0 ) * nvl( c.coin, 0 ) AS POINT  from
+            (select plo_num,count(1) as sign_num from TRM_COURSE_SIGN where status > 0 and PLO_NUM = #{ploNum,jdbcType=VARCHAR}  group by plo_num) a
+                left join (SELECT plo_num, count( * ) AS study_num,sum( hours ) hours FROM TRM_STUDY_LOG WHERE PLO_NUM = #{ploNum,jdbcType=VARCHAR} and study_comp = 1 group by PLO_NUM ) b on (a.PLO_NUM = b.PLO_NUM)
+                left join (select plo_num,sum( coin ) AS coin from TRM_STUDY_LOG WHERE COURSE_PASS=1 and PLO_NUM = #{ploNum,jdbcType=VARCHAR} group by plo_num ) c on (a.PLO_NUM = c.PLO_NUM)
+        order by point desc
+    </select>
+</mapper>

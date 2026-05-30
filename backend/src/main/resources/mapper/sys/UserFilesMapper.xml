@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmbccd.ulms.sys.dao.UserFilesMapper">
+  <resultMap id="BaseResultMap" type="com.cmbccd.ulms.sys.domain.UserFiles">
+    <result column="ID" jdbcType="DECIMAL" property="id" />
+    <result column="FILE_ID" jdbcType="VARCHAR" property="fileId" />
+    <result column="FILE_NAME" jdbcType="VARCHAR" property="fileName" />
+    <result column="FILE_SUFFIX" jdbcType="VARCHAR" property="fileSuffix" />
+    <result column="FILE_PATH" jdbcType="VARCHAR" property="filePath" />
+    <result column="USER_ID" jdbcType="VARCHAR" property="userId" />
+    <result column="DATA_DATE" jdbcType="VARCHAR" property="dataDate" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    ID, FILE_ID, FILE_NAME, FILE_SUFFIX, FILE_PATH, USER_ID, DATA_DATE
+  </sql>
+  <select id="selectByExample" parameterType="com.cmbccd.ulms.sys.domain.UserFilesExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from SYS_USER_FILES
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <delete id="deleteByExample" parameterType="com.cmbccd.ulms.sys.domain.UserFilesExample">
+    delete from SYS_USER_FILES
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.cmbccd.ulms.sys.domain.UserFiles">
+    insert into SYS_USER_FILES (ID, FILE_ID, FILE_NAME, 
+      FILE_SUFFIX, FILE_PATH, USER_ID, 
+      DATA_DATE)
+    values (#{id,jdbcType=DECIMAL}, #{fileId,jdbcType=VARCHAR}, #{fileName,jdbcType=VARCHAR}, 
+      #{fileSuffix,jdbcType=VARCHAR}, #{filePath,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, 
+      #{dataDate,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cmbccd.ulms.sys.domain.UserFiles">
+    insert into SYS_USER_FILES
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="fileId != null">
+        FILE_ID,
+      </if>
+      <if test="fileName != null">
+        FILE_NAME,
+      </if>
+      <if test="fileSuffix != null">
+        FILE_SUFFIX,
+      </if>
+      <if test="filePath != null">
+        FILE_PATH,
+      </if>
+      <if test="userId != null">
+        USER_ID,
+      </if>
+      <if test="dataDate != null">
+        DATA_DATE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=DECIMAL},
+      </if>
+      <if test="fileId != null">
+        #{fileId,jdbcType=VARCHAR},
+      </if>
+      <if test="fileName != null">
+        #{fileName,jdbcType=VARCHAR},
+      </if>
+      <if test="fileSuffix != null">
+        #{fileSuffix,jdbcType=VARCHAR},
+      </if>
+      <if test="filePath != null">
+        #{filePath,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="dataDate != null">
+        #{dataDate,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.cmbccd.ulms.sys.domain.UserFilesExample" resultType="java.lang.Integer">
+    select count(*) from SYS_USER_FILES
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update SYS_USER_FILES
+    <set>
+      <if test="record.id != null">
+        ID = #{record.id,jdbcType=DECIMAL},
+      </if>
+      <if test="record.fileId != null">
+        FILE_ID = #{record.fileId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.fileName != null">
+        FILE_NAME = #{record.fileName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.fileSuffix != null">
+        FILE_SUFFIX = #{record.fileSuffix,jdbcType=VARCHAR},
+      </if>
+      <if test="record.filePath != null">
+        FILE_PATH = #{record.filePath,jdbcType=VARCHAR},
+      </if>
+      <if test="record.userId != null">
+        USER_ID = #{record.userId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dataDate != null">
+        DATA_DATE = #{record.dataDate,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update SYS_USER_FILES
+    set ID = #{record.id,jdbcType=DECIMAL},
+      FILE_ID = #{record.fileId,jdbcType=VARCHAR},
+      FILE_NAME = #{record.fileName,jdbcType=VARCHAR},
+      FILE_SUFFIX = #{record.fileSuffix,jdbcType=VARCHAR},
+      FILE_PATH = #{record.filePath,jdbcType=VARCHAR},
+      USER_ID = #{record.userId,jdbcType=VARCHAR},
+      DATA_DATE = #{record.dataDate,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  
+  	<select id="selectNewId" resultType="java.lang.Integer">
+		select case when count(*) = 0 then 1 else  max(id)+1 end from SYS_USER_FILES
+	</select>
+  <!-- 已知到用户上传文件到类型 -->
+  <select id="getFileSuffix" resultType="java.lang.String">
+	SELECT FILE_SUFFIX FROM SYS_USER_FILES GROUP BY FILE_SUFFIX ORDER BY FILE_SUFFIX
+  </select>
+</mapper>

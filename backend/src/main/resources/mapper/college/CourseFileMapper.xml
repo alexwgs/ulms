@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmbccd.ulms.college.dao.CourseFileMapper">
+  <resultMap id="BaseResultMap" type="com.cmbccd.ulms.college.domain.CourseFile">
+    <result column="COURSE_ID" jdbcType="VARCHAR" property="courseId" />
+    <result column="FILE_ID" jdbcType="VARCHAR" property="fileId" />
+    <result column="FILE_NAME" jdbcType="VARCHAR" property="fileName" />
+    <result column="EXTEN_NAME" jdbcType="VARCHAR" property="extenName" />
+    <result column="FILE_ORDER" jdbcType="DECIMAL" property="fileOrder" />
+    <result column="STATUS" jdbcType="DECIMAL" property="status" />
+    <result column="FILE_TYPE" jdbcType="DECIMAL" property="fileType" />
+    <result column="DURATION" jdbcType="DECIMAL" property="duration" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    COURSE_ID, FILE_ID, FILE_NAME, EXTEN_NAME, FILE_ORDER, STATUS, FILE_TYPE, DURATION
+  </sql>
+  <select id="selectByExample" parameterType="com.cmbccd.ulms.college.domain.CourseFileExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from TRM_COURSE_FILE
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <delete id="deleteByExample" parameterType="com.cmbccd.ulms.college.domain.CourseFileExample">
+    delete from TRM_COURSE_FILE
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.cmbccd.ulms.college.domain.CourseFile">
+    insert into TRM_COURSE_FILE (COURSE_ID, FILE_ID, FILE_NAME, 
+      EXTEN_NAME, FILE_ORDER, STATUS, 
+      FILE_TYPE, DURATION)
+    values (#{courseId,jdbcType=VARCHAR}, #{fileId,jdbcType=VARCHAR}, #{fileName,jdbcType=VARCHAR}, 
+      #{extenName,jdbcType=VARCHAR}, #{fileOrder,jdbcType=DECIMAL}, #{status,jdbcType=DECIMAL}, 
+      #{fileType,jdbcType=DECIMAL}, #{duration,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cmbccd.ulms.college.domain.CourseFile">
+    insert into TRM_COURSE_FILE
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="courseId != null">
+        COURSE_ID,
+      </if>
+      <if test="fileId != null">
+        FILE_ID,
+      </if>
+      <if test="fileName != null">
+        FILE_NAME,
+      </if>
+      <if test="extenName != null">
+        EXTEN_NAME,
+      </if>
+      <if test="fileOrder != null">
+        FILE_ORDER,
+      </if>
+      <if test="status != null">
+        STATUS,
+      </if>
+      <if test="fileType != null">
+        FILE_TYPE,
+      </if>
+      <if test="duration != null">
+        DURATION,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="courseId != null">
+        #{courseId,jdbcType=VARCHAR},
+      </if>
+      <if test="fileId != null">
+        #{fileId,jdbcType=VARCHAR},
+      </if>
+      <if test="fileName != null">
+        #{fileName,jdbcType=VARCHAR},
+      </if>
+      <if test="extenName != null">
+        #{extenName,jdbcType=VARCHAR},
+      </if>
+      <if test="fileOrder != null">
+        #{fileOrder,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=DECIMAL},
+      </if>
+      <if test="fileType != null">
+        #{fileType,jdbcType=DECIMAL},
+      </if>
+      <if test="duration != null">
+        #{duration,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.cmbccd.ulms.college.domain.CourseFileExample" resultType="java.lang.Long">
+    select count(*) from TRM_COURSE_FILE
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update TRM_COURSE_FILE
+    <set>
+      <if test="record.courseId != null">
+        COURSE_ID = #{record.courseId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.fileId != null">
+        FILE_ID = #{record.fileId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.fileName != null">
+        FILE_NAME = #{record.fileName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.extenName != null">
+        EXTEN_NAME = #{record.extenName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.fileOrder != null">
+        FILE_ORDER = #{record.fileOrder,jdbcType=DECIMAL},
+      </if>
+      <if test="record.status != null">
+        STATUS = #{record.status,jdbcType=DECIMAL},
+      </if>
+      <if test="record.fileType != null">
+        FILE_TYPE = #{record.fileType,jdbcType=DECIMAL},
+      </if>
+      <if test="record.duration != null">
+        DURATION = #{record.duration,jdbcType=DECIMAL},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update TRM_COURSE_FILE
+    set COURSE_ID = #{record.courseId,jdbcType=VARCHAR},
+      FILE_ID = #{record.fileId,jdbcType=VARCHAR},
+      FILE_NAME = #{record.fileName,jdbcType=VARCHAR},
+      EXTEN_NAME = #{record.extenName,jdbcType=VARCHAR},
+      FILE_ORDER = #{record.fileOrder,jdbcType=DECIMAL},
+      STATUS = #{record.status,jdbcType=DECIMAL},
+      FILE_TYPE = #{record.fileType,jdbcType=DECIMAL},
+      DURATION = #{record.duration,jdbcType=DECIMAL}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+</mapper>
