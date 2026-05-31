@@ -1,20 +1,20 @@
 <template>
-  <el-container class="view-container">
-    <el-container>
-      <el-main v-if="artical.category != undefined">
+  <t-layout class="view-container">
+    <t-layout>
+      <t-content v-if="artical.category != undefined">
         <div class="artical-content">
           <h3>{{ artical.title }}</h3>
           <div>
             标签：
             <span v-for="item in labelItems" :key="item.label">
-              <el-tag
+              <t-tag
                 v-if="artical[item.field] == item.val"
-                :type="item.type"
+                :theme="item.type"
                 effect="dark"
                 size="small"
               >
                 {{ item.label }}
-              </el-tag>
+              </t-tag>
             </span>
             <div class="artical-icon">
               <span style="color: #909399; font-size: 14px; padding-right: 10px"
@@ -36,9 +36,9 @@
               >
             </div>
           </div>
-          <el-divider></el-divider>
+          <t-divider></t-divider>
           <div class="artical-text" v-html="artical.content"></div>
-          <el-divider content-position="center"> 调 研 </el-divider>
+          <t-divider content-position="center"> 调 研 </t-divider>
           <!-- -------------------------------问卷部分------------------------------------ -->
           <div class="QN-questions">
             <div
@@ -49,70 +49,66 @@
               <!-- 单选 -->
               <div v-if="question.questionType === 'radio'">
                 <p>{{ question.sort }}:{{ question.content }}</p>
-                <el-radio-group v-model="question.answer">
-                  <el-radio
+                <t-radio-group v-model="question.answer">
+                  <t-radio
                     v-for="option in question.options"
                     :key="i * 10 + option.id"
-                    :label="option.content"
+                    :value="option.content"
                     :disabled="answerFlag"
-                    >{{ option.content }}</el-radio
+                    >{{ option.content }}</t-radio
                   >
-                </el-radio-group>
+                </t-radio-group>
               </div>
               <!-- 多选 -->
               <div v-else-if="question.questionType === 'checkbox'">
                 <p>{{ question.sort }}:{{ question.content }}</p>
-                <el-checkbox-group
+                <t-checkbox-group
                   v-model="question.checkboxs"
                   @change="checkchange(i)"
                 >
-                  <el-checkbox
+                  <t-checkbox
                     v-for="option of question.options"
                     :key="i * 10 + option.id"
-                    :label="option.content"
+                    :value="option.content"
                     :disabled="answerFlag"
-                  ></el-checkbox>
-                </el-checkbox-group>
+                  ></t-checkbox>
+                </t-checkbox-group>
               </div>
               <!-- 填空 -->
               <div v-else-if="question.questionType === 'textarea'">
                 <p>
                   {{ question.sort }}:{{ question.content }}（输入不超过500字）
                 </p>
-                <el-input
-                  :disabled="answerFlag"
-                  type="textarea"
+                <t-textarea :disabled="answerFlag"
                   v-model="question.answer"
-                  :placeholder="question.value"
-                  >textarea</el-input
-                >
+                  :placeholder="question.value" />
               </div>
             </div>
           </div>
           <!-- -------------------------------问卷部分------------------------------------ -->
         </div>
-        <el-card class="comment">
-          <el-divider>
-            <el-pagination
-              v-model:current-page="currentPage"
+        <t-card class="comment">
+          <t-divider>
+            <t-pagination
+              v-model:current="currentPage"
               @current-change="handleCurrentChange"
               :page-size="commnetQueryInfo.pageSize"
-              layout="total, prev, pager, next"
+
               :total="commentTotal"
             >
-            </el-pagination>
-          </el-divider>
+            </t-pagination>
+          </t-divider>
           <div v-if="comments.length > 0">
             <section v-for="(comment, index) in comments" :key="comment.id">
               <div class="comment-avatar">
-                <el-avatar
+                <t-avatar
                   size="small"
                   :src="
                     comment.anonFlag
                       ? fsURL + 'upload/getFile/avatar/avatar.png'
                       : fsURL + comment.user.avatar
                   "
-                ></el-avatar>
+                ></t-avatar>
               </div>
               <div class="comment-info">
                 <span class="comment-header" v-if="comment.anonFlag">匿名</span>
@@ -129,12 +125,12 @@
               </div>
               <div class="comment-content" v-html="comment.content"></div>
             </section>
-            <el-divider></el-divider>
+            <t-divider></t-divider>
           </div>
-        </el-card>
-      </el-main>
-    </el-container>
-  </el-container>
+        </t-card>
+      </t-content>
+    </t-layout>
+  </t-layout>
 </template>
 
 <script setup>
@@ -210,12 +206,12 @@ onMounted(() => {
 <style lang="less" scoped>
 .view-container {
   height: 100%;
-  background-color: #eaedf1;
+-color: #eaedf1;
 }
 
 .artical-content {
   padding: 20px;
-  background-color: #fff;
+-color: #fff;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
 
@@ -242,7 +238,7 @@ onMounted(() => {
   text-align: center;
 }
 
-.el-tag {
+.t-tag {
   margin-right: 5px;
 }
 
@@ -253,13 +249,13 @@ onMounted(() => {
   box-sizing: border-box;
   border-radius: 4px;
   position: relative;
-  background-color: #fff;
+-color: #fff;
   overflow: hidden;
   opacity: 1;
   display: flex;
   align-items: center;
   transition: opacity 0.2s;
-  background-color: #f4f4f5;
+-color: #f4f4f5;
   color: #909399;
   margin-top: 15px;
   margin-bottom: 15px;
@@ -353,7 +349,7 @@ onMounted(() => {
     color: #666;
     word-break: break-word;
     margin: 10px;
-    background-color: #fff;
+-color: #fff;
   }
 }
 </style>

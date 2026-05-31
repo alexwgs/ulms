@@ -1,45 +1,44 @@
 <template>
   <div>
-    <el-card class="box-card">
+    <t-card class="box-card">
       <div class="table-filter">
-        <el-row :gutter="15">
-          <el-col :span="9">
-            <el-date-picker size="small" style="width:100%" v-model="params.dataDate" value-format="yyyy-MM-dd"
-              type="date" @change="datePick" placeholder="选择日期"></el-date-picker>
-          </el-col>
-          <el-col :span="9">
-            <el-input placeholder="点击右边按钮选择人员" size="small" v-model="userList">
+        <t-row :gutter="15">
+          <t-col :span="5">
+            <t-date-picker size="small" style="width:100%" v-model="params.dataDate" format="YYYY-MM-DD"
+              mode="date" @change="datePick" placeholder="选择日期"></t-date-picker>
+          </t-col>
+          <t-col :span="5">
+            <t-input placeholder="点击右边按钮选择人员" size="small" v-model="userList">
               <template #append>
-                <el-button size="small" @click="treeDialogVisiable = !treeDialogVisiable"
-                  icon="el-icon-zoom-in"></el-button>
+                <t-button size="small" @click="treeDialogVisiable = !treeDialogVisiable"><template #icon><DynamicIcon name="zoom-in" /></template></t-button>
               </template>
-            </el-input>
-          </el-col>
-          <el-col :span="6">
-            <el-button size="small" type="primary" @click="getStatusJourDetail">查询</el-button>
-            <el-button size="small" type="primary" @click="handleDownloadExcel">报表</el-button>
-          </el-col>
-        </el-row>
+            </t-input>
+          </t-col>
+          <t-col :span="3">
+            <t-button size="small" theme="primary" @click="getStatusJourDetail">查询</t-button>
+            <t-button size="small" theme="primary" @click="handleDownloadExcel">报表</t-button>
+          </t-col>
+        </t-row>
       </div>
-      <el-table :data="statusList" size="small" stripe height="calc(100vh - 325px)">
-        <el-table-column prop="begTime" label="开始时间"></el-table-column>
-        <el-table-column prop="endTime" label="结束时间"></el-table-column>
-        <el-table-column prop="userId" label="用户工号"></el-table-column>
-        <el-table-column prop="level1" label="一级状态"></el-table-column>
-        <el-table-column prop="level2" label="二级状态"></el-table-column>
-        <el-table-column prop="level3" label="三级状态"></el-table-column>
-        <el-table-column prop="memo" label="备注"></el-table-column>
-        <el-table-column prop="identity" label="身份"></el-table-column>
-      </el-table>
+      <CustomTable rowKey="id" :data="statusList" size="small" stripe height="calc(100vh - 325px)">
+        <TableColumn colKey="begTime" label="开始时间"></TableColumn>
+        <TableColumn colKey="endTime" label="结束时间"></TableColumn>
+        <TableColumn colKey="userId" label="用户工号"></TableColumn>
+        <TableColumn colKey="level1" label="一级状态"></TableColumn>
+        <TableColumn colKey="level2" label="二级状态"></TableColumn>
+        <TableColumn colKey="level3" label="三级状态"></TableColumn>
+        <TableColumn colKey="memo" label="备注"></TableColumn>
+        <TableColumn colKey="identity" label="身份"></TableColumn>
+      </CustomTable>
       <EmpTree v-model:treeVisiable="treeDialogVisiable" type="101" :mutiselect="true" @getChecked="getTreeChecked">
       </EmpTree>
-    </el-card>
+    </t-card>
   </div>
 </template>
 
 <script setup>
 import { ref, reactive } from 'vue'
-import { ElMessage } from 'element-plus'
+import { MessagePlugin } from 'tdesign-vue-next'
 import { httpInstance, downloadExcel as downloadExcelUtil } from '@/utils/request'
 import EmpTree from '@/components/EmpTree.vue'
 
@@ -75,12 +74,12 @@ const getStatusJourDetail = async () => {
   try {
     const res = await httpInstance.get('oht/statusJour/detail', { params })
     if (res.code !== 200) {
-      ElMessage.error(res.msg)
+      MessagePlugin.error(res.msg)
       return
     }
     statusList.value = res.data
   } catch (error) {
-    ElMessage.error('获取数据失败')
+    MessagePlugin.error('获取数据失败')
     console.error(error)
   }
 }
@@ -99,7 +98,7 @@ const handleDownloadExcel = () => {
     margin-left: 20px;
   }
 
-  .el-select {
+  .t-select {
     width: 70%;
   }
 }

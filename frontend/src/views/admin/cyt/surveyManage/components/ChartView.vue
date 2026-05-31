@@ -1,37 +1,37 @@
 <template>
   <div class="chart-view-wrapper">
     <div class="chart-container">
-      <el-row v-for="(question, index) in questions" :key="index">
-        <el-divider></el-divider>
-        <el-col style="margin-bottom: 10px" :span="24"
+      <t-row v-for="(question, index) in questions" :key="index">
+        <t-divider></t-divider>
+        <t-col style="margin-bottom: 10px" :span="12"
           >{{ getQuestionType(index + 1, question.questionType)
-          }}{{ questions[index].content }}</el-col
+          }}{{ questions[index].content }}</t-col
         >
         <template v-if="question.questionType != 'textarea'">
-          <el-col :span="12">
+          <t-col :span="6">
             <AsyncECharts
               :option="getPieOption(chartDatas[index])"
               height="200px"
             />
-          </el-col>
-          <el-col :span="12">
+          </t-col>
+          <t-col :span="6">
             <AsyncECharts
               :option="getBarOption(chartDatas[index])"
               height="300px"
             />
-          </el-col>
+          </t-col>
         </template>
-        <el-col :span="24" style="height: 50px" v-else
-          >需导出报表查看...</el-col
+        <t-col :span="12" style="height: 50px" v-else
+          >需导出报表查看...</t-col
         >
-      </el-row>
+      </t-row>
     </div>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted, watch } from 'vue'
-import { ElMessage } from 'element-plus'
+import { MessagePlugin } from 'tdesign-vue-next'
 import AsyncECharts from '@/components/AsyncECharts.vue'
 import { getSurveyChartData } from '@/api/cyt/index.js'
 
@@ -52,14 +52,14 @@ const getQuestionList = async (id) => {
     loading.value = true
     const res = await getSurveyChartData(id)
     if (res.code !== 200) {
-      ElMessage.error(res.msg)
+      MessagePlugin.error(res.msg)
       return
     }
     questions.value = res.data
     chartDatas.value = res.chartData
   } catch (error) {
     console.error('获取调研图表数据失败:', error)
-    ElMessage.error('获取调研图表数据失败')
+    MessagePlugin.error('获取调研图表数据失败')
   } finally {
     loading.value = false
   }

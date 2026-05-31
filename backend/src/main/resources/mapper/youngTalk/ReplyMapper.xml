@@ -291,4 +291,8 @@
    <select id="creatNewId" resultType="java.lang.Integer">
   	select case when count(*) = 0 then 1 else  max(id)+1 end from CYT_ARTICAL_REPLY
   </select>
+
+  <update id="increaseLikeNum" parameterType="java.lang.Integer">
+    update CYT_ARTICAL_REPLY SET LIKE_NUM=LIKE_NUM+1  where ID = #{id,jdbcType=DECIMAL}
+  </update>
 </mapper>

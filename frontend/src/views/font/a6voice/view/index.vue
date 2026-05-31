@@ -1,14 +1,14 @@
 <template>
   <div class="artical-view-container">
     <div class="main-container">
-      <el-row :gutter="20">
-        <el-col :span="16">
+      <t-row :gutter="20">
+        <t-col :span="8">
           <div class="artical-content">
-            <el-breadcrumb separator="/">
-              <el-breadcrumb-item :to="{ path: '/a6voice' }">A6有声</el-breadcrumb-item>
-              <el-breadcrumb-item>{{ typeName }}</el-breadcrumb-item>
-              <el-breadcrumb-item>{{ artical.title }}</el-breadcrumb-item>
-            </el-breadcrumb>
+            <t-breadcrumb separator="/">
+              <t-breadcrumb-item :to="{ path: '/a6voice' }">A6有声</t-breadcrumb-item>
+              <t-breadcrumb-item>{{ typeName }}</t-breadcrumb-item>
+              <t-breadcrumb-item>{{ artical.title }}</t-breadcrumb-item>
+            </t-breadcrumb>
 
             <h2 class="artical-title">{{ artical.title }}</h2>
 
@@ -19,9 +19,9 @@
                 font-size: 14px;
               ">
               <div style="display: flex; gap: 4px; align-items: center">
-                <el-tag v-for="tag in activeTags" :key="tag.label" :type="tag.type" effect="dark" size="small">
+                <t-tag v-for="tag in activeTags" :key="tag.label" :theme="tag.type" effect="dark" size="small">
                   {{ tag.label }}
-                </el-tag>
+                </t-tag>
               </div>
               <span style="color: #909399">发布人：{{
                 artical.user ? artical.user.ploName : '匿名'
@@ -33,29 +33,29 @@
                   gap: 12px;
                   color: #797979;
                 ">
-                <span><el-icon>
+                <span><t-icon>
                     <View />
-                  </el-icon>
+                  </t-icon>
                   {{ artical.viewNum + 1 }} 次</span>
-                <span><el-icon>
+                <span><t-icon>
                     <StarFilled />
-                  </el-icon>
+                  </t-icon>
                   {{ artical.collectNum }}</span>
-                <span><el-icon>
+                <span><t-icon>
                     <Pointer />
-                  </el-icon> {{ artical.likeNum }}</span>
-                <span><el-icon>
+                  </t-icon> {{ artical.likeNum }}</span>
+                <span><t-icon>
                     <ChatSquare />
-                  </el-icon>
+                  </t-icon>
                   {{ artical.replyNum }}</span>
               </div>
             </div>
 
-            <el-divider></el-divider>
+            <t-divider></t-divider>
 
             <div v-if="articalType === 'item'" class="item-members">
               <div v-for="member in members" :key="member.id" class="member-card">
-                <el-avatar :src="fsURL + member.user.avatar" :size="50"></el-avatar>
+                <t-avatar :src="fsURL + member.user.avatar" :size="50"></t-avatar>
                 <div class="member-info">
                   <span class="name">{{ member.user.ploName }}</span>
                   <span class="role">{{ member.roleName }}</span>
@@ -67,45 +67,45 @@
 
             <div v-if="artical.files" class="attachments">
               <div class="attach-title">附件下载：</div>
-              <el-button v-for="(file, index) in parseFiles(artical.files)" :key="index" size="small" type="primary"
+              <t-button v-for="(file, index) in parseFiles(artical.files)" :key="index" size="small" theme="primary"
                 plain @click="downloadFile(file)">
                 {{ file.name }}
-              </el-button>
+              </t-button>
             </div>
 
             <div class="artical-actions">
-              <el-button :type="isLike ? 'primary' : ''" :disabled="isLike === 1" @click="handleLike">
+              <t-button :type="isLike ? 'primary' : ''" :disabled="isLike === 1" @click="handleLike">
                 <i class="iconfont iconzan1"></i> 点赞 {{ artical.likeNum }}
-              </el-button>
-              <el-button :type="isCollect ? 'primary' : ''" @click="handleCollect">
+              </t-button>
+              <t-button :type="isCollect ? 'primary' : ''" @click="handleCollect">
                 <i class="iconfont iconshoucang1"></i>
                 {{ isCollect ? '已' : '' }}收藏 {{ artical.collectNum }}
-              </el-button>
+              </t-button>
             </div>
           </div>
 
-          <el-card v-if="showComment" class="comment-section">
+          <t-card v-if="showComment" class="comment-section">
             <Comment ref="commentRef" :artical-id="articalId" :pub-user="artical.pubUser"
               :show-anon-option="flags.anonFlag" :show-comment-form="flags.commentFlag"
               @comment-submitted="onCommentSubmitted" />
-          </el-card>
-          <el-card v-else class="comment-closed">
+          </t-card>
+          <t-card v-else class="comment-closed">
             <span>已关闭评论区</span>
-          </el-card>
-        </el-col>
+          </t-card>
+        </t-col>
 
-        <el-col :span="8">
-          <el-card v-if="articalType === 'item'" class="progress-card">
+        <t-col :span="4">
+          <t-card v-if="articalType === 'item'" class="progress-card">
             <template #header>
               <span>项目进度</span>
             </template>
-            <el-progress :percentage="progress" :status="progressStatus"></el-progress>
+            <t-progress :percentage="progress" :status="progressStatus"></t-progress>
             <div class="progress-info">
               <span>当前阶段：{{ currentStage }}</span>
             </div>
-          </el-card>
+          </t-card>
 
-          <el-card v-if="articalType === 'survey'" class="survey-card">
+          <t-card v-if="articalType === 'survey'" class="survey-card">
             <template #header>
               <span>调研信息</span>
             </template>
@@ -119,15 +119,15 @@
                 <span class="value">{{ surveyStats.validCount || 0 }}</span>
               </div>
             </div>
-            <el-button v-if="!hasAnswered" type="primary" size="small" @click="handleAnswerSurvey">
+            <t-button v-if="!hasAnswered" theme="primary" size="small" @click="handleAnswerSurvey">
               参与调研
-            </el-button>
-            <el-button v-else type="success" size="small" disabled>
+            </t-button>
+            <t-button v-else theme="success" size="small" disabled>
               已参与
-            </el-button>
-          </el-card>
+            </t-button>
+          </t-card>
 
-          <el-card class="related-card">
+          <t-card class="related-card">
             <template #header>
               <span>相关推荐</span>
             </template>
@@ -138,9 +138,9 @@
                 <span class="related-num">{{ item.replyNum }} 条评论</span>
               </div>
             </div>
-          </el-card>
-        </el-col>
-      </el-row>
+          </t-card>
+        </t-col>
+      </t-row>
     </div>
   </div>
 </template>
@@ -148,9 +148,10 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { ElMessage } from 'element-plus'
+import { MessagePlugin } from 'tdesign-vue-next'
 import Comment from './components/Comment.vue'
 import useDictStore from '@/stores/modules/dict'
+import { sanitizeHtml } from '@/utils/tools'
 import {
   getArticalDetail,
   toggleLike,
@@ -269,10 +270,11 @@ const fetchartical = async () => {
   try {
     const res = await getArticalDetail(articalId.value)
     if (res.code !== 200) {
-      ElMessage.error(res.msg)
+      MessagePlugin.error(res.msg)
       return
     }
     artical.value = res.data
+    artical.value.content = sanitizeHtml(res.data.content)
     isLike.value = res.data.isLike || 0
     isCollect.value = res.data.isCollect || 0
     document.title = `[A6有声]${artical.value.title}`
@@ -344,12 +346,12 @@ const handleLike = async () => {
   try {
     const res = await toggleLike(1, articalId.value)
     if (res.code !== 200) {
-      ElMessage.error(res.msg)
+      MessagePlugin.error(res.msg)
       return
     }
     isLike.value = 1
     artical.value.likeNum++
-    ElMessage.success(res.msg)
+    MessagePlugin.success(res.msg)
   } catch (error) {
     console.error('点赞失败', error)
   }
@@ -359,7 +361,7 @@ const handleCollect = async () => {
   try {
     const res = await toggleCollect(articalId.value, isCollect.value)
     if (res.code !== 200) {
-      ElMessage.error(res.msg)
+      MessagePlugin.error(res.msg)
       return
     }
     isCollect.value = isCollect.value === 1 ? 0 : 1
@@ -368,7 +370,7 @@ const handleCollect = async () => {
     } else {
       artical.value.collectNum--
     }
-    ElMessage.success(res.msg)
+    MessagePlugin.success(res.msg)
   } catch (error) {
     console.error('收藏失败', error)
   }
@@ -407,7 +409,7 @@ onMounted(() => {
 .artical-view-container {
   width: 100%;
   min-height: 100vh;
-  background-color: #fff;
+-colorbackground: #fff;
   padding: 20px 0;
 }
 
@@ -418,7 +420,7 @@ onMounted(() => {
 }
 
 .artical-content {
-  background: #fff;
+background: #fff;
   padding: 20px;
   border-radius: 4px;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
@@ -457,7 +459,7 @@ onMounted(() => {
     align-items: center;
     gap: 10px;
     padding: 10px;
-    background: #f5f7fa;
+background: #f5f7fa;
     border-radius: 4px;
 
     .member-info {
@@ -484,7 +486,7 @@ onMounted(() => {
     font-weight: bold;
   }
 
-  .el-button {
+  .t-button {
     margin-right: 10px;
   }
 }
@@ -493,7 +495,7 @@ onMounted(() => {
   margin-top: 30px;
   text-align: center;
 
-  .el-button {
+  .t-button {
     margin: 0 10px;
   }
 }
@@ -549,7 +551,7 @@ onMounted(() => {
     align-items: center;
 
     &:hover {
-      background: #f5f7fa;
+background: #f5f7fa;
     }
 
     .related-title {

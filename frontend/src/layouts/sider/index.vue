@@ -1,62 +1,61 @@
 <template>
-  <el-menu
+  <t-menu
     v-if="currentSubMenus.length > 0"
-    :default-active="activeMenuId"
-    :collapse="collapsed"
-    :collapse-transition="false"
-    :unique-opened="true"
-    class="el-menu-vertical"
-    @collapse="setCollapsed"
+    :value="activeMenuId"
+    :collapsed="collapsed"
+    :expand-mutex="true"
+    theme="light"
+    class="menu-vertical"
   >
     <template v-for="item in currentSubMenus" :key="item.id">
-      <el-sub-menu v-if="item.children" :index="item.id.toString()">
+      <t-submenu v-if="item.children" :value="item.id.toString()">
         <template #title>
-          <el-icon><component :is="item.icon" /></el-icon>
+          <DynamicIcon :name="mapIcon(item.icon)" />
           <span>{{ item.name }}</span>
         </template>
         <!-- 第二级菜单 -->
         <template v-for="i in item.children" :key="i.id">
-          <el-sub-menu v-if="i.children" :index="i.id.toString()">
+          <t-submenu v-if="i.children" :value="i.id.toString()">
             <template #title>
-              <el-icon><component :is="i.icon" /></el-icon>
+              <DynamicIcon :name="mapIcon(i.icon)" />
               <span>{{ i.name }}</span>
             </template>
             <!-- 第三级菜单 -->
             <template v-for="o in i.children" :key="o.id">
-              <el-sub-menu v-if="o.children" :index="o.id.toString()">
+              <t-submenu v-if="o.children" :value="o.id.toString()">
                 <template #title>
                   <span>{{ o.name }}</span>
                 </template>
-              </el-sub-menu>
-              <el-menu-item
+              </t-submenu>
+              <t-menu-item
                 v-else
-                :index="o.id.toString()"
+                :value="o.id.toString()"
                 @click="goto(o.path)"
               >
-                <el-icon><component :is="o.icon" /></el-icon>
+                <DynamicIcon :name="mapIcon(o.icon)" />
                 <span>{{ o.name }}</span>
-              </el-menu-item>
+              </t-menu-item>
             </template>
-          </el-sub-menu>
-          <el-menu-item v-else :index="i.id.toString()" @click="goto(i.path)">
-            <el-icon><component :is="i.icon" /></el-icon>
+          </t-submenu>
+          <t-menu-item v-else :value="i.id.toString()" @click="goto(i.path)">
+            <DynamicIcon :name="mapIcon(i.icon)" />
             <span>{{ i.name }}</span>
-          </el-menu-item>
+          </t-menu-item>
         </template>
-      </el-sub-menu>
-      <el-menu-item v-else :index="item.id.toString()" @click="goto(item.path)">
-        <el-icon><component :is="item.icon" /></el-icon>
+      </t-submenu>
+      <t-menu-item v-else :value="item.id.toString()" @click="goto(item.path)">
+        <DynamicIcon :name="mapIcon(item.icon)" />
         <span>{{ item.name }}</span>
-      </el-menu-item>
+      </t-menu-item>
     </template>
-  </el-menu>
+  </t-menu>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue'
 import { useMenuStore, useAppStore } from '@/stores'
 import router from '@/router'
-import { HomeFilled } from '@element-plus/icons-vue'
+import { mapIcon } from '@/utils/iconMap'
 
 const appStore = useAppStore()
 const menuStore = useMenuStore()
@@ -106,47 +105,30 @@ const goto = (path) => {
 </script>
 
 <style lang="less" scoped>
-.el-menu-vertical {
+.menu-vertical {
   height: 100%;
   width: 100%;
   border-right: none;
   overflow: hidden;
-  background-color: var(--el-bg-color);
+-color: var(--td-bg-color-container);
 
-  &:not(.el-menu--collapse) {
+  &:not(.t-is-collapsed) {
     width: 100%;
   }
 
-  .el-icon {
+  .t-icon {
     font-size: 18px;
     margin-right: 5px;
   }
 
-  // 修复黑暗模式下菜单折叠时的重叠问题
-  &.el-menu--collapse {
-    overflow: visible;
-
-    // 确保子菜单在黑暗模式下有正确的背景色
-    .el-sub-menu__popper {
-      background-color: var(--el-bg-color) !important;
-      border-color: var(--el-border-color) !important;
-
-      .el-menu-item {
-        background-color: var(--el-bg-color) !important;
-      }
-    }
+  .t-menu__item:hover,
+  .t-submenu__title:hover {
+-color: var(--td-bg-color-container-hover) !important;
   }
 
-  // 修复黑暗模式下菜单hover时的样式
-  .el-menu-item:hover,
-  .el-sub-menu__title:hover {
-    background-color: var(--el-bg-color-overlay) !important;
-  }
-
-  // 修复黑暗模式下激活菜单的样式
-  .is-active {
-    background-color: var(--el-color-primary-light-9) !important;
-    color: var(--el-color-primary) !important;
+  .t-is-active {
+-color: var(--td-brand-color-light) !important;
+    color: var(--td-brand-color) !important;
   }
 }
 </style>

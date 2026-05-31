@@ -1,135 +1,121 @@
 <template>
-  <el-card class="box-card">
-    <el-row>
-      <el-col :span="6">
-        <el-date-picker
-          v-model="dataRange"
-          @change="daterangeChange"
-          type="daterange"
-          value-format="YYYY-MM-DD"
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          size="small"
-          style="width: 70%"
-        />
-      </el-col>
-      <el-col :span="4">
-        <el-select
+  <t-card class="box-card">
+    <t-row>
+      <t-col :span="3">
+        <t-date-range-picker v-model="dataRange" @change="daterangeChange" :placeholder="['开始日期', '结束日期']" size="small" style="width: 100%" />
+      </t-col>
+      <t-col :span="2">
+        <t-select
           v-model="queryInfo.status"
           placeholder="操作类型"
           @change="getOperLogListData"
           style="width: 120px"
           size="small"
         >
-          <el-option value="" label="全部" />
-          <el-option :value="0" label="正常" />
-          <el-option :value="1" label="异常" />
-        </el-select>
-      </el-col>
-      <el-col :span="12">
-        <el-input
+          <t-option value="" label="全部" />
+          <t-option :value="0" label="正常" />
+          <t-option :value="1" label="异常" />
+        </t-select>
+      </t-col>
+      <t-col :span="6">
+        <t-input
           v-model="queryInfo.query"
           placeholder="请输入内容"
           size="small"
           style="max-width: 450px"
         >
           <template #prepend>
-            <el-select
+            <t-select
               v-model="queryInfo.queryType"
               placeholder="请选择"
               size="small"
               style="width: 100px"
             >
-              <el-option label="模块标题" value="title" />
-              <el-option label="触发用户" value="ploNum" />
-            </el-select>
+              <t-option label="模块标题" value="title" />
+              <t-option label="触发用户" value="ploNum" />
+            </t-select>
           </template>
           <template #append>
-            <el-button
-              size="small"
-              icon="Search"
-              @change="getOperLogListData"
-            />
+            <t-button
+              size="small" @change="getOperLogListData"><template #icon><DynamicIcon name="search" /></template></t-button>
           </template>
-        </el-input>
-      </el-col>
-      <el-col :span="2">
-        <el-button type="info" size="small" @click="handleDownload">
+        </t-input>
+      </t-col>
+      <t-col :span="1">
+        <t-button theme="default" size="small" @click="handleDownload">
           下载
-        </el-button>
-      </el-col>
-    </el-row>
+        </t-button>
+      </t-col>
+    </t-row>
 
-    <el-table
+    <CustomTable rowKey="id"
       :data="tableData"
       @sort-change="tableSort"
       stripe
       height="calc(100vh - 325px)"
-      size="small"
-    >
-      <el-table-column
+      size="small">
+      <TableColumn
         prop="operTime"
         sortable="custom"
         label="时间"
         width="160"
       />
-      <el-table-column
+      <TableColumn
         prop="ploNum"
         sortable="custom"
         label="触发用户"
         width="100"
       />
-      <el-table-column
+      <TableColumn
         prop="title"
         sortable="custom"
         label="模块标题"
         width="200"
       />
-      <el-table-column
+      <TableColumn
         prop="content"
         sortable="custom"
         label="日志内容"
         width="100"
       />
-      <el-table-column
+      <TableColumn
         prop="method"
         sortable="custom"
         label="方法名称"
         width="160"
-        show-overflow-tooltip
+        ellipsis
       />
-      <el-table-column
+      <TableColumn
         prop="requestUrl"
         label="请求URL"
-        show-overflow-tooltip
+        ellipsis
       />
-      <el-table-column
+      <TableColumn
         prop="ip"
         sortable="custom"
         label="IP"
         width="120"
-        show-overflow-tooltip
+        ellipsis
       />
-      <el-table-column
+      <TableColumn
         prop="requestParam"
         label="请求参数"
-        show-overflow-tooltip
+        ellipsis
       />
-      <el-table-column
+      <TableColumn
         prop="responseResult"
         label="方法响应参数"
-        show-overflow-tooltip
+        ellipsis
       />
-      <el-table-column
+      <TableColumn
         prop="takeTime"
         sortable="custom"
         label="耗时"
         width="70"
       />
-      <el-table-column prop="status" label="状态" width="80">
+      <TableColumn colKey="status" label="状态" width="80">
         <template #default="scope">
-          <el-popover
+          <t-popup
             placement="left"
             :title="scope.row.status === 1 ? '异常信息' : '正常'"
             width="600"
@@ -137,34 +123,34 @@
             :content="scope.row.errorMsg"
           >
             <template #reference>
-              <el-tag
-                :type="scope.row.status === 1 ? 'danger' : 'success'"
+              <t-tag
+                :theme="scope.row.status === 1 ? 'danger' : 'success'"
                 effect="plain"
                 size="small"
               >
                 {{ scope.row.status === 1 ? '异常' : '正常' }}
-              </el-tag>
+              </t-tag>
             </template>
-          </el-popover>
+          </t-popup>
         </template>
-      </el-table-column>
-    </el-table>
+      </TableColumn>
+    </CustomTable>
 
-    <el-pagination
-      @size-change="handleSizeChange"
+    <t-pagination
+      @page-size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-      :current-page="currentPage"
-      :page-sizes="pageSizes"
+      :current="currentPage"
+      :page-size-options="pageSizes"
       :page-size="queryInfo.pageSize"
-      layout="total, sizes, prev, pager, next, jumper"
+
       :total="total"
     />
-  </el-card>
+  </t-card>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { ElMessage } from 'element-plus'
+import { MessagePlugin } from 'tdesign-vue-next'
 import { operLogApi } from '@/API/admin/operLog'
 
 // 响应式数据
@@ -191,13 +177,13 @@ const getOperLogListData = async () => {
   try {
     const res = await operLogApi.getOperLogList(queryInfo.value)
     if (res.code !== 200) {
-      ElMessage.error(res.msg)
+      MessagePlugin.error(res.msg)
       return
     }
     tableData.value = res.data.list
     total.value = res.data.total
   } catch (error) {
-    ElMessage.error('获取日志列表失败')
+    MessagePlugin.error('获取日志列表失败')
   }
 }
 
@@ -228,12 +214,12 @@ const handleCurrentChange = (page) => {
 
 // 表格排序
 const tableSort = (data) => {
-  if (data.order === 'ascending') {
+  if (!data.descending) {
     queryInfo.value.orderType = ' asc '
-  } else if (data.order === 'descending') {
+  } else if (data.descending) {
     queryInfo.value.orderType = ' desc '
   }
-  queryInfo.value.order = data.prop
+  queryInfo.value.order = data.sortBy
   getOperLogListData()
 }
 
@@ -250,7 +236,7 @@ const handleDownload = async () => {
     link.click()
     window.URL.revokeObjectURL(link.href)
   } catch (error) {
-    ElMessage.error('下载失败')
+    MessagePlugin.error('下载失败')
   }
 }
 
@@ -261,7 +247,7 @@ onMounted(() => {
 </script>
 
 <style lang="less" scoped>
-.el-link {
+.t-link {
   font-size: 12px;
 }
 .box-card {

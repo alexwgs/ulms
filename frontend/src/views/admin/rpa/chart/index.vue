@@ -2,64 +2,52 @@
   <div class="rpa-chart-container">
     <!-- 筛选条件 -->
     <div class="filter-section">
-      <el-card shadow="hover" class="filter-card">
-        <el-row :gutter="20">
-          <el-col :span="8">
-            <el-select
+      <t-card shadow="hover" class="filter-card">
+        <t-row :gutter="20">
+          <t-col :span="4">
+            <t-select
               v-model="queryInfo.query"
               filterable
-              remote
-              reserve-keyword
               placeholder="请输入工具名称(可搜索)"
-              :remote-method="remoteMethod"
+              @search="remoteMethod"
               :loading="loading"
               size="small"
               @change="getList"
             >
-              <el-option
+              <t-option
                 v-for="(item, index) in options"
                 :key="index"
                 :label="item"
                 :value="item"
               />
-            </el-select>
-          </el-col>
-          <el-col :span="8">
+            </t-select>
+          </t-col>
+          <t-col :span="4">
             <EmployeeSelect
               size="small"
               @update:modelValue="getList"
               v-model="queryInfo.runUser"
             ></EmployeeSelect>
-          </el-col>
-          <el-col :span="8">
-            <el-date-picker
-              v-model="dataRange"
-              type="daterange"
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-              @change="daterangeChange"
-              value-format="YYYY-MM-DD"
-              size="small"
-              class="w-full"
-            />
-          </el-col>
-        </el-row>
-      </el-card>
+          </t-col>
+          <t-col :span="4">
+            <t-date-range-picker v-model="dataRange" :placeholder="['开始日期', '结束日期']" @change="daterangeChange" size="small" class="w-full" />
+          </t-col>
+        </t-row>
+      </t-card>
     </div>
 
     <!-- 主要内容区域 -->
     <div class="main-content">
       <!-- 左侧区域：7份 -->
-      <el-col :span="17">
+      <t-col :span="9">
         <div class="left-section">
           <!-- 按日统计使用情况 -->
-          <el-card shadow="hover" class="chart-card mb-20">
+          <t-card shadow="hover" class="chart-card mb-20">
             <template #header>
               <div class="card-header">
                 <span>按日统计使用情况</span>
-                <el-tag size="small" type="primary" effect="light"
-                  >趋势分析</el-tag
+                <t-tag size="small" theme="primary" effect="light"
+                  >趋势分析</t-tag
                 >
               </div>
             </template>
@@ -70,15 +58,15 @@
               :height="'400px'"
               class="chart"
             />
-          </el-card>
+          </t-card>
 
           <!-- 按产品统计使用情况 -->
-          <el-card shadow="hover" class="chart-card">
+          <t-card shadow="hover" class="chart-card">
             <template #header>
               <div class="card-header">
                 <span>按产品统计使用情况</span>
-                <el-tag size="small" type="success" effect="light"
-                  >产品分析</el-tag
+                <t-tag size="small" theme="success" effect="light"
+                  >产品分析</t-tag
                 >
               </div>
             </template>
@@ -89,27 +77,27 @@
               :height="'400px'"
               class="chart"
             />
-          </el-card>
+          </t-card>
         </div>
-      </el-col>
+      </t-col>
 
       <!-- 右侧区域：3份 -->
-      <el-col :span="7">
+      <t-col :span="4">
         <div class="right-section">
           <!-- 总使用情况 -->
-          <el-card shadow="hover" class="stats-card mb-20">
+          <t-card shadow="hover" class="stats-card mb-20">
             <template #header>
               <div class="card-header">
                 <span class="card-title">总使用情况</span>
-                <el-tag size="small" type="info" effect="light"
-                  >统计概览</el-tag
+                <t-tag size="small" theme="info" effect="light"
+                  >统计概览</t-tag
                 >
               </div>
             </template>
             <div class="stats-content">
               <div class="stat-item">
                 <div class="stat-icon">
-                  <el-icon class="icon"><Timer /></el-icon>
+                  <t-icon class="icon"><TimeIcon /></t-icon>
                 </div>
                 <div class="stat-info">
                   <div class="stat-label">总使用次数</div>
@@ -118,7 +106,7 @@
               </div>
               <div class="stat-item">
                 <div class="stat-icon">
-                  <el-icon class="icon"><User /></el-icon>
+                  <t-icon class="icon"><User /></t-icon>
                 </div>
                 <div class="stat-info">
                   <div class="stat-label">总使用人数</div>
@@ -126,15 +114,15 @@
                 </div>
               </div>
             </div>
-          </el-card>
+          </t-card>
 
           <!-- 按使用人排序TOP 20 -->
-          <el-card shadow="hover" class="chart-card">
+          <t-card shadow="hover" class="chart-card">
             <template #header>
               <div class="card-header">
                 <span class="card-title">按使用人排序TOP 20</span>
-                <el-tag size="small" type="warning" effect="light"
-                  >用户分析</el-tag
+                <t-tag size="small" theme="warning" effect="light"
+                  >用户分析</t-tag
                 >
               </div>
             </template>
@@ -145,17 +133,17 @@
               :height="'400px'"
               class="chart"
             />
-          </el-card>
+          </t-card>
         </div>
-      </el-col>
+      </t-col>
     </div>
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
-import { ElMessage } from 'element-plus'
-import { Timer, User } from '@element-plus/icons-vue'
+import { MessagePlugin } from 'tdesign-vue-next'
+import { TimeIcon, UserIcon } from 'tdesign-icons-vue-next'
 import DepartmentSelect from '@/components/DepartmentSelect.vue'
 import EmployeeSelect from '@/components/EmployeeSelect.vue'
 import AsyncECharts from '@/components/AsyncECharts.vue'
@@ -226,7 +214,7 @@ const getList = async () => {
     const res = await chartApi.getUseTimeByDayChartData(queryInfo.value)
 
     if (res.code !== 200) {
-      ElMessage.error(res.msg)
+      MessagePlugin.error(res.msg)
       error.value = res.msg
       return
     }
@@ -242,7 +230,7 @@ const getList = async () => {
     updateChartOptions()
   } catch (err) {
     console.error('获取数据失败:', err)
-    ElMessage.error('获取数据失败')
+    MessagePlugin.error('获取数据失败')
     error.value = '获取数据失败'
   } finally {
     loading.value = false
@@ -255,7 +243,7 @@ const remoteMethod = (query) => {
       loading.value = false
       const res = await getRpaToolName(query)
       if (res.code !== 200) {
-        ElMessage.error(res.msg || '获取RPA工具名称失败')
+        MessagePlugin.error(res.msg || '获取RPA工具名称失败')
         return
       }
       options.value = res.data

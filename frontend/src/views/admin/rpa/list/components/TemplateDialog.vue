@@ -1,78 +1,71 @@
 <template>
-  <el-dialog
-    title="模板管理"
-    v-model="dialogVisible"
+  <t-dialog
+    header="模板管理"
+    v-model:visible="dialogVisible"
     width="60%"
     style="height: 60%"
-    :close-on-click-modal="false"
-    :before-close="handleClose"
-    :fullscreen="false"
+    :close-on-overlay-click="false"
+    @before-close="handleClose"
   >
-    <el-alert
+    <t-alert
       title="重要！！当控件序号设置为小于0时，前端将不显示该字段!"
       center
       :closable="false"
-      type="error"
+      theme="error"
       class="alert-message"
     />
 
-    <el-button
-      type="primary"
+    <t-button
+      theme="primary"
       size="small"
       @click="openFieldDialog('add')"
       class="mb-3"
     >
       新建字段
-    </el-button>
+    </t-button>
 
-    <el-table :data="list" size="small" v-loading="loading">
-      <el-table-column prop="id" label="ID" width="100" show-overflow-tooltip />
-      <el-table-column prop="label" label="显示名称" width="130" />
-      <el-table-column prop="fieldName" label="参数名称" width="130" />
-      <el-table-column prop="type" label="控件类型" width="100">
+    <CustomTable rowKey="id" :data="list" size="small" :loading="loading">
+      <TableColumn colKey="id" label="ID" width="100" ellipsis />
+      <TableColumn colKey="label" label="显示名称" width="130" />
+      <TableColumn colKey="fieldName" label="参数名称" width="130" />
+      <TableColumn colKey="type" label="控件类型" width="100">
         <template #default="{ row }">
           {{ getComponentTypeLabel(row.type) }}
         </template>
-      </el-table-column>
-      <el-table-column prop="options" label="选项" show-overflow-tooltip />
-      <el-table-column prop="required" label="必填" width="100">
+      </TableColumn>
+      <TableColumn colKey="options" label="选项" ellipsis />
+      <TableColumn colKey="required" label="必填" width="100">
         <template #default="{ row }">
           {{ row.required ? '是' : '否' }}
         </template>
-      </el-table-column>
-      <el-table-column prop="orderId" label="序号" width="80">
+      </TableColumn>
+      <TableColumn colKey="orderId" label="序号" width="80">
         <template #default="{ row }">
           {{ row.orderId < 0 ? `${row.orderId}（不显示）` : row.orderId }}
         </template>
-      </el-table-column>
-      <el-table-column label="操作" width="120" fixed="right">
+      </TableColumn>
+      <TableColumn label="操作" width="120" fixed="right">
         <template #default="{ row }">
-          <el-button
-            type="warning"
-            size="small"
-            icon="Edit"
-            @click="openFieldDialog('update', row)"
-            circle
-          />
-          <el-button
-            type="danger"
-            size="small"
-            icon="Delete"
-            @click="deleteField(row.id)"
-            circle
-          />
+          <t-button
+            theme="warning"
+            size="small" @click="openFieldDialog('update', row)"
+            shape="circle"><template #icon><DynamicIcon name="edit" /></template></t-button>
+          <t-button
+            theme="danger"
+            size="small" @click="deleteField(row.id)"
+            shape="circle"><template #icon><DynamicIcon name="delete" /></template></t-button>
         </template>
-      </el-table-column>
-    </el-table>
+      </TableColumn>
+    </CustomTable>
 
     <template #footer>
-      <el-button size="small" type="primary" @click="submitForm"
-        >确定</el-button
+      <t-button size="small" theme="primary" @click="submitForm"
+        >确定</t-button
       >
     </template>
 
     <FieldDialog ref="fieldDialogRef" @refresh="fetchFieldList" />
-  </el-dialog>
+  </t-dialog>
 </template>
 
 <script setup>
@@ -83,7 +76,7 @@ import {
   deteteRpaToolTemplete,
   updateRpaTool
 } from '@/api/rpa/rpa.js'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { MessagePlugin, DialogPlugin } from 'tdesign-vue-next'
 
 const emit = defineEmits(['refresh'])
 
@@ -127,7 +120,7 @@ const fetchFieldList = async () => {
     const res = await getRpaToolTemplete(currentTemplate.value.id)
     list.value = res.data
   } catch (error) {
-    ElMessage.error('获取字段列表失败')
+    MessagePlugin.error('获取字段列表失败')
   } finally {
     loading.value = false
   }
@@ -144,18 +137,18 @@ const openFieldDialog = (type, field = {}) => {
 // 删除字段
 const deleteField = async (id) => {
   try {
-    await ElMessageBox.confirm('此操作将永久删除该字段, 是否继续?', '提示', {
+    await DialogPlugin.confirm('此操作将永久删除该字段, 是否继续?', '提示', {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
       type: 'warning'
     })
 
     await deteteRpaToolTemplete(id)
-    ElMessage.success('删除成功')
+    MessagePlugin.success('删除成功')
     fetchFieldList()
   } catch (error) {
     if (error !== 'cancel') {
-      ElMessage.error('删除失败')
+      MessagePlugin.error('删除失败')
     }
   }
 }
@@ -167,7 +160,7 @@ const submitForm = async () => {
     emit('refresh')
     dialogVisible.value = false
   } catch (error) {
-    ElMessage.error('操作失败')
+    MessagePlugin.error('操作失败')
   }
 }
 

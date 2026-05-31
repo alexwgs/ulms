@@ -1,98 +1,98 @@
 <template>
   <!--文章管理对话框-->
-  <el-dialog title="文章管理" v-model="articalDialogVisible" width="80%" :before-close="close" :fullscreen="true">
-    <el-row :gutter="15">
-      <el-form ref="courseForm" :model="articalFormData" :rules="rules" size="small" label-width="100px">
-        <el-col :span="12">
-          <el-form-item label="地区" prop="area">
-            <el-select v-model="articalFormData.area" placeholder="根据网络判断地区（未启用）" filterable clearable
+  <t-dialog header="文章管理" v-model:visible="articalDialogVisible" width="80%" @before-close="close" mode="full-screen">
+    <t-row :gutter="15">
+      <t-form ref="courseForm" :data="articalFormData" :rules="rules" size="small" label-width="100px">
+        <t-col :span="6">
+          <t-form-item label="地区" name="area">
+            <t-select v-model="articalFormData.area" placeholder="根据网络判断地区（未启用）" filterable clearable
               style="height: 20px; width: 100%">
-              <el-option v-for="(item, index) in arealist" :key="index" :label="item.label"
-                :value="item.value"></el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="条线" prop="owner">
-            <el-select v-model="articalFormData.owner" filterable clearable style="height: 20px; width: 100%">
-              <el-option v-for="(item, index) in ownerlist" :key="index" :label="item.label"
-                :value="item.value"></el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="文章路径" prop="routeId">
-            <el-cascader v-model="articalFormData.routeId" @change="routerChange" :options="tree"
-              :props="{ value: 'id', label: 'name' }" :style="{ width: '100%' }"></el-cascader>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="允许搜索" prop="routeId">
-            <el-select size="small" v-model="articalFormData.search" placeholder="是否可在前端通过搜索获取">
-              <el-option v-for="item in yesOrNoList" :key="item.code" :label="item.codeval"
-                :value="Number(item.code)"></el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="24">
-          <el-form-item label="文章标题" prop="title">
-            <el-input v-model="articalFormData.title" placeholder="请输入文章标题" :maxlength="50" show-word-limit clearable
-              :style="{ width: '100%' }"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="24">
-          <el-form-item label="关键词" prop="keyWord">
-            <el-tag :key="tag" v-for="tag in keywords" closable :disable-transitions="false"
-              @close="keywordClose(tag)">{{ tag }}</el-tag>
-            <el-input class="input-new-tag" v-if="inputVisible" v-model="inputValue" ref="saveTagInput" size="small"
+              <t-option v-for="(item, index) in arealist" :key="index" :label="item.label"
+                :value="item.value"></t-option>
+            </t-select>
+          </t-form-item>
+        </t-col>
+        <t-col :span="6">
+          <t-form-item label="条线" name="owner">
+            <t-select v-model="articalFormData.owner" filterable clearable style="height: 20px; width: 100%">
+              <t-option v-for="(item, index) in ownerlist" :key="index" :label="item.label"
+                :value="item.value"></t-option>
+            </t-select>
+          </t-form-item>
+        </t-col>
+        <t-col :span="6">
+          <t-form-item label="文章路径" name="routeId">
+            <t-cascader v-model="articalFormData.routeId" @change="routerChange" :options="tree"
+              :props="{ value: 'id', label: 'name' }" :style="{ width: '100%' }"></t-cascader>
+          </t-form-item>
+        </t-col>
+        <t-col :span="6">
+          <t-form-item label="允许搜索" name="routeId">
+            <t-select size="small" v-model="articalFormData.search" placeholder="是否可在前端通过搜索获取">
+              <t-option v-for="item in yesOrNoList" :key="item.code" :label="item.codeval"
+                :value="Number(item.code)"></t-option>
+            </t-select>
+          </t-form-item>
+        </t-col>
+        <t-col :span="12">
+          <t-form-item label="文章标题" name="title">
+            <t-input v-model="articalFormData.title" placeholder="请输入文章标题" :maxlength="50" show-limit-number clearable
+              :style="{ width: '100%' }"></t-input>
+          </t-form-item>
+        </t-col>
+        <t-col :span="12">
+          <t-form-item label="关键词" name="keyWord">
+            <t-tag :key="tag" v-for="tag in keywords" closable :disable-transitions="false"
+              @close="keywordClose(tag)">{{ tag }}</t-tag>
+            <t-input class="input-new-tag" v-if="inputVisible" v-model="inputValue" ref="saveTagInput" size="small"
               @keyup.enter="handleInputConfirm" @blur="handleInputConfirm">
-            </el-input>
-            <el-button v-else class="button-new-tag" size="small" @click="showInput">+ 关键词</el-button>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="状态" prop="status">
-            <el-select v-model="articalFormData.status" placeholder="请选择文章状态" filterable clearable
+            </t-input>
+            <t-button v-else class="button-new-tag" size="small" @click="showInput">+ 关键词</t-button>
+          </t-form-item>
+        </t-col>
+        <t-col :span="6">
+          <t-form-item label="状态" name="status">
+            <t-select v-model="articalFormData.status" placeholder="请选择文章状态" filterable clearable
               style="height: 20px; width: 100%">
-              <el-option label="有效" :value="1"></el-option>
-              <el-option label="无效" :value="0"></el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="排序" prop="sorting">
-            <el-input-number v-model="articalFormData.sorting" placeholder="排序" :step="1"></el-input-number>
-          </el-form-item>
-        </el-col>
-        <el-col :span="24">
-          <el-form-item label="文章内容" prop="content">
+              <t-option label="有效" :value="1"></t-option>
+              <t-option label="无效" :value="0"></t-option>
+            </t-select>
+          </t-form-item>
+        </t-col>
+        <t-col :span="6">
+          <t-form-item label="排序" name="sorting">
+            <t-input-number v-model="articalFormData.sorting" placeholder="排序" :step="1"></t-input-number>
+          </t-form-item>
+        </t-col>
+        <t-col :span="12">
+          <t-form-item label="文章内容" name="content">
             <WangEditor v-model="articalFormData.content" :height="400" placeholder="请输入文章内容"></WangEditor>
-          </el-form-item>
-        </el-col>
-        <el-col :span="24">
-          <el-form-item label="其他附件" prop="files">
-            <el-upload :action="fsURL + 'upload/file/cytFile'" :on-success="uploadFileSuccess" :on-remove="handleRemove"
-              :before-remove="beforeRemove" multiple :limit="10" :on-exceed="handleExceed" :file-list="fileList">
-              <el-button size="small" type="primary">点击上传</el-button>
+          </t-form-item>
+        </t-col>
+        <t-col :span="12">
+          <t-form-item label="其他附件" name="files">
+            <t-upload :action="fsURL + 'upload/file/cytFile'" @success="uploadFileSuccess" @remove="handleRemove"
+              :before-remove="beforeRemove" multiple :limit="10" @exceed="handleExceed" :file-list="fileList">
+              <t-button size="small" theme="primary">点击上传</t-button>
               <template #tip>
-                <div class="el-upload__tip">
+                <div>
                   限制最多十个文件。请勿上传与项目无关的附件，且单个文件不超过50MB
                 </div>
               </template>
-            </el-upload>
-          </el-form-item>
-        </el-col>
-      </el-form>
-    </el-row>
+            </t-upload>
+          </t-form-item>
+        </t-col>
+      </t-form>
+    </t-row>
     <template #footer>
-      <el-button size="small" @click="close">取消</el-button>
-      <el-button size="small" type="primary" @click="submitForm">确定</el-button>
+      <t-button size="small" @click="close">取消</t-button>
+      <t-button size="small" theme="primary" @click="submitForm">确定</t-button>
     </template>
-  </el-dialog>
+  </t-dialog>
 </template>
 <script setup>
 import { ref, reactive, onMounted, nextTick } from 'vue'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { MessagePlugin, DialogPlugin } from 'tdesign-vue-next'
 import WangEditor from '@/components/WangEditor.vue'
 import { articalApi } from '@/api/helper/artical'
 import { treeApi } from '@/api/helper/tree'
@@ -160,10 +160,10 @@ onMounted(() => {
 const getTree = async () => {
   try {
     const res = await treeApi.getTree()
-    if (res.code !== 200) return ElMessage.error(res.msg)
+    if (res.code !== 200) return MessagePlugin.error(res.msg)
     tree.value = res.data
   } catch (error) {
-    ElMessage.error('获取路径树失败')
+    MessagePlugin.error('获取路径树失败')
   }
 }
 
@@ -191,7 +191,7 @@ const getArtical = async (type, journo) => {
   } else if (type === 'update') {
     try {
       const res = await articalApi.getArticalById(journo)
-      if (res.code !== 200) return ElMessage.error(res.msg)
+      if (res.code !== 200) return MessagePlugin.error(res.msg)
       Object.assign(articalFormData, res.data)
       keywords.value = articalFormData.keyWord
         ? articalFormData.keyWord.split('|')
@@ -205,7 +205,7 @@ const getArtical = async (type, journo) => {
         }
       }
     } catch (error) {
-      ElMessage.error('获取文章详情失败')
+      MessagePlugin.error('获取文章详情失败')
     }
   }
   articalDialogVisible.value = true
@@ -220,17 +220,17 @@ const submitForm = async () => {
   try {
     if (opType.value === 'add') {
       const res = await articalApi.addArtical(articalFormData)
-      if (res.code !== 200) return ElMessage.error(res.msg)
-      ElMessage.success(res.msg)
+      if (res.code !== 200) return MessagePlugin.error(res.msg)
+      MessagePlugin.success(res.msg)
     } else if (opType.value === 'update') {
       const res = await articalApi.updateArtical(articalFormData)
-      if (res.code !== 200) return ElMessage.error(res.msg)
-      ElMessage.success(res.msg)
+      if (res.code !== 200) return MessagePlugin.error(res.msg)
+      MessagePlugin.success(res.msg)
     }
     emit('refreshList')
     articalDialogVisible.value = false
   } catch (error) {
-    ElMessage.error('操作失败')
+    MessagePlugin.error('操作失败')
   }
 }
 
@@ -307,13 +307,13 @@ const uploadFileSuccess = (res, fileList) => {
 }
 
 const handleExceed = (files, fileList) => {
-  ElMessage.warning(
+  MessagePlugin.warning(
     `当前限制选择 10 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`
   )
 }
 
 const beforeRemove = (file, fileList) => {
-  return ElMessageBox.confirm(`确定移除 ${file.name} ？`, '确认删除', {
+  return DialogPlugin.confirm(`确定移除 ${file.name} ？`, '确认删除', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
@@ -332,7 +332,7 @@ defineExpose({
 })
 </script>
 <style lang="less" scoped>
-.el-tag+.el-tag {
+.t-tag+.t-tag {
   margin-left: 10px;
 }
 

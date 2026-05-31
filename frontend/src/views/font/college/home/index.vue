@@ -1,8 +1,8 @@
 <template>
   <div class="container">
-    <el-row :gutter="20">
-      <el-col :span="5">
-        <el-card class="top-card" style="background-color: #283138">
+    <t-row :gutter="20">
+      <t-col :span="3">
+        <t-card class="top-card" style="background-color: #283138">
           <div
             v-for="item in tree"
             :key="item.id"
@@ -33,12 +33,12 @@
             </div>
           </div>
           <div style="float: right; font-size: 10px; line-height: 20px">
-            <el-link
+            <t-link
               style="color: #fff"
-              underline="never"
+              :underline="false"
               @click="goCourseLib(null)"
-              >查看更多<el-icon><ArrowRight /></el-icon
-            ></el-link>
+              >查看更多<ArrowRightIcon />
+            ></t-link>
           </div>
           <div
             class="nvl-detail"
@@ -51,55 +51,55 @@
               <div class="nvl-title-color"></div>
               {{ curTreeDetail.name }}
             </h3>
-            <el-row
+            <t-row
               class="nvl-level2"
               v-for="level2 in curTreeDetail.children"
               :key="level2.id"
             >
-              <el-col :span="4"
+              <t-col :span="2"
                 ><span
                   class="title text-trim"
                   @click="goCourseLib(level2.id)"
                   >{{ level2.name }}</span
-                ></el-col
+                ></t-col
               >
-              <el-col :span="20">
+              <t-col :span="10">
                 <div class="level3">
                   <span
                     style="display: inline-block"
                     v-for="level3 in level2.children"
                     :key="level3.id"
                     @click="goCourseLib(level3.id)"
-                    ><el-divider direction="vertical"></el-divider
+                    ><t-divider direction="vertical"></t-divider
                     >{{ level3.name }}</span
                   >
                 </div>
-              </el-col>
-            </el-row>
+              </t-col>
+            </t-row>
           </div>
-        </el-card>
-      </el-col>
-      <el-col :span="14">
-        <el-carousel height="340px">
-          <el-carousel-item v-for="item in adCourse" :key="item.courseId">
+        </t-card>
+      </t-col>
+      <t-col :span="7">
+        <t-swiper :height="340">
+          <t-swiper-item v-for="item in adCourse" :key="item.courseId">
             <div style="cursor: pointer" @click="gotoCourseView(item.courseId)">
               <img
                 :src="fsURL + 'upload/getFile/college-cover/' + item.coverImg"
                 width="100%"
               />
             </div>
-          </el-carousel-item>
-        </el-carousel>
-      </el-col>
-      <el-col :span="5">
-        <el-card class="top-card personal">
+          </t-swiper-item>
+        </t-swiper>
+      </t-col>
+      <t-col :span="3">
+        <t-card class="top-card personal">
           <div class="user">
             <div class="user-info">
-              <el-avatar
-                :size="40"
+              <t-avatar
+                size="40px"
                 fit="fill"
                 :src="fsURL + userStore.avatar"
-              ></el-avatar>
+              ></t-avatar>
               <div class="user-name">
                 <span>{{ userStore.ploName }} | {{ userStore.ploNum }}</span>
                 <hr />
@@ -113,7 +113,7 @@
           <div class="personal-panel">
             <ul v-if="myPoint">
               <li @click="router.push({ path: '/college/my' })">
-                <el-icon><Calendar /></el-icon>
+                <CalendarIcon />
                 <div class="panel-info">
                   <span>{{ myPoint.studyNum }}</span>
                   <hr />
@@ -121,7 +121,7 @@
                 </div>
               </li>
               <li @click="router.push({ path: '/college/my/study-record' })">
-                <el-icon><DataLine /></el-icon>
+                <ChartLineIcon />
                 <div class="panel-info">
                   <span>{{ myPoint.signNum }}</span>
                   <hr />
@@ -129,7 +129,7 @@
                 </div>
               </li>
               <li @click="router.push({ path: '/college/my/point-log' })">
-                <el-icon><Ticket /></el-icon>
+                <TicketIcon />
                 <div class="panel-info">
                   <span>{{ myPoint.coin }}</span>
                   <hr />
@@ -137,7 +137,7 @@
                 </div>
               </li>
               <li @click="router.push({ path: '/college/my/hour-log' })">
-                <el-icon><Clock /></el-icon>
+                <TimeIcon />
                 <div class="panel-info">
                   <span>{{ myPoint.hours }}</span>
                   <hr />
@@ -146,9 +146,9 @@
               </li>
             </ul>
           </div>
-        </el-card>
-      </el-col>
-    </el-row>
+        </t-card>
+      </t-col>
+    </t-row>
     <CourseCommand></CourseCommand>
     <TeacherList></TeacherList>
     <UserList :userList="userList"></UserList>
@@ -173,14 +173,8 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { ElMessage } from 'element-plus'
-import {
-  ArrowRight,
-  Calendar,
-  DataLine,
-  Ticket,
-  Clock
-} from '@element-plus/icons-vue'
+import { MessagePlugin } from 'tdesign-vue-next'
+import { ArrowRightIcon, CalendarIcon, ChartLineIcon, TicketIcon, TimeIcon } from 'tdesign-icons-vue-next'
 import { httpInstance } from '@/utils/request'
 import { useUserStore } from '@/stores'
 import TeacherList from '../teacher/index.vue'
@@ -200,13 +194,13 @@ const myPoint = ref(null)
 
 const getTree = async () => {
   const res = await httpInstance.get('college/course/type/tree')
-  if (res.code !== 200) return ElMessage.error(res.msg)
-  tree.value = res.data.splice(0, 4)
+  if (res.code !== 200) return MessagePlugin.error(res.msg)
+  tree.value = res.data.slice(0, 4)
 }
 
 const getRecommend = async () => {
   const res = await httpInstance.get('college/course/recommend')
-  if (res.code !== 200) return ElMessage.error(res.msg)
+  if (res.code !== 200) return MessagePlugin.error(res.msg)
   adCourse.value = res.data.filter((e) => e.topFlag !== 0)
 }
 
@@ -221,7 +215,7 @@ const menuHover = (flag, item) => {
 
 const getUserPoint = async () => {
   const res = await httpInstance.get('/college/point')
-  if (res.code !== 200) return ElMessage.error(res.msg)
+  if (res.code !== 200) return MessagePlugin.error(res.msg)
   userList.value = res.rank
   myPoint.value = res.point
   window.localStorage.setItem('point', JSON.stringify(res.point))
@@ -229,8 +223,8 @@ const getUserPoint = async () => {
 
 const gotoCourseView = (courseId) => {
   const routeData = router.resolve({
-    path: '/college/course/view',
-    query: { courseId: courseId }
+    name: 'college-course-view',
+    params: { courseId: courseId }
   })
   window.open(routeData.href, '_blank')
 }
@@ -254,7 +248,7 @@ onMounted(() => {
   .user {
     height: 110px;
     width: 100%;
-    background-color: #283138;
+background-color: #283138;
     vertical-align: top;
     text-align: center;
     .user-info {
@@ -272,7 +266,7 @@ onMounted(() => {
   .panel-title {
     width: 150px;
     height: 40px;
-    background-color: #9b2b23;
+background-color: #9b2b23;
     border-radius: 8px 8px 0px 0px;
     line-height: 40px;
     color: #fff;
@@ -289,26 +283,26 @@ onMounted(() => {
       list-style: none;
       padding-left: 0;
       li:nth-child(1) {
-        background-color: #e9f8db;
-        i {
+background-color: #e9f8db;
+        .t-icon {
           color: #79ce2e;
         }
       }
       li:nth-child(2) {
-        background-color: #d9ecff;
-        i {
+background-color: #d9ecff;
+        .t-icon {
           color: #409eff;
         }
       }
       li:nth-child(3) {
-        background-color: #e0fff7;
-        i {
+background-color: #e0fff7;
+        .t-icon {
           color: #60debc;
         }
       }
       li:nth-child(4) {
-        background-color: #fef2d3;
-        i {
+background-color: #fef2d3;
+        .t-icon {
           color: #ff8402;
         }
       }
@@ -318,7 +312,7 @@ onMounted(() => {
         width: 100px;
         margin: 0 0 15px 10px;
         float: left;
-        i {
+        .t-icon {
           font-size: 25px;
           float: left;
           margin: 8px 10px 0 5px;
@@ -342,7 +336,7 @@ onMounted(() => {
 .nvl-detail {
   height: 340px;
   width: 720px;
-  background-color: #fff;
+background-color: #fff;
   overflow: auto;
   color: #000;
   position: absolute;
@@ -392,7 +386,7 @@ onMounted(() => {
     }
   }
 }
-:deep(.el-card__body) {
+:deep(.t-card__body) {
   padding: 0;
 }
 </style>

@@ -1,32 +1,32 @@
 <template>
-  <el-dialog title="角色名单维护" :close-on-click-modal="false" v-model="dialogVisible" @close="handleClose">
-    <el-form :model="userRoleForm" ref="ruleFormRef" :rules="roleFormRules">
-      <el-form-item label="工号" :label-width="formLabelWidth" prop="ploNum">
-        <el-input size="small" v-model="userRoleForm.ploNum" :readonly="dialogType === 'add' ? false : true" autocomplete="off"></el-input>
-      </el-form-item>
-      <el-form-item label="角色类型" :label-width="formLabelWidth" prop="roleType">
-        <el-select size="small" v-model="userRoleForm.roleType" placeholder="角色类型">
-          <el-option v-for="item in dictStore.dictList.oht_role_type" :key="item.code" :label="item.codeval" :value="parseInt(item.code)"></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="角色编号" :label-width="formLabelWidth" prop="roleCode">
-        <el-select size="small" v-model="userRoleForm.roleCode" readonly placeholder="角色编号">
-          <el-option label="不可选择" :value="0"></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="角色状态" :label-width="formLabelWidth" prop="roleStat">
-        <el-select size="small" v-model="userRoleForm.roleStat" placeholder="请选择">
-          <el-option v-for="item in dictStore.dictList.oht_role_status" :key="item.code" :label="item.codeval" :value="parseInt(item.code)"></el-option>
-        </el-select>
-      </el-form-item>
-    </el-form>
+  <t-dialog header="角色名单维护" :close-on-overlay-click="false" v-model:visible="dialogVisible" @close="handleClose">
+    <t-form :data="userRoleForm" ref="ruleFormRef" :rules="roleFormRules">
+      <t-form-item label="工号" :label-width="formLabelWidth" name="ploNum">
+        <t-input size="small" v-model="userRoleForm.ploNum" :readonly="dialogType === 'add' ? false : true" autocomplete="off"></t-input>
+      </t-form-item>
+      <t-form-item label="角色类型" :label-width="formLabelWidth" name="roleType">
+        <t-select size="small" v-model="userRoleForm.roleType" placeholder="角色类型">
+          <t-option v-for="item in dictStore.dictList.oht_role_type" :key="item.code" :label="item.codeval" :value="parseInt(item.code)"></t-option>
+        </t-select>
+      </t-form-item>
+      <t-form-item label="角色编号" :label-width="formLabelWidth" name="roleCode">
+        <t-select size="small" v-model="userRoleForm.roleCode" readonly placeholder="角色编号">
+          <t-option label="不可选择" :value="0"></t-option>
+        </t-select>
+      </t-form-item>
+      <t-form-item label="角色状态" :label-width="formLabelWidth" name="roleStat">
+        <t-select size="small" v-model="userRoleForm.roleStat" placeholder="请选择">
+          <t-option v-for="item in dictStore.dictList.oht_role_status" :key="item.code" :label="item.codeval" :value="parseInt(item.code)"></t-option>
+        </t-select>
+      </t-form-item>
+    </t-form>
     <template #footer>
       <div class="dialog-footer">
-        <el-button size="small" @click="handleClose">取 消</el-button>
-        <el-button size="small" type="primary" @click="submitForm">确 定</el-button>
+        <t-button size="small" @click="handleClose">取 消</t-button>
+        <t-button size="small" theme="primary" @click="submitForm">确 定</t-button>
       </div>
     </template>
-  </el-dialog>
+  </t-dialog>
 </template>
 
 <script setup>
@@ -104,8 +104,9 @@ const submitForm = async () => {
   if (!ruleFormRef.value) return
   
   try {
-    await ruleFormRef.value.validate()
-    
+    const valid = await ruleFormRef.value.validate()
+    if (valid !== true) return
+
     let res = null
     if (props.dialogType === 'add') {
       res = await userRoleApi.addUserRole(userRoleForm)

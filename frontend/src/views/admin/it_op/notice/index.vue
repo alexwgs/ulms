@@ -1,288 +1,284 @@
 <template>
   <div>
-    <el-card class="box-card">
+    <t-card class="box-card">
       <div class="text item">
         <div class="table-filter">
-          <el-row>
-            <el-col :span="6">
+          <t-row>
+            <t-col :span="3">
               <span class="demonstration"
                 >年份
-                <el-date-picker
+                <t-date-picker
                   size="small"
                   style="width: 70%"
                   @change="getArticalList"
                   v-model="yearPicker"
-                  type="year"
+                  mode="year"
                   placeholder="选择年"
                 />
               </span>
-            </el-col>
-            <el-col :span="6">
+            </t-col>
+            <t-col :span="3">
               <span
                 >板块
-                <el-select
+                <t-select
                   size="small"
                   v-model="queryInfo.category"
                   @change="getArticalList"
                   placeholder="请选择,默认不限制"
                 >
-                  <el-option :value="-1" label="全部"></el-option>
-                  <el-option
+                  <t-option :value="-1" label="全部"></t-option>
+                  <t-option
                     v-for="item in dictStore.dict.cyt_system_category"
                     :key="item.id"
                     :label="item.codeval"
                     :value="parseInt(item.code)"
-                  ></el-option>
-                </el-select>
+                  ></t-option>
+                </t-select>
               </span>
-            </el-col>
-            <el-col :span="6">
+            </t-col>
+            <t-col :span="3">
               <span
                 >状态
-                <el-select
+                <t-select
                   size="small"
                   v-model="queryInfo.status"
                   @change="getArticalList"
                   placeholder="请选择,默认不限制"
                 >
-                  <el-option label="全部" value=""></el-option>
-                  <el-option
+                  <t-option label="全部" value=""></t-option>
+                  <t-option
                     v-for="item in dictStore.dict.cyt_artical_status"
                     :key="item.id"
                     :label="item.codeval"
                     :value="item.code"
-                  ></el-option>
-                </el-select>
+                  ></t-option>
+                </t-select>
               </span>
-            </el-col>
-          </el-row>
+            </t-col>
+          </t-row>
 
-          <el-row style="padding-top: 5px">
-            <el-col :span="6">
+          <t-row style="padding-top: 5px">
+            <t-col :span="3">
               <span class="demonstration"
                 >置顶
-                <el-select
+                <t-select
                   size="small"
                   v-model="queryInfo.topFlag"
                   @change="getArticalList"
                   placeholder="请选择,默认不限制"
                 >
-                  <el-option label="全部" value=""></el-option>
-                  <el-option label="未置顶" :value="0"></el-option>
-                  <el-option label="已置顶" :value="1"></el-option>
-                </el-select>
+                  <t-option label="全部" value=""></t-option>
+                  <t-option label="未置顶" :value="0"></t-option>
+                  <t-option label="已置顶" :value="1"></t-option>
+                </t-select>
               </span>
-            </el-col>
-            <el-col :span="6">
+            </t-col>
+            <t-col :span="3">
               <span class="demonstration"
                 >精华
-                <el-select
+                <t-select
                   size="small"
                   v-model="queryInfo.eliteFlag"
                   @change="getArticalList"
                   placeholder="请选择,默认不限制"
                 >
-                  <el-option label="全部" value=""></el-option>
-                  <el-option label="未精华" :value="0"></el-option>
-                  <el-option label="已精华" :value="1"></el-option>
-                </el-select>
+                  <t-option label="全部" value=""></t-option>
+                  <t-option label="未精华" :value="0"></t-option>
+                  <t-option label="已精华" :value="1"></t-option>
+                </t-select>
               </span>
-            </el-col>
-            <el-col :span="6">
+            </t-col>
+            <t-col :span="3">
               <span class="demonstration"
                 >广场
-                <el-select
+                <t-select
                   size="small"
                   v-model="queryInfo.onStage"
                   @change="getArticalList"
                   placeholder="请选择,默认不限制"
                 >
-                  <el-option label="全部" value=""></el-option>
-                  <el-option label="未上广场" :value="0"></el-option>
-                  <el-option label="上广场" :value="1"></el-option>
-                </el-select>
+                  <t-option label="全部" value=""></t-option>
+                  <t-option label="未上广场" :value="0"></t-option>
+                  <t-option label="上广场" :value="1"></t-option>
+                </t-select>
               </span>
-            </el-col>
-            <el-col :span="6">
-              <el-button
+            </t-col>
+            <t-col :span="3">
+              <t-button
                 size="small"
-                type="primary"
-                style="width: 100%"
-                :icon="Plus"
-                @click="openNoticeEdit('new')"
-                >发起公告</el-button
+                theme="primary"
+                style="width: 100%"@click="openNoticeEdit('new')"
+                ><template #icon><DynamicIcon name="add" /></template>发起公告</t-button
               >
-            </el-col>
-          </el-row>
+            </t-col>
+          </t-row>
         </div>
 
-        <el-table
+        <CustomTable rowKey="id"
           :data="articals"
           size="small"
           stripe
-          height="calc(100vh - 360px)"
-        >
-          <el-table-column prop="category" label="板块" width="100">
+          height="calc(100vh - 360px)">
+          <TableColumn colKey="category" label="板块" width="100">
             <template #default="scope">
-              <el-tag
+              <t-tag
                 v-for="item in dictStore.dict.cyt_system_category"
                 size="small"
                 :key="item.code"
-                :type="scope.row.category == 1 ? 'danger' : 'info'"
+                :theme="scope.row.category == 1 ? 'danger' : 'info'"
                 :style="scope.row.category == item.code ? '' : 'display:none'"
                 effect="plain"
-                >{{ item.codeval }}</el-tag
+                >{{ item.codeval }}</t-tag
               >
             </template>
-          </el-table-column>
+          </TableColumn>
 
-          <el-table-column prop="title" label="标题">
+          <TableColumn colKey="title" label="标题">
             <template #default="scope">
-              <el-link type="info" @click="viewArtical(scope.row)">{{
+              <t-link theme="info" @click="viewArtical(scope.row)">{{
                 scope.row.title
-              }}</el-link>
+              }}</t-link>
             </template>
-          </el-table-column>
+          </TableColumn>
 
-          <el-table-column label="状态(置顶、精华、广场)" width="180">
+          <TableColumn label="状态(置顶、精华、广场)" width="180">
             <template #default="scope">
-              <el-tag
+              <t-tag
                 style="cursor: pointer; margin-right: 3px"
                 size="small"
                 @click="setTopAndSoOn('top', scope.row.id, scope.row.topFlag)"
-                :type="scope.row.topFlag ? 'success' : 'info'"
+                :theme="scope.row.topFlag ? 'success' : 'info'"
                 :effect="scope.row.topFlag ? 'dark' : 'plain'"
-                >置顶</el-tag
+                >置顶</t-tag
               >
-              <el-tag
+              <t-tag
                 style="cursor: pointer; margin-right: 3px"
                 size="small"
                 @click="
                   setTopAndSoOn('elite', scope.row.id, scope.row.eliteFlag)
                 "
-                :type="scope.row.eliteFlag ? 'danger' : 'info'"
+                :theme="scope.row.eliteFlag ? 'danger' : 'info'"
                 :effect="scope.row.eliteFlag ? 'dark' : 'plain'"
-                >精华</el-tag
+                >精华</t-tag
               >
-              <el-tag
+              <t-tag
                 style="cursor: pointer; margin-right: 3px"
                 size="small"
                 @click="setTopAndSoOn('stage', scope.row.id, scope.row.onStage)"
-                :type="scope.row.onStage ? 'warning' : 'info'"
+                :theme="scope.row.onStage ? 'warning' : 'info'"
                 :effect="scope.row.onStage ? 'dark' : 'plain'"
-                >广场</el-tag
+                >广场</t-tag
               >
             </template>
-          </el-table-column>
+          </TableColumn>
 
-          <el-table-column label="审核状态" width="100">
+          <TableColumn label="审核状态" width="100">
             <template #default="scope">
-              <el-tag
+              <t-tag
                 @click="examineItem(scope.row)"
                 v-for="item in dictStore.dict.cyt_artical_status"
                 size="small"
                 :key="item.code"
-                :type="scope.row.status == 1 ? 'success' : 'warning'"
+                :theme="scope.row.status == 1 ? 'success' : 'warning'"
                 :style="scope.row.status == item.code ? '' : 'display:none'"
                 effect="plain"
-                >{{ item.codeval }}</el-tag
+                >{{ item.codeval }}</t-tag
               >
             </template>
-          </el-table-column>
+          </TableColumn>
 
-          <el-table-column
+          <TableColumn
             prop="pubDate"
             label="发布日期"
-            width="160"
-          ></el-table-column>
+            width="160"></TableColumn>
 
-          <el-table-column label="操作" width="150">
+          <TableColumn label="操作" width="150">
             <template #default="scope">
-              <el-button
-                type="primary"
+              <t-button
+                theme="primary"
                 size="small"
                 @click="examineItem(scope.row)"
-                >审核</el-button
+                >审核</t-button
               >
-              <el-button
-                type="warning"
+              <t-button
+                theme="warning"
                 size="small"
                 @click="openNoticeEdit(scope.row.id)"
-                >编辑</el-button
+                >编辑</t-button
               >
             </template>
-          </el-table-column>
-        </el-table>
+          </TableColumn>
+        </CustomTable>
 
-        <el-pagination
+        <t-pagination
           @current-change="handleCurrentChange"
-          v-model:current-page="currentPage"
+          v-model:current="currentPage"
           :page-size="queryInfo.pageSize"
-          layout="total, prev, pager, next, jumper"
+
           :total="total"
-        ></el-pagination>
+        ></t-pagination>
       </div>
 
       <!-- 审核对话框 -->
-      <el-dialog
-        title="审核"
-        v-model="examineDialogVisible"
+      <t-dialog
+        header="审核"
+        v-model:visible="examineDialogVisible"
         width="30%"
-        :before-close="examineHandleClose"
+        @before-close="examineHandleClose"
       >
         <div>
           审核结果：
-          <el-select size="small" v-model="examineForm.status">
-            <el-option
+          <t-select size="small" v-model="examineForm.status">
+            <t-option
               v-for="item in dictStore.dict.cyt_artical_status"
               :disabled="item.code == 2"
               :key="item.id"
               :label="item.codeval"
               :value="parseInt(item.code)"
-            ></el-option>
-          </el-select>
+            ></t-option>
+          </t-select>
         </div>
         <template #footer>
           <span class="dialog-footer">
-            <el-button @click="examineDialogVisible = false">取 消</el-button>
-            <el-button type="primary" @click="examineSubmit">确 定</el-button>
+            <t-button @click="examineDialogVisible = false">取 消</t-button>
+            <t-button theme="primary" @click="examineSubmit">确 定</t-button>
           </span>
         </template>
-      </el-dialog>
+      </t-dialog>
 
       <!-- 移动分类对话框 -->
-      <el-dialog title="移动分类" v-model="categoryDialogVisible" width="30%">
+      <t-dialog header="移动分类" v-model:visible="categoryDialogVisible" width="30%">
         <div>
           移动到分类：
-          <el-select size="small" v-model="categoryForm.category">
-            <el-option
+          <t-select size="small" v-model="categoryForm.category">
+            <t-option
               v-for="item in dictStore.dict.cyt_artical_category"
               :key="item.id"
               :label="item.codeval"
               :value="parseInt(item.code)"
-            ></el-option>
-          </el-select>
+            ></t-option>
+          </t-select>
         </div>
         <template #footer>
           <span class="dialog-footer">
-            <el-button @click="categoryDialogVisible = false">取 消</el-button>
-            <el-button type="primary" @click="categorySubmit">确 定</el-button>
+            <t-button @click="categoryDialogVisible = false">取 消</t-button>
+            <t-button theme="primary" @click="categorySubmit">确 定</t-button>
           </span>
         </template>
-      </el-dialog>
-    </el-card>
+      </t-dialog>
+    </t-card>
 
     <!-- 新的公告 -->
-    <el-dialog title="创建新公告" v-model="newNoticeDialog" :fullscreen="true">
+    <t-dialog header="创建新公告" v-model:visible="newNoticeDialog" mode="full-screen">
       <NewNotice :id="editId"></NewNotice>
-    </el-dialog>
+    </t-dialog>
   </div>
 </template>
 <script setup>
 import { ref, reactive, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { ElMessage } from 'element-plus'
-import { Plus } from '@element-plus/icons-vue'
+import { MessagePlugin } from 'tdesign-vue-next'
+import { AddIcon } from 'tdesign-icons-vue-next'
 import NewNotice from './components/NewNotice.vue'
 import { manageNoticeApi } from '@/api/admin/manageNotice' // 导入聚合后的API
 import { useDictStore } from '@/stores'
@@ -343,14 +339,14 @@ const getArticalList = async () => {
       queryInfo
     )
     if (res.code !== 200) {
-      ElMessage.error(res.msg)
+      MessagePlugin.error(res.msg)
       return
     }
 
     articals.value = res.data.list
     total.value = res.data.total
   } catch (error) {
-    ElMessage.error('获取文章列表失败')
+    MessagePlugin.error('获取文章列表失败')
     console.error(error)
   }
 }
@@ -370,14 +366,14 @@ const setTopAndSoOn = async (type, id, val) => {
       `cyt/artical/on/${type}/${id}/${newValue}`
     )
     if (res.code !== 200) {
-      ElMessage.error(res.msg)
+      MessagePlugin.error(res.msg)
       return
     }
 
-    ElMessage.success(res.msg)
+    MessagePlugin.success(res.msg)
     getArticalList()
   } catch (error) {
-    ElMessage.error('操作失败')
+    MessagePlugin.error('操作失败')
     console.error(error)
   }
 }
@@ -404,15 +400,15 @@ const examineSubmit = async () => {
       examineForm
     )
     if (res.code !== 200) {
-      ElMessage.error(res.msg)
+      MessagePlugin.error(res.msg)
       return
     }
 
-    ElMessage.success(res.msg)
+    MessagePlugin.success(res.msg)
     examineDialogVisible.value = false
     getArticalList()
   } catch (error) {
-    ElMessage.error('审核提交失败')
+    MessagePlugin.error('审核提交失败')
     console.error(error)
   }
 }
@@ -440,15 +436,15 @@ const categorySubmit = async () => {
       categoryForm
     )
     if (res.code !== 200) {
-      ElMessage.error(res.msg)
+      MessagePlugin.error(res.msg)
       return
     }
 
-    ElMessage.success(res.msg)
+    MessagePlugin.success(res.msg)
     categoryDialogVisible.value = false
     getArticalList()
   } catch (error) {
-    ElMessage.error('分类更新失败')
+    MessagePlugin.error('分类更新失败')
     console.error(error)
   }
 }
@@ -479,12 +475,12 @@ onMounted(() => {
     margin-left: 20px;
   }
 
-  .el-select {
+  .t-select {
     width: 70%;
   }
 }
 
-.el-link {
+.t-link {
   font-size: 12px;
 }
 </style>

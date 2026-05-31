@@ -1,10 +1,10 @@
 <template>
   <div>
-    <el-card class="box-card">
-      <el-row style="padding-bottom: 10px" :gutter="15">
-        <el-col :span="3">
-          <el-button
-            type="primary"
+    <t-card class="box-card">
+      <t-row style="padding-bottom: 10px" :gutter="15">
+        <t-col :span="2">
+          <t-button
+            theme="primary"
             size="small"
             @click="
               treeNodeManage(
@@ -18,18 +18,18 @@
                 'add'
               )
             "
-            >新增节点</el-button
+            >新增节点</t-button
           >
-        </el-col>
-        <el-col :span="4">
-          <el-tag :type="currentNode == null ? 'danger' : 'primary'">{{
+        </t-col>
+        <t-col :span="2">
+          <t-tag :theme="currentNode == null ? 'danger' : 'primary'">{{
             currentNode == null ? '选择目录' : '位置:' + currentNode.libName
-          }}</el-tag>
-        </el-col>
-        <el-col :span="6">
-          <el-button-group>
-            <el-button
-              type="primary"
+          }}</t-tag>
+        </t-col>
+        <t-col :span="3">
+          <t-button-group>
+            <t-button
+              theme="primary"
               size="small"
               :disabled="currentNode == null || currentNode.libLevel != 2"
               @click="
@@ -37,103 +37,98 @@
                   questionDialogRef.show(currentNode)
                 }
               "
-              icon="edit"
-              >新建</el-button
+              ><template #icon><DynamicIcon name="edit" /></template>新建</t-button
             >
-            <el-button
-              type="primary"
-              size="small"
-              icon="position"
-              :disabled="transInfo.checkedQuestions.length <= 0"
+            <t-button
+              theme="primary"
+              size="small":disabled="transInfo.checkedQuestions.length <= 0"
               @click="treeDialogFormVisible = !treeDialogFormVisible"
-              >移动</el-button
+              ><template #icon><DynamicIcon name="position" /></template>移动</t-button
             >
-            <el-button
-              type="primary"
-              size="small"
-              icon="download"
-              @click="questionBankApi.downloadQuestionReport(queryInfo)"
-              >下载</el-button
+            <t-button
+              theme="primary"
+              size="small" @click="questionBankApi.downloadQuestionReport(queryInfo)"
+              ><template #icon><DynamicIcon name="download" /></template>下载</t-button
             >
-          </el-button-group>
-        </el-col>
-        <el-col :span="3">
-          <el-select
+          </t-button-group>
+        </t-col>
+        <t-col :span="2">
+          <t-select
             v-model="queryInfo.quesStat"
             size="small"
             placeholder="请选择过滤规则"
             style="width: 100%"
             @change="getTableList"
           >
-            <el-option label="生效" value="1" />
-            <el-option label="失效" value="0" />
-          </el-select>
-        </el-col>
-        <el-col :span="8">
-          <el-input
+            <t-option label="生效" value="1" />
+            <t-option label="失效" value="0" />
+          </t-select>
+        </t-col>
+        <t-col :span="4">
+          <t-input
             placeholder="输入要搜索的内容"
             size="small"
             v-model="queryInfo.query"
           >
-            <el-select
+            <t-select
               v-model="queryInfo.querytype"
               slot="prepend"
               style="width: 100px"
               placeholder="请选择"
             >
-              <el-option label="题目" value="quesStem" />
-              <el-option label="业务类型" value="category" />
-              <el-option label="题目编号" value="quesCode" />
-            </el-select>
-            <el-button slot="append" icon="search" @click="getTableList" />
-          </el-input>
-        </el-col>
-      </el-row>
-      <el-row :gutter="20">
-        <el-col :span="6">
+              <t-option label="题目" value="quesStem" />
+              <t-option label="业务类型" value="category" />
+              <t-option label="题目编号" value="quesCode" />
+            </t-select>
+            <t-button slot="append" @click="getTableList"><template #icon><DynamicIcon name="search" /></template></t-button>
+          </t-input>
+        </t-col>
+      </t-row>
+      <t-row :gutter="20">
+        <t-col :span="3">
           <div style="height: calc(100vh - 280px); overflow: auto">
-            <el-tree
+            <t-tree
               :data="treeData"
               ref="treeRef"
-              node-key="libCode"
-              @node-click="nodeclick"
-              @node-drag-start="handleDragStart"
-              @node-drag-end="handleDragEnd"
+              :keys="{ value: 'libCode', label: 'libName', children: 'children' }"
+              @click="nodeclick"
+              @drag-start="handleDragStart"
+              @drag-end="handleDragEnd"
               draggable
             >
-              <template #default="{ node, data }">
+              <template #default="{ node }">
                 <span class="custom-tree-node">
                   <span
-                    >{{ data.libName }}
-                    <el-tag
-                      v-if="data.libLevel === 2"
+                    >{{ node.data.libName }}
+                    <t-tag
+                      v-if="node.data.libLevel === 2"
                       size="small"
                       effect="plain"
-                      >{{ data.quesNum }}</el-tag
+                      >{{ node.data.quesNum }}</t-tag
                     ></span
                   >
                   <span>
-                    <el-button
+                    <t-button
                       :text="true"
-                      v-show="data.libLevel !== 2"
+                      v-show="node.data.libLevel !== 2"
                       size="small"
-                      @click="treeNodeManage(data, 'add')"
-                      >新增</el-button
+                      @click="treeNodeManage(node.data, 'add')"
+                      >新增</t-button
                     >
-                    <el-button
+                    <t-button
                       :text="true"
                       size="small"
-                      @click="treeNodeManage(data, 'edit')"
-                      >修改</el-button
+                      @click="treeNodeManage(node.data, 'edit')"
+                      >修改</t-button
                     >
                   </span>
                 </span>
               </template>
-            </el-tree>
+            </t-tree>
           </div>
-        </el-col>
-        <el-col :span="18">
-          <el-table
+        </t-col>
+        <t-col :span="9">
+          <CustomTable rowKey="quesCode"
             :data="tableData"
             border
             size="small"
@@ -141,18 +136,16 @@
             style="width: 100%"
             height="calc(100vh - 350px)"
             @sort-change="tableSort"
-            @selection-change="handleSelectionChange"
-          >
-            <el-table-column type="selection" width="55" />
-            <el-table-column
+            @select-change="handleSelectionChange">
+            <TableColumn type="multiple" width="55" />
+            <TableColumn
               prop="quesType"
               sortable="custom"
               label="题型"
-              width="80"
-            >
+              width="80">
               <template #default="scope">
-                <el-tag
-                  :type="scope.row.quesType == 2 ? 'success' : 'primary'"
+                <t-tag
+                  :theme="scope.row.quesType == 2 ? 'success' : 'primary'"
                   size="small"
                   effect="plain"
                 >
@@ -163,151 +156,146 @@
                         ? '判断题'
                         : '单选题'
                   }}
-                </el-tag>
+                </t-tag>
               </template>
-            </el-table-column>
-            <el-table-column
+            </TableColumn>
+            <TableColumn
               label="题库"
               sortable="custom"
               width="80"
-              show-overflow-tooltip
-            >
+              ellipsis>
               <template #default="scope">
                 {{ getQuesLibName(scope.row.libCode) }}
               </template>
-            </el-table-column>
-            <el-table-column
+            </TableColumn>
+            <TableColumn
               prop="quesStem"
               label="题目"
               sortable="custom"
-              show-overflow-tooltip
+              ellipsis
             />
-            <el-table-column
+            <TableColumn
               prop="handlePlo"
               label="操作人"
               sortable="custom"
               width="90"
             />
-            <el-table-column
+            <TableColumn
               prop="handleDate"
               label="操作时间"
               sortable="custom"
               width="140"
             />
-            <el-table-column label="操作" width="90">
+            <TableColumn label="操作" width="90">
               <template #default="scope">
-                <el-button
-                  icon="view"
-                  size="small"
+                <t-button size="small"
                   @click="questionViewRef.show(scope.row)"
                   circle
-                />
-                <el-button
-                  type="primary"
-                  icon="edit"
-                  size="small"
+                ><template #icon><DynamicIcon name="view-list" /></template></t-button>
+                <t-button
+                  theme="primary" size="small"
                   @click="transferObjToChildren(scope.row)"
                   circle
-                />
+                ><template #icon><DynamicIcon name="edit" /></template></t-button>
               </template>
-            </el-table-column>
-          </el-table>
-          <el-pagination
-            @size-change="handleSizeChange"
+            </TableColumn>
+          </CustomTable>
+          <t-pagination
+            @page-size-change="handleSizeChange"
             @current-change="handleCurrentChange"
-            :current-page="currentPage"
-            :page-sizes="pageSizes"
+            :current="currentPage"
+            :page-size-options="pageSizes"
             :page-size="queryInfo.pageSize"
-            layout="total, sizes, prev, pager, next, jumper"
+
             :total="total"
           />
-        </el-col>
-      </el-row>
-    </el-card>
+        </t-col>
+      </t-row>
+    </t-card>
 
     <!-- 题目位置调整 -->
-    <el-dialog title="题库选择" v-model="treeDialogFormVisible">
+    <t-dialog header="题库选择" v-model:visible="treeDialogFormVisible">
       <div style="height: 400px; overflow: auto">
         当前选中【{{ transInfo.checkedQuestions.length }}】题,添加至【{{
           transInfo.transToName
         }}】
-        <el-tree
+        <t-tree
           :data="treeData"
           ref="transTreeRef"
-          node-key="libCode"
-          highlight-current
-          @node-click="tansNodeclick"
+          :keys="{ value: 'libCode', label: 'libName', children: 'children' }"
+          activable
+          @click="tansNodeclick"
         >
-          <template #default="{ node, data }">
+          <template #default="{ node }">
             <span class="custom-tree-node">
               <span
-                >{{ data.libName }}
-                <el-tag
-                  v-if="data.libLevel === 2"
+                >{{ node.data.libName }}
+                <t-tag
+                  v-if="node.data.libLevel === 2"
                   size="small"
                   effect="plain"
-                  >{{ data.quesNum }}</el-tag
+                  >{{ node.data.quesNum }}</t-tag
                 ></span
               >
             </span>
           </template>
-        </el-tree>
+        </t-tree>
       </div>
       <template #footer>
         <span class="dialog-footer">
-          <el-button size="small" @click="treeDialogFormVisible = false"
-            >取 消</el-button
+          <t-button size="small" @click="treeDialogFormVisible = false"
+            >取 消</t-button
           >
-          <el-button size="small" type="primary" @click="transSubmit"
-            >确 定</el-button
+          <t-button size="small" theme="primary" @click="transSubmit"
+            >确 定</t-button
           >
         </span>
       </template>
-    </el-dialog>
+    </t-dialog>
 
-    <el-dialog
-      :title="tableTreeDialogTitle"
-      v-model="tableTreeDialogFormVisible"
+    <t-dialog
+      :header="tableTreeDialogTitle"
+      v-model:visible="tableTreeDialogFormVisible"
     >
-      <el-alert
+      <t-alert
         v-show="treeForm.libStat === 0"
         title="注意:失效会将所有下级题库及题目置为失效"
-        type="warning"
+        theme="warning"
         show-icon
         center
         :closable="false"
       />
-      <el-form
-        :model="treeForm"
+      <t-form
+        :data="treeForm"
         size="small"
         ref="treeFormRef"
         :rules="treeFormRules"
       >
-        <el-form-item
+        <t-form-item
           label="分类名称"
           prop="libName"
           :label-width="formLabelWidth"
         >
-          <el-input v-model="treeForm.libName" autocomplete="off" />
-        </el-form-item>
-        <el-form-item label="状态" :label-width="formLabelWidth">
-          <el-select v-model="treeForm.libStat" placeholder="请选择状态">
-            <el-option label="有效" :value="1" />
-            <el-option label="失效" :value="0" />
-          </el-select>
-        </el-form-item>
-      </el-form>
+          <t-input v-model="treeForm.libName" autocomplete="off" />
+        </t-form-item>
+        <t-form-item label="状态" :label-width="formLabelWidth">
+          <t-select v-model="treeForm.libStat" placeholder="请选择状态">
+            <t-option label="有效" :value="1" />
+            <t-option label="失效" :value="0" />
+          </t-select>
+        </t-form-item>
+      </t-form>
       <template #footer>
         <span class="dialog-footer">
-          <el-button size="small" @click="tableTreeDialogFormVisible = false"
-            >取 消</el-button
+          <t-button size="small" @click="tableTreeDialogFormVisible = false"
+            >取 消</t-button
           >
-          <el-button size="small" type="primary" @click="tableTreeFormSubmit"
-            >确 定</el-button
+          <t-button size="small" theme="primary" @click="tableTreeFormSubmit"
+            >确 定</t-button
           >
         </span>
       </template>
-    </el-dialog>
+    </t-dialog>
 
     <!-- 题目编辑dialog -->
     <QuestionDialog
@@ -321,7 +309,7 @@
 </template>
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
-import { ElMessage } from 'element-plus'
+import { MessagePlugin } from 'tdesign-vue-next'
 import QuestionDialog from './components/QuestionDialog.vue'
 import QuestionView from './components/QuestionView.vue'
 import { questionLibApi } from '@/api/edu/questionLib'
@@ -385,14 +373,16 @@ onMounted(() => {
 const loadTreeData = async () => {
   try {
     const res = await questionLibApi.getTreeData()
-    if (res.code !== 200) return ElMessage.error(res.msg)
+    if (res.code !== 200) return MessagePlugin.error(res.msg)
     treeData.value = res.data
   } catch (error) {
-    ElMessage.error('获取树数据失败')
+    MessagePlugin.error('获取树数据失败')
   }
 }
 
-const nodeclick = (obj, node, self) => {
+const nodeclick = (context) => {
+      const { node: treeNode } = context;
+      const obj = treeNode.data;
   currentNode.value = obj
   if (obj.libLevel === 2) {
     queryInfo.libCode = obj.libCode
@@ -419,7 +409,7 @@ const tableTreeFormSubmit = async () => {
   if (!treeFormRef.value) return
 
   const valid = await treeFormRef.value.validate()
-  if (valid) {
+  if (valid === true) {
     try {
       let res
       if (tableTreeDialogTitle.value === '节点新增') {
@@ -428,12 +418,12 @@ const tableTreeFormSubmit = async () => {
         res = await questionLibApi.updateQuestionLib(treeForm)
       }
 
-      if (res.code !== 200) return ElMessage.error(res.msg)
-      ElMessage.success(res.msg)
+      if (res.code !== 200) return MessagePlugin.error(res.msg)
+      MessagePlugin.success(res.msg)
       tableTreeDialogFormVisible.value = false
       loadTreeData()
     } catch (error) {
-      ElMessage.error('操作失败，请重试')
+      MessagePlugin.error('操作失败，请重试')
     }
   }
 }
@@ -441,18 +431,18 @@ const tableTreeFormSubmit = async () => {
 const getTableList = async () => {
   try {
     const res = await questionBankApi.getQuestionList(queryInfo)
-    if (res.code !== 200) return ElMessage.error(res.msg)
+    if (res.code !== 200) return MessagePlugin.error(res.msg)
     tableData.value = res.data.list
     total.value = res.data.total
   } catch (error) {
-    ElMessage.error('获取题目列表失败')
+    MessagePlugin.error('获取题目列表失败')
   }
 }
 
 const tableSort = (data) => {
-  if (data.order === 'ascending') queryInfo.orderType = ' asc '
-  else if (data.order === 'descending') queryInfo.orderType = ' desc '
-  queryInfo.order = data.prop
+  if (!data.descending) queryInfo.orderType = ' asc '
+  else if (data.descending) queryInfo.orderType = ' desc '
+  queryInfo.order = data.sortBy
   getTableList()
 }
 
@@ -472,11 +462,13 @@ const transferObjToChildren = (row) => {
   questionDialogRef.value.show(questionObj.value)
 }
 
-const handleSelectionChange = (val) => {
-  transInfo.checkedQuestions = val.map((e) => e.quesCode)
+const handleSelectionChange = (_keys, options) => {
+  transInfo.checkedQuestions = (options?.selectedRowData || []).map((e) => e.quesCode)
 }
 
-const tansNodeclick = (obj, node, self) => {
+const tansNodeclick = (context) => {
+      const { node: treeNode } = context;
+      const obj = treeNode.data;
   if (obj.libLevel === 2) {
     transInfo.transToName = obj.libName
     transInfo.libCode = obj.libCode
@@ -489,12 +481,12 @@ const transSubmit = async () => {
       transInfo.libCode,
       transInfo.checkedQuestions
     )
-    if (res.code !== 200) return ElMessage.error(res.msg)
-    ElMessage.success(res.msg)
+    if (res.code !== 200) return MessagePlugin.error(res.msg)
+    MessagePlugin.success(res.msg)
     treeDialogFormVisible.value = false
     loadTreeData()
   } catch (error) {
-    ElMessage.error('移动失败，请重试')
+    MessagePlugin.error('移动失败，请重试')
   }
 }
 
@@ -502,7 +494,7 @@ const getQuesLibName = (libCode) => {
   const tree = treeRef.value
   if (!tree) return '[级别异常]' + libCode
 
-  const record = tree.getNode(libCode)
+  const record = tree.getItem(libCode)
   let libName = ''
   try {
     libName =
@@ -521,11 +513,13 @@ const updateTree = () => {
   loadTreeData()
 }
 
-const handleDragStart = (node, ev) => {
-  handleNode.value = node.data
+const handleDragStart = (context) => {
+      handleNode.value = context.dragNode.data
 }
 
-const handleDragEnd = (draggingNode, dropNode, dropType, ev) => {
+const handleDragEnd = (context) => {
+      const { dragNode, dropNode, dropPosition } = context;
+      const dropType = dropPosition === 0 ? 'inner' : dropPosition === -1 ? 'before' : 'after';
   if (dropType === 'inner') {
     handleNode.value.upCode = dropNode.data.libCode
     handleNode.value.libLevel = dropNode.data.libLevel + 1
@@ -544,12 +538,12 @@ const handleDragEnd = (draggingNode, dropNode, dropType, ev) => {
   questionLibApi
     .updateQuestionLib(handleNode.value)
     .then((res) => {
-      if (res.code !== 200) return ElMessage.error(res.msg)
-      ElMessage.success(res.msg)
+      if (res.code !== 200) return MessagePlugin.error(res.msg)
+      MessagePlugin.success(res.msg)
       loadTreeData()
     })
     .catch((error) => {
-      ElMessage.error('操作失败，请重试')
+      MessagePlugin.error('操作失败，请重试')
     })
 }
 </script>

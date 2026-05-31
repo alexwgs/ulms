@@ -1,54 +1,54 @@
 <template>
-  <el-card>
-    <el-page-header @back="() => router.back()" content="创建新调研" />
+  <t-card>
+    <div @back="() => router.back()" content="创建新调研" />
     <div class="QN-header">
-      <el-form ref="formRef" :rules="rules" :model="questionnaire" label-width="80px">
-        <el-form-item label="调研标题" prop="title">
-          <el-input v-model="questionnaire.title" size="small" placeholder="请输入调研标题 2-50 字内"></el-input>
-        </el-form-item>
-        <el-row>
-          <el-col :span="6">
-            <el-form-item label="调研分类" prop="category">
-              <el-select v-model="questionnaire.category" size="small" placeholder="请选择">
-                <el-option v-for="item in dictStore.getDictByNames('cyt_artical_category', 1).filter(
+      <t-form ref="formRef" :rules="rules" :data="questionnaire" label-width="80px">
+        <t-form-item label="调研标题" name="title">
+          <t-input v-model="questionnaire.title" size="small" placeholder="请输入调研标题 2-50 字内"></t-input>
+        </t-form-item>
+        <t-row>
+          <t-col :span="3">
+            <t-form-item label="调研分类" name="category">
+              <t-select v-model="questionnaire.category" size="small" placeholder="请选择">
+                <t-option v-for="item in dictStore.getDictByNames('cyt_artical_category', 1).filter(
                   (item) => item.status == 1
-                )" :key="item.code" :label="item.codeval" :value="parseInt(item.code)"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="截止时间" prop="compDate">
-              <el-date-picker size="small" style="width: 180px" v-model="questionnaire.compDate" type="datetime"
+                )" :key="item.code" :label="item.codeval" :value="parseInt(item.code)"></t-option>
+              </t-select>
+            </t-form-item>
+          </t-col>
+          <t-col :span="3">
+            <t-form-item label="截止时间" name="compDate">
+              <t-date-picker size="small" style="width: 180px" v-model="questionnaire.compDate" mode="date" enable-time-picker
                 placeholder="选择日期时间">
-              </el-date-picker>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item>
-              <el-dropdown @command="addQuestion">
-                <el-button type="primary" size="small">
+              </t-date-picker>
+            </t-form-item>
+          </t-col>
+          <t-col :span="6">
+            <t-form-item>
+              <t-dropdown @click="addQuestion">
+                <t-button theme="primary" size="small">
                   添加题目
-                  <el-icon><Plus /></el-icon>
-                </el-button>
+                  <AddIcon />
+                </t-button>
                 <template #dropdown>
-                  <el-dropdown-menu>
-                    <el-dropdown-item v-for="item in dictStore.getDictByNames('cyt_survey_question_type', 1)"
-                      :key="item.id" :command="item.code">{{ item.codeval }}</el-dropdown-item>
-                  </el-dropdown-menu>
+                  <t-dropdown-menu>
+                    <t-dropdown-item v-for="item in dictStore.getDictByNames('cyt_survey_question_type', 1)"
+                      :key="item.id" :command="item.code">{{ item.codeval }}</t-dropdown-item>
+                  </t-dropdown-menu>
                 </template>
-              </el-dropdown>
-              <el-button-group>
-                <el-button class="release-button" type="primary" size="small" @click="preview">预览</el-button>
-                <el-button class="release-button" type="primary" size="small" :disabled="releaseBtnFlag"
-                  @click="release">发布</el-button>
-              </el-button-group>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-form-item label="调研正文" prop="content">
+              </t-dropdown>
+              <t-button-group>
+                <t-button class="release-button" theme="primary" size="small" @click="preview">预览</t-button>
+                <t-button class="release-button" theme="primary" size="small" :disabled="releaseBtnFlag"
+                  @click="release">发布</t-button>
+              </t-button-group>
+            </t-form-item>
+          </t-col>
+        </t-row>
+        <t-form-item label="调研正文" name="content">
           <WangEditor v-model="questionnaire.content"></WangEditor>
-        </el-form-item>
-      </el-form>
+        </t-form-item>
+      </t-form>
     </div>
     <div class="QN-questions">
       <div class="QN-question" v-for="(question, i) in questionnaire.questions" :key="i" @mouseover="
@@ -57,67 +57,67 @@
           activeQuestionIndex = i
         }
       " @mouseout="hoverQuestion = false">
-        <el-input :ref="`title${i}`" v-if="questionTitleEditing && currentQuestionTitleIndex === `${i}`"
+        <t-input :ref="`title${i}`" v-if="questionTitleEditing && currentQuestionTitleIndex === `${i}`"
           :placeholder="question.content" v-model="question.content" @blur="questionTitleEditing = false"
-          @keyup.enter="questionTitleEditing = false"></el-input>
+          @keyup.enter="questionTitleEditing = false"></t-input>
         <p v-else @click="handleQuestionTitleClick(`${i}`, `title${i}`)">
           题号：{{ question.sort }} |
           {{ question.content === '' ? '请输入调研题目！' : question.content }}
         </p>
         <div v-if="question.questionType === 'radio'">
-          <el-radio-group class="el-radio-group" v-model="question.radio">
+          <t-radio-group v-model="question.radio">
             <div v-for="(label, j) in question.options" :key="j" class="lable-wrapper"
               @mouseenter="handleMouseEnter(i, j)" @mouseleave="hoverLabel = false">
-              <el-input :ref="`DOM${i}${j}`" v-if="radioEditing && currentRadioIndex === `${i}${j}`"
+              <t-input :ref="`DOM${i}${j}`" v-if="radioEditing && currentRadioIndex === `${i}${j}`"
                 :placeholder="label" v-model="question.options[j]" @blur="radioEditing = false"
-                @keyup.enter="radioEditing = false"></el-input>
-              <el-radio v-else class="el-radio" :label="label === '' ? '单选选项-' + (j + 1) : label"
+                @keyup.enter="radioEditing = false"></t-input>
+              <t-radio v-else :value="label === '' ? '单选选项-' + (j + 1) : label"
                 @click="handleRadioClick(`${i}${j}`, `DOM${i}${j}`)">{{ label === '' ? '单选选项-' + (j + 1) : label
-                }}</el-radio>
+                }}</t-radio>
               <span v-show="hoverLabel && activeLableIndex === `${i}${j}`" class="label-operation">
-                <el-icon class="remove-label-icon" @click="removeLable(i, j)"><Minus /></el-icon>
-                <el-icon class="add-label-icon" @click="addLable(i, j)"><Plus /></el-icon>
+                <t-icon class="remove-label-icon" @click="removeLable(i, j)"><RemoveIcon /></t-icon>
+                <t-icon class="add-label-icon" @click="addLable(i, j)"><AddIcon /></t-icon>
               </span>
             </div>
-          </el-radio-group>
+          </t-radio-group>
         </div>
         <div v-else-if="question.questionType === 'checkbox'">
-          <el-checkbox-group v-model="question.checkList">
+          <t-checkbox-group v-model="question.checkList">
             <div v-for="(label, j) in question.options" :key="j" class="lable-wrapper"
               @mouseenter="handleMouseEnter(i, j)" @mouseleave="hoverLabel = false">
-              <el-input :ref="`DOM${i}${j}`" v-if="checkboxEditing && currentCheckboxIndex === `${i}${j}`"
+              <t-input :ref="`DOM${i}${j}`" v-if="checkboxEditing && currentCheckboxIndex === `${i}${j}`"
                 :placeholder="label" v-model="question.options[j]" @blur="checkboxEditing = false"
-                @keyup.enter="checkboxEditing = false"></el-input>
-              <el-checkbox v-else class="el-checkbox" :label="label === '' ? '多选选项-' + (j + 1) : label"
-                @click="handleCheckboxClick(`${i}${j}`, `DOM${i}${j}`)"></el-checkbox>
+                @keyup.enter="checkboxEditing = false"></t-input>
+              <t-checkbox v-else :value="label === '' ? '多选选项-' + (j + 1) : label"
+                @click="handleCheckboxClick(`${i}${j}`, `DOM${i}${j}`)"></t-checkbox>
               <span v-show="hoverLabel && activeLableIndex === `${i}${j}`" class="label-operation">
-                <el-icon class="remove-label-icon" @click="removeLable(i, j)"><Minus /></el-icon>
-                <el-icon class="add-label-icon" @click="addLable(i, j)"><Plus /></el-icon>
+                <t-icon class="remove-label-icon" @click="removeLable(i, j)"><RemoveIcon /></t-icon>
+                <t-icon class="add-label-icon" @click="addLable(i, j)"><AddIcon /></t-icon>
               </span>
             </div>
-          </el-checkbox-group>
+          </t-checkbox-group>
         </div>
         <div v-else-if="question.questionType === 'textarea'">
-          <el-input type="textarea" placeholder="请输入内容" v-model="question.value"></el-input>
+          <t-textarea placeholder="请输入内容" v-model="question.value" />
         </div>
         <div style="text-align: right; padding-bottom: 10px">
-          <el-link size="small" type="primary" :underline="false" :disabled="question.sort === 1 || questionnaire.questions.length === 1
-            " @click="orderChange('up', i)">上移</el-link>&nbsp;&nbsp;&nbsp;
-          <el-link size="small" type="primary" :underline="false" :disabled="question.sort === questionnaire.questions.length ||
+          <t-link size="small" theme="primary" :underline="false" :disabled="question.sort === 1 || questionnaire.questions.length === 1
+            " @click="orderChange('up', i)">上移</t-link>&nbsp;&nbsp;&nbsp;
+          <t-link size="small" theme="primary" :underline="false" :disabled="question.sort === questionnaire.questions.length ||
             questionnaire.questions.length === 1
-            " @click="orderChange('down', i)">下移</el-link>&nbsp;&nbsp;&nbsp;
-          <el-link size="small" type="danger" :underline="false" @click="deleteQuestion(i)">删除</el-link>
+            " @click="orderChange('down', i)">下移</t-link>&nbsp;&nbsp;&nbsp;
+          <t-link size="small" theme="danger" :underline="false" @click="deleteQuestion(i)">删除</t-link>
         </div>
       </div>
     </div>
-  </el-card>
+  </t-card>
 </template>
 
 <script setup>
 import { ref, reactive, computed, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
-import { ElMessage } from 'element-plus'
-import { Plus, Minus } from '@element-plus/icons-vue'
+import { MessagePlugin } from 'tdesign-vue-next'
+import { AddIcon, RemoveIcon } from 'tdesign-icons-vue-next'
 import WangEditor from '@/components/WangEditor.vue'
 import { httpInstance } from '@/utils/request'
 import { useDictStore } from '@/stores'
@@ -244,7 +244,7 @@ const addLable = (i, j) => {
 
 const removeLable = (i, j) => {
   if (questionnaire.questions[i].options.length <= 1)
-    return ElMessage.warning('请注意！仅剩一个选项，不可删除！')
+    return MessagePlugin.warning('请注意！仅剩一个选项，不可删除！')
   questionnaire.questions[i].options.splice(j, 1)
 }
 
@@ -258,32 +258,37 @@ const release = async () => {
   try {
     const list = reverseQuestionList.value
     if (list.questions.length < 1)
-      return ElMessage.warning('至少需要一个调研问题！')
+      return MessagePlugin.warning('至少需要一个调研问题！')
     for (const item of list.questions) {
       if (item.content === '')
-        return ElMessage.warning('调研问题的标题不可为空，请检查表单！')
+        return MessagePlugin.warning('调研问题的标题不可为空，请检查表单！')
       if (item.questionType !== 'textarea' && item.options.length < 2)
-        return ElMessage.warning('选项问题不可小于两个！')
+        return MessagePlugin.warning('选项问题不可小于两个！')
       if (item.questionType !== 'textarea' && item.options.length >= 2) {
         for (const option of item.options) {
           if (option === '')
-            return ElMessage.warning('选项内容不可为空！')
+            return MessagePlugin.warning('选项内容不可为空！')
         }
       }
     }
-    await formRef.value.validate()
-    releaseBtnFlag.value = true
-    const res = await httpInstance.post('cyt/survey', list)
-    if (res.code !== 200) {
-      ElMessage.error(res.msg)
+    const valid = await formRef.value.validate()
+    if (valid !== true) {
+      MessagePlugin.warning('请完整填写表单！')
       releaseBtnFlag.value = false
       return
     }
-    ElMessage.success(res.msg)
+    releaseBtnFlag.value = true
+    const res = await httpInstance.post('cyt/survey', list)
+    if (res.code !== 200) {
+      MessagePlugin.error(res.msg)
+      releaseBtnFlag.value = false
+      return
+    }
+    MessagePlugin.success(res.msg)
     releaseBtnFlag.value = false
     router.back()
   } catch (e) {
-    ElMessage.warning('请完整填写表单！')
+    MessagePlugin.warning('请完整填写表单！')
     releaseBtnFlag.value = false
   }
 }
@@ -385,13 +390,13 @@ const reverseQuestionList = computed(() => {
   margin-bottom: 3rem;
 }
 
-.el-radio-group {
+.t-radio-group {
   display: block;
   position: relative;
 }
 
-.el-radio,
-.el-checkbox {
+.t-radio,
+.t-checkbox {
   display: block;
   padding: 0.5em;
 }

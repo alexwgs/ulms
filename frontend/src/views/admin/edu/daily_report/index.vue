@@ -1,177 +1,153 @@
 <template>
   <div style="height: 100%">
-    <el-card class="box-card">
-      <el-row :gutter="20">
-        <el-col :span="6">
-          <el-radio-group
+    <t-card class="box-card">
+      <t-row :gutter="20">
+        <t-col :span="3">
+          <t-radio-group
             v-model="queryInfo.groupBy"
             size="small"
             @change="getDailyScoreListData"
           >
-            <el-radio-button value="hum" label="个人"></el-radio-button>
-            <el-radio-button value="group" label="小组"></el-radio-button>
-            <el-radio-button value="dept" label="科室"></el-radio-button>
-          </el-radio-group>
-        </el-col>
-        <el-col :span="8">
-          <el-date-picker
-            v-model="daterange"
-            size="small"
-            type="daterange"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            @change="getDailyScoreListData"
-            style="width: 100%"
-          ></el-date-picker>
-        </el-col>
-        <el-col :span="8">
-          <el-input
+            <t-radio-button value="hum" label="个人"></t-radio-button>
+            <t-radio-button value="group" label="小组"></t-radio-button>
+            <t-radio-button value="dept" label="科室"></t-radio-button>
+          </t-radio-group>
+        </t-col>
+        <t-col :span="4">
+          <t-date-range-picker v-model="daterange" size="small" :placeholder="['开始日期', '结束日期']" @change="getDailyScoreListData" style="width: 100%" ></t-date-range-picker>
+        </t-col>
+        <t-col :span="4">
+          <t-input
             placeholder="模糊搜索"
             size="small"
             v-model="queryInfo.query"
           >
-            <el-select
+            <t-select
               v-model="queryInfo.queryType"
               slot="prepend"
               placeholder="请选择"
               style="width: 80px"
             >
-              <el-option
+              <t-option
                 v-if="queryInfo.groupBy === 'hum'"
                 label="姓名"
                 value="ploName"
-              ></el-option>
-              <el-option
+              ></t-option>
+              <t-option
                 v-if="queryInfo.groupBy === 'hum'"
                 label="工号"
                 value="ploNum"
-              ></el-option>
-              <el-option label="组别" value="group"></el-option>
-              <el-option label="科室" value="dept"></el-option>
-            </el-select>
-            <el-button
-              slot="append"
-              icon="Search"
-              @click="getDailyScoreListData"
-            ></el-button>
-          </el-input>
-        </el-col>
-        <el-col :span="2">
-          <el-button type="primary" size="small" @click="downloadReport">
+              ></t-option>
+              <t-option label="组别" value="group"></t-option>
+              <t-option label="科室" value="dept"></t-option>
+            </t-select>
+            <t-button
+              slot="append" @click="getDailyScoreListData"><template #icon><DynamicIcon name="search" /></template></t-button>
+          </t-input>
+        </t-col>
+        <t-col :span="1">
+          <t-button theme="primary" size="small" @click="downloadReport">
             下载
-          </el-button>
-        </el-col>
-      </el-row>
-      <el-alert
+          </t-button>
+        </t-col>
+      </t-row>
+      <t-alert
         title="操作说明"
-        type="info"
-        description="请正确使用字典配置：1.默认显示7天数据。2.统计天数：配置每日一学的天数；打卡天数：完成每日一学的天数；签到天数：当天完成每日一学天数；"
+        theme="info"
+        message="请正确使用字典配置：1.默认显示7天数据。2.统计天数：配置每日一学的天数；打卡天数：完成每日一学的天数；签到天数：当天完成每日一学天数；"
         :closable="false"
       >
-      </el-alert>
-      <el-table
+      </t-alert>
+      <CustomTable rowKey="id"
         :data="dailyScore"
         size="small"
         height="calc(100vh - 385px)"
         stripe
         @sort-change="tableSort"
-        style="width: 100%"
-      >
-        <el-table-column
+        style="width: 100%">
+        <TableColumn
           prop="deptNum"
           label="科室"
           sortable="custom"
-          width="110px"
-        ></el-table-column>
-        <el-table-column
+          width="110px"></TableColumn>
+        <TableColumn
           v-if="queryInfo.groupBy !== 'dept'"
           prop="deptGroup"
           label="组别"
           sortable="custom"
-          width="110px"
-        ></el-table-column>
-        <el-table-column
+          width="110px"></TableColumn>
+        <TableColumn
           v-if="queryInfo.groupBy === 'hum'"
           prop="ploNum"
           label="员编"
           sortable="custom"
-          width="80px"
-        ></el-table-column>
-        <el-table-column
+          width="80px"></TableColumn>
+        <TableColumn
           v-if="queryInfo.groupBy === 'hum'"
           prop="ploName"
           label="姓名"
           sortable="custom"
-          width="100px"
-        ></el-table-column>
-        <el-table-column
+          width="100px"></TableColumn>
+        <TableColumn
           prop="totalDay"
           label="统计天数"
-          width="100px"
-        ></el-table-column>
-        <el-table-column
+          width="100px"></TableColumn>
+        <TableColumn
           prop="punchDays"
           label="打卡天数"
           sortable="custom"
-          width="100px"
-        ></el-table-column>
-        <el-table-column prop="punchRate" label="打卡率" width="100px">
+          width="100px"></TableColumn>
+        <TableColumn colKey="punchRate" label="打卡率" width="100px">
           <template #default="scope">
             {{ (scope.row.punchRate * 100).toFixed(2) }}%
           </template>
-        </el-table-column>
-        <el-table-column
+        </TableColumn>
+        <TableColumn
           prop="signDays"
           label="签到天数"
           sortable="custom"
-          width="100px"
-        ></el-table-column>
-        <el-table-column
+          width="100px"></TableColumn>
+        <TableColumn
           prop="firstRightNum"
           label="首对次数"
           sortable="custom"
-          width="100px"
-        ></el-table-column>
-        <el-table-column
+          width="100px"></TableColumn>
+        <TableColumn
           prop="firstRightRate"
           label="首对率"
           sortable="custom"
-          width="100px"
-        >
+          width="100px">
           <template #default="scope">
             {{ (scope.row.firstRightRate * 100).toFixed(2) }}%
           </template>
-        </el-table-column>
-        <el-table-column
+        </TableColumn>
+        <TableColumn
           prop="studyNum"
           label="学习次数"
           sortable="custom"
-          width="100px"
-        ></el-table-column>
-        <el-table-column
+          width="100px"></TableColumn>
+        <TableColumn
           prop="studyTime"
           label="学习时长"
           sortable="custom"
-          width="100px"
-        ></el-table-column>
-      </el-table>
-      <el-pagination
-        @size-change="handleSizeChange"
+          width="100px"></TableColumn>
+      </CustomTable>
+      <t-pagination
+        @page-size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :current-page="queryInfo.pageNum"
-        :page-sizes="pageSizes"
+        :current="queryInfo.pageNum"
+        :page-size-options="pageSizes"
         :page-size="queryInfo.pageSize"
-        layout="total, sizes, prev, pager, next, jumper"
+
         :total="total"
-      ></el-pagination>
-    </el-card>
+      ></t-pagination>
+    </t-card>
   </div>
 </template>
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
-import { ElMessage } from 'element-plus'
+import { MessagePlugin } from 'tdesign-vue-next'
 import { dailyReportApi } from '@/api/edu/dailyReport'
 import dayjs from 'dayjs'
 
@@ -209,11 +185,11 @@ const getDailyScoreListData = async () => {
 
   try {
     const res = await dailyReportApi.getDailyScoreList(queryInfo)
-    if (res.code !== 200) return ElMessage.error(res.msg)
+    if (res.code !== 200) return MessagePlugin.error(res.msg)
     dailyScore.value = res.data.list
     total.value = res.data.total
   } catch (error) {
-    ElMessage.error('获取数据失败，请重试')
+    MessagePlugin.error('获取数据失败，请重试')
   }
 }
 
@@ -228,9 +204,9 @@ const handleSizeChange = (pageSize) => {
 }
 
 const tableSort = (data) => {
-  if (data.order === 'ascending') queryInfo.orderType = ' asc '
-  else if (data.order === 'descending') queryInfo.orderType = ' desc '
-  queryInfo.order = data.prop
+  if (!data.descending) queryInfo.orderType = ' asc '
+  else if (data.descending) queryInfo.orderType = ' desc '
+  queryInfo.order = data.sortBy
   getDailyScoreListData()
 }
 

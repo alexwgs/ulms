@@ -1,227 +1,222 @@
 <template>
-  <el-card class="box-card">
-    <el-row :gutter="20">
-      <el-col :span="24">
-        <el-button
-          type="primary"
+  <t-card class="box-card">
+    <t-row :gutter="20">
+      <t-col :span="12">
+        <t-button
+          theme="primary"
           size="small"
           @click="roleAddVisible = !roleAddVisible"
-          >添加角色</el-button
+          >添加角色</t-button
         >
-      </el-col>
-    </el-row>
-    <el-alert
+      </t-col>
+    </t-row>
+    <t-alert
       style="margin: 10px 0"
       title="操作说明"
       size=""
-      type="info"
-      description="请正确使用角色配置：1.建议角色名称简介且清晰。2.请注意各个角色的菜单操作权限配置！"
+      theme="info"
+      message="请正确使用角色配置：1.建议角色名称简介且清晰。2.请注意各个角色的菜单操作权限配置！"
       :closable="false"
     >
-    </el-alert>
-    <el-table
+    </t-alert>
+    <CustomTable rowKey="id"
       :data="roleList"
       size="small"
       @sort-change="tableSort"
-      height="calc(100vh - 440px)"
-    >
-      <el-table-column type="expand">
+      height="calc(100vh - 440px)">
+      <TableColumn type="expand">
         <template #default="{ row: scope }">
-          <el-row
+          <t-row
             :class="['bdbottom', i1 === 0 ? 'bdtop' : '', 'vcenter']"
             v-for="(item1, i1) in scope.children"
             :key="item1.id"
           >
-            <el-col :span="5">
-              <el-tag :key="item1.id">{{ item1.name }}</el-tag>
-              <i class="el-icon-caret-right"></i>
-            </el-col>
-            <el-col :span="19">
-              <el-row
+            <t-col :span="3">
+              <t-tag :key="item1.id">{{ item1.name }}</t-tag>
+            </t-col>
+            <t-col :span="10">
+              <t-row
                 :class="[i2 === 0 ? '' : 'bdtop', 'vcenter']"
                 v-for="(item2, i2) in item1.children"
                 :key="item2.id"
               >
-                <el-col :span="6">
-                  <el-tag :key="item2.id" type="success">{{
+                <t-col :span="3">
+                  <t-tag :key="item2.id" theme="success">{{
                     item2.name
-                  }}</el-tag>
-                  <i class="el-icon-caret-right"></i>
-                </el-col>
-                <el-col :span="18">
-                  <el-tag
+                  }}</t-tag>
+                </t-col>
+                <t-col :span="9">
+                  <t-tag
                     v-for="item3 in item2.children"
                     :key="item3.id"
-                    type="warning"
+                    theme="warning"
                     closable
-                    >{{ item3.name }}</el-tag
+                    >{{ item3.name }}</t-tag
                   >
-                </el-col>
-              </el-row>
-            </el-col>
-          </el-row>
+                </t-col>
+              </t-row>
+            </t-col>
+          </t-row>
         </template>
-      </el-table-column>
-      <el-table-column
+      </TableColumn>
+      <TableColumn
         label="角色ID"
         prop="id"
-        sortable="custom"
-      ></el-table-column>
-      <el-table-column
+        sortable="custom"></TableColumn>
+      <TableColumn
         label="角色名称"
         prop="roleName"
-        sortable="custom"
-      ></el-table-column>
-      <el-table-column label="操作" fixed="right" width="300px">
+        sortable="custom"></TableColumn>
+      <TableColumn label="操作" fixed="right" width="300px">
         <template #default="{ row: scope }">
-          <el-button
-            type="warning"
-            size="small"
-            icon="edit"
-            @click="updateRole(scope)"
+          <t-button
+            theme="warning"
+            size="small" @click="updateRole(scope)"
             circle
-          ></el-button>
-          <el-button
-            type="danger"
-            size="small"
-            icon="delete"
-            @click="removeRoleById(scope)"
+          ><template #icon><DynamicIcon name="edit" /></template></t-button>
+          <t-button
+            theme="danger"
+            size="small" @click="removeRoleById(scope)"
             circle
-          ></el-button>
-          <el-button size="small" @click="dispatchPermission(scope)"
-            >分配权限</el-button
+          ><template #icon><DynamicIcon name="delete" /></template></t-button>
+          <t-button size="small" @click="dispatchPermission(scope)"
+            >分配权限</t-button
           >
         </template>
-      </el-table-column>
-    </el-table>
-    <el-pagination
-      @size-change="handleSizeChange"
+      </TableColumn>
+    </CustomTable>
+    <t-pagination
+      @page-size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-      :current-page="queryInfo.pageNum"
-      :page-sizes="pageSizes"
+      :current="queryInfo.pageNum"
+      :page-size-options="pageSizes"
       :page-size="queryInfo.pageSize"
-      layout="total, sizes, prev, pager, next, jumper"
+
       :total="total"
     >
-    </el-pagination>
+    </t-pagination>
 
-    <el-dialog
-      title="分配权限"
+    <t-dialog
+      header="分配权限"
       height="400px"
-      :close-on-click-modal="false"
-      v-model="permissionTreeVisible"
+      :close-on-overlay-click="false"
+      v-model:visible="permissionTreeVisible"
       @close="closePermissionTreeDialog"
     >
       <div class="dialog-body">
         <div class="buttons">
-          <el-radio v-model="systemRadio" @change="getMenuTree" label=""
-            >全部</el-radio
+          <t-radio-group v-model="systemRadio" @change="getMenuTree">
+            <t-radio value=""
+            >全部</t-radio
           >
-          <el-radio v-model="systemRadio" @change="getMenuTree" label="a6squre"
-            >A6广场</el-radio
+          <t-radio value="a6squre"
+            >A6广场</t-radio
           >
-          <el-radio v-model="systemRadio" @change="getMenuTree" label="bpms"
-            >绩效平台</el-radio
+          <t-radio value="bpms"
+            >绩效平台</t-radio
           >
-          <el-button size="small" @click="setAllExpand(true)"
-            >展开所有节点</el-button
+          </t-radio-group>
+          <t-button size="small" @click="setAllExpand(true)"
+            >展开所有节点</t-button
           >
-          <el-button size="small" @click="setAllExpand(false)"
-            >收起所有节点</el-button
+          <t-button size="small" @click="setAllExpand(false)"
+            >收起所有节点</t-button
           >
         </div>
-        <el-tree
+        <t-tree
           :data="permissionsTree"
-          show-checkbox
-          node-key="id"
+          checkable
+          :keys="{ value: 'id', label: 'name', children: 'children' }"
           :check-strictly="true"
-          :default-expand-all="false"
+          v-model="checkedKeys"
+          v-model:expanded="expandedKeys"
+          @change="onPermissionTreeChange"
           ref="permissionTreeRef"
         >
-          <template #default="{ data }">
-            <span v-if="data.menuType == 0">
-              <i :class="data.icon"></i>
-              [{{ data.useage === 0 ? '后台' : '前端' }}]{{ data.name }}
+          <template #default="{ node }">
+            <span v-if="node.data.menuType == 0">
+              <i :class="node.data.icon"></i>
+              [{{ node.data.useage === 0 ? '后台' : '前端' }}]{{ node.data.name }}
             </span>
             <span v-else>
-              <i :class="data.icon"></i>
-              <el-tag :key="data.id" type="warning" size="small" effect="dark">
-                {{ data.name }} [{{ data.resourse }}]
-              </el-tag>
+              <i :class="node.data.icon"></i>
+              <t-tag :key="node.data.id" theme="warning" size="small" effect="dark">
+                {{ node.data.name }} [{{ node.data.resourse }}]
+              </t-tag>
             </span>
           </template>
-        </el-tree>
+        </t-tree>
       </div>
       <template #footer>
-        <el-button size="small" @click="permissionTreeVisible = false"
-          >取 消</el-button
+        <t-button size="small" @click="permissionTreeVisible = false"
+          >取 消</t-button
         >
-        <el-button size="small" type="primary" @click="submitPermission"
-          >确 定</el-button
+        <t-button size="small" theme="primary" @click="submitPermission"
+          >确 定</t-button
         >
       </template>
-    </el-dialog>
+    </t-dialog>
 
-    <el-dialog
-      title="修改角色信息"
-      :close-on-click-modal="false"
-      v-model="roleUpdateVisible"
+    <t-dialog
+      header="修改角色信息"
+      :close-on-overlay-click="false"
+      v-model:visible="roleUpdateVisible"
     >
-      <el-form :model="roleForm" ref="roleFormRef" :rules="roleFormRules">
-        <el-form-item label="角色ID" :label-width="formLabelWidth" prop="id">
-          <el-input
+      <t-form :data="roleForm" ref="roleFormRef" :rules="roleFormRules">
+        <t-form-item label="角色ID" :label-width="formLabelWidth" name="id">
+          <t-input
             v-model="roleForm.id"
             autocomplete="off"
             :disabled="roleIdDisabled"
-          ></el-input>
-        </el-form-item>
-        <el-form-item
+          ></t-input>
+        </t-form-item>
+        <t-form-item
           label="角色名称"
           :label-width="formLabelWidth"
           prop="roleName"
         >
-          <el-input v-model="roleForm.roleName" autocomplete="off"></el-input>
-        </el-form-item>
-      </el-form>
+          <t-input v-model="roleForm.roleName" autocomplete="off"></t-input>
+        </t-form-item>
+      </t-form>
       <template #footer>
-        <el-button size="small" @click="roleUpdateVisible = false"
-          >取 消</el-button
+        <t-button size="small" @click="roleUpdateVisible = false"
+          >取 消</t-button
         >
-        <el-button size="small" type="primary" @click="submitUpdateRole"
-          >确 定</el-button
+        <t-button size="small" theme="primary" @click="submitUpdateRole"
+          >确 定</t-button
         >
       </template>
-    </el-dialog>
+    </t-dialog>
 
-    <el-dialog
-      title="新增角色信息"
-      :close-on-click-modal="false"
-      v-model="roleAddVisible"
+    <t-dialog
+      header="新增角色信息"
+      :close-on-overlay-click="false"
+      v-model:visible="roleAddVisible"
       @close="closeRoleAddDialog"
     >
-      <el-form :model="addRoleForm" ref="addRoleFormRef" :rules="roleFormRules">
-        <el-form-item
+      <t-form :data="addRoleForm" ref="addRoleFormRef" :rules="roleFormRules">
+        <t-form-item
           label="角色名称"
           :label-width="formLabelWidth"
           prop="roleName"
         >
-          <el-input
+          <t-input
             size="small"
             v-model="addRoleForm.roleName"
             autocomplete="off"
-          ></el-input>
-        </el-form-item>
-      </el-form>
+          ></t-input>
+        </t-form-item>
+      </t-form>
       <template #footer>
-        <el-button size="small" @click="roleAddVisible = false"
-          >取 消</el-button
+        <t-button size="small" @click="roleAddVisible = false"
+          >取 消</t-button
         >
-        <el-button size="small" type="primary" @click="submitAddRole"
-          >确 定</el-button
+        <t-button size="small" theme="primary" @click="submitAddRole"
+          >确 定</t-button
         >
       </template>
-    </el-dialog>
-  </el-card>
+    </t-dialog>
+  </t-card>
 </template>
 
 <script setup>
@@ -241,6 +236,9 @@ const updateRoleId = ref(0)
 const formLabelWidth = '120px'
 const roleIdDisabled = ref(true)
 const permissionTreeRef = ref(null)
+const checkedKeys = ref([])
+const halfCheckedKeys = ref([])
+const expandedKeys = ref([])
 const roleFormRef = ref(null)
 const addRoleFormRef = ref(null)
 
@@ -284,7 +282,7 @@ const getRoleList = async () => {
     roleList.value = res.data.list
     total.value = res.data.total
   } catch (error) {
-    ElMessage.error(error.message)
+    MessagePlugin.error(error.message)
   }
 }
 
@@ -293,7 +291,7 @@ const getMenuTree = async () => {
     const res = await menuApi.treeMenu({ system: systemRadio.value })
     permissionsTree.value = res.data
   } catch (error) {
-    ElMessage.error(error.message)
+    MessagePlugin.error(error.message)
   }
 }
 
@@ -302,12 +300,12 @@ const dispatchPermission = (rowData) => {
   getMenuTree()
   permissionTreeVisible.value = true
   nextTick(() => {
-    permissionTreeRef.value.setCheckedKeys(rowData.permissions.split(','))
+    checkedKeys.value = rowData.permissions ? rowData.permissions.split(',') : []
   })
 }
 
 const removeRoleById = (data) => {
-  ElMessageBox.confirm('此操作将永久删除该记录, 是否继续?', '提示', {
+  DialogPlugin.confirm('此操作将永久删除该记录, 是否继续?', '提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
@@ -315,31 +313,29 @@ const removeRoleById = (data) => {
     .then(async () => {
       try {
         const res = await roleApi.deleteRole(data.id)
-        ElMessage.success(res.msg)
+        MessagePlugin.success(res.msg)
         getRoleList()
       } catch (error) {
-        ElMessage.error(error.message)
+        MessagePlugin.error(error.message)
       }
     })
     .catch(() => {
-      ElMessage.info('取消删除')
+      MessagePlugin.info('取消删除')
     })
 }
 
 const submitPermission = async () => {
-  const halfCheckedKeys = permissionTreeRef.value.getHalfCheckedKeys()
-  const checkedKeys = permissionTreeRef.value.getCheckedKeys()
-  const idStr = [...halfCheckedKeys, ...checkedKeys].join(',')
+  const idStr = [...halfCheckedKeys.value, ...checkedKeys.value].join(',')
 
   try {
     const res = await roleApi.updateRoleById(updateRoleId.value, {
       permissionIds: idStr
     })
-    ElMessage.success(res.msg)
+    MessagePlugin.success(res.msg)
     permissionTreeVisible.value = false
     getRoleList()
   } catch (error) {
-    ElMessage.error(error.message)
+    MessagePlugin.error(error.message)
   }
 }
 
@@ -354,23 +350,23 @@ const updateRole = (data) => {
 const submitUpdateRole = async () => {
   try {
     const res = await roleApi.updateRole(roleForm.value)
-    ElMessage.success(res.msg)
+    MessagePlugin.success(res.msg)
     roleUpdateVisible.value = false
     getRoleList()
   } catch (error) {
-    ElMessage.error(error.message)
+    MessagePlugin.error(error.message)
   }
 }
 
 const submitAddRole = async () => {
   try {
     const res = await roleApi.addRole(addRoleForm.value)
-    ElMessage.success(res.msg)
+    MessagePlugin.success(res.msg)
     roleAddVisible.value = false
     getRoleList()
   } catch (error) {
     if (error.message) {
-      ElMessage.error(error.message)
+      MessagePlugin.error(error.message)
     }
   }
 }
@@ -394,21 +390,36 @@ const handleCurrentChange = (page) => {
 }
 
 const tableSort = (data) => {
-  queryInfo.value.orderType = data.order === 'ascending' ? ' asc ' : ' desc '
-  queryInfo.value.order = data.prop
+  queryInfo.value.orderType = data.descending ? ' desc ' : ' asc '
+  queryInfo.value.order = data.sortBy
   getRoleList()
 }
 
 const setAllExpand = (state) => {
-  const nodes = permissionTreeRef.value.store.nodesMap
-  for (const key in nodes) {
-    nodes[key].expanded = state
+  if (state) {
+    const collectIds = (nodes) => {
+      let ids = []
+      for (const node of nodes) {
+        ids.push(String(node.id))
+        if (node.children && node.children.length > 0) {
+          ids = ids.concat(collectIds(node.children))
+        }
+      }
+      return ids
+    }
+    expandedKeys.value = collectIds(permissionsTree.value)
+  } else {
+    expandedKeys.value = []
   }
+}
+
+const onPermissionTreeChange = (value, context) => {
+  halfCheckedKeys.value = context.halfCheckedKeys || []
 }
 </script>
 
 <style lang="less" scoped>
-.el-tag {
+.t-tag {
   margin: 7px;
 }
 .bdtop {

@@ -1,417 +1,401 @@
 <template>
-  <el-alert
+  <t-alert
     title="操作说明"
-    type="info"
+    theme="info"
     :closable="false"
-    description="请正确使用菜单信息：1.菜单名称为前端菜单显示名称。2.排序越小，显示越靠前。3.最后一集为资源点配置。"
+    message="请正确使用菜单信息：1.菜单名称为前端菜单显示名称。2.排序越小，显示越靠前。3.最后一集为资源点配置。"
   />
-  <el-card class="box-card">
-    <el-row :gutter="20">
-      <el-col :span="5">
-        <el-select
+  <t-card class="box-card">
+    <t-row :gutter="20">
+      <t-col :span="3">
+        <t-select
           size="small"
           v-model="queryInfo.system"
           placeholder="选择菜单系统"
           @change="getMenuList"
         >
-          <el-option
+          <t-option
             v-for="item in dictStore.dictList.sys_menu_system"
             :key="item.code"
             :label="item.codeval"
             :value="item.code"
           />
-        </el-select>
-      </el-col>
-      <el-col :span="4">
-        <el-radio-group
+        </t-select>
+      </t-col>
+      <t-col :span="2">
+        <t-radio-group
           size="small"
           v-model="queryInfo.useage"
           @change="getMenuList"
         >
-          <el-radio-button
+          <t-radio-button
             v-for="item in dictStore.dictList.sys_menu_usage"
             :key="item.code"
             :value="parseInt(item.code)"
           >
             {{ item.codeval }}
-          </el-radio-button>
-        </el-radio-group>
-      </el-col>
-      <el-col :span="10">
+          </t-radio-button>
+        </t-radio-group>
+      </t-col>
+      <t-col :span="5">
         <div class="buttons">
-          <el-button size="small" @click="setAllExpand(true)"
-            >展开所有节点</el-button
+          <t-button size="small" @click="setAllExpand(true)"
+            >展开所有节点</t-button
           >
-          <el-button size="small" @click="setAllExpand(false)"
-            >收起所有节点</el-button
+          <t-button size="small" @click="setAllExpand(false)"
+            >收起所有节点</t-button
           >
-          <el-button size="small" type="primary" @click="add"
-            >添加菜单</el-button
+          <t-button size="small" theme="primary" @click="add"
+            >添加菜单</t-button
           >
         </div>
-      </el-col>
-    </el-row>
-    <el-table
+      </t-col>
+    </t-row>
+    <CustomTable
       ref="menuTreeRef"
       size="small"
       :data="list"
       height="calc(100vh - 300px)"
       style="margin-top: 20px"
       row-key="id"
-      default-expand-all
+      expand-all
       :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
     >
-      <el-table-column prop="name" label="名称" width="180">
+      <TableColumn colKey="name" label="名称" width="180">
         <template #default="{ row }">
           <i :class="row.icon"></i> {{ row.name }}
         </template>
-      </el-table-column>
-      <el-table-column prop="sort" label="序号" width="80"></el-table-column>
-      <el-table-column
+      </TableColumn>
+      <TableColumn colKey="sort" label="序号" width="80"></TableColumn>
+      <TableColumn
         prop="resourse"
         label="资源"
         width="200"
-        show-overflow-tooltip
-      ></el-table-column>
-      <el-table-column prop="status" label="状态" width="80">
+        ellipsis></TableColumn>
+      <TableColumn colKey="status" label="状态" width="80">
         <template #default="{ row }">
-          <el-tag
+          <t-tag
             v-for="item in dictStore.dictList.sys_menu_status"
             v-show="row.status == item.code"
             :key="item.code"
             size="small"
-            :type="item.code == 0 ? 'danger' : 'success'"
+            :theme="item.code == 0 ? 'danger' : 'success'"
           >
             {{ item.codeval }}
-          </el-tag>
+          </t-tag>
         </template>
-      </el-table-column>
-      <el-table-column
+      </TableColumn>
+      <TableColumn
         prop="intro"
         label="简介"
-        show-overflow-tooltip
-      ></el-table-column>
-      <el-table-column label="操作" width="180">
+        ellipsis></TableColumn>
+      <TableColumn label="操作" width="180">
         <template #default="{ row }">
-          <el-button
+          <t-button
             v-if="row.menuType == 0 && row.pid != 0"
-            type="primary"
-            icon="plus"
-            size="small"
+            theme="primary" size="small"
             @click="() => addResourse(row)"
             circle
-          />
-          <el-button
-            type="warning"
-            size="small"
-            icon="edit"
-            @click="() => update(row)"
+          ><template #icon><DynamicIcon name="plus" /></template></t-button>
+          <t-button
+            theme="warning"
+            size="small" @click="() => update(row)"
             circle
-          />
-          <el-button
+          ><template #icon><DynamicIcon name="edit" /></template></t-button>
+          <t-button
             v-if="row.menuType == 0"
-            type="danger"
-            size="small"
-            icon="delete"
-            @click="() => remove(row)"
+            theme="danger"
+            size="small" @click="() => remove(row)"
             circle
-          />
+          ><template #icon><DynamicIcon name="delete" /></template></t-button>
         </template>
-      </el-table-column>
-    </el-table>
+      </TableColumn>
+    </CustomTable>
 
-    <el-dialog
-      :title="dialogTitle"
-      :close-on-click-modal="false"
-      v-model="dialogFormVisible"
+    <t-dialog
+      :header="dialogTitle"
+      :close-on-overlay-click="false"
+      v-model:visible="dialogFormVisible"
     >
-      <el-form :model="formdata" :rules="formRules" ref="menuDataFormRef">
-        <el-form-item label="系统" :label-width="formLabelWidth" prop="system">
-          <el-select
+      <t-form :data="formdata" :rules="formRules" ref="menuDataFormRef">
+        <t-form-item label="系统" :label-width="formLabelWidth" name="system">
+          <t-select
             size="small"
             v-model="formdata.system"
             placeholder="选择菜单系统"
           >
-            <el-option
+            <t-option
               v-for="item in dictStore.dictList.sys_menu_system"
               :key="item.code"
               :label="item.codeval"
               :value="item.code"
             />
-          </el-select>
-        </el-form-item>
-        <el-form-item
+          </t-select>
+        </t-form-item>
+        <t-form-item
           label="菜单名称"
           :label-width="formLabelWidth"
           prop="name"
         >
-          <el-input
+          <t-input
             size="small"
             v-model="formdata.name"
             autocomplete="off"
-          ></el-input>
-        </el-form-item>
-        <el-form-item
+          ></t-input>
+        </t-form-item>
+        <t-form-item
           label="菜单描述"
           :label-width="formLabelWidth"
           prop="intro"
         >
-          <el-input
-            size="small"
-            type="textarea"
+          <t-textarea size="small"
             :autosize="{ minRows: 2, maxRows: 4 }"
             placeholder="菜单描述"
-            v-model="formdata.intro"
-          >
-          </el-input>
-        </el-form-item>
-        <el-form-item
+            v-model="formdata.intro" />
+        </t-form-item>
+        <t-form-item
           label="菜单地址"
           :label-width="formLabelWidth"
           prop="path"
         >
-          <el-input
+          <t-input
             size="small"
             v-model="formdata.path"
             autocomplete="off"
-          ></el-input>
-        </el-form-item>
-        <el-form-item
+          ></t-input>
+        </t-form-item>
+        <t-form-item
           label="菜单排序"
           :label-width="formLabelWidth"
           prop="sort"
         >
-          <el-input
+          <t-input
             size="small"
             v-model="formdata.sort"
             type="number"
             autocomplete="off"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="上级菜单" :label-width="formLabelWidth" prop="pid">
-          <el-select
+          ></t-input>
+        </t-form-item>
+        <t-form-item label="上级菜单" :label-width="formLabelWidth" name="pid">
+          <t-select
             size="small"
             v-model="formdata.pid"
             placeholder="选择上级菜单"
           >
-            <el-option label="一级菜单" :value="0"></el-option>
-            <el-option
+            <t-option label="一级菜单" :value="0"></t-option>
+            <t-option
               v-for="item in list"
               :key="item.id"
               :label="item.name"
               :value="item.id"
             />
-          </el-select>
-        </el-form-item>
-        <el-form-item
+          </t-select>
+        </t-form-item>
+        <t-form-item
           label="图标样式"
           :label-width="formLabelWidth"
           prop="icon"
         >
           <icon-select v-model="formdata.icon" />
-        </el-form-item>
-        <el-form-item
+        </t-form-item>
+        <t-form-item
           label="菜单状态"
           :label-width="formLabelWidth"
           prop="status"
         >
-          <el-select
+          <t-select
             size="small"
             v-model="formdata.status"
             placeholder="选择菜单是否展示"
           >
-            <el-option
+            <t-option
               v-for="item in statusOptions"
               :key="item.id"
               :label="item.name"
               :value="item.id"
             />
-          </el-select>
-        </el-form-item>
-        <el-form-item
+          </t-select>
+        </t-form-item>
+        <t-form-item
           label="前台后台"
           :label-width="formLabelWidth"
           prop="useage"
         >
-          <el-select
+          <t-select
             size="small"
             v-model="formdata.useage"
             placeholder="选择菜单类型"
           >
-            <el-option
+            <t-option
               v-for="item in dictStore.dictList.sys_menu_usage"
               :key="item.code"
               :label="item.codeval"
               :value="parseInt(item.code)"
             />
-          </el-select>
-        </el-form-item>
-        <el-form-item
+          </t-select>
+        </t-form-item>
+        <t-form-item
           label="菜单类型"
           :label-width="formLabelWidth"
           prop="menuType"
         >
-          <el-select
+          <t-select
             size="small"
             v-model="formdata.menuType"
             placeholder="选择菜单类型"
           >
-            <el-option
+            <t-option
               v-for="item in dictStore.dictList.sys_menu_type"
               :key="item.code"
               :label="item.codeval"
               :value="parseInt(item.code)"
             />
-          </el-select>
-        </el-form-item>
-        <el-form-item
+          </t-select>
+        </t-form-item>
+        <t-form-item
           label="资源名称"
           :label-width="formLabelWidth"
           prop="resourse"
         >
-          <el-input
+          <t-input
             size="small"
             v-model="formdata.resourse"
             autocomplete="off"
             :disabled="formdata.menuType == 0"
-          ></el-input>
-        </el-form-item>
-      </el-form>
+          ></t-input>
+        </t-form-item>
+      </t-form>
       <template #footer>
-        <el-button size="small" @click="dialogFormVisible = false"
-          >取 消</el-button
+        <t-button size="small" @click="dialogFormVisible = false"
+          >取 消</t-button
         >
-        <el-button size="small" type="primary" @click="dialogSubmit"
-          >确 定</el-button
+        <t-button size="small" theme="primary" @click="dialogSubmit"
+          >确 定</t-button
         >
       </template>
-    </el-dialog>
+    </t-dialog>
 
-    <el-dialog
-      title="资源管理"
-      :close-on-click-modal="false"
-      v-model="resourseFormVisible"
+    <t-dialog
+      header="资源管理"
+      :close-on-overlay-click="false"
+      v-model:visible="resourseFormVisible"
     >
-      <el-form
-        :model="resourseFormData"
+      <t-form
+        :data="resourseFormData"
         :rules="formRules"
         ref="resourseFormRef"
       >
-        <el-form-item
+        <t-form-item
           label="资源名称"
           :label-width="formLabelWidth"
           prop="name"
         >
-          <el-input
+          <t-input
             size="small"
             v-model="resourseFormData.name"
             autocomplete="off"
-          ></el-input>
-        </el-form-item>
-        <el-form-item
+          ></t-input>
+        </t-form-item>
+        <t-form-item
           label="资源代码"
           :label-width="formLabelWidth"
           prop="resourse"
         >
-          <el-input
+          <t-input
             size="small"
             v-model="resourseFormData.resourse"
             autocomplete="off"
-          ></el-input>
-        </el-form-item>
-        <el-form-item
+          ></t-input>
+        </t-form-item>
+        <t-form-item
           label="资源描述"
           :label-width="formLabelWidth"
           prop="intro"
         >
-          <el-input
-            size="small"
-            type="textarea"
+          <t-textarea size="small"
             :autosize="{ minRows: 2, maxRows: 4 }"
             placeholder="资源描述"
-            v-model="resourseFormData.intro"
-          >
-          </el-input>
-        </el-form-item>
-        <el-form-item label="排序" :label-width="formLabelWidth" prop="sort">
-          <el-input
+            v-model="resourseFormData.intro" />
+        </t-form-item>
+        <t-form-item label="排序" :label-width="formLabelWidth" name="sort">
+          <t-input
             size="small"
             v-model="resourseFormData.sort"
             type="number"
             autocomplete="off"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="上级菜单" :label-width="formLabelWidth" prop="pid">
-          <el-input
+          ></t-input>
+        </t-form-item>
+        <t-form-item label="上级菜单" :label-width="formLabelWidth" name="pid">
+          <t-input
             size="small"
             v-model="resourseFormData.pid"
             disabled
-          ></el-input>
-        </el-form-item>
-        <el-form-item
+          ></t-input>
+        </t-form-item>
+        <t-form-item
           label="资源状态"
           :label-width="formLabelWidth"
           prop="status"
         >
-          <el-select
+          <t-select
             size="small"
             v-model="resourseFormData.status"
             placeholder="选择菜单是否展示"
           >
-            <el-option
+            <t-option
               v-for="item in statusOptions"
               :key="item.id"
               :label="item.name"
               :value="item.id"
             />
-          </el-select>
-        </el-form-item>
-        <el-form-item
+          </t-select>
+        </t-form-item>
+        <t-form-item
           label="前台后台"
           :label-width="formLabelWidth"
           prop="useage"
         >
-          <el-input
+          <t-input
             size="small"
             v-model="resourseFormData.useage"
             readonly
-          ></el-input>
-        </el-form-item>
-        <el-form-item
+          ></t-input>
+        </t-form-item>
+        <t-form-item
           label="菜单类型"
           :label-width="formLabelWidth"
           prop="menuType"
         >
-          <el-select
+          <t-select
             size="small"
             v-model="resourseFormData.menuType"
             placeholder="选择菜单类型"
             disabled
           >
-            <el-option
+            <t-option
               v-for="item in dictStore.dictList.sys_menu_type"
               :key="item.code"
               :label="item.codeval"
               :value="parseInt(item.code)"
             />
-          </el-select>
-        </el-form-item>
-      </el-form>
+          </t-select>
+        </t-form-item>
+      </t-form>
       <template #footer>
-        <el-button size="small" @click="resourseFormVisible = false"
-          >取 消</el-button
+        <t-button size="small" @click="resourseFormVisible = false"
+          >取 消</t-button
         >
-        <el-button size="small" type="primary" @click="resourseSubmit"
-          >确 定</el-button
+        <t-button size="small" theme="primary" @click="resourseSubmit"
+          >确 定</t-button
         >
       </template>
-    </el-dialog>
-  </el-card>
+    </t-dialog>
+  </t-card>
 </template>
 
 <script setup>
 import { ref, onMounted, computed } from 'vue'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { MessagePlugin, DialogPlugin } from 'tdesign-vue-next'
 import IconSelect from './components/IconSelect.vue'
 import { menuApi } from '@/api/system/menu'
 import { useDictStore } from '@/stores'
@@ -487,12 +471,12 @@ const getMenuList = async () => {
     const res = await menuApi.listMenu(queryInfo.value)
     list.value = res.data
   } catch (error) {
-    ElMessage.error(error.message)
+    MessagePlugin.error(error.message)
   }
 }
 
 const remove = (data) => {
-  ElMessageBox.confirm(
+  DialogPlugin.confirm(
     '此操作将永久删除该记录,同时会删除子菜单, 是否继续?',
     '提示',
     {
@@ -504,14 +488,14 @@ const remove = (data) => {
     .then(async () => {
       try {
         const res = await menuApi.deleteMenu(data.id, data.pid)
-        ElMessage.success(res.msg)
+        MessagePlugin.success(res.msg)
         getMenuList()
       } catch (error) {
-        ElMessage.error(error.message)
+        MessagePlugin.error(error.message)
       }
     })
     .catch(() => {
-      ElMessage.info('取消删除')
+      MessagePlugin.info('取消删除')
     })
 }
 
@@ -541,9 +525,10 @@ const add = () => {
 }
 
 const dialogSubmit = async () => {
-  try {
-    await menuDataFormRef.value.validate()
+  const valid = await menuDataFormRef.value.validate()
+  if (valid !== true) return
 
+  try {
     let res = null
     if (dialogTitle.value === '新增菜单') {
       res = await menuApi.addMenu(formdata.value)
@@ -551,12 +536,12 @@ const dialogSubmit = async () => {
       res = await menuApi.updateMenuById(formdata.value.id, formdata.value)
     }
 
-    ElMessage.success(res.msg)
+    MessagePlugin.success(res.msg)
     dialogFormVisible.value = false
     getMenuList()
   } catch (error) {
     if (error.message) {
-      ElMessage.error(error.message)
+      MessagePlugin.error(error.message)
     }
   }
 }
@@ -573,14 +558,16 @@ const addResourse = (data) => {
 }
 
 const resourseSubmit = async () => {
+  const valid = await resourseFormRef.value.validate()
+  if (valid !== true) return
+
   try {
-    await resourseFormRef.value.validate()
     const res = await menuApi.addMenu(resourseFormData.value)
-    ElMessage.success(res.msg)
+    MessagePlugin.success(res.msg)
     resourseFormVisible.value = false
     getMenuList()
   } catch (error) {
-    ElMessage.error(error.message)
+    MessagePlugin.error(error.message)
   }
 }
 
@@ -604,7 +591,7 @@ onMounted(() => {
 </script>
 
 <style lang="less" scoped>
-.el-tree {
+.t-tree {
   padding-top: 15px;
   font-size: 14px;
 }

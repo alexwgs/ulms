@@ -1,116 +1,99 @@
 <template>
-  <el-card class="box-card">
-    <el-row :gutter="20">
-      <el-col :span="6">
+  <t-card class="box-card">
+    <t-row :gutter="20">
+      <t-col :span="3">
         <span>
-          <el-date-picker
-            size="small"
-            style="width: 70%"
-            v-model="dataRange"
-            @change="daterangeChange"
-            type="daterange"
-            value-format="YYYY-MM-DD"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-          ></el-date-picker>
+          <t-date-range-picker size="small" style="width: 100%" v-model="dataRange" @change="daterangeChange" :placeholder="['开始日期', '结束日期']" ></t-date-range-picker>
         </span>
-      </el-col>
-      <el-col :span="6">
+      </t-col>
+      <t-col :span="3">
         <span
           >日志级别
-          <el-select
+          <t-select
             size="small"
             v-model="queryInfo.priority"
             style="width: 150px"
             @change="getErrorLogList"
             placeholder="请选择,默认不限制"
           >
-            <el-option value="" label="全部"></el-option>
-            <el-option value="info" label="info"></el-option>
-            <el-option value="warning" label="warning"></el-option>
-            <el-option value="error" label="error"></el-option>
-          </el-select>
+            <t-option value="" label="全部"></t-option>
+            <t-option value="info" label="info"></t-option>
+            <t-option value="warning" label="warning"></t-option>
+            <t-option value="error" label="error"></t-option>
+          </t-select>
         </span>
-      </el-col>
-      <el-col :span="6">
+      </t-col>
+      <t-col :span="3">
         <span
           >错误类型
-          <el-select
+          <t-select
             size="small"
             v-model="queryInfo.dataType"
             style="width: 150px"
             @change="getErrorLogList"
             placeholder="请选择,默认不限制"
           >
-            <el-option label="全部" value=""></el-option>
-            <el-option label="DataBase" value="DataBase"></el-option>
-            <el-option label="Controller" value="Controller"></el-option>
-            <el-option label="Class" value="Class"></el-option>
-          </el-select>
+            <t-option label="全部" value=""></t-option>
+            <t-option label="DataBase" value="DataBase"></t-option>
+            <t-option label="Controller" value="Controller"></t-option>
+            <t-option label="Class" value="Class"></t-option>
+          </t-select>
         </span>
-      </el-col>
-    </el-row>
-    <el-table
+      </t-col>
+    </t-row>
+    <CustomTable rowKey="id"
       :data="tableData"
       size="small"
       sortable="custom"
       @sort-change="tableSort"
       stripe
-      height="calc(100vh - 355px)"
-    >
-      <el-table-column
+      height="calc(100vh - 355px)">
+      <TableColumn
         prop="dataTime"
         sortable="custom"
         label="时间"
-        width="160"
-      ></el-table-column>
-      <el-table-column
+        width="160"></TableColumn>
+      <TableColumn
         prop="userId"
         sortable="custom"
         label="触发用户"
-        width="100"
-      ></el-table-column>
-      <el-table-column
+        width="100"></TableColumn>
+      <TableColumn
         prop="priority"
         sortable="custom"
         label="日志级别"
-        width="100"
-      >
+        width="100">
         <template #default="{ row }">
-          <el-tag :type="getPriorityTagType(row.priority)" size="small">
+          <t-tag :theme="getPriorityTagType(row.priority)" size="small">
             {{ row.priority }}
-          </el-tag>
+          </t-tag>
         </template>
-      </el-table-column>
-      <el-table-column
+      </TableColumn>
+      <TableColumn
         prop="dataType"
         sortable="custom"
         label="日志类型"
-        width="100"
-      ></el-table-column>
-      <el-table-column
+        width="100"></TableColumn>
+      <TableColumn
         prop="info"
         sortable="custom"
         label="错误信息"
-        width="160"
-      ></el-table-column>
-      <el-table-column
+        width="160"></TableColumn>
+      <TableColumn
         prop="content"
         label="错误详情"
-        show-overflow-tooltip
-      ></el-table-column>
-    </el-table>
-    <el-pagination
-      @size-change="handleSizeChange"
+        ellipsis></TableColumn>
+    </CustomTable>
+    <t-pagination
+      @page-size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-      :current-page="currentPage"
-      :page-sizes="pageSizes"
+      :current="currentPage"
+      :page-size-options="pageSizes"
       :page-size="queryInfo.pageSize"
-      layout="total, sizes, prev, pager, next, jumper"
+
       :total="total"
-    ></el-pagination>
-  </el-card>
+    ></t-pagination>
+  </t-card>
 </template>
 
 <script setup>
@@ -159,7 +142,7 @@ const getErrorLogList = async () => {
     tableData.value = res.data.list
     total.value = res.data.total
   } catch (error) {
-    ElMessage.error(error.message)
+    MessagePlugin.error(error.message)
   }
 }
 
@@ -181,9 +164,9 @@ const handleCurrentChange = (page) => {
   getErrorLogList()
 }
 
-const tableSort = ({ order, prop }) => {
-  queryInfo.orderType = order === 'ascending' ? ' asc ' : ' desc '
-  queryInfo.order = prop
+const tableSort = ({ sortBy, descending }) => {
+  queryInfo.orderType = !descending ? ' asc ' : ' desc '
+  queryInfo.order = sortBy
   getErrorLogList()
 }
 
@@ -203,7 +186,7 @@ onMounted(() => {
     display: inline-flex;
     align-items: center;
 
-    .el-select {
+    .t-select {
       width: 55%;
       margin-left: 8px;
     }
@@ -214,7 +197,7 @@ onMounted(() => {
   height: calc(100vh - 240px);
   overflow: auto;
 
-  .el-tag {
+  .t-tag {
     margin-right: 5px;
   }
 }

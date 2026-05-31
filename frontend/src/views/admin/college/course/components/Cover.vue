@@ -1,44 +1,44 @@
 <template>
-  <el-dialog
-    title="封面管理"
-    v-model="dialogVisible"
-    :close-on-click-modal="false"
+  <t-dialog
+    header="封面管理"
+    v-model:visible="dialogVisible"
+    :close-on-overlay-click="false"
     width="50%"
-    :before-close="handleClose"
+    @before-close="handleClose"
   >
     <div class="block">
-      <el-image
+      <t-image
         :src="fsURL + 'upload/getFile/college-cover/' + courseFrom.coverImg"
-      ></el-image>
+      ></t-image>
     </div>
-    <el-upload
+    <t-upload
       ref="fileUploadRef"
       :action="fsURL + 'upload/file/college-cover'"
-      :on-success="handleSuccess"
-      :on-remove="handleRemove"
+      @success="handleSuccess"
+      @remove="handleRemove"
       :file-list="fileList"
       :multiple="false"
       :limit="1"
       accept="image/*"
       list-type="picture"
     >
-      <el-button size="small" type="primary">点击上传</el-button>
+      <t-button size="small" theme="primary">点击上传</t-button>
       <template #tip
-        ><div class="el-upload__tip">
+        ><div>
           只能上传jpg/png文件，且不超过500kb
         </div></template
       >
-    </el-upload>
+    </t-upload>
     <template #footer>
       <span class="dialog-footer">
-        <el-button size="small" @click="dialogVisible = false">关 闭</el-button>
+        <t-button size="small" @click="dialogVisible = false">关 闭</t-button>
       </span>
     </template>
-  </el-dialog>
+  </t-dialog>
 </template>
 <script setup>
 import { ref, reactive } from 'vue'
-import { ElMessage } from 'element-plus'
+import { MessagePlugin } from 'tdesign-vue-next'
 import { courseApi } from '@/api/college/course.js'
 
 const fsURL = import.meta.env.VITE_FILE_BASE_URL
@@ -59,7 +59,7 @@ const show = (coverImg, courseId) => {
 
 const handleSuccess = async (response) => {
   if (response.code !== 200) {
-    return ElMessage.error(response.msg)
+    return MessagePlugin.error(response.msg)
   }
 
   const fileName =
@@ -77,12 +77,12 @@ const handleSuccess = async (response) => {
 const handelConfirm = async () => {
   try {
     const res = await courseApi.updateCourse(courseFrom)
-    if (res.code !== 200) return ElMessage.error(res.msg)
-    ElMessage.success(res.msg)
+    if (res.code !== 200) return MessagePlugin.error(res.msg)
+    MessagePlugin.success(res.msg)
     emit('refresh')
     dialogVisible.value = false
   } catch (error) {
-    ElMessage.error('更新封面失败')
+    MessagePlugin.error('更新封面失败')
   }
 }
 

@@ -1,51 +1,51 @@
 <template>
-  <el-dialog
-    :title="title"
-    v-model="dialogVisible"
+  <t-dialog
+    :header="title"
+    v-model:visible="dialogVisible"
     width="60%"
-    :close-on-click-modal="false"
+    :close-on-overlay-click="false"
   >
-    <el-alert :title="info" type="warning"></el-alert>
-    <el-button size="small" type="primary" @click="downloadExcel"
-      >下载在职人员名单</el-button
+    <t-alert :title="info" theme="warning"></t-alert>
+    <t-button size="small" theme="primary" @click="downloadExcel"
+      >下载在职人员名单</t-button
     >
-    <el-card class="upload-box">
-      <el-upload
+    <t-card class="upload-box">
+      <t-upload
         ref="uploadRef"
         :action="baseURL + 'upload/file/excel/'"
         accept=".xls,.xlsx"
-        :on-preview="handlePreview"
-        :on-remove="handleRemove"
+        @preview="handlePreview"
+        @remove="handleRemove"
         :file-list="fileList"
         :limit="1"
         :auto-upload="false"
-        :on-success="fileUploadSuccess"
+        @success="fileUploadSuccess"
       >
-        <el-button type="primary" size="small" slot="trigger"
-          >选取文件</el-button
+        <t-button theme="primary" size="small" slot="trigger"
+          >选取文件</t-button
         >
-        <el-button
+        <t-button
           style="margin-left: 10px"
-          type="success"
+          theme="success"
           size="small"
           @click="submitUpload"
-          >上传</el-button
+          >上传</t-button
         >
         <template #tip>
-          <div class="el-upload__tip">{{ info }}</div>
+          <div>{{ info }}</div>
         </template>
-      </el-upload>
-    </el-card>
+      </t-upload>
+    </t-card>
     <template #footer>
       <span class="dialog-footer">
-        <el-button size="small" @click="dialogVisible = false">关 闭</el-button>
+        <t-button size="small" @click="dialogVisible = false">关 闭</t-button>
       </span>
     </template>
-  </el-dialog>
+  </t-dialog>
 </template>
 <script setup>
 import { ref, onMounted } from 'vue'
-import { ElMessage } from 'element-plus'
+import { MessagePlugin } from 'tdesign-vue-next'
 import { httpInstance } from '@/utils/request.js'
 
 // Props
@@ -85,7 +85,7 @@ const downloadExcel = () => {
   if (window.$global && window.$global.downloadExcel) {
     window.$global.downloadExcel('employee/report', null, '人员在职名单.xlsx')
   } else {
-    ElMessage.warning('下载功能暂未实现')
+    MessagePlugin.warning('下载功能暂未实现')
   }
 }
 
@@ -116,13 +116,13 @@ const fileUploadSuccess = async (response, file, fileList) => {
       queryInfo.value
     )
     if (res.code !== 200) {
-      return ElMessage.error(res.msg)
+      return MessagePlugin.error(res.msg)
     }
-    ElMessage.success(res.msg)
+    MessagePlugin.success(res.msg)
     dialogVisible.value = false
     fileList.value = []
   } catch (error) {
-    ElMessage.error(error.message || '上传失败')
+    MessagePlugin.error(error.message || '上传失败')
   }
 }
 

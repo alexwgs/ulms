@@ -1,6 +1,6 @@
 <template>
-  <el-row>
-    <el-col
+  <t-row>
+    <t-col
       v-for="item in quickUrlList"
       :key="item.id"
       class="quick-menu-col"
@@ -21,13 +21,13 @@
         />
       </div>
       <div class="quick-menu-font">{{ item.name }}</div>
-    </el-col>
-  </el-row>
+    </t-col>
+  </t-row>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { ElMessage } from 'element-plus'
+import { MessagePlugin } from 'tdesign-vue-next'
 import { getQuickUrlList, addLog } from '@/api/welcome/index.js'
 
 const props = defineProps({
@@ -53,7 +53,7 @@ const getQuickUrlListData = async () => {
   try {
     const res = await getQuickUrlList(props.area)
     if (res.code !== 200) {
-      ElMessage.error(res.msg)
+      MessagePlugin.error(res.msg)
       return
     }
     quickUrlList.value = res.data || []
@@ -79,7 +79,7 @@ const goto = (url, userFlag, tokenFlag, sysType) => {
 
 .quick-menu-font {
   font-size: 14px;
-  color: var(--el-menu-font-color);
+  color: var(--td-menu-font-color);
   padding-top: 5px;
 
   &:hover {
@@ -88,11 +88,11 @@ const goto = (url, userFlag, tokenFlag, sysType) => {
 }
 
 .quick-login-btn {
-  background-color: #f0f9eb;
+-color: #f0f9eb;
   cursor: pointer;
 
   &:hover {
-    background-color: #67c23a;
+-color: #67c23a;
   }
 }
 </style>

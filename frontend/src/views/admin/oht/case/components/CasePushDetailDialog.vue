@@ -1,33 +1,32 @@
 <template>
-  <el-dialog title="推送明细" v-model="dialogVisible" width="80%">
-    <el-table
+  <t-dialog header="推送明细" v-model:visible="dialogVisible" width="80%">
+    <CustomTable rowKey="id"
       :data="pushList"
       stripe
       style="width: 100%"
-      size="small"
-    >
-      <el-table-column prop="deptNum" label="科室" width="120"></el-table-column>
-      <el-table-column prop="groupNum" label="组别" width="100"></el-table-column>
-      <el-table-column prop="userId" label="用户信息" width="130"></el-table-column>
-      <el-table-column prop="dataTime" label="推送时间" width="160">
+      size="small">
+      <TableColumn colKey="deptNum" label="科室" width="120"></TableColumn>
+      <TableColumn colKey="groupNum" label="组别" width="100"></TableColumn>
+      <TableColumn colKey="userId" label="用户信息" width="130"></TableColumn>
+      <TableColumn colKey="dataTime" label="推送时间" width="160">
         <template #default="{ row }">
           {{ formatDateTime(row.dataTime) }}
         </template>
-      </el-table-column>
-      <el-table-column prop="taskLevel" label="级别" width="70"></el-table-column>
-      <el-table-column prop="taskStatus" label="处理结果" width="100">
+      </TableColumn>
+      <TableColumn colKey="taskLevel" label="级别" width="70"></TableColumn>
+      <TableColumn colKey="taskStatus" label="处理结果" width="100">
         <template #default="{ row }">
           {{ getDictLabel('oht_case_task_status', row.taskStatus) }}
         </template>
-      </el-table-column>
-      <el-table-column prop="memo" label="备注"></el-table-column>
-    </el-table>
+      </TableColumn>
+      <TableColumn colKey="memo" label="备注"></TableColumn>
+    </CustomTable>
     <template #footer>
       <span class="dialog-footer">
-        <el-button type="primary" @click="dialogVisible = false">关闭</el-button>
+        <t-button theme="primary" @click="dialogVisible = false">关闭</t-button>
       </span>
     </template>
-  </el-dialog>
+  </t-dialog>
 </template>
 
 <script setup>

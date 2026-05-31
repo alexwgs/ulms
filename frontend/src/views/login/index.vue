@@ -1,13 +1,13 @@
 <template>
   <div class="login_container">
-    <el-alert v-if="!authStore.serverStatus" show-icon :title="authStore.disableLoginTitle" type="error"
-      :closable="false" center />
+    <t-alert v-if="!authStore.serverStatus" :message="authStore.disableLoginTitle" theme="error"
+      :close="false" />
 
-    <el-carousel class="carousel-custom" indicator-position="outside" height="500px" :interval="5000">
-      <el-carousel-item v-for="item in authStore.indexImgs" :key="item.id" style="text-align: center">
+    <t-swiper class="carousel-custom" :height="500" :interval="5000" :navigation="{ showSlideBtn: 'never' }">
+      <t-swiper-item v-for="item in authStore.indexImgs" :key="item.id">
         <img class="carousel-img" :src="fsURL + item.url" height="500px" width="100%" alt="轮播图" />
-      </el-carousel-item>
-    </el-carousel>
+      </t-swiper-item>
+    </t-swiper>
 
     <div class="copy-right">
       <p>武汉营运中心 业务管理室 CopyRight© 2020-2025, All Right Reserved</p>
@@ -18,49 +18,57 @@
         <img src="@/assets/logo.png" alt="Logo" />
       </div>
 
-      <el-form ref="loginFormRef" :model="loginForm" :rules="loginFormRules" class="login_form" label-width="0">
-        <el-form-item prop="czyCode">
-          <el-input v-model="loginForm.czyCode" prefix-icon="user" placeholder="员工编号" maxlength="7" />
-        </el-form-item>
+      <t-form ref="loginFormRef" :data="loginForm" :rules="loginFormRules" class="login_form" label-width="0">
+        <t-form-item name="czyCode">
+          <t-input v-model="loginForm.czyCode" placeholder="员工编号" maxlength="10">
+            <template #prefix-icon>
+              <DynamicIcon name="user" />
+            </template>
+          </t-input>
+        </t-form-item>
 
-        <el-form-item prop="password">
-          <el-input v-model="loginForm.password" type="password" maxlength="6" prefix-icon="lock" @keyup.enter="login"
-            placeholder="同人员成长平台、业务辅助系统密码" />
-        </el-form-item>
+        <t-form-item name="password">
+          <t-input v-model="loginForm.password" type="password" maxlength="10" @keyup.enter="login"
+            placeholder="同人员成长平台、业务辅助系统密码">
+            <template #prefix-icon>
+              <DynamicIcon name="lock-on" />
+            </template>
+          </t-input>
+        </t-form-item>
 
-        <el-form-item class="btns">
-          <el-button type="primary" @click="login">登录</el-button>
-          <el-button type="info" @click="resetPasswordDialogVisible = true">
+        <t-form-item class="btns">
+          <t-button theme="primary" @click="login">登录</t-button>
+          <t-button theme="default" @click="resetPasswordDialogVisible = true">
             修改密码
-          </el-button>
-        </el-form-item>
-      </el-form>
+          </t-button>
+        </t-form-item>
+      </t-form>
     </div>
 
-    <el-dialog title="修改密码" v-model="resetPasswordDialogVisible" width="40%">
-      <el-form ref="resetFormRef" :model="resetForm" :rules="resetFormRules" label-width="80px">
-        <el-form-item label="员工编号" prop="czyCode">
-          <el-input v-model="resetForm.czyCode" maxlength="7" />
-        </el-form-item>
+    <t-dialog header="修改密码" v-model:visible="resetPasswordDialogVisible" width="40%">
+      <t-form ref="resetFormRef" :data="resetForm" :rules="resetFormRules" label-width="80px">
+        <t-form-item label="员工编号" name="czyCode">
+          <t-input v-model="resetForm.czyCode" maxlength="10" />
+        </t-form-item>
 
-        <el-form-item label="旧密码" prop="oPassword">
-          <el-input type="password" v-model="resetForm.oPassword" maxlength="6" />
-        </el-form-item>
+        <t-form-item label="旧密码" name="oPassword">
+          <t-input type="password" v-model="resetForm.oPassword" maxlength="10" />
+        </t-form-item>
 
-        <el-form-item label="新密码" prop="nPassword">
-          <el-input type="password" v-model="resetForm.nPassword" maxlength="6" />
-        </el-form-item>
+        <t-form-item label="新密码" name="nPassword">
+          <t-input type="password" v-model="resetForm.nPassword" maxlength="10" />
+        </t-form-item>
 
-        <el-form-item label="确认密码" prop="cPassword">
-          <el-input type="password" v-model="resetForm.cPassword" maxlength="6" />
-        </el-form-item>
-      </el-form>
+        <t-form-item label="确认密码" name="cPassword">
+          <t-input type="password" v-model="resetForm.cPassword" maxlength="10" />
+        </t-form-item>
+      </t-form>
 
       <template #footer>
-        <el-button @click="resetPasswordDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="resetPasswordSubmit">确 定</el-button>
+        <t-button theme="default" @click="resetPasswordDialogVisible = false">取 消</t-button>
+        <t-button theme="primary" @click="resetPasswordSubmit">确 定</t-button>
       </template>
-    </el-dialog>
+    </t-dialog>
   </div>
 </template>
 
@@ -69,7 +77,7 @@ import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { useUserStore } from '@/stores'
-import { ElMessage } from 'element-plus'
+import { MessagePlugin } from 'tdesign-vue-next'
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -125,9 +133,14 @@ const loginFormRef = ref(null)
 const resetFormRef = ref(null)
 
 const login = async () => {
+  // 防止 @keyup.enter 触发时 ref 尚未挂载
+  if (!loginFormRef.value) return
+
   try {
-    await loginFormRef.value.validate()
-    const msg = await userStore.login(loginForm.value)
+    const valid = await loginFormRef.value.validate()
+    if (valid !== true) return
+
+    await userStore.login(loginForm.value)
     router.push('/home')
   } catch (error) {
     // API 错误消息已在 request.js 响应拦截器中统一展示，此处仅需清空密码
@@ -136,10 +149,14 @@ const login = async () => {
 }
 
 const resetPasswordSubmit = async () => {
+  if (!resetFormRef.value) return
+
   try {
-    await resetFormRef.value.validate()
+    const valid = await resetFormRef.value.validate()
+    if (valid !== true) return
+
     const msg = await authStore.resetPassword(resetForm.value)
-    ElMessage.success(msg)
+    MessagePlugin.success(msg)
     resetPasswordDialogVisible.value = false
     resetForm.value = {
       czyCode: '',
@@ -149,7 +166,7 @@ const resetPasswordSubmit = async () => {
     }
   } catch (error) {
     if (error.message) {
-      ElMessage.error(error.message)
+      MessagePlugin.error(error.message)
     }
   }
 }
@@ -172,7 +189,7 @@ onMounted(() => {
 
 <style lang="less" scoped>
 .login_container {
-  background-color: #fff;
+-color: #fff;
   height: 100vh;
   position: relative;
   overflow: hidden;
@@ -182,7 +199,7 @@ onMounted(() => {
   width: 400px;
   height: 300px;
   z-index: 999;
-  background-color: rgba(255, 255, 255, 0.4);
+-color: rgba(255, 255, 255, 0.4);
   border-radius: 3px;
   position: absolute;
   left: 78%;
@@ -199,13 +216,13 @@ onMounted(() => {
     position: absolute;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: #fff;
+-color: #fff;
 
     img {
       height: 100%;
       width: 100%;
       border-radius: 50%;
-      background-color: #eee;
+-color: #eee;
     }
   }
 }
@@ -223,7 +240,7 @@ onMounted(() => {
   justify-content: flex-end;
 }
 
-.el-alert {
+.t-alert {
   border-radius: 0;
   margin-top: 0;
   position: relative;

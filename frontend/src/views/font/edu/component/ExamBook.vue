@@ -1,66 +1,64 @@
 <template>
   <div>
-    <el-dialog
-      title="考试预约"
-      v-model="dialogFormVisible"
+    <t-dialog
+      header="考试预约"
+      v-model:visible="dialogFormVisible"
       width="60%"
       custom-class="bgcolor"
       :modal="false"
-      :close-on-click-modal="false"
+      :close-on-overlay-click="false"
     >
-      <el-form :model="form" :inline="true" size="small">
-        <el-form-item label="预约日期" :label-width="formLabelWidth">
-          <el-select
+      <t-form :data="form" layout="inline" size="small">
+        <t-form-item label="预约日期" :label-width="formLabelWidth">
+          <t-select
             v-model="currentInfoCode"
             placeholder="请选择活动区域"
             @change="listBookedDetail()"
           >
-            <el-option
+            <t-option
               v-for="item in bookInfo"
               :key="item.infoCode"
               :label="item.bookDate"
               :value="item.infoCode"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="已预约次数" :label-width="formLabelWidth">
+            ></t-option>
+          </t-select>
+        </t-form-item>
+        <t-form-item label="已预约次数" :label-width="formLabelWidth">
           {{ myBooked.length }}
-        </el-form-item>
-        <el-button
-          type="primary"
+        </t-form-item>
+        <t-button
+          theme="primary"
           size="small"
           :loading="refreshLoading"
           @click="listBookedDetail()"
-          >刷新</el-button
+          >刷新</t-button
         >
-      </el-form>
-      <el-table :data="data" size="small" height="300px">
-        <el-table-column
+      </t-form>
+      <CustomTable rowKey="id" :data="data" size="small" height="300px">
+        <TableColumn
           property="begTime"
           label="开始时间"
-          width="100"
-        ></el-table-column>
-        <el-table-column
+          width="100"></TableColumn>
+        <TableColumn
           property="endTime"
           label="结束时间"
-          width="100"
-        ></el-table-column>
-        <el-table-column label="预约名单" show-overflow-tooltip>
+          width="100"></TableColumn>
+        <TableColumn label="预约名单" ellipsis>
           <template #default="scope">
-            <el-avatar
+            <t-avatar
               v-for="user in scope.row.users"
               :key="user.ploNum"
               size="small"
               :src="fsURL + user.avatar"
-            ></el-avatar>
+            ></t-avatar>
           </template>
-        </el-table-column>
-        <el-table-column property="bookLimit" label="预约余位" width="80">
+        </TableColumn>
+        <TableColumn property="bookLimit" label="预约余位" width="80">
           <template #default="scope">
             {{ scope.row.bookLimit - scope.row.users.length }}
           </template>
-        </el-table-column>
-        <el-table-column label="我要预约" width="120">
+        </TableColumn>
+        <TableColumn label="我要预约" width="120">
           <template #default="scope">
             <div v-if="timeSelectValid(scope.row.begTime)">【过期】</div>
             <div v-else-if="scope.row.bookLimit - scope.row.users.length <= 0">
@@ -77,30 +75,28 @@
                 ).length > 0
               "
             >
-              <el-tag type="success" size="small" effect="dark"
-                >【当前】</el-tag
+              <t-tag theme="success" size="small" effect="dark"
+                >【当前】</t-tag
               >
             </div>
-            <el-button
+            <t-button
               v-else-if="myBooked.length < 2"
-              type="primary"
-              icon="star-off"
-              size="small"
+              theme="primary" size="small"
               @click="bookExam(scope.row)"
               circle
-            ></el-button>
+            ><template #icon><DynamicIcon name="star-off" /></template></t-button>
             <div v-else>【预约达上限】</div>
           </template>
-        </el-table-column>
-      </el-table>
-    </el-dialog>
+        </TableColumn>
+      </CustomTable>
+    </t-dialog>
   </div>
 </template>
 
 <script setup>
 import { ref, reactive } from 'vue'
 import { bookInfoApi } from '@/api/edu/bookInfo'
-import { ElMessage } from 'element-plus'
+import { MessagePlugin } from 'tdesign-vue-next'
 
 const fsURL = import.meta.env.VITE_BASE_API
 const dialogFormVisible = ref(false)
@@ -130,7 +126,7 @@ const listBookInfo = () => {
   bookInfoApi
     .getExamBookTimeInfo(form.examCode)
     .then((res) => {
-      if (res.code !== 200) return ElMessage.error(res.msg)
+      if (res.code !== 200) return MessagePlugin.error(res.msg)
       bookInfo.value = res.data
     })
     .then(() => {
@@ -148,7 +144,7 @@ const listBookedDetail = () => {
   )
   if (list != null && list < 1) {
     refreshLoading.value = false
-    return ElMessage.warning('暂无预约时点配置！')
+    return MessagePlugin.warning('暂无预约时点配置！')
   }
   currentBookInfo.value = list[0]
   bookInfoApi
@@ -158,7 +154,7 @@ const listBookedDetail = () => {
       infoCode: currentBookInfo.value.infoCode
     })
     .then((res) => {
-      if (res.code !== 200) return ElMessage.error(res.msg)
+      if (res.code !== 200) return MessagePlugin.error(res.msg)
       data.value = res.data
       myBooked.value = res.myBooked
     })
@@ -183,8 +179,8 @@ const bookExam = (row) => {
   bookInfoApi
     .createExamBookList(form)
     .then((res) => {
-      if (res.code !== 200) return ElMessage.error(res.msg)
-      ElMessage.success(res.msg)
+      if (res.code !== 200) return MessagePlugin.error(res.msg)
+      MessagePlugin.success(res.msg)
     })
     .then(() => {
       listBookedDetail()
@@ -210,6 +206,6 @@ defineExpose({
 
 <style lang="less" scoped>
 .bgcolor {
-  background-color: #fdfffeb0;
+-color: #fdfffeb0;
 }
 </style>

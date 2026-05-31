@@ -1,18 +1,19 @@
 <template>
   <div>
-    <el-row :gutter="15" v-loading="loadingFlag">
-      <el-col :span="mainSpan ? 18 : 24">
+    <t-loading :loading="loadingFlag">
+      <t-row :gutter="15">
+      <t-col :span="mainSpan ? 9 : 12">
         <div>
           {{ course.courseName
-          }}<el-tag v-if="course.ifEval" type="success">需评价</el-tag>
-          <el-tag v-if="course.ifExam" type="danger">需考试</el-tag>
+          }}<t-tag v-if="course.ifEval" theme="success">需评价</t-tag>
+          <t-tag v-if="course.ifExam" theme="danger">需考试</t-tag>
           <div style="float: right">
-            <el-switch v-model="mainSpan" active-text="显示学习列表" inactive-text="隐藏学习列表"></el-switch>
+            <t-switch v-model="mainSpan" active-text="显示学习列表" inactive-text="隐藏学习列表"></t-switch>
           </div>
         </div>
-        <el-divider></el-divider>
+        <t-divider></t-divider>
         <div v-show="videoFlag == null">
-          <el-empty :image-size="200" description="请点击右侧【在线学习列表】开始学习"></el-empty>
+          <t-empty :image-size="200" description="请点击右侧【在线学习列表】开始学习"></t-empty>
         </div>
         <video v-show="videoFlag" type="video/mp4" style="max-height: 70vh; width: 100%;" ref="videoRef"
           controls="controls" preload :src="videoUrl"></video>
@@ -20,34 +21,36 @@
           <!-- 翻页控件 -->
           <div v-if="pdfTotalPage > 0"
             style="margin-top: 10px; display: flex; justify-content: center; align-items: center; gap: 10px;">
-            <el-button :disabled="pdfCurrentPage <= 1" @click="pdfCurrentPage--" size="small">上一页</el-button>
+            <t-button :disabled="pdfCurrentPage <= 1" @click="pdfCurrentPage--" size="small">上一页</t-button>
             <span>
-              <el-input-number v-model="pdfCurrentPage" :min="1" :max="pdfTotalPage" size="small"
-                controls-position="right" style="width: 100px;"></el-input-number>
+              <t-input-number v-model="pdfCurrentPage" :min="1" :max="pdfTotalPage" size="small"
+                controls-position="right" style="width: 100px;"></t-input-number>
               / {{ pdfTotalPage }}
             </span>
-            <el-button :disabled="pdfCurrentPage >= pdfTotalPage" @click="pdfCurrentPage++" size="small">下一页</el-button>
+            <t-button :disabled="pdfCurrentPage >= pdfTotalPage" @click="pdfCurrentPage++" size="small">下一页</t-button>
           </div>
-          <div v-loading="pdfLoading" element-loading-text="正在加载PDF..." style="width: 100%;">
+          <t-loading :loading="pdfLoading">
+            <div style="width: 100%;">
             <!-- 设置VuePDF宽度100%，高度自适应 -->
             <VuePDF ref="pdfRef" :pdf="pdf" :page="pdfCurrentPage" text-layer annotation-layer class="pdf-viewer" />
           </div>
+          </t-loading>
         </div>
-        <el-row :gutter="15">
-          <el-col :span="12"><el-button type="primary" v-if="course.ifEval" style="display: block; width: 100%"
-              @click="completeStudy('eval')">去评价</el-button></el-col>
-          <el-col :span="12"><el-button type="primary" v-if="course.ifExam" style="display: block; width: 100%"
-              @click="completeStudy('exam')">去考试</el-button></el-col>
-        </el-row>
-      </el-col>
-      <el-col :span="mainSpan ? 6 : 0">
-        <el-card class="card">
+        <t-row :gutter="15">
+          <t-col :span="6"><t-button theme="primary" v-if="course.ifEval" style="display: block; width: 100%"
+              @click="completeStudy('eval')">去评价</t-button></t-col>
+          <t-col :span="6"><t-button theme="primary" v-if="course.ifExam" style="display: block; width: 100%"
+              @click="completeStudy('exam')">去考试</t-button></t-col>
+        </t-row>
+      </t-col>
+      <t-col :span="mainSpan ? 3 : 0">
+        <t-card class="card">
           <template #header>
             <div class="clearfix">
               <span>在线学习列表</span>
-              <el-tooltip class="item" effect="dark" content="进度条显示为视频进度，全部为绿色则为学习完成！" placement="left">
-                <el-link size="small" :icon="QuestionFilled" circle></el-link>
-              </el-tooltip>
+              <t-tooltip class="item" content="进度条显示为视频进度，全部为绿色则为学习完成！" placement="left">
+                <t-link size="small" shape="circle"><template #icon><DynamicIcon name="help-circle-filled" /></template></t-link>
+              </t-tooltip>
             </div>
           </template>
           <div style="height: 300px; overflow: auto">
@@ -59,15 +62,15 @@
                 <div class="text-trim file-info">
                   {{ dayjs.duration(item.duration * 1000).format('HH:mm:ss') }}
                 </div>
-                <el-progress :percentage="parseFloat(
+                <t-progress :percentage="parseFloat(
                   ((item.currTime * 100) / item.duration).toFixed(1)
                 )
-                  " :text-inside="true" :stroke-width="18" :color="progressColors"></el-progress>
+                  " :text-inside="true" :stroke-width="18" :color="progressColors"></t-progress>
               </li>
             </ul>
           </div>
-        </el-card>
-        <el-card class="card" style="margin-top: 10px">
+        </t-card>
+        <t-card class="card" style="margin-top: 10px">
           <template #header>
             <div class="clearfix">
               <span>学习资料</span>
@@ -98,9 +101,10 @@
               </li>
             </ul>
           </div>
-        </el-card>
-      </el-col>
-    </el-row>
+        </t-card>
+      </t-col>
+    </t-row>
+    </t-loading>
     <Evaluate ref="evaluateRef"></Evaluate>
   </div>
 </template>
@@ -108,8 +112,8 @@
 <script setup>
 import { ref, reactive, onMounted, onBeforeUnmount, nextTick, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import { ElMessage } from 'element-plus'
-import { ArrowLeft, ArrowRight, QuestionFilled } from '@element-plus/icons-vue'
+import { MessagePlugin } from 'tdesign-vue-next'
+import { ArrowLeftIcon, ArrowRightIcon, HelpCircleFilledIcon } from 'tdesign-icons-vue-next'
 import Evaluate from '@/views/font/college/evaluate/index.vue'
 import { httpInstance } from '@/utils/request'
 import dayjs from 'dayjs'
@@ -166,7 +170,7 @@ const init = () => {
       .get(`college/course/file/progress/my/${course.value.courseId}`)
       .then((res) => {
         if (res.code !== 200) {
-          ElMessage.error(res.msg)
+          MessagePlugin.error(res.msg)
           return
         }
         progress.value = res.data
@@ -244,7 +248,7 @@ const getProgress = () => {
 const updateProgress = async (record) => {
   const res = await httpInstance.put('college/course/file/progress/my', record)
   if (res.code !== 200) {
-    ElMessage.error(res.msg)
+    MessagePlugin.error(res.msg)
     return
   }
   if (res.data != null) record.journo = res.data.journo
@@ -253,7 +257,7 @@ const updateProgress = async (record) => {
 const completeStudy = async (type) => {
   const unStudy = video.value.filter((e) => e.currTime / e.duration <= 0.95)
   if (unStudy.length > 0) {
-    ElMessage.warning(
+    MessagePlugin.warning(
       '您尚未完成所有课程的学习，所有课程进度条均为绿色方可完成学习！'
     )
     return
@@ -262,10 +266,10 @@ const completeStudy = async (type) => {
     `college/study/file/complete/${course.value.courseId}`
   )
   if (res.code !== 200) {
-    ElMessage.error(res.msg)
+    MessagePlugin.error(res.msg)
     return
   }
-  ElMessage.success('已完成在线课程的学习！')
+  MessagePlugin.success('已完成在线课程的学习！')
   if (type === 'eval') {
     evaluateRef.value?.show(course.value)
   } else if (type === 'exam') {
@@ -314,7 +318,7 @@ onMounted(() => {
         }
         currentVideo.currTime = this.currentTime.toFixed(0)
       } else {
-        ElMessage.error('该课程为首次学习，禁止快进！')
+        MessagePlugin.error('该课程为首次学习，禁止快进！')
       }
       return false
     })
@@ -356,7 +360,7 @@ onBeforeUnmount(() => {
 }
 
 .card {
-  :deep(.el-card__body) {
+  :deep(.t-card__body) {
     padding: 0 10px 5px 10px;
     overflow: auto;
   }

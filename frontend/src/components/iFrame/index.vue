@@ -1,16 +1,17 @@
 <template>
-  <div
-    v-loading="loading"
-    :style="'height:' + height"
-    style="margin: -10px -20px 0 -20px"
-  >
-    <iframe
-      :src="src"
-      frameborder="no"
-      style="width: 100%; height: 100%"
-      scrolling="auto"
-    />
-  </div>
+  <t-loading :loading="loading">
+    <div
+      :style="'height:' + height"
+      style="margin: -10px -20px 0 -20px"
+    >
+      <iframe
+        :src="src"
+        frameborder="no"
+        style="width: 100%; height: 100%"
+        scrolling="auto"
+      />
+    </div>
+  </t-loading>
 </template>
 
 <script setup>

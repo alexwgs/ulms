@@ -1,56 +1,48 @@
 <template>
   <div style="padding-left: calc((100vw - 1240px) / 2); max-width: 1200px">
-    <el-container>
-      <el-aside width="200px">
-        <el-menu
+    <t-layout>
+      <t-aside width="200px">
+        <t-menu
           default-active="2"
-          class="el-menu-vertical-demo"
-          router
           @open="handleOpen"
           @close="handleClose"
           style="min-height: calc(100vh - 110px)"
         >
-          <el-menu-item index="/college/my">
-            <el-icon><Menu /></el-icon>
+          <t-menu-item to="/college/my">
+            <MenuIcon />
             <span>学习中心</span>
-          </el-menu-item>
-          <el-menu-item index="2" disabled>
-            <el-icon><Menu /></el-icon>
+          </t-menu-item>
+          <t-menu-item value="2" disabled>
+            <MenuIcon />
             <span>学习计划</span>
-          </el-menu-item>
-          <el-menu-item index="/college/my/study-record">
-            <el-icon><Document /></el-icon>
+          </t-menu-item>
+          <t-menu-item to="/college/my/study-record">
+            <FileIcon />
             <span>学习记录</span>
-          </el-menu-item>
-          <el-menu-item index="/college/my/point-log">
-            <el-icon><Ticket /></el-icon>
+          </t-menu-item>
+          <t-menu-item to="/college/my/point-log">
+            <TicketIcon />
             <span>金币日志</span>
-          </el-menu-item>
-          <el-menu-item index="/college/my/hour-log">
-            <el-icon><Clock /></el-icon>
+          </t-menu-item>
+          <t-menu-item to="/college/my/hour-log">
+            <TimeIcon />
             <span>学时日志</span>
-          </el-menu-item>
-          <el-menu-item index="/college/my/study-report">
-            <el-icon><TrendCharts /></el-icon>
+          </t-menu-item>
+          <t-menu-item to="/college/my/study-report">
+            <ChartLineIcon />
             <span>学习报表</span>
-          </el-menu-item>
-        </el-menu>
-      </el-aside>
-      <el-main style="padding: 0 0 0 10px">
+          </t-menu-item>
+        </t-menu>
+      </t-aside>
+      <t-content style="padding: 0 0 0 10px">
         <router-view></router-view>
-      </el-main>
-    </el-container>
+      </t-content>
+    </t-layout>
   </div>
 </template>
 
 <script setup>
-import {
-  Menu,
-  Document,
-  Ticket,
-  Clock,
-  TrendCharts
-} from '@element-plus/icons-vue'
+import { MenuIcon, FileIcon, TicketIcon, TimeIcon, ChartLineIcon } from 'tdesign-icons-vue-next'
 
 const handleOpen = (key, keyPath) => {
 }

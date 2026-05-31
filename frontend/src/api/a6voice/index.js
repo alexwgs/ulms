@@ -46,7 +46,7 @@ export const toggleLike = (type, id) => {
 // 评论相关API
 // 获取评论列表
 export const getCommentList = (id, params) => {
-  return httpInstance.get(`/cyt/comment/list/${id}/`, { params })
+  return httpInstance.get(`/cyt/comment/list/${id}`, { params })
 }
 
 // 新增评论

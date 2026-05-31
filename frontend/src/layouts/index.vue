@@ -1,31 +1,28 @@
 
 <template>
-  <el-container class="layout">
+  <t-layout class="layout">
     <div v-if="navbar" class="layout-navbar">
       <AppHead />
     </div>
-    <el-container>
-      <el-aside 
-        v-if="shouldShowSidebar" 
-        v-show="!hideMenu" 
-        class="layout-sider" 
-        :width="menuWidth" 
+    <t-layout>
+      <t-aside
+        v-if="shouldShowSidebar"
+        v-show="!hideMenu"
+        class="layout-sider"
+        :width="menuWidth"
         :style="{ paddingTop: navbar ? '' : '60px' }"
       >
         <div class="menu-wrapper">
           <AppSider @collapse="setCollapsed" />
         </div>
-      </el-aside>
-      <el-container class="layout-content" :style="paddingStyle">
-        <el-main>
+      </t-aside>
+      <t-layout class="layout-content" :style="paddingStyle">
+        <t-content>
           <AppMain />
-        </el-main>
-        <!-- <el-footer height="40px">
-          <AppFooter />
-        </el-footer> -->
-      </el-container>
-    </el-container>
-  </el-container>
+        </t-content>
+      </t-layout>
+    </t-layout>
+  </t-layout>
 </template>
 
 <script setup>
@@ -95,12 +92,7 @@ onMounted(() => {
   z-index: 99;
   height: calc(100vh - 59px);
   transition: all 0.2s cubic-bezier(0.34, 0.69, 0.1, 1);
-  border-right: 1px solid var(--el-border-color);
-
-  > .el-aside__inner {
-    height: 100%;
-    overflow-y: hidden;
-  }
+  border-right: 1px solid var(--td-border-level-1-color);
 }
 
 .menu-wrapper {
@@ -114,11 +106,11 @@ onMounted(() => {
 
   &::-webkit-scrollbar-thumb {
     border-radius: 3px;
-    background-color: var(--el-text-color-placeholder);
+-color: var(--td-text-color-placeholder);
   }
 
   &::-webkit-scrollbar-thumb:hover {
-    background-color: var(--el-text-color-secondary);
+-color: var(--td-text-color-secondary);
   }
 }
 
@@ -126,16 +118,11 @@ onMounted(() => {
   min-height: 100vh;
   width: 100%;
   overflow-y: auto;
-  background-color: var(--el-bg-color-page);
+-color: var(--td-bg-color-page);
   transition: padding 0.2s cubic-bezier(0.34, 0.69, 0.1, 1);
 }
 
-.el-main {
+.t-content {
   padding: 20px;
-}
-
-.el-footer {
-  height: auto;
-  padding: 16px 20px;
 }
 </style>

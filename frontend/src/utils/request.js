@@ -5,7 +5,7 @@ import axios from 'axios'
 import QS from 'qs'
 import router from '../router/index'
 import axiosRetry from 'axios-retry'
-import { ElMessage } from 'element-plus'
+import { MessagePlugin } from 'tdesign-vue-next'
 
 const httpInstance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
@@ -54,9 +54,9 @@ httpInstance.interceptors.response.use(
           break
         default:
       }
-      if (res.code >= 500) ElMessage.error(res.msg)
-      else if (res.code >= 400) ElMessage.warning(res.msg)
-      else if (res.code >= 300) ElMessage.info(res.msg)
+      if (res.code >= 500) MessagePlugin.error(res.msg)
+      else if (res.code >= 400) MessagePlugin.warning(res.msg)
+      else if (res.code >= 300) MessagePlugin.info(res.msg)
       return Promise.resolve(res)
     } else {
       return Promise.reject(response) //失败

@@ -1,16 +1,19 @@
 <template>
-  <el-config-provider :locale="locale" :dialog="dialogConfig" :message="messageConfig">
+  <t-config-provider :global-config="globalConfig">
     <router-view />
-  </el-config-provider>
+  </t-config-provider>
 </template>
 <script setup>
 import { useDictStore } from '@/stores';
-import { elementPlusConfig } from '@/config/element-plus'
+import { zhCN, tdesignConfig } from '@/config/tdesign'
 
 const dictStore = useDictStore();
 dictStore.getDictList();
-// 解构配置
-const { locale, dialog: dialogConfig, message: messageConfig } = elementPlusConfig
+
+const globalConfig = {
+  ...zhCN,
+  ...tdesignConfig
+}
 </script>
 
 <style scoped></style>

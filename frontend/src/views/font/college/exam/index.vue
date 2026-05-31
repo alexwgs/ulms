@@ -1,12 +1,12 @@
 <template>
   <div class="container">
-    <el-row :gutter="20">
-      <el-col :span="16">
+    <t-row :gutter="20">
+      <t-col :span="8">
         <div class="examInfo">
           {{ course?.courseName }}
         </div>
-        <el-divider></el-divider>
-        <el-card class="box-card">
+        <t-divider></t-divider>
+        <t-card class="box-card">
           <template #header>
             <div class="clearfix">
               <span>答题区</span>
@@ -16,7 +16,7 @@
           </template>
           <div class="answer-main" v-show="mustReadFlag">
             考试须知：
-            <el-divider></el-divider>
+            <t-divider></t-divider>
             <ul>
               <li>
                 <p>请认准预览考试说明中的考试配置情况，若标记红色部分尤为重要！</p>
@@ -24,108 +24,108 @@
               <li>答案提交需点击下一题完成提交，若考试为可题目跳转，那么每次切换题目也可提交答案！</li>
             </ul>
             历史答题记录
-            <el-table :data="examList" style="width: 100%" height="200px">
-              <el-table-column prop="begDate" label="开始时间" width="180"></el-table-column>
-              <el-table-column prop="endDate" label="交卷时间" width="180"></el-table-column>
-              <el-table-column label="答题情况" width="180">
+            <CustomTable rowKey="id" :data="examList" style="width: 100%" height="200px">
+              <TableColumn colKey="begDate" label="开始时间" width="180"></TableColumn>
+              <TableColumn colKey="endDate" label="交卷时间" width="180"></TableColumn>
+              <TableColumn label="答题情况" width="180">
                 <template #default="scope">{{ scope.row.rightNum }}/{{ scope.row.quesNum }}</template>
-              </el-table-column>
-              <el-table-column prop="passFlag" label="是否通过" width="180">
+              </TableColumn>
+              <TableColumn colKey="passFlag" label="是否通过" width="180">
                 <template #default="scope">
-                  <el-tag :type="scope.row.passFlag == 1 ? 'success' : 'danger'">
+                  <t-tag :theme="scope.row.passFlag == 1 ? 'success' : 'danger'">
                     {{ scope.row.passFlag == 1 ? '通过' : '不通过' }}
-                  </el-tag>
+                  </t-tag>
                 </template>
-              </el-table-column>
-            </el-table>
+              </TableColumn>
+            </CustomTable>
           </div>
           <Question ref="questionRef" @getUserAnswer="getUserAnswer" style="height: 500px"></Question>
-          <el-row style="padding-top: 20px">
-            <el-col :span="24">
-              <el-button type="primary" style="width: 100%" size="small" @click="nextQuestion()"
+          <t-row style="padding-top: 20px">
+            <t-col :span="12">
+              <t-button theme="primary" style="width: 100%" size="small" @click="nextQuestion()"
                 :disabled="startBtnFlag">
-                {{ curentQuesNum < 0 ? '开始答题' : '下一题' }} </el-button>
-            </el-col>
-          </el-row>
-        </el-card>
-      </el-col>
-      <el-col :span="8">
-        <el-card class="answer-controller">
+                {{ curentQuesNum < 0 ? '开始答题' : '下一题' }} </t-button>
+            </t-col>
+          </t-row>
+        </t-card>
+      </t-col>
+      <t-col :span="4">
+        <t-card class="answer-controller">
           <template #header>
             <div class="clearfix">
               <span>考试说明</span>
             </div>
           </template>
-          <el-row :gutter="20" style="text-align: center">
-            <el-col :span="8">
-              <el-tag effect="plain">题目数量：{{ setting.quesNum }}</el-tag>
-            </el-col>
-            <el-col :span="8">
-              <el-tag effect="plain">
+          <t-row :gutter="20" style="text-align: center">
+            <t-col :span="4">
+              <t-tag effect="plain">题目数量：{{ setting.quesNum }}</t-tag>
+            </t-col>
+            <t-col :span="4">
+              <t-tag effect="plain">
                 考试时长：{{ setting.examTime === 0 ? '不限' : setting.examTime }}(分)
-              </el-tag>
-            </el-col>
-            <el-col :span="8">
-              <el-tag effect="plain">考试通过：{{ setting.passNum }}/{{ setting.quesNum }}</el-tag>
-            </el-col>
-          </el-row>
-          <el-row :gutter="20" style="text-align: center; margin-top: 10px">
-            <el-col v-if="setting.optionRandom" :span="8">
-              <el-tag type="danger" effect="plain">选项随机</el-tag>
-            </el-col>
-            <el-col v-if="setting.repeatFlag" :span="8">
-              <el-tag type="danger" effect="plain">可重复考试</el-tag>
-            </el-col>
-          </el-row>
-        </el-card>
-        <el-card class="answer-controller">
+              </t-tag>
+            </t-col>
+            <t-col :span="4">
+              <t-tag effect="plain">考试通过：{{ setting.passNum }}/{{ setting.quesNum }}</t-tag>
+            </t-col>
+          </t-row>
+          <t-row :gutter="20" style="text-align: center; margin-top: 10px">
+            <t-col v-if="setting.optionRandom" :span="4">
+              <t-tag theme="danger" effect="plain">选项随机</t-tag>
+            </t-col>
+            <t-col v-if="setting.repeatFlag" :span="4">
+              <t-tag theme="danger" effect="plain">可重复考试</t-tag>
+            </t-col>
+          </t-row>
+        </t-card>
+        <t-card class="answer-controller">
           <template #header>
             <div class="clearfix">
               <span>答题控制区</span>
             </div>
           </template>
-          <el-row v-if="quesTest.length > 0">
-            <el-col v-for="(item, index) of quesTest" :key="index" :span="6"
+          <t-row v-if="quesTest.length > 0">
+            <t-col v-for="(item, index) of quesTest" :key="index" :span="3"
               style="padding-top: 5px; text-align: center">
-              <el-button :type="item.userAnswer === null ? '' : 'success'" style="width: 70px"
+              <t-button :type="item.userAnswer === null ? '' : 'success'" style="width: 70px"
                 @click="changeQues(index)" size="small">
                 <span :class="curentQuesNum == index ? 'currentBtn' : ''">第{{ index + 1 }}题</span>
-              </el-button>
-            </el-col>
-          </el-row>
-          <el-row style="padding-top: 20px">
-            <el-col :span="24">
-              <el-popconfirm width="300" title="注意！！！点击确认将提交本场考试！" confirm-button-text="确认交卷" @confirm="handOverTest()">
+              </t-button>
+            </t-col>
+          </t-row>
+          <t-row style="padding-top: 20px">
+            <t-col :span="12">
+              <t-popconfirm width="300" content="注意！！！点击确认将提交本场考试！" confirm-button-text="确认交卷" @confirm="handOverTest()">
                 <template #reference>
-                  <el-button type="primary" style="width: 100%" size="small" :disabled="mustReadFlag">
+                  <t-button theme="primary" style="width: 100%" size="small" :disabled="mustReadFlag">
                     交 卷
-                  </el-button>
+                  </t-button>
                 </template>
-              </el-popconfirm>
-            </el-col>
-          </el-row>
-        </el-card>
-      </el-col>
-    </el-row>
-    <el-dialog v-if="examResult" title="考试成绩" v-model="dialogVisible" width="50%" :show-close="false"
-      :close-on-click-modal="false">
-      <el-result :icon="examResult.passFlag == 1 ? 'success' : 'error'"
+              </t-popconfirm>
+            </t-col>
+          </t-row>
+        </t-card>
+      </t-col>
+    </t-row>
+    <t-dialog v-if="examResult" header="考试成绩" v-model:visible="dialogVisible" width="50%" :close-btn="false"
+      :close-on-overlay-click="false">
+      <t-result :icon="examResult.passFlag == 1 ? 'success' : 'error'"
         :title="examResult.passFlag == 1 ? '恭喜！考试通过！' : '很遗憾！考试未通过！'"
-        :sub-title="'您一共答对了' + examResult.rightNum + '题！'"></el-result>
+        :sub-title="'您一共答对了' + examResult.rightNum + '题！'"></t-result>
       <template #footer>
         <span class="dialog-footer">
-          <el-button @click="router.go(0)">再考一次</el-button>
-          <el-button type="primary" @click="closeWindow">关 闭</el-button>
+          <t-button @click="router.go(0)">再考一次</t-button>
+          <t-button theme="primary" @click="closeWindow">关 闭</t-button>
         </span>
       </template>
-    </el-dialog>
+    </t-dialog>
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { ElMessage } from 'element-plus'
+import { MessagePlugin, Result } from 'tdesign-vue-next'
 import { httpInstance } from '@/utils/request'
 import Question from '@/views/font/edu/component/Question.vue'
 
@@ -162,7 +162,7 @@ const precheck = () => {
     .get(`college/course/exam/init/${course.value.courseId}`)
     .then((res) => {
       if (res.code !== 200) {
-        ElMessage.error(res.msg)
+        MessagePlugin.error(res.msg)
         return
       }
       setting.value = res.setting
@@ -178,7 +178,7 @@ const initTest = () => {
       .get(`college/course/exam/start/${course.value.courseId}`)
       .then((res) => {
         if (res.code !== 200) {
-          ElMessage.error(res.msg)
+          MessagePlugin.error(res.msg)
           reject(res.msg)
           return
         }
@@ -203,7 +203,7 @@ const nextQuestion = () => {
       if (timer.value == null) timerFunc(examTime.value)
       if (curentQuesNum.value + 1 >= setting.value.quesNum) {
         mustReadFlag.value = false
-        ElMessage.error('因为您已完成所有题目的提交，请点击右边的交卷！')
+        MessagePlugin.error('因为您已完成所有题目的提交，请点击右边的交卷！')
         return
       }
       curentQuesNum.value++
@@ -214,7 +214,7 @@ const nextQuestion = () => {
   }
   submitAnswer()
   if (curentQuesNum.value + 1 >= setting.value.quesNum) {
-    ElMessage.error('已经没有下一题了！')
+    MessagePlugin.error('已经没有下一题了！')
     return
   }
   curentQuesNum.value++
@@ -227,18 +227,18 @@ const getUserAnswer = (userAnswer) => {
 
 const submitAnswer = async () => {
   if (curentQuesNum.value < 0 || curentQuesNum.value >= course.value.quesNum) {
-    ElMessage.error('没有题目可以提交！' + curentQuesNum.value)
+    MessagePlugin.error('没有题目可以提交！' + curentQuesNum.value)
     return
   }
   const res = await httpInstance.post('college/course/exam/check', quesTest.value[curentQuesNum.value])
   if (res.code !== 200) {
-    ElMessage.error(res.msg)
+    MessagePlugin.error(res.msg)
   }
 }
 
 const handOverTest = () => {
   httpInstance.put(`college/course/exam/submit/${quesTest.value[0].examCode}`).then((res) => {
-    ElMessage.success(res.msg)
+    MessagePlugin.success(res.msg)
     examResult.value = res.examResult
     dialogVisible.value = true
   })
@@ -284,7 +284,7 @@ onUnmounted(() => {
   .box-card {
     height: calc(100vh - 120px);
 
-    :deep(.el-card__body) {
+    :deep(.t-card__body) {
       height: calc(100vh - 220px);
       overflow-y: scroll;
     }

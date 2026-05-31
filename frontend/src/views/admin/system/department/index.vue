@@ -1,21 +1,21 @@
 <template>
-  <el-alert
+  <t-alert
     title="操作说明"
-    type="info"
+    theme="info"
     :closable="false"
-    description="请正确使用部门编号：1.一共需设置4位数字。2.第一位为地区编码3为武汉。3.第二位为科室编号。4.最后两位为组别编号。"
+    message="请正确使用部门编号：1.一共需设置4位数字。2.第一位为地区编码3为武汉。3.第二位为科室编号。4.最后两位为组别编号。"
   />
-  <el-card class="box-card">
-    <el-row :gutter="20">
-      <el-col :span="10">
-        <el-col :span="6">
-          <el-button type="primary" size="small" @click="addDepartment"
-            >添加部门</el-button
+  <t-card class="box-card">
+    <t-row :gutter="20">
+      <t-col :span="5">
+        <t-col :span="3">
+          <t-button theme="primary" size="small" @click="addDepartment"
+            >添加部门</t-button
           >
-        </el-col>
-      </el-col>
-    </el-row>
-    <el-table
+        </t-col>
+      </t-col>
+    </t-row>
+    <CustomTable
       :data="deptartmentData"
       size="small"
       style="width: 100%; margin-bottom: 20px"
@@ -24,93 +24,87 @@
       stripe
       :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
     >
-      <el-table-column prop="deptNum" label="部门编号" sortable width="180">
-      </el-table-column>
-      <el-table-column prop="deptName" label="部门名称" sortable>
-      </el-table-column>
-      <el-table-column prop="upDept" label="上级部门"> </el-table-column>
-      <el-table-column label="操作" width="200">
+      <TableColumn colKey="deptNum" label="部门编号" sortable width="180">
+      </TableColumn>
+      <TableColumn colKey="deptName" label="部门名称" sortable>
+      </TableColumn>
+      <TableColumn colKey="upDept" label="上级部门"> </TableColumn>
+      <TableColumn label="操作" width="200">
         <template #default="scope">
-          <el-button
-            size="small"
-            icon="Edit"
-            type="warning"
+          <t-button
+            size="small" theme="warning"
             @click="update(scope.row)"
-            circle
-          ></el-button>
-          <el-button
-            size="small"
-            icon="Delete"
-            type="danger"
+            shape="circle"><template #icon><DynamicIcon name="edit" /></template></t-button>
+          <t-button
+            size="small" theme="danger"
             @click="remove(scope.$index, scope.row)"
-            circle
-          ></el-button>
+            shape="circle"><template #icon><DynamicIcon name="delete" /></template></t-button>
         </template>
-      </el-table-column>
-    </el-table>
-  </el-card>
+      </TableColumn>
+    </CustomTable>
+  </t-card>
 
-  <el-dialog
-    :title="dialogTitle"
-    :close-on-click-modal="false"
-    v-model="dialogFormVisible"
+  <t-dialog
+    :header="dialogTitle"
+    :close-on-overlay-click="false"
+    v-model:visible="dialogFormVisible"
   >
-    <el-form :model="departmentForm" ref="departmentFormRef" :rules="formRules">
-      <el-form-item
+    <t-form :data="departmentForm" ref="departmentFormRef" :rules="formRules">
+      <t-form-item
         label="部门编号"
         :label-width="formLabelWidth"
         prop="deptNum"
       >
-        <el-input
+        <t-input
           size="small"
           type="number"
           v-model="departmentForm.deptNum"
           autocomplete="off"
-        ></el-input>
-      </el-form-item>
-      <el-form-item
+        ></t-input>
+      </t-form-item>
+      <t-form-item
         label="部门名称"
         :label-width="formLabelWidth"
         prop="deptName"
       >
-        <el-input
+        <t-input
           size="small"
           v-model="departmentForm.deptName"
           autocomplete="off"
-        ></el-input>
-      </el-form-item>
-      <el-form-item
+        ></t-input>
+      </t-form-item>
+      <t-form-item
         label="上级部门"
         :label-width="formLabelWidth"
         prop="upDept"
       >
-        <el-select
+        <t-select
           size="small"
           v-model="departmentForm.upDept"
           placeholder="请选择上级部门"
           :disabled="upDeptDisabled"
         >
-          <el-option label="无上级部门" value="" key=""></el-option>
-          <el-option
+          <t-option label="无上级部门" value="" key=""></t-option>
+          <t-option
             v-for="item in deptartmentData"
             :label="item.deptName"
             :value="item.deptNum"
             :key="item.deptNum"
-          ></el-option>
-        </el-select>
-      </el-form-item>
-    </el-form>
+          ></t-option>
+        </t-select>
+      </t-form-item>
+    </t-form>
     <template #footer>
       <span class="dialog-footer">
-        <el-button size="small" @click="dialogFormVisible = false"
-          >取 消</el-button
+        <t-button size="small" @click="dialogFormVisible = false"
+          >取 消</t-button
         >
-        <el-button size="small" type="primary" @click="dialogFormSubmit"
-          >确 定</el-button
+        <t-button size="small" theme="primary" @click="dialogFormSubmit"
+          >确 定</t-button
         >
       </span>
     </template>
-  </el-dialog>
+  </t-dialog>
 </template>
 
 <script setup>
@@ -152,7 +146,7 @@ onMounted(() => {
 
 const getDepartmentData = async () => {
   const res = await departmentApi.treeDepartment()
-  if (res.code !== 200) return ElMessage.error(res.msg)
+  if (res.code !== 200) return MessagePlugin.error(res.msg)
   deptartmentData.value = res.data
 }
 
@@ -185,7 +179,7 @@ const update = (data) => {
 }
 
 const remove = (node, data) => {
-  ElMessageBox.confirm(
+  DialogPlugin.confirm(
     '此操作将永久删除该记录,同时会删除子菜单, 是否继续?',
     '提示',
     {
@@ -196,7 +190,7 @@ const remove = (node, data) => {
   ).then(async () => {
     const res = await departmentApi.deleteDepartment(data.deptNum)
     if (res.code !== 200) return
-    ElMessage.success(res.msg)
+    MessagePlugin.success(res.msg)
     const parent = node.parent
     const children = parent.data.children || parent.data
     const index = children.findIndex((d) => d.id === data.id)
@@ -204,28 +198,26 @@ const remove = (node, data) => {
   })
 }
 
-const dialogFormSubmit = () => {
+const dialogFormSubmit = async () => {
   if (dialogTitle.value === '新增部门') {
-    departmentFormRef.value.validate(async (valid) => {
-      if (!valid) return false
-      const res = await departmentApi.addDepartment(departmentForm)
-      if (res.code !== 200) return
-      ElMessage.success(res.msg)
-      dialogFormVisible.value = false
-      getDepartmentData()
-    })
+    const valid = await departmentFormRef.value.validate()
+    if (valid !== true) return
+    const res = await departmentApi.addDepartment(departmentForm)
+    if (res.code !== 200) return
+    MessagePlugin.success(res.msg)
+    dialogFormVisible.value = false
+    getDepartmentData()
   } else {
-    departmentFormRef.value.validate(async (valid) => {
-      if (!valid) return false
-      const res = await departmentApi.updateDepartmentById(
-        departmentForm.deptNum,
-        departmentForm
-      )
-      if (res.code !== 200) return
-      ElMessage.success(res.msg)
-      dialogFormVisible.value = false
-      getDepartmentData()
-    })
+    const valid = await departmentFormRef.value.validate()
+    if (valid !== true) return
+    const res = await departmentApi.updateDepartmentById(
+      departmentForm.deptNum,
+      departmentForm
+    )
+    if (res.code !== 200) return
+    MessagePlugin.success(res.msg)
+    dialogFormVisible.value = false
+    getDepartmentData()
   }
 }
 </script>

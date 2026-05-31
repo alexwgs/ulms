@@ -1,60 +1,60 @@
 <template>
   <div>
-    <el-dialog
-      title="考试预约"
-      v-model="dialogFormVisible"
+    <t-dialog
+      header="考试预约"
+      v-model:visible="dialogFormVisible"
       width="60%"
       custom-class="bgcolor"
       :modal="false"
-      :close-on-click-modal="false"
+      :close-on-overlay-click="false"
     >
-      <el-form :model="form" :inline="true" size="small" class="inline-form">
-        <el-form-item label="预约日期" :label-width="formLabelWidth">
-          <el-select
+      <t-form :data="form" layout="inline" size="small" class="inline-form">
+        <t-form-item label="预约日期" :label-width="formLabelWidth">
+          <t-select
             v-model="currentInfoCode"
             placeholder="请选择活动区域"
             @change="listBookedDetail"
           >
-            <el-option
+            <t-option
               v-for="item in bookInfo"
               :key="item.infoCode"
               :label="item.bookDate"
               :value="item.infoCode"
             />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="已预约次数" :label-width="formLabelWidth">
+          </t-select>
+        </t-form-item>
+        <t-form-item label="已预约次数" :label-width="formLabelWidth">
           {{ myBooked.length }}
-        </el-form-item>
-        <el-form-item>
-          <el-button
-            type="primary"
+        </t-form-item>
+        <t-form-item>
+          <t-button
+            theme="primary"
             size="small"
             :loading="refreshLoading"
             @click="listBookedDetail"
-            >刷新</el-button
+            >刷新</t-button
           >
-        </el-form-item>
-      </el-form>
-      <el-table :data="data" size="small" height="300px">
-        <el-table-column property="begTime" label="开始时间" width="100" />
-        <el-table-column property="endTime" label="结束时间" width="100" />
-        <el-table-column label="预约名单" show-overflow-tooltip>
+        </t-form-item>
+      </t-form>
+      <CustomTable rowKey="id" :data="data" size="small" height="300px">
+        <TableColumn property="begTime" label="开始时间" width="100" />
+        <TableColumn property="endTime" label="结束时间" width="100" />
+        <TableColumn label="预约名单" ellipsis>
           <template #default="scope">
-            <el-avatar
+            <t-avatar
               v-for="user in scope.row.users"
               :key="user.ploNum"
               size="small"
               :src="fsURL + user.avatar"
             />
           </template>
-        </el-table-column>
-        <el-table-column property="bookLimit" label="预约余位" width="80">
+        </TableColumn>
+        <TableColumn property="bookLimit" label="预约余位" width="80">
           <template #default="scope">
             {{ scope.row.bookLimit - scope.row.users.length }}
           </template>
-        </el-table-column>
-        <el-table-column label="我要预约" width="120">
+        </TableColumn>
+        <TableColumn label="我要预约" width="120">
           <template #default="scope">
             <div v-if="timeSelectValid(scope.row.endTime)">【过期】</div>
             <!-- <div v-else-if="scope.row.bookLimit - scope.row.users.length <= 0">【满员】</div> -->
@@ -69,27 +69,25 @@
                 ).length > 0
               "
             >
-              <el-tag type="success" size="small" effect="dark"
-                >【当前】</el-tag
+              <t-tag theme="success" size="small" effect="dark"
+                >【当前】</t-tag
               >
             </div>
-            <el-button
+            <t-button
               v-else
-              type="primary"
-              icon="star-off"
-              size="small"
+              theme="primary" size="small"
               @click="bookExam(scope.row)"
               circle
-            />
+            ><template #icon><DynamicIcon name="star-off" /></template></t-button>
           </template>
-        </el-table-column>
-      </el-table>
-    </el-dialog>
+        </TableColumn>
+      </CustomTable>
+    </t-dialog>
   </div>
 </template>
 <script setup>
 import { ref, reactive } from 'vue'
-import { ElMessage } from 'element-plus'
+import { MessagePlugin } from 'tdesign-vue-next'
 import { bookInfoApi } from '@/api/edu/bookInfo'
 
 const dialogFormVisible = ref(false)
@@ -121,14 +119,14 @@ const show = (examCode, user) => {
 const listBookInfo = async () => {
   try {
     const res = await bookInfoApi.getExamBookTimeInfo(form.examCode)
-    if (res.code !== 200) return ElMessage.error(res.msg)
+    if (res.code !== 200) return MessagePlugin.error(res.msg)
     bookInfo.value = res.data
     if (bookInfo.value != null && bookInfo.value.length > 0) {
       currentInfoCode.value = bookInfo.value[0].infoCode
       listBookedDetail()
     }
   } catch (error) {
-    ElMessage.error('获取预约信息失败')
+    MessagePlugin.error('获取预约信息失败')
   }
 }
 
@@ -139,7 +137,7 @@ const listBookedDetail = async () => {
       (e) => e.infoCode === currentInfoCode.value
     )
     if (list == null || list.length < 1)
-      return ElMessage.warning('暂无预约时点配置！')
+      return MessagePlugin.warning('暂无预约时点配置！')
     currentBookInfo.value = list[0]
 
     const res = await bookInfoApi.getExamBookDetail({
@@ -148,11 +146,11 @@ const listBookedDetail = async () => {
       infoCode: currentBookInfo.value.infoCode,
       userId: userId.value
     })
-    if (res.code !== 200) return ElMessage.error(res.msg)
+    if (res.code !== 200) return MessagePlugin.error(res.msg)
     data.value = res.data
     myBooked.value = res.myBooked
   } catch (error) {
-    ElMessage.error('获取预约详情失败')
+    MessagePlugin.error('获取预约详情失败')
   } finally {
     refreshLoading.value = false
   }
@@ -168,11 +166,11 @@ const bookExam = async (row) => {
 
   try {
     const res = await bookInfoApi.forceExamBookList(form)
-    if (res.code !== 200) return ElMessage.error(res.msg)
-    ElMessage.success(res.msg)
+    if (res.code !== 200) return MessagePlugin.error(res.msg)
+    MessagePlugin.success(res.msg)
     listBookedDetail()
   } catch (error) {
-    ElMessage.error('预约失败')
+    MessagePlugin.error('预约失败')
   }
 }
 
@@ -189,13 +187,13 @@ defineExpose({
 </script>
 <style lang="less" scoped>
 .bgcolor {
-  background-color: #fdfffeb0;
+-color: #fdfffeb0;
 }
-.inline-form .el-input {
-  --el-input-width: 150px;
+.inline-form .t-input {
+  --td-input-width: 150px;
 }
 
-.inline-form .el-select {
-  --el-select-width: 150px;
+.inline-form .t-select {
+  --td-select-width: 150px;
 }
 </style>

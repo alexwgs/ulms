@@ -1,41 +1,41 @@
 <template>
-  <el-card class="box-card">
-    <el-row>
-      <el-col :span="24" class="text-right">
-        <el-button type="primary" size="small" @click="addRole">添加角色</el-button>
-      </el-col>
-    </el-row>
-    <el-table :data="ohtRoleTableList" size="small" @sort-change="tableSort" height="calc(100vh - 325px)" stripe
-      v-loading="loading">
-      <el-table-column prop="roleCode" label="CODE" sortable="custom" width="180"></el-table-column>
-      <el-table-column prop="roleName" label="角色名称" sortable="custom"></el-table-column>
-      <el-table-column prop="roleType" label="角色类型" sortable="custom">
+  <t-card class="box-card">
+    <t-row>
+      <t-col :span="12" class="text-right">
+        <t-button theme="primary" size="small" @click="addRole">添加角色</t-button>
+      </t-col>
+    </t-row>
+    <CustomTable rowKey="id" :data="ohtRoleTableList" size="small" @sort-change="tableSort" height="calc(100vh - 325px)" stripe
+      :loading="loading">
+      <TableColumn colKey="roleCode" label="CODE" sortable="custom" width="180"></TableColumn>
+      <TableColumn colKey="roleName" label="角色名称" sortable="custom"></TableColumn>
+      <TableColumn colKey="roleType" label="角色类型" sortable="custom">
         <template #default="{ row }">
           <span v-for="item in dictStore.dictList.oht_role_type" :key="item.code" v-show="row.roleType == item.code">{{
             item.codeval }}</span>
         </template>
-      </el-table-column>
-      <el-table-column prop="roleStat" label="角色状态" sortable="custom">
+      </TableColumn>
+      <TableColumn colKey="roleStat" label="角色状态" sortable="custom">
         <template #default="{ row }">
-          <el-tag v-for="item in dictStore.dictList.oht_role_status" :key="item.code" :label="item.codeval" size="small"
-            :type="item.code == 0 ? 'danger' : 'success'" v-show="row.roleStat == item.code" effect="dark">
+          <t-tag v-for="item in dictStore.dictList.oht_role_status" :key="item.code" :label="item.codeval" size="small"
+            :theme="item.code == 0 ? 'danger' : 'success'" v-show="row.roleStat == item.code" effect="dark">
             {{ item.codeval }}
-          </el-tag>
+          </t-tag>
         </template>
-      </el-table-column>
-      <el-table-column prop="roleRelat" label="转接关系"></el-table-column>
-      <el-table-column label="操作" fixed="right" width="180px">
+      </TableColumn>
+      <TableColumn colKey="roleRelat" label="转接关系"></TableColumn>
+      <TableColumn label="操作" fixed="right" width="180px">
         <template #default="{ row }">
-          <el-button type="warning" size="small" icon="Edit" @click="ohtRoleEdit(row)" circle></el-button>
-          <el-button type="danger" size="small" icon="Delete" @click="removeRoleByRoleCode(row)" circle></el-button>
-          <el-button size="small" @click="dispatchRule">分配规则</el-button>
+          <t-button theme="warning" size="small" @click="ohtRoleEdit(row)" shape="circle"><template #icon><DynamicIcon name="edit" /></template></t-button>
+          <t-button theme="danger" size="small" @click="removeRoleByRoleCode(row)" shape="circle"><template #icon><DynamicIcon name="delete" /></template></t-button>
+          <t-button size="small" @click="dispatchRule">分配规则</t-button>
         </template>
-      </el-table-column>
-    </el-table>
-    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
-      :current-page="queryInfo.pageNum" :page-sizes="pageSizes" :page-size="queryInfo.pageSize"
-      layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
-  </el-card>
+      </TableColumn>
+    </CustomTable>
+    <t-pagination @page-size-change="handleSizeChange" @current-change="handleCurrentChange"
+      :current="queryInfo.pageNum" :page-size-options="pageSizes" :page-size="queryInfo.pageSize"
+ :total="total"></t-pagination>
+  </t-card>
 
   <!-- 角色对话框 -->
   <RoleDialog ref="roleDialogRef" v-model:visible="roleAddVisible" :dialog-type="dialogType"
@@ -47,7 +47,7 @@
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { MessagePlugin, DialogPlugin } from 'tdesign-vue-next'
 import { useDictStore } from '@/stores'
 import RoleDialog from './components/RoleDialog.vue'
 import RoleDispatchDialog from './components/RoleDispatchDialog.vue'
@@ -83,14 +83,14 @@ const getOhtRoleList = async () => {
     loading.value = true
     const res = await roleApi.getRoleList(queryInfo)
     if (res.code !== 200) {
-      ElMessage.error(res.msg)
+      MessagePlugin.error(res.msg)
       return
     }
     ohtRoleTableList.value = res.data.list
     total.value = res.data.total
   } catch (error) {
     console.error('获取角色列表失败:', error)
-    ElMessage.error('获取角色列表失败')
+    MessagePlugin.error('获取角色列表失败')
   } finally {
     loading.value = false
   }
@@ -109,16 +109,16 @@ const handleCurrentChange = (page) => {
 }
 
 // 表格排序
-const tableSort = ({ prop, order }) => {
-  queryInfo.order = prop
-  queryInfo.orderType = order === 'ascending' ? 'asc' : 'desc'
+const tableSort = ({ sortBy, descending }) => {
+  queryInfo.order = sortBy
+  queryInfo.orderType = !descending ? 'asc' : 'desc'
   getOhtRoleList()
 }
 
 // 删除角色
 const removeRoleByRoleCode = async (row) => {
   try {
-    await ElMessageBox.confirm(
+    await DialogPlugin.confirm(
       '此操作将永久删除该记录, 是否继续?',
       '提示',
       {
@@ -129,15 +129,15 @@ const removeRoleByRoleCode = async (row) => {
     ).then(async () => {
       const res = await roleApi.deleteRole(row.roleCode)
       if (res.code !== 200) {
-        ElMessage.error(res.msg)
+        MessagePlugin.error(res.msg)
         return
       }
-      ElMessage.success(res.msg)
+      MessagePlugin.success(res.msg)
       getOhtRoleList()
     })
   } catch (error) {
     if (error !== 'cancel') {
-      ElMessage.error('取消删除')
+      MessagePlugin.error('取消删除')
     }
   }
 }

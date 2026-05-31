@@ -1,34 +1,34 @@
 <template>
-  <el-dialog
-    title="身份选择"
-    v-model="dialogVisible"
+  <t-dialog
+    header="身份选择"
+    v-model:visible="dialogVisible"
     width="50%"
-    :before-close="handleClose"
+    @before-close="handleClose"
   >
-    <el-form :model="form" label-width="80px">
-      <el-form-item label="选择身份">
-        <el-checkbox-group v-model="form.identity">
-          <el-checkbox label="无身份">无身份</el-checkbox>
-          <el-checkbox
+    <t-form :data="form" label-width="80px">
+      <t-form-item label="选择身份">
+        <t-checkbox-group v-model="form.identity">
+          <t-checkbox value="无身份">无身份</t-checkbox>
+          <t-checkbox
             v-for="item in identityList"
             :key="item.id"
-            :label="item.statusName"
-          ></el-checkbox>
-        </el-checkbox-group>
-      </el-form-item>
-    </el-form>
+            :value="item.statusName"
+          ></t-checkbox>
+        </t-checkbox-group>
+      </t-form-item>
+    </t-form>
     <template #footer>
       <span class="dialog-footer">
-        <el-button @click="handleClose">取消</el-button>
-        <el-button type="primary" @click="handleSubmit">确定</el-button>
+        <t-button @click="handleClose">取消</t-button>
+        <t-button theme="primary" @click="handleSubmit">确定</t-button>
       </span>
     </template>
-  </el-dialog>
+  </t-dialog>
 </template>
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
-import { ElMessage } from 'element-plus'
+import { MessagePlugin } from 'tdesign-vue-next'
 import { getIdentityList } from '@/api/welcome/index.js'
 
 const dialogVisible = ref(false)
@@ -47,7 +47,7 @@ const handleClose = () => {
 }
 
 const handleSubmit = () => {
-  ElMessage.success('身份选择成功')
+  MessagePlugin.success('身份选择成功')
   handleClose()
 }
 
@@ -55,7 +55,7 @@ const getIdentity = async () => {
   try {
     const res = await getIdentityList()
     if (res.code !== 200) {
-      ElMessage.error(res.msg)
+      MessagePlugin.error(res.msg)
       return
     }
     identityList.value = res.data || []

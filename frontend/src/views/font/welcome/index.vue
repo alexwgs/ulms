@@ -1,22 +1,22 @@
 <template>
   <div>
-    <el-row :gutter="15">
-      <el-col :span="16">
-        <el-row>
+    <t-row>
+      <t-col :span="8">
+        <t-row>
           <Calendar @open-todolist="handleOpenTodolist"></Calendar>
-        </el-row>
-      </el-col>
+        </t-row>
+      </t-col>
 
-      <el-col :span="8">
-        <el-row style="height: 250px">
-          <el-card class="box-card" style="width: 100%">
+      <t-col :span="4">
+        <t-row style="height: 250px">
+          <t-card class="box-card" style="width: 100%">
             <template #header>
               <div class="clearfix">
                 <span>系统公告</span>
               </div>
             </template>
-            <el-table :data="noticeList" width="100%" size="small" :stripe="true" :show-header="false">
-              <el-table-column prop="title" label="标题" :show-overflow-tooltip="true">
+            <CustomTable rowKey="id" :data="noticeList" width="100%" size="small" :stripe="true" :show-header="false">
+              <TableColumn colKey="title" label="标题" :ellipsis="true">
                 <template #default="scope">
                   <div v-if="scope.row.topFlag === 1">
                     <router-link class="link" style="color: red" tag="a" target="_blank"
@@ -27,76 +27,76 @@
                       rel="opener">{{ scope.row.title }}</router-link>
                   </div>
                 </template>
-              </el-table-column>
-            </el-table>
-          </el-card>
-        </el-row>
-        <el-row>
-          <el-card class="box-card" style="width: 100%">
+              </TableColumn>
+            </CustomTable>
+          </t-card>
+        </t-row>
+        <t-row>
+          <t-card class="box-card" style="width: 100%">
             <template #header>
               <div class="clearfix">
                 <span>快捷功能</span>
               </div>
             </template>
             <div class="scroll" style="height: calc(100vh - 515px)">
-              <el-row :gutter="20" v-if="userId.substring(0, 1) != '6' || userId == '655012'">
-                <el-col class="quick-menu-col" :span="8">
-                  <el-button type="primary" :icon="Upload" @click="punchCardInDialogVisible = true" plain
-                    circle></el-button>
+              <t-row :gutter="20" v-if="userId.substring(0, 1) != '6' || userId == '655012'">
+                <t-col class="quick-menu-col" :span="4">
+                  <t-button theme="primary" @click="punchCardInDialogVisible = true" plain
+                    shape="circle"><template #icon><DynamicIcon name="upload" /></template></t-button>
                   <div class="quick-menu-font">上班打卡</div>
-                </el-col>
-                <el-col class="quick-menu-col" :span="8">
-                  <el-button type="danger" :icon="Download" @click="punchCardOutDialogVisible = true" plain
-                    circle></el-button>
+                </t-col>
+                <t-col class="quick-menu-col" :span="4">
+                  <t-button theme="danger" @click="punchCardOutDialogVisible = true" plain
+                    shape="circle"><template #icon><DynamicIcon name="download" /></template></t-button>
                   <div class="quick-menu-font">下班打卡</div>
-                </el-col>
-                <el-col class="quick-menu-col" :span="8">
-                  <el-button type="success" :icon="Tickets" @click="myPunchJourRef.show()" plain circle></el-button>
+                </t-col>
+                <t-col class="quick-menu-col" :span="4">
+                  <t-button theme="success" @click="myPunchJourRef.show()" plain shape="circle"><template #icon><DynamicIcon name="ticket" /></template></t-button>
                   <div class="quick-menu-font">考勤记录</div>
-                </el-col>
-              </el-row>
-              <el-row :gutter="20">
-                <el-col class="quick-menu-col" :span="8" v-if="hasPermission('main:directorStatus:view')">
-                  <el-button type="primary" :icon="Upload" @click="directorStatusFlag = true" plain circle></el-button>
+                </t-col>
+              </t-row>
+              <t-row :gutter="20">
+                <t-col class="quick-menu-col" :span="4" v-if="hasPermission('main:directorStatus:view')">
+                  <t-button theme="primary" @click="directorStatusFlag = true" plain shape="circle"><template #icon><DynamicIcon name="upload" /></template></t-button>
                   <div class="quick-menu-font">主任状态RT</div>
-                </el-col>
-                <el-col class="quick-menu-col" v-if="hasPermission('main:quickLink:cmbstudy')" :span="8">
-                  <el-button type="primary" :icon="Opportunity" @click="location('edu')" plain circle></el-button>
+                </t-col>
+                <t-col class="quick-menu-col" v-if="hasPermission('main:quickLink:cmbstudy')" :span="4">
+                  <t-button theme="primary" @click="location('edu')" plain shape="circle"><template #icon><DynamicIcon name="education" /></template></t-button>
                   <div class="quick-menu-font">小招学霸2.0</div>
-                </el-col>
-                <el-col class="quick-menu-col" v-if="hasPermission('main:quickLink:a6college')" :span="8">
-                  <el-button type="primary" :icon="Opportunity" @click="location('college')" plain circle></el-button>
+                </t-col>
+                <t-col class="quick-menu-col" v-if="hasPermission('main:quickLink:a6college')" :span="4">
+                  <t-button theme="primary" @click="location('college')" plain shape="circle"><template #icon><DynamicIcon name="education" /></template></t-button>
                   <div class="quick-menu-font">A6魔法学院</div>
-                </el-col>
-                <el-col class="quick-menu-col" v-if="hasPermission('main:quickLink:bpms')" :span="8">
-                  <el-button type="primary" :icon="Cloudy" @click="location('bpms')" plain circle></el-button>
+                </t-col>
+                <t-col class="quick-menu-col" v-if="hasPermission('main:quickLink:bpms')" :span="4">
+                  <t-button theme="primary" @click="location('bpms')" plain shape="circle"><template #icon><DynamicIcon name="cloudy-day" /></template></t-button>
                   <div class="quick-menu-font">绩效平台</div>
-                </el-col>
-              </el-row>
-              <QuickUrlTemplete area="main" :span="8"></QuickUrlTemplete>
+                </t-col>
+              </t-row>
+              <QuickUrlTemplete area="main" :span="4"></QuickUrlTemplete>
             </div>
-          </el-card>
-        </el-row>
-      </el-col>
-    </el-row>
+          </t-card>
+        </t-row>
+      </t-col>
+    </t-row>
 
-    <el-dialog title="上班打卡" v-model="punchCardInDialogVisible" width="70%">
+    <t-dialog header="上班打卡" v-model:visible="punchCardInDialogVisible" width="70%">
       <iframe v-if="hasPermission('main:punchcard:old')" :src="'http://10.47.24.45/auxs/hr_manager_sys/mood_api/punch_card_in.jsp?czy_code=' +
         userId
         " width="100%" height="470px" frameborder="0" scrolling="auto"></iframe>
       <iframe v-else :src="'http://10.47.24.45/auxs/hr_manager_sys/mood_api/punch_card_in.jsp?czy_code=' +
         userId
         " width="100%" height="470px" frameborder="0" scrolling="auto"></iframe>
-    </el-dialog>
+    </t-dialog>
 
-    <el-dialog title="下班打卡" v-model="punchCardOutDialogVisible" width="70%">
+    <t-dialog header="下班打卡" v-model:visible="punchCardOutDialogVisible" width="70%">
       <iframe v-if="hasPermission('main:punchcard:old')" :src="'http://10.47.24.45/auxs/hr_manager_sys/mood_api/punch_card_out.jsp?czy_code=' +
         userId
         " width="100%" height="470px" frameborder="0" scrolling="auto"></iframe>
       <iframe v-else :src="'http://10.47.24.45/auxs/hr_manager_sys/mood_api/punch_card_out.jsp?czy_code=' +
         userId
         " width="100%" height="470px" frameborder="0" scrolling="auto"></iframe>
-    </el-dialog>
+    </t-dialog>
 
     <MyPunchJour ref="myPunchJourRef"></MyPunchJour>
     <DirectorStatusRT :visiable="directorStatusFlag"></DirectorStatusRT>
@@ -107,14 +107,8 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { ElMessage } from 'element-plus'
-import {
-  Upload,
-  Download,
-  Tickets,
-  Opportunity,
-  Cloudy
-} from '@element-plus/icons-vue'
+import { MessagePlugin } from 'tdesign-vue-next'
+import { UploadIcon, DownloadIcon, TicketIcon, EducationIcon, CloudyDayIcon } from 'tdesign-icons-vue-next'
 import { getSystemNotice, addLog } from '@/api/welcome/index.js'
 import Calendar from './components/Calendar.vue'
 import QuickUrlTemplete from './components/QuickUrlTemplete.vue'
@@ -154,7 +148,7 @@ const getSystemNoticeList = async () => {
   try {
     const res = await getSystemNotice(9, 0)
     if (res.code !== 200) {
-      ElMessage.error(res.msg)
+      MessagePlugin.error(res.msg)
       return
     }
     noticeList.value = res.data.list
@@ -199,7 +193,7 @@ const location = (system) => {
 </script>
 
 <style lang="less" scoped>
-.el-row {
+.t-row {
   margin-bottom: 15px;
 }
 
@@ -218,7 +212,7 @@ const location = (system) => {
 
 .quick-menu-font {
   font-size: 14px;
-  color: var(--el-font-color);
+  color: var(--td-font-color);
   padding-top: 5px;
 
   &:hover {
@@ -227,11 +221,11 @@ const location = (system) => {
 }
 
 .quick-login-btn {
-  background-color: var(--el-font-color);
+-color: var(--td-font-color);
   cursor: pointer;
 
   &:hover {
-    background-color: #67c23a;
+-color: #67c23a;
   }
 }
 

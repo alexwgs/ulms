@@ -1,34 +1,32 @@
 <template>
-  <el-card class="box-card">
+  <t-card class="box-card">
     <div class="table-filter">
-      <el-row :gutter="15">
-        <el-col :span="8">
-          <el-date-picker size="small" v-model="dateRange" value-format="YYYY-MM-DD" type="daterange" @change="datePick"
-            range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
-        </el-col>
-        <el-col :span="8">
-          <el-input placeholder="点击右边按钮选择人员" size="small" v-model="userList">
+      <t-row :gutter="15">
+        <t-col :span="4">
+          <t-date-range-picker size="small" v-model="dateRange" format="YYYY-MM-DD" @change="datePick" :placeholder="['开始日期', '结束日期']"></t-date-range-picker>
+        </t-col>
+        <t-col :span="4">
+          <t-input placeholder="点击右边按钮选择人员" size="small" v-model="userList">
             <template #append>
-              <el-button size="small" @click="treeDialogVisiable = !treeDialogVisiable"
-                icon="el-icon-zoom-in"></el-button>
+              <t-button size="small" @click="treeDialogVisiable = !treeDialogVisiable"><template #icon><DynamicIcon name="zoom-in" /></template></t-button>
             </template>
-          </el-input>
-        </el-col>
-        <el-col :span="6">
-          <el-button size="small" type="primary" @click="getChartData">查询</el-button>
-          <el-button size="small" type="primary" @click="handleDownloadExcel">报表</el-button>
-        </el-col>
-      </el-row>
+          </t-input>
+        </t-col>
+        <t-col :span="3">
+          <t-button size="small" theme="primary" @click="getChartData">查询</t-button>
+          <t-button size="small" theme="primary" @click="handleDownloadExcel">报表</t-button>
+        </t-col>
+      </t-row>
     </div>
     <AsyncECharts :option="chartOption" :loading="loading" height="550px" width="100%"></AsyncECharts>
-  </el-card>
+  </t-card>
   <EmpTree v-model:treeVisiable="treeDialogVisiable" type="101" :mutiselect="true" @getChecked="getTreeChecked">
   </EmpTree>
 </template>
 
 <script setup>
 import { ref, reactive, computed } from 'vue'
-import { ElMessage } from 'element-plus'
+import { MessagePlugin } from 'tdesign-vue-next'
 import { httpInstance, downloadExcel } from '@/utils/request'
 import EmpTree from '@/components/EmpTree.vue'
 import AsyncECharts from '@/components/AsyncECharts.vue'
@@ -133,13 +131,13 @@ const getChartData = async () => {
   try {
     const res = await httpInstance.get('oht/statusJour/chart', { params })
     if (res.code !== 200) {
-      ElMessage.error(res.msg)
+      MessagePlugin.error(res.msg)
       return
     }
     chartSettings.value.stack = res.chartSettings[0]
     chartData.value = res.chartData
   } catch (error) {
-    ElMessage.error('获取图表数据失败')
+    MessagePlugin.error('获取图表数据失败')
     console.error(error)
   } finally {
     loading.value = false
@@ -160,7 +158,7 @@ const handleDownloadExcel = () => {
     margin-left: 20px;
   }
 
-  .el-select {
+  .t-select {
     width: 70%;
   }
 }

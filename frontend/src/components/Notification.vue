@@ -3,7 +3,7 @@
     <div class="notify-card">
       <div class="notify-header">
         <div class="notify-icon">
-          <el-icon :size="28"><WarningFilled /></el-icon>
+          <t-icon :size="28"><ErrorCircleFilledIcon /></t-icon>
         </div>
         <div class="notify-title-wrap">
           <h2 class="notify-title">{{ notifyData.title || '系统通知' }}</h2>
@@ -26,7 +26,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { WarningFilled } from '@element-plus/icons-vue'
+import { ErrorCircleFilledIcon } from 'tdesign-icons-vue-next'
 
 const notifyData = ref({})
 
@@ -58,7 +58,7 @@ onMounted(() => {
 .notify-container {
   width: 100%;
   height: 100vh;
-  background: linear-gradient(135deg, #1a2332 0%, #2b4b6b 100%);
+background: linear-gradient(135deg, #1a2332 0%, #2b4b6b 100%);
   display: flex;
   //align-items: center;
   //justify-content: center;
@@ -70,7 +70,7 @@ onMounted(() => {
   width: 460px;
   max-width: 460px;
   max-height: calc(100vh - 32px);
-  background: #fff;
+background: #fff;
   border-radius: 12px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
   display: flex;
@@ -84,7 +84,7 @@ onMounted(() => {
   align-items: center;
   gap: 14px;
   padding: 16px 20px 14px;
-  background: linear-gradient(135deg, #f0f5ff, #e8f0fe);
+background: linear-gradient(135deg, #f0f5ff, #e8f0fe);
   border-bottom: 1px solid #e0e8f2;
 }
 
@@ -126,7 +126,7 @@ onMounted(() => {
   }
 
   pre {
-    background: #f5f7fa;
+background: #f5f7fa;
     border-radius: 6px;
     padding: 12px;
     font-size: 13px;

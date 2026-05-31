@@ -1,42 +1,42 @@
 <template>
-  <el-dialog
-    title="公布栏文章配置"
-    v-model="dialogVisible"
+  <t-dialog
+    header="公布栏文章配置"
+    v-model:visible="dialogVisible"
     width="80%"
-    :close-on-click-modal="false"
+    :close-on-overlay-click="false"
   >
-    <el-form
+    <t-form
       ref="articalFormRef"
-      :model="articalForm"
+      :data="articalForm"
       size="small"
       label-width="80px"
       :rules="articalFormRules"
     >
-      <el-form-item label="标题" prop="title">
-        <el-input v-model="articalForm.title"></el-input>
-      </el-form-item>
-      <el-form-item label="正文" prop="content">
+      <t-form-item label="标题" name="title">
+        <t-input v-model="articalForm.title"></t-input>
+      </t-form-item>
+      <t-form-item label="正文" name="content">
         <WangEditor
           v-model="articalForm.content"
           :height="400"
           :placeholder="'请输入文章内容...'"
         ></WangEditor>
-      </el-form-item>
-    </el-form>
+      </t-form-item>
+    </t-form>
     <template #footer>
       <span class="dialog-footer">
-        <el-button size="small" @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" size="small" @click="handleSubmit">
+        <t-button size="small" @click="dialogVisible = false">取 消</t-button>
+        <t-button theme="primary" size="small" @click="handleSubmit">
           {{ articalForm.id ? '修改' : '新增' }}
-        </el-button>
+        </t-button>
       </span>
     </template>
-  </el-dialog>
+  </t-dialog>
 </template>
 
 <script setup>
 import { ref, reactive, watch, computed } from 'vue'
-import { ElMessage } from 'element-plus'
+import { MessagePlugin } from 'tdesign-vue-next'
 import WangEditor from '@/components/WangEditor.vue'
 import { dailyConfigApi } from '@/api/edu/dailyConfig'
 
@@ -96,7 +96,7 @@ watch(
 // Methods
 const handleSubmit = async () => {
   const valid = await articalFormRef.value.validate()
-  if (!valid) return
+  if (valid !== true) return
 
   try {
     let res
@@ -107,15 +107,15 @@ const handleSubmit = async () => {
     }
 
     if (res.code !== 200) {
-      ElMessage.error(res.msg)
+      MessagePlugin.error(res.msg)
       return
     }
 
-    ElMessage.success(res.msg)
+    MessagePlugin.success(res.msg)
     emit('success', res.data)
     dialogVisible.value = false
   } catch (error) {
-    ElMessage.error('操作失败，请重试')
+    MessagePlugin.error('操作失败，请重试')
   }
 }
 </script>

@@ -1,120 +1,121 @@
 <template>
   <div>
-    <el-card class="box-card">
+    <t-card class="box-card">
       <div class="table-filter">
-        <el-row :gutter="15">
-          <el-col :span="5">
-            <el-input size="small" v-model="params.userId" placeholder="请输入查询工号"></el-input>
-          </el-col>
-          <el-col :span="8">
-            <el-date-picker size="small" style="width:200px" v-model="dateRange" value-format="YYYY-MM-DD"
-              type="daterange" @change="datePick" range-separator="至" start-placeholder="开始日期"
-              end-placeholder="结束日期"></el-date-picker>
-          </el-col>
-          <el-col :span="5">
-            <el-select size="small" v-model="params.status" @change="getTodolist" placeholder="状态选择">
-              <el-option label="待办" :value="0"></el-option>
-              <el-option label="已完成" :value="1"></el-option>
-            </el-select>
-          </el-col>
-          <el-col :span="6">
-            <el-button size="small" type="primary" @click="getTodolist">查询</el-button>
-            <el-button size="small" type="primary" @click="openTodoDialog(null, 'add')">新增</el-button>
-          </el-col>
-        </el-row>
+        <t-row :gutter="15">
+          <t-col :span="3">
+            <t-input size="small" v-model="params.userId" placeholder="请输入查询工号"></t-input>
+          </t-col>
+          <t-col :span="4">
+            <t-date-range-picker size="small" style="width:100%" v-model="dateRange" format="YYYY-MM-DD" @change="datePick" :placeholder="['开始日期', '结束日期']"></t-date-range-picker>
+          </t-col>
+          <t-col :span="3">
+            <t-select size="small" v-model="params.status" @change="getTodolist" placeholder="状态选择">
+              <t-option label="待办" :value="0"></t-option>
+              <t-option label="已完成" :value="1"></t-option>
+            </t-select>
+          </t-col>
+          <t-col :span="3">
+            <t-button size="small" theme="primary" @click="getTodolist">查询</t-button>
+            <t-button size="small" theme="primary" @click="openTodoDialog(null, 'add')">新增</t-button>
+          </t-col>
+        </t-row>
       </div>
-      <el-table :data="tableData" size="small" stripe height="calc(100vh - 330px)">
-        <el-table-column prop="dataDate" sort label="日期"></el-table-column>
-        <el-table-column prop="userId" sort label="用户ID"></el-table-column>
-        <el-table-column prop="title" sort label="标题"></el-table-column>
-        <el-table-column prop="content" sort label="详情" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="priority" sort label="优先级"></el-table-column>
-        <el-table-column prop="alert" sort label="提醒">
+      <CustomTable rowKey="id" :data="tableData" size="small" stripe height="calc(100vh - 330px)">
+        <TableColumn colKey="dataDate" sort label="日期"></TableColumn>
+        <TableColumn colKey="userId" sort label="用户ID"></TableColumn>
+        <TableColumn colKey="title" sort label="标题"></TableColumn>
+        <TableColumn colKey="content" sort label="详情" ellipsis></TableColumn>
+        <TableColumn colKey="priority" sort label="优先级"></TableColumn>
+        <TableColumn colKey="alert" sort label="提醒">
           <template #default="scope">
-            <el-tag :type="scope.row.alertFlag === 0 ? 'danger' : 'success'" size="small" effect="plain">
+            <t-tag :theme="scope.row.alertFlag === 0 ? 'danger' : 'success'" size="small" effect="plain">
               {{ scope.row.alertFlag === 0 ? '否' : scope.row.alertTime }}
-            </el-tag>
+            </t-tag>
           </template>
-        </el-table-column>
-        <el-table-column prop="status" sort label="状态">
+        </TableColumn>
+        <TableColumn colKey="status" sort label="状态">
           <template #default="scope">
-            <el-tag :type="scope.row.status === 0 ? 'danger' : 'success'" size="small" effect="plain">
+            <t-tag :theme="scope.row.status === 0 ? 'danger' : 'success'" size="small" effect="plain">
               {{ scope.row.status === 0 ? '未完成' : '已完成' }}
-            </el-tag>
+            </t-tag>
           </template>
-        </el-table-column>
-        <el-table-column label="操作" width="120px">
+        </TableColumn>
+        <TableColumn label="操作" width="120px">
           <template #default="scope">
-            <el-button type="warning" size="small" icon="el-icon-edit" @click="openTodoDialog(scope.row, 'edit')"
-              circle></el-button>
-            <el-button size="small" type="danger" icon="el-icon-delete" @click="deleteTodo(scope.row)"
-              circle></el-button>
+            <t-button theme="warning" size="small" @click="openTodoDialog(scope.row, 'edit')"
+              shape="circle"><template #icon><DynamicIcon name="edit" /></template></t-button>
+            <t-button size="small" theme="danger" @click="deleteTodo(scope.row)"
+              shape="circle"><template #icon><DynamicIcon name="delete" /></template></t-button>
           </template>
-        </el-table-column>
-      </el-table>
-      <el-pagination @current-change="handleCurrentChange" :current-page="params.pageNum" :page-size="params.pageSize"
-        layout="total, prev, pager, next, jumper" :total="total">
-      </el-pagination>
-    </el-card>
+        </TableColumn>
+      </CustomTable>
+      <t-pagination @current-change="handleCurrentChange" :current="params.pageNum" :page-size="params.pageSize"
+ :total="total">
+      </t-pagination>
+    </t-card>
 
-    <el-dialog width="50%" title="待办事项管理" v-model="todolistVisible">
-      <el-form :model="todoForm" :rules="rules" ref="todoFormRef" label-width="100px">
-        <el-form-item label="待办日期" prop="dataDate">
-          <el-date-picker size="small" v-model="todoForm.dataDate" value-format="yyyy-MM-dd" type="date"
-            placeholder="选择日期"></el-date-picker>
-        </el-form-item>
-        <el-form-item label="待办人员" prop="userId" style="margin-bottom:0">
-          <el-col :span="24">
-            <el-radio-group size="small" v-model="userType" @change="userTypeChange">
-              <el-radio-button :label="true">全体人员</el-radio-button>
-              <el-radio-button :label="false">指定人员</el-radio-button>
-            </el-radio-group>
-          </el-col>
-          <el-col :span="24">
-            <el-input style="width:100%" placeholder="" size="small" v-model="todoForm.userId" :readonly="userType">
-              <template #append>
-                <el-button :disabled="userType" @click="treeDialogVisiable = !treeDialogVisiable"
-                  icon="el-icon-zoom-in"></el-button>
-              </template>
-            </el-input>
-          </el-col>
-        </el-form-item>
-        <el-form-item label="待办摘要" prop="title">
-          <el-input size="small" v-model="todoForm.title"></el-input>
-        </el-form-item>
-        <el-form-item label="待办详情" prop="content">
-          <el-input type="textarea" size="small" v-model="todoForm.content"></el-input>
-        </el-form-item>
-        <el-form-item label="优先级" prop="name">
-          <el-checkbox-group size="small" v-model="priorityList">
-            <el-checkbox label="重要"></el-checkbox>
-            <el-checkbox label="紧急"></el-checkbox>
-          </el-checkbox-group>
-        </el-form-item>
-        <el-form-item label="是否提醒" required>
-          <el-col :span="5">
-            <el-switch size="small" v-model="alertFlag" @change="alertSwitch"></el-switch>
-          </el-col>
-          <el-col :span="18">
-            <el-form-item prop="time">
-              <el-time-picker size="small" placeholder="选择时间" :disabled="!alertFlag" value-format="HH:mm:ss"
-                v-model="todoForm.alertTime" style="width: 100%;"></el-time-picker>
-            </el-form-item>
-          </el-col>
-        </el-form-item>
-        <el-form-item label="是否完成" prop="status">
-          <el-select size="small" v-model="todoForm.status">
-            <el-option label="待办" :value="0"></el-option>
-            <el-option label="已完成" :value="1"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" size="small" @click="submit()">{{ todoType === 'add' ? '立即创建' : '提交修改'
-          }}</el-button>
-          <el-button size="small" @click="closeTodoDialog">取 消</el-button>
-        </el-form-item>
-      </el-form>
-    </el-dialog>
+    <t-dialog width="50%" header="待办事项管理" v-model:visible="todolistVisible">
+      <t-form :data="todoForm" :rules="rules" ref="todoFormRef" label-width="100px">
+        <t-form-item label="待办日期" name="dataDate">
+          <t-date-picker size="small" v-model="todoForm.dataDate" format="YYYY-MM-DD" mode="date"
+            placeholder="选择日期"></t-date-picker>
+        </t-form-item>
+        <t-form-item label="待办人员" name="userId" style="margin-bottom:0">
+          <t-row>
+            <t-col :span="12">
+              <t-radio-group size="small" v-model="userType" @change="userTypeChange">
+                <t-radio-button :value="true">全体人员</t-radio-button>
+                <t-radio-button :value="false">指定人员</t-radio-button>
+              </t-radio-group>
+            </t-col>
+            <t-col :span="12">
+              <t-input style="width:100%" placeholder="" size="small" v-model="todoForm.userId" :readonly="userType">
+                <template #append>
+                  <t-button :disabled="userType" @click="treeDialogVisiable = !treeDialogVisiable"><template #icon><DynamicIcon name="zoom-in" /></template></t-button>
+                </template>
+              </t-input>
+            </t-col>
+          </t-row>
+        </t-form-item>
+        <t-form-item label="待办摘要" name="title">
+          <t-input size="small" v-model="todoForm.title"></t-input>
+        </t-form-item>
+        <t-form-item label="待办详情" name="content">
+          <t-textarea size="small" v-model="todoForm.content" />
+        </t-form-item>
+        <t-form-item label="优先级" name="name">
+          <t-checkbox-group size="small" v-model="priorityList">
+            <t-checkbox value="重要"></t-checkbox>
+            <t-checkbox value="紧急"></t-checkbox>
+          </t-checkbox-group>
+        </t-form-item>
+        <t-form-item label="是否提醒" required>
+          <t-row>
+            <t-col :span="3">
+              <t-switch size="small" v-model="alertFlag" @change="alertSwitch"></t-switch>
+            </t-col>
+            <t-col :span="9">
+              <t-form-item name="time">
+                <t-time-picker size="small" placeholder="选择时间" :disabled="!alertFlag"
+                  v-model="todoForm.alertTime" style="width: 100%;"></t-time-picker>
+              </t-form-item>
+            </t-col>
+          </t-row>
+        </t-form-item>
+        <t-form-item label="是否完成" name="status">
+          <t-select size="small" v-model="todoForm.status">
+            <t-option label="待办" :value="0"></t-option>
+            <t-option label="已完成" :value="1"></t-option>
+          </t-select>
+        </t-form-item>
+        <t-form-item>
+          <t-button theme="primary" size="small" @click="submit()">{{ todoType === 'add' ? '立即创建' : '提交修改'
+          }}</t-button>
+          <t-button size="small" @click="closeTodoDialog">取 消</t-button>
+        </t-form-item>
+      </t-form>
+    </t-dialog>
 
     <EmpTree v-model:treeVisiable="treeDialogVisiable" type="all" :mutiselect="true" @getChecked="getTreeChecked"></EmpTree>
   </div>
@@ -122,7 +123,7 @@
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { MessagePlugin, DialogPlugin } from 'tdesign-vue-next'
 import { httpInstance } from '@/utils/request'
 import EmpTree from '@/components/EmpTree.vue'
 
@@ -191,13 +192,13 @@ const getTodolist = async () => {
   try {
     const res = await httpInstance.get('sys/todo/list', { params })
     if (res.code !== 200) {
-      ElMessage.error(res.msg)
+      MessagePlugin.error(res.msg)
       return
     }
     tableData.value = res.data.list
     total.value = res.data.total
   } catch (error) {
-    ElMessage.error('获取待办列表失败')
+    MessagePlugin.error('获取待办列表失败')
     console.error(error)
   }
 }
@@ -228,37 +229,35 @@ const closeTodoDialog = () => {
   todolistVisible.value = false
 }
 
-const submit = () => {
-  todoFormRef.value?.validate(async (valid) => {
-    if (valid) {
-      try {
-        todoForm.priority = priorityList.value.join(',')
-        let res
-        if (todoType.value === 'add') {
-          res = await httpInstance.post('sys/todo/admin/add', todoForm)
-        } else if (todoType.value === 'edit') {
-          res = await httpInstance.put('sys/todo', todoForm)
-        }
-        if (res.code !== 200) {
-          ElMessage.error(res.msg)
-          return
-        }
-        ElMessage.success(res.msg)
-        todolistVisible.value = false
-        getTodolist()
-      } catch (error) {
-        ElMessage.error('操作失败')
-        console.error(error)
+const submit = async () => {
+  const valid = await todoFormRef.value?.validate()
+  if (valid === true) {
+    try {
+      todoForm.priority = priorityList.value.join(',')
+      let res
+      if (todoType.value === 'add') {
+        res = await httpInstance.post('sys/todo/admin/add', todoForm)
+      } else if (todoType.value === 'edit') {
+        res = await httpInstance.put('sys/todo', todoForm)
       }
-    } else {
-      ElMessage.error('请正确填写表单!')
-      return false
+      if (res.code !== 200) {
+        MessagePlugin.error(res.msg)
+        return
+      }
+      MessagePlugin.success(res.msg)
+      todolistVisible.value = false
+      getTodolist()
+    } catch (error) {
+      MessagePlugin.error('操作失败')
+      console.error(error)
     }
-  })
+  } else {
+    MessagePlugin.error('请正确填写表单!')
+  }
 }
 
 const deleteTodo = (row) => {
-  ElMessageBox.confirm('你是否确定永久删除此待办，不可恢复', '确认信息', {
+  DialogPlugin.confirm('你是否确定永久删除此待办，不可恢复', '确认信息', {
     distinguishCancelAndClose: true,
     confirmButtonText: '确认',
     cancelButtonText: '放弃删除'
@@ -267,13 +266,13 @@ const deleteTodo = (row) => {
       try {
         const res = await httpInstance.delete(`sys/todo/${row.id}`)
         if (res.code !== 200) {
-          ElMessage.error(res.msg)
+          MessagePlugin.error(res.msg)
           return
         }
-        ElMessage.success(res.msg)
+        MessagePlugin.success(res.msg)
         getTodolist()
       } catch (error) {
-        ElMessage.error('删除失败')
+        MessagePlugin.error('删除失败')
         console.error(error)
       }
     })
@@ -311,7 +310,7 @@ onMounted(() => {
     margin-left: 20px;
   }
 
-  .el-select {
+  .t-select {
     width: 70%;
   }
 }

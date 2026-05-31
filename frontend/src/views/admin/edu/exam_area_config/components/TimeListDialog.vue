@@ -1,91 +1,85 @@
 <template>
-  <el-dialog 
-    :title="dialogTitle" 
-    v-model="dialogVisible" 
-    width="40%" 
-    :close-on-click-modal="false"
+  <t-dialog
+    :header="dialogTitle"
+    v-model:visible="dialogVisible"
+    width="40%"
+    :close-on-overlay-click="false"
   >
     <div>
       <!-- 考试时间维护对话框 -->
-      <el-dialog 
-        width="30%" 
-        title="考试时间维护" 
-        v-model="timeSetDialog" 
-        append-to-body
+      <t-dialog
+        width="30%"
+        header="考试时间维护"
+        v-model:visible="timeSetDialog"
+        attach="body"
       >
-        <el-form 
+        <t-form 
           ref="timeRef" 
-          :model="timeListForm" 
-          label-position="right" 
+          :data="timeListForm" 
+          label-align="right" 
           label-width="100px" 
           size="small" 
           :rules="timeRules"
         >
-          <el-form-item label="开始时间" prop="begTime">
-            <el-input v-model="timeListForm.begTime"></el-input>
-          </el-form-item>
-          <el-form-item label="结束时间" prop="endTime">
-            <el-input v-model="timeListForm.endTime"></el-input>
-          </el-form-item>
-          <el-form-item label="座位数量" prop="bookLimit">
-            <el-input v-model="timeListForm.bookLimit"></el-input>
-          </el-form-item>
-          <el-form-item label="状态" prop="bookStat">
-            <el-select v-model="timeListForm.bookStat" placeholder="请选择考试时间状态">
-              <el-option label="生效" :value="1"></el-option>
-              <el-option label="失效" :value="0"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-button size="small" @click="timeSetDialog = false">取 消</el-button>
-          <el-button size="small" type="primary" @click="submitTimeSet">确 定</el-button>
-        </el-form>
-      </el-dialog>
+          <t-form-item label="开始时间" name="begTime">
+            <t-input v-model="timeListForm.begTime"></t-input>
+          </t-form-item>
+          <t-form-item label="结束时间" name="endTime">
+            <t-input v-model="timeListForm.endTime"></t-input>
+          </t-form-item>
+          <t-form-item label="座位数量" name="bookLimit">
+            <t-input v-model="timeListForm.bookLimit"></t-input>
+          </t-form-item>
+          <t-form-item label="状态" name="bookStat">
+            <t-select v-model="timeListForm.bookStat" placeholder="请选择考试时间状态">
+              <t-option label="生效" :value="1"></t-option>
+              <t-option label="失效" :value="0"></t-option>
+            </t-select>
+          </t-form-item>
+          <t-button size="small" @click="timeSetDialog = false">取 消</t-button>
+          <t-button size="small" theme="primary" @click="submitTimeSet">确 定</t-button>
+        </t-form>
+      </t-dialog>
 
-      <el-button type="primary" size="small" @click="addNewTimeSet">新增时间</el-button>
-      <el-table :data="timeList" size="small" stripe height="400px">
-        <el-table-column prop="begTime" label="开始时间" width="120"></el-table-column>
-        <el-table-column prop="endTime" label="结束时间" width="90"></el-table-column>
-        <el-table-column prop="bookLimit" label="座位数量"></el-table-column>
-        <el-table-column label="状态" width="80">
+      <t-button theme="primary" size="small" @click="addNewTimeSet">新增时间</t-button>
+      <CustomTable rowKey="id" :data="timeList" size="small" stripe height="400px">
+        <TableColumn colKey="begTime" label="开始时间" width="120"></TableColumn>
+        <TableColumn colKey="endTime" label="结束时间" width="90"></TableColumn>
+        <TableColumn colKey="bookLimit" label="座位数量"></TableColumn>
+        <TableColumn label="状态" width="80">
           <template #default="scope">
-            <el-tag 
+            <t-tag 
               size="small" 
-              :type="scope.row.bookStat ? 'success' : 'danger'" 
+              :theme="scope.row.bookStat ? 'success' : 'danger'" 
               effect="plain"
             >
               {{ scope.row.bookStat ? '生效' : '失效' }}
-            </el-tag>
+            </t-tag>
           </template>
-        </el-table-column>
-        <el-table-column label="操作" width="110">
+        </TableColumn>
+        <TableColumn label="操作" width="110">
           <template #default="scope">
-            <el-button 
-              type="warning" 
-              icon="Edit" 
-              size="small" 
-              @click="editTimeListBtn(scope.row)"
-            ></el-button>
-            <el-button 
-              type="danger" 
-              icon="Delete" 
-              size="small" 
-              @click="deleteTimeList(scope.row.journo)"
-            ></el-button>
+            <t-button 
+              theme="warning" size="small" 
+              @click="editTimeListBtn(scope.row)"><template #icon><DynamicIcon name="edit" /></template></t-button>
+            <t-button 
+              theme="danger" size="small" 
+              @click="deleteTimeList(scope.row.journo)"><template #icon><DynamicIcon name="delete" /></template></t-button>
           </template>
-        </el-table-column>
-      </el-table>
+        </TableColumn>
+      </CustomTable>
     </div>
     <template #footer>
       <span class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
+        <t-button @click="dialogVisible = false">取 消</t-button>
       </span>
     </template>
-  </el-dialog>
+  </t-dialog>
 </template>
 
 <script setup>
 import { ref, reactive, computed, onMounted, watch } from 'vue'
-import { ElMessage } from 'element-plus'
+import { MessagePlugin } from 'tdesign-vue-next'
 import { bookInfoApi } from '@/api/edu/bookInfo'
 
 // Props
@@ -152,7 +146,7 @@ onMounted(() => {
 // Methods
 const getTimeList = async () => {
   const res = await bookInfoApi.getBookTimeList({ bookCode: props.bookCode })
-  if (res.code !== 200) return ElMessage.error(res.msg)
+  if (res.code !== 200) return MessagePlugin.error(res.msg)
   timeList.value = res.data
 }
 
@@ -172,7 +166,7 @@ const editTimeListBtn = (row) => {
 
 const submitTimeSet = async () => {
   const valid = await timeRef.value.validate()
-  if (!valid) return
+  if (valid !== true) return
 
   try {
     let res
@@ -182,19 +176,19 @@ const submitTimeSet = async () => {
       res = await bookInfoApi.addBookTime(timeListForm)
     }
 
-    if (res.code !== 200) return ElMessage.error(res.msg)
-    ElMessage.success(res.msg)
+    if (res.code !== 200) return MessagePlugin.error(res.msg)
+    MessagePlugin.success(res.msg)
     getTimeList()
     timeSetDialog.value = false
   } catch (error) {
-    ElMessage.error('操作失败，请重试')
+    MessagePlugin.error('操作失败，请重试')
   }
 }
 
 const deleteTimeList = async (journo) => {
   const res = await bookInfoApi.deleteBookTime(journo)
-  if (res.code !== 200) return ElMessage.error(res.msg)
-  ElMessage.success(res.msg)
+  if (res.code !== 200) return MessagePlugin.error(res.msg)
+  MessagePlugin.success(res.msg)
   getTimeList()
   timeSetDialog.value = false
 }

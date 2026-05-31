@@ -1,42 +1,32 @@
 <template>
-  <el-card class="box-card">
-    <el-row>
-      <el-col :span="6">
+  <t-card class="box-card">
+    <t-row>
+      <t-col :span="3">
         <span>
-          <el-date-picker
-            size="small"
-            style="width: 70%"
-            v-model="dataRange"
-            @change="daterangeChange"
-            type="daterange"
-            value-format="YYYY-MM-DD"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-          />
+          <t-date-range-picker size="small" style="width: 100%" v-model="dataRange" @change="daterangeChange" :placeholder="['开始日期', '结束日期']" />
         </span>
-      </el-col>
-      <el-col :span="6">
+      </t-col>
+      <t-col :span="3">
         <span>
-          <el-select
+          <t-select
             size="small"
             v-model="queryInfo.fileSuffix"
             @change="getTableList"
             placeholder="请选择,文件扩展名"
           >
-            <el-option value="" label="全部"></el-option>
-            <el-option
+            <t-option value="" label="全部"></t-option>
+            <t-option
               v-for="item in suffix"
               :key="item"
               :value="item"
               :label="item"
-            ></el-option>
-          </el-select>
+            ></t-option>
+          </t-select>
         </span>
-      </el-col>
-      <el-col :span="6">
+      </t-col>
+      <t-col :span="3">
         <span>
-          <el-input
+          <t-input
             size="small"
             v-model="queryInfo.fileName"
             @change="getTableList"
@@ -44,61 +34,52 @@
             placeholder="使用文件名模糊查询"
           />
         </span>
-      </el-col>
-    </el-row>
+      </t-col>
+    </t-row>
 
-    <el-table
+    <CustomTable rowKey="id"
       :data="tableData"
       size="small"
       sortable="custom"
       @sort-change="tableSort"
-      height="calc(100vh - 325px)"
-    >
-      <el-table-column
+      height="calc(100vh - 325px)">
+      <TableColumn
         prop="fileId"
         sortable="custom"
         label="文件ID"
-        width="150"
-      ></el-table-column>
-      <el-table-column
+        width="150"></TableColumn>
+      <TableColumn
         prop="fileName"
         sortable="custom"
         label="文件名称"
-        show-overflow-tooltip
-      ></el-table-column>
-      <el-table-column
+        ellipsis></TableColumn>
+      <TableColumn
         prop="fileSuffix"
         sortable="custom"
         label="扩展名"
-        width="100"
-      ></el-table-column>
-      <el-table-column
+        width="100"></TableColumn>
+      <TableColumn
         prop="filePath"
         sortable="custom"
         label="文件地址"
-        width="120"
-      ></el-table-column>
-      <el-table-column
+        width="120"></TableColumn>
+      <TableColumn
         prop="userId"
         sortable="custom"
         label="上传用户"
-        width="100"
-      ></el-table-column>
-      <el-table-column
+        width="100"></TableColumn>
+      <TableColumn
         prop="dataDate"
         sortable="custom"
         label="上传时间"
         width="160"
-        show-overflow-tooltip
-      ></el-table-column>
-      <el-table-column sortable="custom" label="操作" width="120">
+        ellipsis></TableColumn>
+      <TableColumn sortable="custom" label="操作" width="120">
         <template #default="scope">
-          <el-button-group>
-            <el-button
-              type="primary"
-              size="small"
-              :icon="Picture"
-              :disabled="
+          <t-button-group>
+            <t-button
+              theme="primary"
+              size="small":disabled="
                 scope.row.fileSuffix !== 'jpg' && scope.row.fileSuffix !== 'png'
               "
               @click="
@@ -112,12 +93,10 @@
                     scope.row.fileSuffix
                 )
               "
-            ></el-button>
-            <el-button
-              type="primary"
-              size="small"
-              :icon="Download"
-              @click="
+            ><template #icon><DynamicIcon name="image" /></template></t-button>
+            <t-button
+              theme="primary"
+              size="small" @click="
                 downloadFile(
                   fsURL +
                     'upload/getFile/' +
@@ -128,39 +107,39 @@
                     scope.row.fileSuffix
                 )
               "
-            ></el-button>
-          </el-button-group>
+            ><template #icon><DynamicIcon name="download" /></template></t-button>
+          </t-button-group>
         </template>
-      </el-table-column>
-    </el-table>
+      </TableColumn>
+    </CustomTable>
 
-    <el-dialog title="图片预览" width="700px" v-model="imageViewDialog">
-      <el-image
+    <t-dialog header="图片预览" width="700px" v-model:visible="imageViewDialog">
+      <t-image
         style="width: 600px; height: 500px"
         :src="imgUrl"
         fit="contain"
-      ></el-image>
-    </el-dialog>
+      ></t-image>
+    </t-dialog>
 
     <!-- 分页组件 -->
     <div class="pagination-container">
-      <el-pagination
-        @size-change="handleSizeChange"
+      <t-pagination
+        @page-size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-sizes="pageSizes"
+        :current="currentPage"
+        :page-size-options="pageSizes"
         :page-size="queryInfo.pageSize"
-        layout="total, sizes, prev, pager, next, jumper"
+
         :total="total"
       />
     </div>
-  </el-card>
+  </t-card>
 </template>
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
-import { ElMessage } from 'element-plus'
-import { Picture, Download } from '@element-plus/icons-vue'
+import { MessagePlugin } from 'tdesign-vue-next'
+import { ImageIcon, DownloadIcon } from 'tdesign-icons-vue-next'
 import { userFileApi } from '@/api/admin/userFiles' // 导入API函数
 
 // 环境变量
@@ -199,12 +178,12 @@ const getSuffixList = async () => {
   try {
     const res = await userFileApi.getSuffix()
     if (res.code !== 200) {
-      ElMessage.error(res.msg)
+      MessagePlugin.error(res.msg)
       return
     }
     suffix.value = res.data
   } catch (error) {
-    ElMessage.error('获取文件扩展名失败')
+    MessagePlugin.error('获取文件扩展名失败')
     console.error(error)
   }
 }
@@ -214,13 +193,13 @@ const getTableList = async () => {
   try {
     const res = await userFileApi.getFileList(queryInfo)
     if (res.code !== 200) {
-      ElMessage.error(res.msg)
+      MessagePlugin.error(res.msg)
       return
     }
     tableData.value = res.data.list
     total.value = res.data.total
   } catch (error) {
-    ElMessage.error('获取文件列表失败')
+    MessagePlugin.error('获取文件列表失败')
     console.error(error)
   }
 }
@@ -252,9 +231,9 @@ const handleCurrentChange = (page) => {
 
 // 表格排序
 const tableSort = (data) => {
-  if (data.order === 'ascending') queryInfo.orderType = ' asc '
-  else if (data.order === 'descending') queryInfo.orderType = ' desc '
-  queryInfo.order = data.prop
+  if (!data.descending) queryInfo.orderType = ' asc '
+  else if (data.descending) queryInfo.orderType = ' desc '
+  queryInfo.order = data.sortBy
   getTableList()
 }
 
@@ -284,12 +263,12 @@ onMounted(() => {
     margin-left: 20px;
   }
 
-  .el-select {
+  .t-select {
     width: 55%;
   }
 }
 
-.el-link {
+.t-link {
   font-size: 12px;
 }
 

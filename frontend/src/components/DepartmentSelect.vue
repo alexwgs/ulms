@@ -1,10 +1,10 @@
 <template>
-  <el-tree-select
+  <t-tree-select
     :size="moduleSize"
     :data="treeData"
     :clearable="allowClear"
     :max-tag-count="maxTag"
-    :show-checkbox="mutiple"
+    :checkable="mutiple"
     :placeholder="placeholder"
     :check-strictly="false"
     :multiple="mutiple"
@@ -17,7 +17,7 @@
       children: 'children'
     }"
     style="width: 300px"
-    :check-on-click-node="true"
+    :expand-on-click-node="true"
     :render-after-expand="false"
     :value-key="'id'"
   />

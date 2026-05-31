@@ -1,147 +1,134 @@
 <template>
-  <el-card class="report-card">
+  <t-card class="report-card">
     <!-- 筛选条件区域 -->
-    <el-row :gutter="15" class="filter-row">
-      <el-col :span="8">
-        <el-date-picker
-          size="small"
-          v-model="dataRange"
-          @change="daterangeChange"
-          type="daterange"
-          value-format="YYYY-MM-DD"
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          class="date-picker"
-        />
-      </el-col>
-      <el-col :span="6">
-        <el-select
+    <t-row :gutter="15" class="filter-row">
+      <t-col :span="4">
+        <t-date-range-picker size="small" v-model="dataRange" @change="daterangeChange" :placeholder="['开始日期', '结束日期']" class="date-picker" />
+      </t-col>
+      <t-col :span="3">
+        <t-select
           v-model="queryInfo.query"
           filterable
-          remote
-          reserve-keyword
           placeholder="请输入工具名称(可搜索)"
-          :remote-method="remoteMethod"
+          @search="remoteMethod"
           :loading="loading"
           size="small"
           @change="getList"
         >
-          <el-option
+          <t-option
             v-for="(item, index) in rpaToolNameList"
             :key="index"
             :label="item"
             :value="item"
           />
-        </el-select>
-      </el-col>
-      <el-col :span="6">
+        </t-select>
+      </t-col>
+      <t-col :span="3">
         <EmployeeSelect
           v-model="queryInfo.runUser"
           placeholder="选择运行人筛选"
           size="small"
           @update:modelValue="getList"
         />
-      </el-col>
-      <el-col :span="4">
-        <el-button
-          type="primary"
+      </t-col>
+      <t-col :span="2">
+        <t-button
+          theme="primary"
           size="small"
           @click="downloadExcelReport"
           :loading="downloadLoading"
         >
           下载报表
-        </el-button>
-      </el-col>
-    </el-row>
+        </t-button>
+      </t-col>
+    </t-row>
 
     <!-- 操作说明 -->
-    <el-alert
+    <t-alert
       title="操作说明"
-      type="info"
+      theme="info"
       :closable="false"
-      description="请正确使用RPA工具配置：1.新建服务时务必完整填写相关信息。2.无需参数的可不配置参数模版，如有请务必准确配置。3.权限，如不配置则全员可查看"
+      message="请正确使用RPA工具配置：1.新建服务时务必完整填写相关信息。2.无需参数的可不配置参数模版，如有请务必准确配置。3.权限，如不配置则全员可查看"
       class="alert-message"
     />
 
     <!-- 数据表格 -->
-    <el-table
+    <CustomTable rowKey="id"
       :data="list"
       size="small"
       height="calc(100vh - 450px)"
       stripe
       @sort-change="tableSort"
       class="report-table"
-      v-loading="loading"
-    >
-      <el-table-column
+      :loading="loading">
+      <TableColumn
         prop="toolName"
         label="工具名称"
         sortable="custom"
-        show-overflow-tooltip
+        ellipsis
         min-width="120"
       />
-      <el-table-column
+      <TableColumn
         prop="runTime"
         label="运行时间"
         sortable="custom"
-        show-overflow-tooltip
+        ellipsis
         min-width="150"
       />
-      <el-table-column
+      <TableColumn
         prop="runParam"
         label="运行参数"
         sortable="custom"
-        show-overflow-tooltip
+        ellipsis
         min-width="150"
       />
-      <el-table-column
+      <TableColumn
         prop="returnCode"
         label="运行情况"
         sortable="custom"
-        show-overflow-tooltip
+        ellipsis
         min-width="100"
       />
-      <el-table-column
+      <TableColumn
         prop="returnMessage"
         label="运行信息"
         sortable="custom"
-        show-overflow-tooltip
+        ellipsis
         min-width="150"
       />
-      <el-table-column
+      <TableColumn
         prop="returnTime"
         label="返回时间"
         sortable="custom"
-        show-overflow-tooltip
+        ellipsis
         min-width="150"
       />
-      <el-table-column label="运行经办" width="140">
+      <TableColumn label="运行经办" width="140">
         <template #default="{ row }">
           {{
             row.user?.ploName ? `${row.user.ploName}/${row.user.ploNum}` : '-'
           }}
         </template>
-      </el-table-column>
-    </el-table>
+      </TableColumn>
+    </CustomTable>
 
     <!-- 分页组件 -->
-    <el-pagination
-      @size-change="handleSizeChange"
+    <t-pagination
+      @page-size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-      :current-page="queryInfo.pageNum"
-      :page-sizes="[20, 40, 100, 200]"
+      :current="queryInfo.pageNum"
+      :page-size-options="[20, 40, 100, 200]"
       :page-size="queryInfo.pageSize"
-      layout="total, sizes, prev, pager, next, jumper"
+
       :total="total"
       class="pagination"
     />
-  </el-card>
+  </t-card>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { ElMessage } from 'element-plus'
+import { MessagePlugin } from 'tdesign-vue-next'
 import { downloadExcel } from '@/utils/request'
 import { getRpaReportList, getRpaToolName } from '@/api/rpa/rpa.js'
 import EmployeeSelect from '@/components/EmployeeSelect.vue'
@@ -173,7 +160,7 @@ const getList = async () => {
     list.value = res.data.list
     total.value = res.data.total
   } catch (error) {
-    ElMessage.error(error.message || '获取报表数据失败')
+    MessagePlugin.error(error.message || '获取报表数据失败')
   } finally {
     loading.value = false
   }
@@ -185,7 +172,7 @@ const remoteMethod = (query) => {
       loading.value = false
       const res = await getRpaToolName(query)
       if (res.code !== 200) {
-        ElMessage.error(res.msg || '获取RPA工具名称失败')
+        MessagePlugin.error(res.msg || '获取RPA工具名称失败')
         return
       }
       rpaToolNameList.value = res.data
@@ -220,9 +207,9 @@ const handleCurrentChange = (page) => {
 }
 
 // 表格排序
-const tableSort = ({ prop, order }) => {
-  queryInfo.value.order = prop
-  queryInfo.value.orderType = order === 'ascending' ? 'asc' : 'desc'
+const tableSort = ({ sortBy, descending }) => {
+  queryInfo.value.order = sortBy
+  queryInfo.value.orderType = !descending ? 'asc' : 'desc'
   getList()
 }
 
@@ -236,7 +223,7 @@ const downloadExcelReport = async () => {
       'RPA工具使用情况报表.xlsx'
     )
   } catch (error) {
-    ElMessage.error('下载失败: ' + (error.message || '未知错误'))
+    MessagePlugin.error('下载失败: ' + (error.message || '未知错误'))
   } finally {
     downloadLoading.value = false
   }

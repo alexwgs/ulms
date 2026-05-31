@@ -1,86 +1,86 @@
 <template>
-  <el-dialog
-    title="附件管理"
-    v-model="dialogVisible"
-    :close-on-click-modal="false"
+  <t-dialog
+    header="附件管理"
+    v-model:visible="dialogVisible"
+    :close-on-overlay-click="false"
     width="50%"
-    :before-close="handleClose"
+    @before-close="handleClose"
   >
-    <el-alert
+    <t-alert
       title="操作说明"
-      type="info"
+      theme="info"
       :closable="false"
-      description="评价天数设置为0则表示不限制评价天数。"
+      message="评价天数设置为0则表示不限制评价天数。"
     />
-    <el-row :gutter="15">
-      <el-form
+    <t-row :gutter="15">
+      <t-form
         ref="satisfyForm"
-        :model="satisfyFormData"
+        :data="satisfyFormData"
         :rules="rules"
         size="small"
         label-width="100px"
         style="width: 100%"
       >
-        <el-col :span="12">
-          <el-form-item label="是否评价" prop="ifEval">
-            <el-select
+        <t-col :span="6">
+          <t-form-item label="是否评价" name="ifEval">
+            <t-select
               v-model="satisfyFormData.ifEval"
               placeholder="请选择是否评价"
               @change="ifEvalChange"
               clearable
               :style="{ width: '100%' }"
             >
-              <el-option label="无需评价" :value="0"></el-option>
-              <el-option label="需要评价" :value="1"></el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="评价天数" prop="evalDate">
-            <el-input
+              <t-option label="无需评价" :value="0"></t-option>
+              <t-option label="需要评价" :value="1"></t-option>
+            </t-select>
+          </t-form-item>
+        </t-col>
+        <t-col :span="6">
+          <t-form-item label="评价天数" name="evalDate">
+            <t-input
               v-model="satisfyFormData.evalDate"
               type="number"
               placeholder="学习后几天内完成，0为不限制"
               :maxlength="3"
               :style="{ width: '100%' }"
               :disabled="satisfyFormData.ifEval == 0"
-            ></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="24">
-          <el-form-item label="评价模板" prop="tempId">
-            <el-select
+            ></t-input>
+          </t-form-item>
+        </t-col>
+        <t-col :span="12">
+          <t-form-item label="评价模板" name="tempId">
+            <t-select
               v-model="satisfyFormData.tempId"
               placeholder="请选择评价模板"
               clearable
               :style="{ width: '100%' }"
               :disabled="satisfyFormData.ifEval == 0"
             >
-              <el-option label="无" value=""></el-option>
-              <el-option
+              <t-option label="无" value=""></t-option>
+              <t-option
                 v-for="item in tempList"
                 :key="item.tempId"
                 :label="item.tempName"
                 :value="item.tempId"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-      </el-form>
-    </el-row>
+              ></t-option>
+            </t-select>
+          </t-form-item>
+        </t-col>
+      </t-form>
+    </t-row>
     <template #footer>
       <span class="dialog-footer">
-        <el-button size="small" @click="dialogVisible = false">取 消</el-button>
-        <el-button size="small" type="primary" @click="handelConfirm"
-          >更 新</el-button
+        <t-button size="small" @click="dialogVisible = false">取 消</t-button>
+        <t-button size="small" theme="primary" @click="handelConfirm"
+          >更 新</t-button
         >
       </span>
     </template>
-  </el-dialog>
+  </t-dialog>
 </template>
 <script setup>
 import { ref, reactive } from 'vue'
-import { ElMessage } from 'element-plus'
+import { MessagePlugin } from 'tdesign-vue-next'
 import { evaluateApi } from '@/api/college/evaluate'
 import { courseApi } from '@/api/college/course'
 
@@ -126,23 +126,23 @@ const show = (course) => {
 const getTempleteList = async () => {
   try {
     const res = await evaluateApi.getEvaluateTemplateList({ tempStat: 1 })
-    if (res.code !== 200) return ElMessage.error(res.msg)
+    if (res.code !== 200) return MessagePlugin.error(res.msg)
     tempList.value = res.data
   } catch (error) {
-    ElMessage.error('获取评价模板列表失败')
+    MessagePlugin.error('获取评价模板列表失败')
   }
 }
 
 const handelConfirm = async () => {
   try {
     const res = await courseApi.updateCourse(satisfyFormData)
-    if (res.code !== 200) return ElMessage.error(res.msg)
-    ElMessage.success(res.msg)
+    if (res.code !== 200) return MessagePlugin.error(res.msg)
+    MessagePlugin.success(res.msg)
     emit('refresh')
     dialogVisible.value = false
   } catch (error) {
     console.error(error)
-    ElMessage.error('更新评价配置失败')
+    MessagePlugin.error('更新评价配置失败')
   }
 }
 

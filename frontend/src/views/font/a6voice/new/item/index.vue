@@ -1,65 +1,65 @@
 <template>
-  <el-card class="box-card">
-    <el-page-header @back="() => router.back()" content="创建新项目"></el-page-header>
-    <el-divider></el-divider>
-    <el-form ref="formRef" :model="form" label-width="80px" size="small" :rules="formRules">
-      <el-form-item label="板块" prop="category">
-        <el-radio-group v-model="form.category" size="small" @change="getExamin">
-          <el-radio-button v-for="item in dictStore.getDictByNames('cyt_item_category', 1).filter(
+  <t-card class="box-card">
+    <div @back="() => router.back()" content="创建新项目"></div>
+    <t-divider></t-divider>
+    <t-form ref="formRef" :data="form" label-width="80px" size="small" :rules="formRules">
+      <t-form-item label="板块" name="category">
+        <t-radio-group v-model="form.category" size="small" @change="getExamin">
+          <t-radio-button v-for="item in dictStore.getDictByNames('cyt_item_category', 1).filter(
             (item) => item.status == 1
-          )" :key="'2' + item.code" :label="parseInt(item.code)">{{ item.codeval }}</el-radio-button>
-        </el-radio-group>
+          )" :key="'2' + item.code" :label="parseInt(item.code)">{{ item.codeval }}</t-radio-button>
+        </t-radio-group>
         {{ examineInfo }}
-      </el-form-item>
-      <el-form-item label="标题" prop="title">
-        <el-input size="small" v-model="form.title"></el-input>
-      </el-form-item>
-      <el-form-item label="正文" prop="content">
+      </t-form-item>
+      <t-form-item label="标题" name="title">
+        <t-input size="small" v-model="form.title"></t-input>
+      </t-form-item>
+      <t-form-item label="正文" name="content">
         <WangEditor v-model="form.content"></WangEditor>
-      </el-form-item>
-      <el-form-item label="责任部门" prop="restDept">
-        <el-select size="small" style="width: 100%" @change="changeRespDept" v-model="respDepts" multiple filterable
+      </t-form-item>
+      <t-form-item label="责任部门" name="restDept">
+        <t-select size="small" style="width: 100%" @change="changeRespDept" v-model="respDepts" multiple filterable
           allow-create default-first-option placeholder="请选择责任部门（可多选）">
-          <el-option v-for="item in dictStore.getDictByNames('cyt_artical_resp_dept', 1)" :key="item.id"
-            :label="item.codeval" :value="item.code"></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="封面图片" prop="cover">
-        <el-upload class="avatar-upload" :action="fsURL + 'upload/cytCover'" :show-file-list="false"
-          :on-success="handleCoverSuccess" :before-upload="beforeCoverUpload">
+          <t-option v-for="item in dictStore.getDictByNames('cyt_artical_resp_dept', 1)" :key="item.id"
+            :label="item.codeval" :value="item.code"></t-option>
+        </t-select>
+      </t-form-item>
+      <t-form-item label="封面图片" name="cover">
+        <t-upload class="avatar-upload" :action="fsURL + 'upload/cytCover'" :show-file-list="false"
+          @success="handleCoverSuccess" :before-upload="beforeCoverUpload">
           <img v-if="form.cover" :src="fsURL + form.cover" class="avatar" />
-          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-        </el-upload>
-      </el-form-item>
-      <el-form-item label="其他附件" prop="files">
-        <el-upload class="upload-demo" :action="fsURL + 'upload/file/cytFile'" :on-success="uploadFileSuccess"
-          :on-remove="handleRemove" :before-remove="beforeRemove" multiple :limit="3" :on-exceed="handleExceed"
+          <i v-else class="avatar-uploader-icon"></i>
+        </t-upload>
+      </t-form-item>
+      <t-form-item label="其他附件" name="files">
+        <t-upload class="upload-demo" :action="fsURL + 'upload/file/cytFile'" @success="uploadFileSuccess"
+          @remove="handleRemove" :before-remove="beforeRemove" multiple :limit="3" @exceed="handleExceed"
           :file-list="fileList">
-          <el-button size="small" type="primary">点击上传</el-button>
-          <div class="el-upload__tip">
+          <t-button size="small" theme="primary">点击上传</t-button>
+          <div>
             限制最多三个文件。请勿上传与项目无关的附件，且单个文件不超过 5MB
           </div>
-        </el-upload>
-      </el-form-item>
-      <el-form-item v-if="categoryFlags && categoryFlags.anonFlag" label="是否匿名" prop="anonFlag">
-        <el-radio-group v-model="form.anonFlag" size="small">
-          <el-radio-button label="0">实名</el-radio-button>
-          <el-radio-button label="1">匿名</el-radio-button>
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item>
-        <el-button size="small" type="primary" :disabled="form.content.length < 1 ? true : false"
-          @click="onSubmit(3)">立即发布</el-button>
-        <el-button size="small" @click="onSubmit(2)">存草稿</el-button>
-      </el-form-item>
-    </el-form>
-  </el-card>
+        </t-upload>
+      </t-form-item>
+      <t-form-item v-if="categoryFlags && categoryFlags.anonFlag" label="是否匿名" name="anonFlag">
+        <t-radio-group v-model="form.anonFlag" size="small">
+          <t-radio-button value="0">实名</t-radio-button>
+          <t-radio-button value="1">匿名</t-radio-button>
+        </t-radio-group>
+      </t-form-item>
+      <t-form-item>
+        <t-button size="small" theme="primary" :disabled="form.content.length < 1 ? true : false"
+          @click="onSubmit(3)">立即发布</t-button>
+        <t-button size="small" @click="onSubmit(2)">存草稿</t-button>
+      </t-form-item>
+    </t-form>
+  </t-card>
 </template>
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { ElMessage } from 'element-plus'
+import { MessagePlugin } from 'tdesign-vue-next'
 import { httpInstance } from '@/utils/request'
 import WangEditor from '@/components/WangEditor.vue'
 import { useDictStore } from '@/stores'
@@ -110,7 +110,7 @@ const categoryFlags = ref({})
 const initArtical = async () => {
   if (id.value !== 'new') {
     const res = await httpInstance.get(`cyt/artical/${id.value}`)
-    if (res.code !== 200) return ElMessage.error(res.msg)
+    if (res.code !== 200) return MessagePlugin.error(res.msg)
     Object.assign(form, res.data)
     respDepts.value = form.respDept.split(',')
     if (form.files) {
@@ -142,14 +142,14 @@ const onSubmit = async (status) => {
     res = await httpInstance.post('cyt/artical', form)
   }
   
-  if (res.code !== 200) return ElMessage.error(res.msg)
-  ElMessage.success(res.msg)
+  if (res.code !== 200) return MessagePlugin.error(res.msg)
+  MessagePlugin.success(res.msg)
   goBack()
 }
 
 const handleCoverSuccess = async (res, file) => {
-  if (res.code !== 200) return ElMessage.error(res.msg)
-  ElMessage.success(res.msg)
+  if (res.code !== 200) return MessagePlugin.error(res.msg)
+  MessagePlugin.success(res.msg)
   form.cover = res.path
 }
 
@@ -157,10 +157,10 @@ const beforeCoverUpload = (file) => {
   const isJPG = file.type === 'image/jpeg'
   const isLimitSize = file.size / 1024 < 512
   if (!isJPG) {
-    ElMessage.error('上传封面图片只能是 JPG 格式!')
+    MessagePlugin.error('上传封面图片只能是 JPG 格式!')
   }
   if (!isLimitSize) {
-    ElMessage.error('上传封面图片大小不能超过 512KB!')
+    MessagePlugin.error('上传封面图片大小不能超过 512KB!')
   }
   return isJPG && isLimitSize
 }
@@ -179,13 +179,13 @@ const uploadFileSuccess = (res, fileList) => {
 }
 
 const handleExceed = (files, fileList) => {
-  ElMessage.warning(
+  MessagePlugin.warning(
     `当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`
   )
 }
 
 const beforeRemove = (file, fileList) => {
-  return ElMessageBox.confirm(`确定移除 ${file.name} ？`, {
+  return DialogPlugin.confirm(`确定移除 ${file.name} ？`, {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'

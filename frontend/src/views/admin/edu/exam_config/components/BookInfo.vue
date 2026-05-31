@@ -1,113 +1,109 @@
 <template>
   <div>
-    <el-dialog
-      title="预约名单"
-      v-model="dialogVisible"
-      :close-on-click-modal="false"
+    <t-dialog
+      header="预约名单"
+      v-model:visible="dialogVisible"
+      :close-on-overlay-click="false"
       width="70%"
     >
-      <el-row :gutter="10">
-        <el-col :span="10">
+      <t-row :gutter="10">
+        <t-col :span="5">
           <EmployeeSelect v-model="queryInfo.query" :clearable="true" />
-        </el-col>
-        <el-col :span="4">
-          <el-button size="small" type="primary" @click="getBookList()"
-            >查询</el-button
+        </t-col>
+        <t-col :span="2">
+          <t-button size="small" theme="primary" @click="getBookList()"
+            >查询</t-button
           >
-          <el-button
+          <t-button
             size="small"
-            type="primary"
+            theme="primary"
             @click="forceBook()"
             :disabled="queryInfo.query == ''"
-            >强制预约</el-button
+            >强制预约</t-button
           >
-        </el-col>
-      </el-row>
+        </t-col>
+      </t-row>
 
-      <el-table
+      <CustomTable rowKey="id"
         :data="bookListData"
         size="small"
         height="400px"
         stripe
         @sort-change="tableSort"
-        style="width: 100%"
-      >
-        <el-table-column prop="deptNum" label="科室" width="110px">
+        style="width: 100%">
+        <TableColumn colKey="deptNum" label="科室" width="110px">
           <template #default="scope">{{ scope.row.user.deptName }}</template>
-        </el-table-column>
-        <el-table-column prop="deptGroup" label="组别" width="110px">
+        </TableColumn>
+        <TableColumn colKey="deptGroup" label="组别" width="110px">
           <template #default="scope">{{ scope.row.user.groupName }}</template>
-        </el-table-column>
-        <el-table-column
+        </TableColumn>
+        <TableColumn
           prop="ploNum"
           label="员编"
           sortable="custom"
           width="80px"
         />
-        <el-table-column prop="ploName" label="姓名" width="100px">
+        <TableColumn colKey="ploName" label="姓名" width="100px">
           <template #default="scope">{{ scope.row.user.ploName }}</template>
-        </el-table-column>
-        <el-table-column
+        </TableColumn>
+        <TableColumn
           label="预约状态"
           prop="listStat"
           width="100px"
-          sortable="custom"
-        >
+          sortable="custom">
           <template #default="scope">
             {{ dictStore.getDictLabel('sys_dict_status', scope.row.listStat) }}
           </template>
-        </el-table-column>
-        <el-table-column
+        </TableColumn>
+        <TableColumn
           prop="dateTime"
           label="预约时间"
           width="200px"
-          show-overflow-tooltip
+          ellipsis
           sortable="custom"
         />
-        <el-table-column
+        <TableColumn
           prop="bookDate"
           label="操作时间"
-          show-overflow-tooltip
+          ellipsis
           sortable="custom"
         />
-        <el-table-column label="操作" width="80px">
+        <TableColumn label="操作" width="80px">
           <template #default="scope">
-            <el-button
-              type="danger"
-              icon="delete"
-              size="small"
+            <t-button
+              theme="danger" size="small"
               @click="deleteUser(scope.row)"
               circle
-            />
+            ><template #icon><DynamicIcon name="delete" /></template></t-button>
           </template>
-        </el-table-column>
-      </el-table>
-      <el-pagination
-        @size-change="handleSizeChange"
+        </TableColumn>
+      </CustomTable>
+      <t-pagination
+        @page-size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-sizes="pageSizes"
+        :current="currentPage"
+        :page-size-options="pageSizes"
         :page-size="queryInfo.pageSize"
-        layout="total, sizes, prev, pager, next, jumper"
+
         :total="total"
       />
       <template #footer>
         <span class="dialog-footer">
-          <el-button size="small" @click="dialogVisible = false"
-            >取 消</el-button
+          <t-button size="small" @click="dialogVisible = false"
+            >取 消</t-button
           >
-          <el-button size="small" type="primary" @click="dialogVisible = false"
-            >确 定</el-button
+          <t-button size="small" theme="primary" @click="dialogVisible = false"
+            >确 定</t-button
           >
         </span>
       </template>
-    </el-dialog>
+    </t-dialog>
     <ExamBook ref="examBootRef" />
   </div>
 </template>
 <script setup>
 import { ref, reactive } from 'vue'
-import { ElMessage } from 'element-plus'
+import { MessagePlugin } from 'tdesign-vue-next'
 import { useDictStore } from '@/stores'
 import { bookInfoApi } from '@/api/edu/bookInfo'
 import EmployeeSelect from '@/components/EmployeeSelect.vue'
@@ -141,22 +137,22 @@ const show = (examCode) => {
 const getBookList = async () => {
   try {
     const res = await bookInfoApi.listBookList(queryInfo)
-    if (res.code !== 200) return ElMessage.error(res.msg)
+    if (res.code !== 200) return MessagePlugin.error(res.msg)
     bookListData.value = res.data.list
     total.value = res.data.total
   } catch (error) {
-    ElMessage.error('获取预约列表失败')
+    MessagePlugin.error('获取预约列表失败')
   }
 }
 
 const deleteUser = async (row) => {
   try {
     const res = await bookInfoApi.deleteBookList(row)
-    if (res.code !== 200) return ElMessage.error(res.msg)
-    ElMessage.success(res.msg)
+    if (res.code !== 200) return MessagePlugin.error(res.msg)
+    MessagePlugin.success(res.msg)
     getBookList()
   } catch (error) {
-    ElMessage.error('删除用户失败')
+    MessagePlugin.error('删除用户失败')
   }
 }
 
@@ -171,9 +167,9 @@ const handleCurrentChange = (page) => {
 }
 
 const tableSort = (data) => {
-  if (data.order === 'ascending') queryInfo.orderType = ' asc '
-  else if (data.order === 'descending') queryInfo.orderType = ' desc '
-  queryInfo.order = data.prop
+  if (!data.descending) queryInfo.orderType = ' asc '
+  else if (data.descending) queryInfo.orderType = ' desc '
+  queryInfo.order = data.sortBy
   getBookList()
 }
 

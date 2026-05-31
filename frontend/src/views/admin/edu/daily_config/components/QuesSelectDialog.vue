@@ -1,53 +1,53 @@
 <template>
-  <el-dialog
-    title="请选择每日一招题目"
-    v-model="dialogVisible"
+  <t-dialog
+    header="请选择每日一招题目"
+    v-model:visible="dialogVisible"
     width="50%"
-    :close-on-click-modal="false"
+    :close-on-overlay-click="false"
   >
-    <el-input
+    <t-input
       placeholder="输入要搜索的内容"
       size="small"
       v-model="quesQuerInfo.query"
     >
       <template #prepend>
-        <el-select
+        <t-select
           v-model="quesQuerInfo.querytype"
           size="small"
           style="width: 100px"
           placeholder="请选择"
         >
-          <el-option label="题目" value="quesStem"></el-option>
-          <el-option label="题目编号" value="quesCode"></el-option>
-        </el-select>
+          <t-option label="题目" value="quesStem"></t-option>
+          <t-option label="题目编号" value="quesCode"></t-option>
+        </t-select>
       </template>
       <template #append>
-        <el-button icon="search" size="small" @click="getTableList"></el-button>
+        <t-button size="small" @click="getTableList"><template #icon><DynamicIcon name="search" /></template></t-button>
       </template>
-    </el-input>
-    <el-table :data="questionTable" height="400px">
-      <el-table-column property="quesStem" label="题干"></el-table-column>
-      <el-table-column property="quesStem" label="操作" width="80">
+    </t-input>
+    <CustomTable rowKey="id" :data="questionTable" height="400px">
+      <TableColumn property="quesStem" label="题干"></TableColumn>
+      <TableColumn property="quesStem" label="操作" width="80">
         <template #default="scope">
-          <el-button type="primary" size="small" @click="selectQues(scope.row)">
+          <t-button theme="primary" size="small" @click="selectQues(scope.row)">
             选择
-          </el-button>
+          </t-button>
         </template>
-      </el-table-column>
-    </el-table>
-    <el-pagination
+      </TableColumn>
+    </CustomTable>
+    <t-pagination
       @current-change="handleCurrentChange"
-      :current-page="currentPage"
+      :current="currentPage"
       :page-size="20"
-      layout="total, prev, pager, next, jumper"
+
       :total="total"
-    ></el-pagination>
-  </el-dialog>
+    ></t-pagination>
+  </t-dialog>
 </template>
 
 <script setup>
 import { ref, reactive, computed } from 'vue'
-import { ElMessage } from 'element-plus'
+import { MessagePlugin } from 'tdesign-vue-next'
 import { dailyConfigApi } from '@/api/edu/dailyConfig'
 
 // Props
@@ -84,12 +84,12 @@ const currentPage = ref(1)
 // Methods
 const getTableList = async () => {
   if (quesQuerInfo.query.length < 1) {
-    return ElMessage.error('请输入查询条件！')
+    return MessagePlugin.error('请输入查询条件！')
   }
 
   const res = await dailyConfigApi.getSensitiveQuesList(quesQuerInfo)
   if (res.code !== 200) {
-    return ElMessage.error(res.msg)
+    return MessagePlugin.error(res.msg)
   }
 
   questionTable.value = res.data.list

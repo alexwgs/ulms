@@ -1,39 +1,34 @@
 <template>
-  <el-popover placement="top" width="600" trigger="click">
-    <el-table :data="disputeData" size="small">
-      <el-table-column property="userAnswer" label="用户答案">
+  <t-popup placement="top" width="600" trigger="click">
+    <CustomTable rowKey="id" :data="disputeData" size="small">
+      <TableColumn property="userAnswer" label="用户答案">
         <template #default="scope">
-          <el-text
+          <p
             v-if="scope.row.userAnswer"
             v-for="(userSelection, index) in scope.row.userAnswer.split(',')"
             :key="index"
-            tag="p"
-            >{{ index + 1 }}. {{ userSelection }}</el-text
-          >
+          >{{ index + 1 }}. {{ userSelection }}</p>
         </template>
-      </el-table-column>
-      <el-table-column
+      </TableColumn>
+      <TableColumn
         property="disputeMemo"
         label="复议理由"
         width="150"
-        show-overflow-tooltip
-      ></el-table-column>
-      <el-table-column
+        ellipsis></TableColumn>
+      <TableColumn
         width="80"
         property="ploNum"
-        label="复议工号"
-      ></el-table-column>
-      <el-table-column
+        label="复议工号"></TableColumn>
+      <TableColumn
         width="100"
         property="dataDate"
         label="复议时间"
-        show-overflow-tooltip
-      ></el-table-column>
-    </el-table>
+        ellipsis></TableColumn>
+    </CustomTable>
     <template #reference>
-      <el-button size="small">复议{{ disputeCount }}人次</el-button>
+      <t-button size="small">复议{{ disputeCount }}人次</t-button>
     </template>
-  </el-popover>
+  </t-popup>
 </template>
 
 <script setup>

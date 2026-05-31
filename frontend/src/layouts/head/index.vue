@@ -3,25 +3,21 @@
     <div class="left-side">
       <div class="flex items-center">
         <img alt="logo" src="../../assets/a6.png" class="mr-2" />
-        <el-text class="text-lg font-bold">
+        <span class="text-lg font-bold">
           <!-- A6广场-管理后台 -->
-        </el-text>
+        </span>
       </div>
     </div>
 
     <!-- 一级导航菜单 -->
     <div class="main-nav">
-      <el-menu mode="horizontal" :default-active="activeFirstMenuId?.toString() || ''"
-        background-color="var(--el-bg-color)" text-color="var(--el-menu-text-color)"
-        active-text-color="var(--el-color-primary)" class="main-nav-menu">
-        <el-menu-item v-for="menu in firstLevelMenus" :key="menu.id" :index="menu.id.toString()"
+      <t-head-menu :value="activeFirstMenuId?.toString() || ''" theme="light" class="main-nav-menu">
+        <t-menu-item v-for="menu in firstLevelMenus" :key="menu.id" :value="menu.id.toString()"
           @click="handleFirstMenuClick(menu)">
-          <el-icon>
-            <component :is="menu.icon" />
-          </el-icon>
+          <DynamicIcon :name="mapIcon(menu.icon)" />
           <span>{{ menu.name }}</span>
-        </el-menu-item>
-      </el-menu>
+        </t-menu-item>
+      </t-head-menu>
     </div>
 
     <ul class="right-side">
@@ -29,64 +25,51 @@
         <userStatus />
       </li>
       <li>
-        <el-tooltip :content="theme === 'light' ? '切换至黑暗模式' : '切换至亮色模式'" placement="bottom">
-          <el-button class="nav-btn" type="default" circle @click="handleToggleTheme">
-            <template #icon>
-              <el-icon v-if="theme === 'dark'">
-                <moon />
-              </el-icon>
-              <el-icon v-else>
-                <sunny />
-              </el-icon>
-            </template>
-          </el-button>
-        </el-tooltip>
+        <t-tooltip :content="theme === 'light' ? '切换至黑暗模式' : '切换至亮色模式'" placement="bottom">
+          <t-button class="nav-btn" variant="outline" shape="circle" @click="handleToggleTheme">
+            <DynamicIcon :name="theme === 'dark' ? 'moon' : 'sunny'" />
+          </t-button>
+        </t-tooltip>
       </li>
       <li>
-        <el-tooltip content="消息通知" placement="bottom">
+        <t-tooltip content="消息通知" placement="bottom">
           <div class="message-box-trigger">
-            <el-badge :value="9" dot>
-              <el-button class="nav-btn" type="default" circle @click="setPopoverVisible">
-                <el-icon>
-                  <bell />
-                </el-icon>
-              </el-button>
-            </el-badge>
+            <t-badge :count="9" dot>
+              <t-button class="nav-btn" variant="outline" shape="circle" @click="setPopoverVisible">
+                <DynamicIcon name="notification" />
+              </t-button>
+            </t-badge>
           </div>
-        </el-tooltip>
-        <el-popover ref="popover" trigger="click" :width="400" popper-class="message-popover">
-          <template #reference>
-            <div ref="refBtn" class="ref-btn"></div>
+        </t-tooltip>
+        <t-popup ref="popover" trigger="click" :overlay-style="{ width: '400px' }">
+          <template #content>
+            <message-box />
           </template>
-          <message-box />
-        </el-popover>
+          <div ref="refBtn" class="ref-btn"></div>
+        </t-popup>
       </li>
       <li>
-        <el-dropdown trigger="click">
+        <t-dropdown trigger="click">
           <div class="flex items-center">
-            <el-avatar :size="32" :src="fsBaseURL + userStore.avatar" />
+            <t-avatar size="small" :image="fsBaseURL + userStore.avatar" />
           </div>
           <template #dropdown>
-            <el-dropdown-menu>
-              <el-dropdown-item @click="$router.push({ name: 'info' })">
-                <el-icon>
-                  <user />
-                </el-icon>
+            <t-dropdown-menu>
+              <t-dropdown-item @click="$router.push({ name: 'info' })">
+                <DynamicIcon name="user" />
                 <span class="ml-2">用户中心</span>
-              </el-dropdown-item>
-              <el-dropdown-item @click="$router.push({ name: 'setting' })">
-                <el-icon>
-                  <setting />
-                </el-icon>
+              </t-dropdown-item>
+              <t-dropdown-item @click="$router.push({ name: 'setting' })">
+                <DynamicIcon name="setting" />
                 <span class="ml-2">用户设置</span>
-              </el-dropdown-item>
-              <el-dropdown-item divided @click="logout">
-                <el-icon><switch-button /></el-icon>
+              </t-dropdown-item>
+              <t-dropdown-item divider @click="logout">
+                <DynamicIcon name="swap" />
                 <span class="ml-2">登出用户</span>
-              </el-dropdown-item>
-            </el-dropdown-menu>
+              </t-dropdown-item>
+            </t-dropdown-menu>
           </template>
-        </el-dropdown>
+        </t-dropdown>
       </li>
     </ul>
   </div>
@@ -97,6 +80,8 @@ import { ref, computed } from 'vue'
 import { useUserStore, useAppStore, useMenuStore, useOhtStore } from '@/stores'
 import router from '@/router'
 import userStatus from '@/layouts/head/components/userStatus.vue'
+import { mapIcon } from '@/utils/iconMap'
+import MessageBox from '@/components/MessageBox.vue'
 
 const userStore = useUserStore()
 const appStore = useAppStore()
@@ -127,7 +112,7 @@ const theme = computed(() => {
 const handleToggleTheme = () => {
   isDark.value = !isDark.value
 
-  // 切换Element Plus主题
+  // 切换暗黑/亮色主题
   if (isDark.value) {
     document.documentElement.classList.add('dark')
     appStore.toggleTheme('light')
@@ -197,8 +182,8 @@ const logout = async () => {
   justify-content: space-between;
   align-items: center;
   height: 100%;
-  background-color: var(--el-bg-color);
-  border-bottom: 1px solid var(--el-border-color);
+-color: var(--td-bg-color-container);
+  border-bottom: 1px solid var(--td-border-level-1-color);
 }
 
 .mr-2 {
@@ -223,13 +208,13 @@ const logout = async () => {
   }
 
   a {
-    color: var(--el-text-color-primary);
+    color: var(--td-text-color-primary);
     text-decoration: none;
   }
 
   .nav-btn {
-    border-color: var(--el-border-color);
-    color: var(--el-text-color-regular);
+    border-color: var(--td-border-level-1-color);
+    color: var(--td-text-color-primary);
     font-size: 16px;
   }
 
@@ -244,8 +229,8 @@ const logout = async () => {
 .message-popover {
   padding: 0 !important;
 
-  .el-popover__title {
-    margin-bottom: 0;
+  .t-popup__content {
+    padding: 0;
   }
 }
 </style>

@@ -1,212 +1,196 @@
 <template>
   <div>
-    <el-card class="main-container">
-      <el-row style="padding-bottom: 10px" :gutter="15">
-        <el-col :span="4">
-          <!-- <el-select v-model="queryInfo.groupId" size="small" placeholder="请选择过滤规则" @change="listDailyConfig">
-            <el-option label="生效" value="1"></el-option>
-            <el-option label="失效" value="0"></el-option>
-          </el-select> -->
-        </el-col>
-        <el-col :span="10">
-          <!-- <el-input placeholder="输入要搜索的内容" size="small" v-model="queryInfo.query">
-            <el-select v-model="queryInfo.querytype" slot="prepend" style="width:100px" placeholder="请选择">
-            <el-option label="题目" value="quesStem"></el-option>
-            <el-option label="业务类型" value="category"></el-option>
-            <el-option label="题目编号" value="quesCode"></el-option>
-            </el-select>
-            <el-button slot="append" icon="Search"></el-button>
-          </el-input> -->
-        </el-col>
-        <el-col :span="4">
-          <el-button
-            type="primary"
+    <t-card class="main-container">
+      <t-row style="padding-bottom: 10px" :gutter="15">
+        <t-col :span="2">
+          <!-- <t-select v-model="queryInfo.groupId" size="small" placeholder="请选择过滤规则" @change="listDailyConfig">
+            <t-option label="生效" value="1"></t-option>
+            <t-option label="失效" value="0"></t-option>
+          </t-select> -->
+        </t-col>
+        <t-col :span="5">
+          <!-- <t-input placeholder="输入要搜索的内容" size="small" v-model="queryInfo.query">
+            <t-select v-model="queryInfo.querytype" slot="prepend" style="width:100px" placeholder="请选择">
+            <t-option label="题目" value="quesStem"></t-option>
+            <t-option label="业务类型" value="category"></t-option>
+            <t-option label="题目编号" value="quesCode"></t-option>
+            </t-select>
+            <t-button slot="append" ><template #icon><DynamicIcon name="search" /></template>></t-button>
+          </t-input> -->
+        </t-col>
+        <t-col :span="2">
+          <t-button
+            theme="primary"
             size="small"
             @click="manageDailyConfig(null)"
-            >新增配置</el-button
+            >新增配置</t-button
           >
-        </el-col>
-        <el-col :span="4">
-          <!-- <el-button type="primary" size="small" @click="userListBatchBtn()">名单批量管理</el-button> -->
-        </el-col>
-      </el-row>
-      <el-table
+        </t-col>
+        <t-col :span="2">
+          <!-- <t-button theme="primary" size="small" @click="userListBatchBtn()">名单批量管理</t-button> -->
+        </t-col>
+      </t-row>
+      <CustomTable rowKey="id"
         :data="tableData"
         size="small"
         stripe
         style="width: 100%"
         height="calc(100vh - 300px)"
-        @sort-change="tableSort"
-      >
-        <el-table-column
+        @sort-change="tableSort">
+        <TableColumn
           label="答题日期"
           prop="quesDate"
           sortable="custom"
-          width="140"
-        ></el-table-column>
-        <el-table-column prop="groupName" label="分组名称">
+          width="140"></TableColumn>
+        <TableColumn colKey="groupName" label="分组名称">
           <template #default="scope">
-            <el-select
+            <t-select
               multiple
               v-model="scope.row.groupId"
               :disabled="true"
               size="small"
             >
-              <el-option label="不限制分组" value=""></el-option>
-              <el-option
+              <t-option label="不限制分组" value=""></t-option>
+              <t-option
                 v-for="item in groupList"
                 :key="item.groupId"
                 :label="item.groupName"
                 :value="item.groupId"
-              ></el-option>
-            </el-select>
+              ></t-option>
+            </t-select>
           </template>
-        </el-table-column>
-        <el-table-column
+        </TableColumn>
+        <TableColumn
           prop="optionRand"
           label="选项随机"
           sortable="custom"
-          width="140"
-        >
+          width="140">
           <template #default="scope">{{
             dictStore.getDictLabel('yes_or_not', scope.row.optionRand)
           }}</template>
-        </el-table-column>
-        <el-table-column
+        </TableColumn>
+        <TableColumn
           label="题目编号"
           prop="quesCode"
           sortable="custom"
-          width="140"
-        >
+          width="140">
           <template #default="scope">
             <text>{{
               scope.row.quesCode ? scope.row.quesCode : '未配置'
             }}</text>
           </template>
-        </el-table-column>
-        <el-table-column prop="articalId" label="公布栏配置">
+        </TableColumn>
+        <TableColumn colKey="articalId" label="公布栏配置">
           <template #default="scope">
-            <el-button
+            <t-button
               :type="scope.row.articalId ? 'success' : 'danger'"
               size="small"
               @click="manageArticalBtn(scope.row)"
               link
               >{{
                 scope.row.articalId ? '已配置[修改]' : '未配置[新增]'
-              }}</el-button
+              }}</t-button
             >
           </template>
-        </el-table-column>
-        <el-table-column prop="handleDate" label="操作" width="100">
+        </TableColumn>
+        <TableColumn colKey="handleDate" label="操作" width="100">
           <template #default="scope">
-            <el-button
-              type="primary"
-              icon="Edit"
-              size="small"
-              @click="manageDailyConfig(scope.row)"
-            ></el-button>
-            <el-button
-              type="danger"
-              icon="Delete"
-              size="small"
-              @click="handleDeleteDailyConfig(scope.row.id)"
-            ></el-button>
+            <t-button
+              theme="primary" size="small"
+              @click="manageDailyConfig(scope.row)"><template #icon><DynamicIcon name="edit" /></template></t-button>
+            <t-button
+              theme="danger" size="small"
+              @click="handleDeleteDailyConfig(scope.row.id)"><template #icon><DynamicIcon name="delete" /></template></t-button>
           </template>
-        </el-table-column>
-      </el-table>
-      <el-pagination
-        @size-change="handleSizeChange"
+        </TableColumn>
+      </CustomTable>
+      <t-pagination
+        @page-size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :current-page="queryInfo.pageNum"
-        :page-sizes="pageSizes"
+        :current="queryInfo.pageNum"
+        :page-size-options="pageSizes"
         :page-size="queryInfo.pageSize"
-        layout="total, sizes, prev, pager, next, jumper"
+
         :total="total"
-      ></el-pagination>
-    </el-card>
+      ></t-pagination>
+    </t-card>
 
     <!-- 配置维护对话框 -->
-    <el-dialog
-      title="配置维护"
-      v-model="dailyConfigVisible"
+    <t-dialog
+      header="配置维护"
+      v-model:visible="dailyConfigVisible"
       width="60%"
-      :close-on-click-modal="false"
+      :close-on-overlay-click="false"
     >
-      <el-form
-        :model="form"
+      <t-form
+        :data="form"
         :rules="rules"
         size="small"
         ref="formRef"
         label-width="100px"
         class="demo-ruleForm"
       >
-        <el-form-item label="分组ID" prop="groupId">
-          <el-select
+        <t-form-item label="分组ID" name="groupId">
+          <t-select
             v-model="form.groupId"
             multiple
             collapse-tags
             style="width: 100%"
             placeholder="若选[不限制分组]，禁止多选"
           >
-            <el-option label="不限制分组" value=""></el-option>
-            <el-option
+            <t-option label="不限制分组" value=""></t-option>
+            <t-option
               v-for="item in groupList"
               :key="item.groupId"
               :label="item.groupName"
               :value="item.groupId"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="答题日期" prop="quesDate">
-          <el-date-picker
+            ></t-option>
+          </t-select>
+        </t-form-item>
+        <t-form-item label="答题日期" name="quesDate">
+          <t-date-picker
             v-model="form.quesDate"
-            value-format="YYYY-MM-DD"
+           
             style="width: 100%"
-            type="date"
+            mode="date"
             placeholder="选择日期"
-          ></el-date-picker>
-        </el-form-item>
-        <el-form-item label="试题" prop="quesCode">
-          <el-input v-model="form.quesCode" readonly>
+          ></t-date-picker>
+        </t-form-item>
+        <t-form-item label="试题" name="quesCode">
+          <t-input v-model="form.quesCode" readonly>
             <template #append>
-              <el-button
-                icon="search"
-                @click="openQuesSelectDialog"
-              ></el-button>
+              <t-button @click="openQuesSelectDialog"
+              ><template #icon><DynamicIcon name="search" /></template></t-button>
             </template>
-          </el-input>
-        </el-form-item>
-        <el-form-item label="选项随机" prop="optionRand">
-          <el-select v-model="form.optionRand" placeholder="请选择">
-            <el-option
+          </t-input>
+        </t-form-item>
+        <t-form-item label="选项随机" name="optionRand">
+          <t-select v-model="form.optionRand" placeholder="请选择">
+            <t-option
               v-for="item in dictStore.dictList.yes_or_not"
               :key="item.code"
               :label="item.codeval"
               :value="parseInt(item.code)"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="公布栏配置" prop="quesCode" v-if="form.articalId">
-          <el-input v-model="form.articalId" readonly>
-            <el-button
-              slot="append"
-              icon="Delete"
-              @click="() => (form.articalId = null)"
-            ></el-button>
-          </el-input>
-        </el-form-item>
-      </el-form>
+            ></t-option>
+          </t-select>
+        </t-form-item>
+        <t-form-item label="公布栏配置" name="quesCode" v-if="form.articalId">
+          <t-input v-model="form.articalId" readonly>
+            <t-button slot="append" @click="() => (form.articalId = null)"><template #icon><DynamicIcon name="delete" /></template></t-button>
+          </t-input>
+        </t-form-item>
+      </t-form>
       <template #footer>
         <span class="dialog-footer">
-          <el-button size="small" @click="dailyConfigVisible = false"
-            >关 闭</el-button
+          <t-button size="small" @click="dailyConfigVisible = false"
+            >关 闭</t-button
           >
-          <el-button type="primary" size="small" @click="submit"
-            >提 交</el-button
+          <t-button theme="primary" size="small" @click="submit"
+            >提 交</t-button
           >
         </span>
       </template>
-    </el-dialog>
+    </t-dialog>
 
     <!-- 题目选择对话框 -->
     <QuesSelectDialog
@@ -225,7 +209,7 @@
 
 <script setup>
 import { ref, reactive, onMounted, computed } from 'vue'
-import { ElMessage } from 'element-plus'
+import { MessagePlugin } from 'tdesign-vue-next'
 import QuesSelectDialog from './components/QuesSelectDialog.vue'
 import ArticalForm from './components/ArticalForm.vue'
 import { dailyConfigApi } from '@/api/edu/dailyConfig'
@@ -284,7 +268,7 @@ onMounted(() => {
 // Methods
 const listDailyConfig = async () => {
   const res = await dailyConfigApi.getDailyConfigList(queryInfo)
-  if (res.code !== 200) return ElMessage.error(res.msg)
+  if (res.code !== 200) return MessagePlugin.error(res.msg)
   total.value = res.data.total
   tableData.value = res.data.list
   tableData.value.forEach((item) => {
@@ -296,7 +280,7 @@ const listDailyConfig = async () => {
 
 const listBrushConfig = async () => {
   const res = await dailyConfigApi.getBrushConfigList()
-  if (res.code !== 200) return ElMessage.error(res.msg)
+  if (res.code !== 200) return MessagePlugin.error(res.msg)
   groupList.value = res.data.list
 }
 
@@ -311,9 +295,9 @@ const handleCurrentChange = (page) => {
 }
 
 const tableSort = (data) => {
-  if (data.order === 'ascending') queryInfo.orderType = ' asc '
-  else if (data.order === 'descending') queryInfo.orderType = ' desc '
-  queryInfo.order = data.prop
+  if (!data.descending) queryInfo.orderType = ' asc '
+  else if (data.descending) queryInfo.orderType = ' desc '
+  queryInfo.order = data.sortBy
   listDailyConfig()
 }
 
@@ -337,7 +321,7 @@ const manageDailyConfig = (row) => {
 const submit = async () => {
   form.groupId = form.groupId.join(',')
   const valid = await formRef.value.validate()
-  if (!valid) return
+  if (valid !== true) return
 
   try {
     let res
@@ -347,12 +331,12 @@ const submit = async () => {
       res = await dailyConfigApi.updateDailyConfig(form)
     }
 
-    if (res.code !== 200) return ElMessage.error(res.msg)
-    ElMessage.success(res.msg)
+    if (res.code !== 200) return MessagePlugin.error(res.msg)
+    MessagePlugin.success(res.msg)
     dailyConfigVisible.value = false
     listDailyConfig()
   } catch (error) {
-    ElMessage.error('操作失败，请重试')
+    MessagePlugin.error('操作失败，请重试')
   }
 }
 
@@ -367,15 +351,15 @@ const handleQuesSelect = (row) => {
 
 const handleDeleteDailyConfig = async (id) => {
   const res = await dailyConfigApi.deleteDailyConfig(id)
-  if (res.code !== 200) return ElMessage.error(res.msg)
-  ElMessage.success(res.msg)
+  if (res.code !== 200) return MessagePlugin.error(res.msg)
+  MessagePlugin.success(res.msg)
   listDailyConfig()
 }
 
 const manageArticalBtn = async (row) => {
   if (row.articalId) {
     const res = await dailyConfigApi.getArticalDetail(row.articalId)
-    if (res.code !== 200) return ElMessage.error(res.msg)
+    if (res.code !== 200) return MessagePlugin.error(res.msg)
     Object.assign(articalForm, res.data)
   } else {
     Object.assign(articalForm, {
@@ -395,8 +379,8 @@ const handleArticalSuccess = async (articalId) => {
   if (!form.id) return
   form.articalId = articalId
   const res = await dailyConfigApi.updateDailyConfig(form)
-  if (res.code !== 200) return ElMessage.error(res.msg)
-  ElMessage.success(res.msg)
+  if (res.code !== 200) return MessagePlugin.error(res.msg)
+  MessagePlugin.success(res.msg)
   listDailyConfig()
 }
 </script>

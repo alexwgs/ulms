@@ -1,130 +1,127 @@
 <template>
   <div style="height: 100%">
-    <el-card class="box-card">
-      <el-row :gutter="15">
-        <el-col :span="8">
-          <el-button
-            type="primary"
-            size="small"
-            icon="plus"
-            @click="addTreeNode"
-          ></el-button>
-          <!-- <el-input placeholder="输入关键字进行过滤" size="small" v-model="filterText"></el-input> -->
-        </el-col>
-        <el-col :span="16"> </el-col>
-      </el-row>
-      <el-row :gutter="15">
-        <el-col :span="8">
+    <t-card class="box-card">
+      <t-row :gutter="15">
+        <t-col :span="4">
+          <t-button
+            theme="primary"
+            size="small" @click="addTreeNode"
+          ><template #icon><DynamicIcon name="plus" /></template></t-button>
+          <!-- <t-input placeholder="输入关键字进行过滤" size="small" v-model="filterText"></t-input> -->
+        </t-col>
+        <t-col :span="8"> </t-col>
+      </t-row>
+      <t-row :gutter="15">
+        <t-col :span="4">
           <div style="height: calc(100vh - 250px); overflow: auto">
-            <el-tree
+            <t-tree
               style="margin-top: 10px"
               :data="tree"
-              node-key="id"
-              :props="{ children: 'children', label: 'name' }"
-              :filter-node-method="filterNode"
-              @node-drag-start="handleDragStart"
-              @node-drag-end="handleDragEnd"
+              :keys="{ value: 'id', label: 'name', children: 'children' }"
+              :filter="filterNode"
+              @drag-start="handleDragStart"
+              @drag-end="handleDragEnd"
               draggable
               ref="treeRef"
             >
-              <template #default="{ node, data }">
+              <template #default="{ node }">
                 <span class="custom-tree-node">
                   <span>{{ node.label }}</span>
                   <span>
                     <div>
-                      <el-text size="small">序号：{{ data.sort }}</el-text>
-                      <el-link
-                        type="primary"
-                        icon="PlusCircle"
+                      <span size="small">序号：{{ node.data.sort }}</span>
+                      <t-link
+                        theme="primary"
+                        ><template #icon><DynamicIcon name="add" /></template>
                         size="small"
                         underline="hover"
-                        @click="() => addChildTreeNode(data)"
-                      ></el-link
+                        @click="() => addChildTreeNode(node.data)"
+                      ></t-link
                       >&ensp;
-                      <el-link
-                        type="primary"
-                        icon="Edit"
+                      <t-link
+                        theme="primary"
+                        ><template #icon><DynamicIcon name="edit" /></template>
                         size="small"
                         underline="hover"
-                        @click="() => editTreeNode(data)"
-                      ></el-link
+                        @click="() => editTreeNode(node.data)"
+                      ></t-link
                       >&ensp;
-                      <el-link
-                        type="danger"
-                        icon="Delete"
+                      <t-link
+                        theme="danger"
+                        ><template #icon><DynamicIcon name="delete" /></template>
                         size="small"
                         underline="hover"
-                        @click="() => deleteTree(data)"
-                      ></el-link>
+                        @click="() => deleteTree(node.data)"
+                      ></t-link>
                     </div>
                   </span>
                 </span>
               </template>
-            </el-tree>
+            </t-tree>
           </div>
-        </el-col>
-      </el-row>
-    </el-card>
+        </t-col>
+      </t-row>
+    </t-card>
     <!--路径设置对话框-->
-    <el-dialog
-      title="知识路径设置"
-      v-model="treeDialogVisible"
+    <t-dialog
+      header="知识路径设置"
+      v-model:visible="treeDialogVisible"
       width="50%"
-      :before-close="handleClose"
+      @before-close="handleClose"
     >
-      <el-form
+      <t-form
         ref="courseFormRef"
-        :model="treeFormData"
+        :data="treeFormData"
         :rules="rules"
         size="small"
         label-width="100px"
       >
-        <el-col :span="24">
-          <el-form-item label="名称" prop="name">
-            <el-input
+        <t-col :span="12">
+          <t-form-item label="名称" name="name">
+            <t-input
               v-model="treeFormData.name"
               placeholder="请输入名称"
               :maxlength="100"
               clearable
               :style="{ width: '100%' }"
-            ></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="11">
-          <el-form-item label="排序" prop="sort">
-            <el-input-number
+            ></t-input>
+          </t-form-item>
+        </t-col>
+        <t-col :span="6">
+          <t-form-item label="排序" name="sort">
+            <t-input-number
               v-model="treeFormData.sort"
               placeholder="由小到大"
               :step="1"
-            ></el-input-number>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="状态" prop="status">
-            <el-switch
+            ></t-input-number>
+          </t-form-item>
+        </t-col>
+        <t-col :span="6">
+          <t-form-item label="状态" name="status">
+            <t-switch
               v-model="treeFormData.status"
               active-color="#13ce66"
               :active-value="1"
               :inactive-value="0"
             >
-            </el-switch>
-          </el-form-item>
-        </el-col>
-      </el-form>
+            </t-switch>
+          </t-form-item>
+        </t-col>
+      </t-form>
       <template #footer>
-        <el-button size="small" @click="treeDialogVisible = false"
-          >取 消</el-button
+        <t-button size="small" @click="treeDialogVisible = false"
+          >取 消</t-button
         >
-        <el-button size="small" type="primary" @click="treeSubmit"
-          >确 定</el-button
+        <t-button size="small" theme="primary" @click="treeSubmit"
+          >确 定</t-button
         >
       </template>
-    </el-dialog>
+    </t-dialog>
   </div>
 </template>
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { MessagePlugin, DialogPlugin } from 'tdesign-vue-next'
 import { treeApi } from '@/api/helper/tree'
 
 // 响应式数据
@@ -158,16 +155,16 @@ onMounted(() => {
 const getTree = async () => {
   try {
     const res = await treeApi.getTree()
-    if (res.code !== 200) return ElMessage.error(res.msg)
+    if (res.code !== 200) return MessagePlugin.error(res.msg)
     tree.value = res.data
   } catch (error) {
-    ElMessage.error('获取路径树失败')
+    MessagePlugin.error('获取路径树失败')
   }
 }
 
 // 删除路径节点
 const deleteTree = (record) => {
-  ElMessageBox.confirm(
+  DialogPlugin.confirm(
     '此操作将永久删除该节点及以下所有节点, 是否继续?',
     '提示',
     {
@@ -179,15 +176,15 @@ const deleteTree = (record) => {
     .then(async () => {
       try {
         const res = await treeApi.deleteTreeWithChildren(record.id)
-        if (res.code !== 200) return ElMessage.error(res.msg)
-        ElMessage.success(res.msg)
+        if (res.code !== 200) return MessagePlugin.error(res.msg)
+        MessagePlugin.success(res.msg)
         getTree()
       } catch (error) {
-        ElMessage.error('删除失败')
+        MessagePlugin.error('删除失败')
       }
     })
     .catch(() => {
-      ElMessage.info('已取消删除')
+      MessagePlugin.info('已取消删除')
     })
 }
 
@@ -195,11 +192,11 @@ const deleteTree = (record) => {
 const updateTree = async (record) => {
   try {
     const res = await treeApi.updateTree(record)
-    if (res.code !== 200) return ElMessage.error(res.msg)
-    ElMessage.success(res.msg)
+    if (res.code !== 200) return MessagePlugin.error(res.msg)
+    MessagePlugin.success(res.msg)
     getTree()
   } catch (error) {
-    ElMessage.error('更新失败')
+    MessagePlugin.error('更新失败')
   }
 }
 
@@ -207,27 +204,29 @@ const updateTree = async (record) => {
 const addTree = async (record) => {
   try {
     const res = await treeApi.addTree(record)
-    if (res.code !== 200) return ElMessage.error(res.msg)
-    ElMessage.success(res.msg)
+    if (res.code !== 200) return MessagePlugin.error(res.msg)
+    MessagePlugin.success(res.msg)
     getTree()
   } catch (error) {
-    ElMessage.error('添加失败')
+    MessagePlugin.error('添加失败')
   }
 }
 
 // 过滤节点
-const filterNode = (value, data) => {
-  if (!value) return true
-  return data.name.indexOf(value) !== -1
+const filterNode = (node) => {
+  if (!filterText.value) return true
+  return node.data.name.indexOf(filterText.value) !== -1
 }
 
 // 拖拽开始
-const handleDragStart = (node, ev) => {
-  handleNode.value = node.data
+const handleDragStart = (context) => {
+      handleNode.value = context.dragNode.data
 }
 
 // 拖拽结束
-const handleDragEnd = (draggingNode, dropNode, dropType, ev) => {
+const handleDragEnd = (context) => {
+      const { dragNode, dropNode, dropPosition } = context;
+      const dropType = dropPosition === 0 ? 'inner' : dropPosition === -1 ? 'before' : 'after';
   if (!handleNode.value) return
 
   if (dropType === 'inner') {
@@ -250,17 +249,16 @@ const handleDragEnd = (draggingNode, dropNode, dropType, ev) => {
 }
 
 // 提交表单
-const treeSubmit = () => {
-  courseFormRef.value.validate((valid) => {
-    if (valid) {
-      if (treeFormData.id === undefined) {
-        addTree(treeFormData)
-      } else {
-        updateTree(treeFormData)
-      }
-      treeDialogVisible.value = false
+const treeSubmit = async () => {
+  const valid = await courseFormRef.value.validate()
+  if (valid === true) {
+    if (treeFormData.id === undefined) {
+      addTree(treeFormData)
+    } else {
+      updateTree(treeFormData)
     }
-  })
+    treeDialogVisible.value = false
+  }
 }
 
 // 添加根节点

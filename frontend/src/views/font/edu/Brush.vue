@@ -1,26 +1,27 @@
 <template>
-  <div class="container" v-loading="loading" element-loading-background="rgba(18, 139, 154, 0.5)">
+  <t-loading :loading="loading">
+    <div class="container">
     <div class="brush-info">
       <span>累计答题天数： {{ brushConfig.monthCount }} /
         {{ brushConfig.monthLimit === 0 ? '∞' : brushConfig.monthLimit }}
       </span>
-      <el-divider direction="vertical"></el-divider>
+      <t-divider layout="vertical"></t-divider>
       <span>今日答题数： {{ brushConfig.dayCount }} /
         {{ brushConfig.dayLimit === 0 ? '∞' : brushConfig.dayLimit }}</span>
-      <el-divider direction="vertical"></el-divider>
+      <t-divider layout="vertical"></t-divider>
       <span>答题计时：{{ answerTime === 0 ? '∞' : answerTime }} (S)</span>
-      <el-divider direction="vertical"></el-divider>
-      所属分组：
-      <el-select style="width: 120px" size="small" v-model="groupSelected" placeholder="请选择">
-        <el-option label="未参与分组" :value="-1" disabled></el-option>
-        <el-option :label="brushConfig.groupName" :value="brushConfig.groupId">
-        </el-option>
-      </el-select>
-      <el-divider></el-divider>
+      <t-divider layout="vertical"></t-divider>
+      <t-space>所属分组：
+      <t-select style="width: 120px" size="small" v-model="groupSelected" placeholder="请选择">
+        <t-option label="未参与分组" :value="-1" disabled></t-option>
+        <t-option :label="brushConfig.groupName" :value="brushConfig.groupId">
+        </t-option>
+      </t-select></t-space>
+      <t-divider></t-divider>
     </div>
     <div v-if="currentShow === 'cover'">
-      <el-row>
-        <el-col :span="14">
+      <t-row>
+        <t-col :span="7">
           <div class="notice-item">
             <h2>注意事项：</h2>
             <ul>
@@ -44,24 +45,23 @@
               </li>
             </ul>
           </div>
-        </el-col>
-        <el-col :span="10">
+        </t-col>
+        <t-col :span="5">
           <div class="slogan">
             <div>
-              <el-button round style="margin: 40px 30px 50px 30px" class="mybutton" :icon="Promotion"
-                @click="startBrushBtn()" :disabled="(brushConfig.monthLimit !== 0 &&
+              <t-button round style="margin: 40px 30px 50px 30px" class="mybutton" @click="startBrushBtn()" :disabled="(brushConfig.monthLimit !== 0 &&
                   brushConfig.monthCount >= brushConfig.monthLimit) ||
                   (brushConfig.dayLimit !== 0 &&
                     brushConfig.dayCount >= brushConfig.dayLimit)
-                  ">开 始 答 题</el-button>
+                  ">开 始 答 题</t-button>
             </div>
             <div style="font-size: 20px; color: #fff">
               千万种烦恼，答一题就好！
             </div>
             <img class="brush-icon" src="../../../assets/img/edu/brush-icon.png" />
           </div>
-        </el-col>
-      </el-row>
+        </t-col>
+      </t-row>
     </div>
     <div v-if="currentShow === 'question'">
       <div class="main-container">
@@ -75,7 +75,7 @@
           }}]{{ question.quesStem }}
         </div>
         <div class="file-view" v-if="question.fileType === 'jpg' || question.fileType === 'png'">
-          <el-image style="width: 100px; height: 100px" :src="fileUrl" :preview-src-list="srcList"></el-image>
+          <t-image style="width: 100px; height: 100px" :src="fileUrl" :preview-src-list="srcList"></t-image>
         </div>
         <div v-else-if="question.fileType === 'mp4'">
           <video :src="fileUrl" controls height="400px"></video>
@@ -84,12 +84,16 @@
           <audio :src="fileUrl" controls width="300px"></audio>
         </div>
         <div class="ques-options" v-if="question.quesType === 2">
-          <el-checkbox v-for="item in options" :key="item" v-model="checkbox" class="ques-option" :label="item"
-            border>{{ item }}</el-checkbox>
+          <t-checkbox-group v-model="checkbox">
+            <t-checkbox v-for="item in options" :key="item" class="ques-option" :value="item"
+              border>{{ item }}</t-checkbox>
+          </t-checkbox-group>
         </div>
         <div class="ques-options" v-else>
-          <el-radio v-for="item in options" :key="item" v-model="radio" class="ques-option" :label="item" border>{{ item
-          }}</el-radio>
+          <t-radio-group v-model="radio">
+            <t-radio v-for="item in options" :key="item" class="ques-option" :value="item" border>{{ item
+            }}</t-radio>
+          </t-radio-group>
         </div>
         <div class="answer-area" v-if="resultFlag">
           <div class="result-icon">
@@ -108,18 +112,19 @@
         </div>
       </div>
       <div class="ques-footer">
-        <el-button round :disabled="!submitAndNextFlag" @click="validateSubmit()">提交答案</el-button>
-        <el-button round :disabled="submitAndNextFlag" @click="nextQuestion()"
-          v-if="brushConfig.dayCount !== brushConfig.dayLimit">下一题</el-button>
+        <t-button round :disabled="!submitAndNextFlag" @click="validateSubmit()">提交答案</t-button>
+        <t-button round :disabled="submitAndNextFlag" @click="nextQuestion()"
+          v-if="brushConfig.dayCount !== brushConfig.dayLimit">下一题</t-button>
         <div style="display: inline-block; float: right">
-          <el-button-group>
-            <el-button :icon="Star" @click="collect(question.quesCode)"></el-button>
-            <el-button :icon="Warning" type="danger" style="float: right" @click="disputeBtn()"></el-button>
-          </el-button-group>
+          <t-button-group>
+            <t-button @click="collect(question.quesCode)"><template #icon><DynamicIcon name="star" /></template></t-button>
+            <t-button theme="danger" style="float: right" @click="disputeBtn()"><template #icon><DynamicIcon name="error-circle" /></template></t-button>
+          </t-button-group>
         </div>
       </div>
     </div>
-  </div>
+    </div>
+  </t-loading>
 </template>
 
 <script setup>
@@ -128,8 +133,8 @@ import { brushApi } from '@/api/edu/brush'
 import { questionBankApi } from '@/api/edu/questionBank'
 import { questionCollectApi } from '@/api/edu/questionCollect'
 import { questionDisputeApi } from '@/api/edu/questionDispute'
-import { ElMessage, ElMessageBox } from 'element-plus'
-import { Promotion, Star, Warning } from '@element-plus/icons-vue'
+import { MessagePlugin, DialogPlugin } from 'tdesign-vue-next'
+import { NotificationIcon, StarIcon, ErrorCircleIcon } from 'tdesign-icons-vue-next'
 
 const fsURL = import.meta.env.VITE_FILE_MANAGE_BASE
 
@@ -175,7 +180,7 @@ let timer = null
 const getBrushConfig = async () => {
   const res = await brushApi.getBrushConfig()
   if (res.code !== 200) {
-    ElMessage.error(res.msg)
+    MessagePlugin.error(res.msg)
     return
   }
   Object.assign(brushConfig, res.data)
@@ -189,13 +194,13 @@ const getQuestion = async () => {
     brushConfig.dayLimit !== 0 &&
     brushConfig.dayCount >= brushConfig.dayLimit
   ) {
-    ElMessage.error('您的刷题已达上限！')
+    MessagePlugin.error('您的刷题已达上限！')
     return
   }
   loading.value = true
   const res = await questionBankApi.extractQuestions(brushConfig)
   if (res.code !== 200) {
-    ElMessage.error(res.msg)
+    MessagePlugin.error(res.msg)
     loading.value = false
     return
   }
@@ -248,17 +253,17 @@ const validateSubmit = () => {
   const type = question.quesType
   if (type === 1) {
     if (radio.value === '') {
-      ElMessage.warning('请先选择答案！')
+      MessagePlugin.warning('请先选择答案！')
       return
     }
   } else if (type === 2) {
     if (checkbox.value.length < 2) {
-      ElMessage.warning('多选题请至少选择一个选项！')
+      MessagePlugin.warning('多选题请至少选择一个选项！')
       return
     }
   } else {
     if (radio.value === '') {
-      ElMessage.warning('请先选择答案！')
+      MessagePlugin.warning('请先选择答案！')
       return
     }
   }
@@ -277,7 +282,7 @@ const submitAnswer = async () => {
   }
   const res = await brushApi.submitAnswer(brushScoreForm)
   if (res.code !== 200) {
-    ElMessage.error(res.msg)
+    MessagePlugin.error(res.msg)
     return
   }
   result.value = res.data
@@ -306,23 +311,23 @@ const timerFunc = (time) => {
 const collect = async (quesCode) => {
   const res = await questionCollectApi.collectQuestion(quesCode)
   if (res.code !== 200) {
-    ElMessage.error(res.msg)
+    MessagePlugin.error(res.msg)
     return
   }
-  ElMessage.success(res.msg)
+  MessagePlugin.success(res.msg)
 }
 
 const submitDispute = async (record) => {
   const res = await questionDisputeApi.createDisputeByExam(record)
   if (res.code !== 200) {
-    ElMessage.error(res.msg)
+    MessagePlugin.error(res.msg)
     return
   }
-  ElMessage.success(res.msg)
+  MessagePlugin.success(res.msg)
 }
 
 const disputeBtn = () => {
-  ElMessageBox.prompt('请描述该题目问题的内容：', '题目问题反馈', {
+  DialogPlugin.prompt('请描述该题目问题的内容：', '题目问题反馈', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     inputPattern: /^.{2,250}$/,
@@ -380,29 +385,29 @@ onMounted(() => {
       font-size: 15px;
     }
 
-    .el-radio.is-bordered.is-checked,
-    .el-checkbox.is-bordered.is-checked {
+    .t-radio.is-bordered.is-checked,
+    .t-checkbox.is-bordered.is-checked {
       border: 1px solid #409eff;
 
-      :deep(.el-radio__label) {
+      :deep(.t-radio__label) {
         color: #fff;
       }
     }
 
-    .el-radio,
-    .el-checkbox {
+    .t-radio,
+    .t-checkbox {
       color: #000;
     }
 
-    :deep(.el-checkbox__label),
-    :deep(.el-radio__label) {
+    :deep(.t-checkbox__label),
+    :deep(.t-radio__label) {
       display: inline;
       font-size: 15px;
       color: #fff;
     }
 
-    .el-radio.is-bordered,
-    .el-checkbox.is-bordered {
+    .t-radio.is-bordered,
+    .t-checkbox.is-bordered {
       padding: 8px 20px 8px 10px;
       border-radius: 4px;
       border: 1px solid #dcdfe6;
@@ -410,7 +415,7 @@ onMounted(() => {
       height: 100%;
     }
 
-    :deep(.el-checkbox__input.is-checked + .el-checkbox__label) {
+    :deep(.t-checkbox__input.is-checked + .t-checkbox__label) {
       color: #fff;
     }
   }
@@ -476,7 +481,7 @@ onMounted(() => {
 
 .mybutton {
   color: #31b97f;
-  background-color: #ffffff;
+-color: #ffffff;
   border-color: #ffffff;
   font-size: 20px;
 }

@@ -1,77 +1,77 @@
 <template>
   <div style="height:100%">
-    <el-card class="box-card">
-      <el-row :gutter="15">
-        <el-col :span="6">
-          <el-input placeholder="模糊搜索" size="small" v-model="queryInfo.query">
+    <t-card class="box-card">
+      <t-row :gutter="15">
+        <t-col :span="3">
+          <t-input placeholder="模糊搜索" size="small" v-model="queryInfo.query">
             <template #append>
-              <el-button icon="Search" @click="getArticals"></el-button>
+              <t-button @click="getArticals"><template #icon><DynamicIcon name="search" /></template></t-button>
             </template>
-          </el-input>
-        </el-col>
-        <el-col :span="6">
-          <el-cascader v-model="queryInfo.routeId" size="small" :options="tree" :props="{ value: 'id', label: 'name' }"
-            :style="{ width: '100%' }" placeholder="选择路径筛选" @change="routerChange" clearable></el-cascader>
-        </el-col>
-        <el-col :span="6">
-          <el-select v-model="queryInfo.status" size="small" placeholder="请选择发布状态" @change="getArticals">
-            <el-option label="全部" value=""></el-option>
-            <el-option label="有效" :value="1"></el-option>
-            <el-option label="无效" :value="0"></el-option>
-          </el-select>
-        </el-col>
-        <el-col :span="6">
-          <el-button type="primary" size="small" @click="articalManager('add', null)">新建文章</el-button>
-          <!-- <el-button type="primary" size="small" @click="$global.downloadExcel('college/report/course', null, '课程详情明细.xlsx')">下载文章</el-button> -->
-        </el-col>
-      </el-row>
-      <el-alert title="操作说明" type="info" :closable="false"
-        description="请正确使用文章管理配置：1.地区/条线 新版本暂未启用。2.前端文章顺序优先按照序号从小到大，再由点击量倒序。3.状态为已发布"></el-alert>
-      <el-table :data="articals" size="small" height="calc(100vh - 400px)" stripe @sort-change="tableSort"
+          </t-input>
+        </t-col>
+        <t-col :span="3">
+          <t-cascader v-model="queryInfo.routeId" size="small" :options="tree" :props="{ value: 'id', label: 'name' }"
+            :style="{ width: '100%' }" placeholder="选择路径筛选" @change="routerChange" clearable></t-cascader>
+        </t-col>
+        <t-col :span="3">
+          <t-select v-model="queryInfo.status" size="small" placeholder="请选择发布状态" @change="getArticals">
+            <t-option label="全部" value=""></t-option>
+            <t-option label="有效" :value="1"></t-option>
+            <t-option label="无效" :value="0"></t-option>
+          </t-select>
+        </t-col>
+        <t-col :span="3">
+          <t-button theme="primary" size="small" @click="articalManager('add', null)">新建文章</t-button>
+          <!-- <t-button theme="primary" size="small" @click="$global.downloadExcel('college/report/course', null, '课程详情明细.xlsx')">下载文章</t-button> -->
+        </t-col>
+      </t-row>
+      <t-alert title="操作说明" theme="info" :closable="false"
+        message="请正确使用文章管理配置：1.地区/条线 新版本暂未启用。2.前端文章顺序优先按照序号从小到大，再由点击量倒序。3.状态为已发布"></t-alert>
+      <CustomTable rowKey="id" :data="articals" size="small" height="calc(100vh - 400px)" stripe @sort-change="tableSort"
         style="width: 100%">
-        <!-- <el-table-column prop="routeId" label="路径" sortable="custom" show-overflow-tooltip></el-table-column> -->
-        <el-table-column prop="title" label="标题" sortable="custom" show-overflow-tooltip></el-table-column>
-        <!-- <el-table-column prop="area" label="地区" sortable="custom" width="70px">
+        <!-- <TableColumn colKey="routeId" label="路径" sortable="custom" ellipsis></TableColumn> -->
+        <TableColumn colKey="title" label="标题" sortable="custom" ellipsis></TableColumn>
+        <!-- <TableColumn colKey="area" label="地区" sortable="custom" width="70px">
         <template slot-scope="scope">
           {{arealist.filter(item => item.value === scope.row.area)[0].label}}
         </template>
-      </el-table-column> -->
-        <el-table-column prop="owner" label="条线" sortable="custom" width="70px">
+      </TableColumn> -->
+        <TableColumn colKey="owner" label="条线" sortable="custom" width="70px">
           <template #default="scope">
             {{ownerlist.find(item => item.value === scope.row.owner)?.label || ''}}
           </template>
-        </el-table-column>
-        <el-table-column prop="search" label="搜索" sortable="custom" width="70px" show-overflow-tooltip>
+        </TableColumn>
+        <TableColumn colKey="search" label="搜索" sortable="custom" width="70px" ellipsis>
           <template #default="scope">{{ scope.row.search == 1 ? '是' : '否' }}</template>
-        </el-table-column>
-        <el-table-column prop="clicks" label="点击" sortable="custom" width="70px"
-          show-overflow-tooltip></el-table-column>
-        <el-table-column prop="sorting" label="序号" sortable="custom" width="70px"
-          show-overflow-tooltip></el-table-column>
-        <el-table-column prop="status" label="状态" sortable="custom" width="75px">
-          <template #default="scope"><el-tag :type="scope.row.status ? 'success' : 'danger'" size="small">{{
-            scope.row.status ? '已发布' : '未发布' }}</el-tag></template>
-        </el-table-column>
-        <el-table-column prop="updateDate" label="操作时间" sortable="custom" width="140px"></el-table-column>
-        <el-table-column label="操作" width="100px">
+        </TableColumn>
+        <TableColumn colKey="clicks" label="点击" sortable="custom" width="70px"
+          ellipsis></TableColumn>
+        <TableColumn colKey="sorting" label="序号" sortable="custom" width="70px"
+          ellipsis></TableColumn>
+        <TableColumn colKey="status" label="状态" sortable="custom" width="75px">
+          <template #default="scope"><t-tag :theme="scope.row.status ? 'success' : 'danger'" size="small">{{
+            scope.row.status ? '已发布' : '未发布' }}</t-tag></template>
+        </TableColumn>
+        <TableColumn colKey="updateDate" label="操作时间" sortable="custom" width="140px"></TableColumn>
+        <TableColumn label="操作" width="100px">
           <template #default="scope">
-            <el-button size="small" type="primary" icon="Edit" @click="articalManager('update', scope.row.journo)"
-              circle></el-button>
-            <el-button size="small" type="danger" icon="Delete" @click="deleteArtical(scope.row.journo)"
-              circle></el-button>
+            <t-button size="small" theme="primary" @click="articalManager('update', scope.row.journo)"
+              shape="circle"><template #icon><DynamicIcon name="edit" /></template></t-button>
+            <t-button size="small" theme="danger" @click="deleteArtical(scope.row.journo)"
+              shape="circle"><template #icon><DynamicIcon name="delete" /></template></t-button>
           </template>
-        </el-table-column>
-      </el-table>
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
-        :current-page="queryInfo.pageNum" :page-sizes="[20, 40, 100, 200]" :page-size="queryInfo.pageSize"
-        layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
-    </el-card>
+        </TableColumn>
+      </CustomTable>
+      <t-pagination @page-size-change="handleSizeChange" @current-change="handleCurrentChange"
+        :current="queryInfo.pageNum" :page-size-options="[20, 40, 100, 200]" :page-size="queryInfo.pageSize"
+ :total="total"></t-pagination>
+    </t-card>
     <HelperArtical ref="helperArticalRef" @refresh-list="getArticals"></HelperArtical>
   </div>
 </template>
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
-import { ElMessage } from 'element-plus'
+import { MessagePlugin } from 'tdesign-vue-next'
 import HelperArtical from './components/artical.vue'
 import { articalApi } from '@/api/helper/artical'
 import { treeApi } from '@/api/helper/tree'
@@ -116,10 +116,10 @@ onMounted(() => {
 const getTree = async () => {
   try {
     const res = await treeApi.getTree()
-    if (res.code !== 200) return ElMessage.error(res.msg)
+    if (res.code !== 200) return MessagePlugin.error(res.msg)
     tree.value = res.data
   } catch (error) {
-    ElMessage.error('获取路径树失败')
+    MessagePlugin.error('获取路径树失败')
   }
 }
 
@@ -127,11 +127,11 @@ const getTree = async () => {
 const getArticals = async () => {
   try {
     const res = await articalApi.getArticals(queryInfo)
-    if (res.code !== 200) return ElMessage.error(res.msg)
+    if (res.code !== 200) return MessagePlugin.error(res.msg)
     articals.value = res.data.list
     total.value = res.data.total
   } catch (error) {
-    ElMessage.error('获取文章列表失败')
+    MessagePlugin.error('获取文章列表失败')
   }
 }
 
@@ -139,11 +139,11 @@ const getArticals = async () => {
 const deleteArtical = async (journo) => {
   try {
     const res = await articalApi.deleteArtical(journo)
-    if (res.code !== 200) return ElMessage.error(res.msg)
-    ElMessage.success(res.msg)
+    if (res.code !== 200) return MessagePlugin.error(res.msg)
+    MessagePlugin.success(res.msg)
     getArticals()
   } catch (error) {
-    ElMessage.error('删除文章失败')
+    MessagePlugin.error('删除文章失败')
   }
 }
 
@@ -161,9 +161,9 @@ const handleCurrentChange = (page) => {
 
 // 表格排序
 const tableSort = (data) => {
-  if (data.order === 'ascending') queryInfo.orderType = ' asc '
-  else if (data.order === 'descending') queryInfo.orderType = ' desc '
-  queryInfo.order = data.prop
+  if (!data.descending) queryInfo.orderType = ' asc '
+  else if (data.descending) queryInfo.orderType = ' desc '
+  queryInfo.order = data.sortBy
   getArticals()
 }
 

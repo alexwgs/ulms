@@ -1,12 +1,12 @@
 <template>
   <div class="container">
-    <el-row :gutter="20">
-      <el-col :span="16">
+    <t-row :gutter="20">
+      <t-col :span="8">
         <div class="examInfo">
           {{ examInfo.examName }}
         </div>
-        <el-divider></el-divider>
-        <el-card class="box-card">
+        <t-divider></t-divider>
+        <t-card class="box-card">
           <template #header>
             <div class="clearfix">
               <span>答题区</span>
@@ -17,7 +17,7 @@
           </template>
           <div class="answer-main" v-show="mustReadFlag">
             考试须知：
-            <el-divider></el-divider>
+            <t-divider></t-divider>
             <ul>
               <li>
                 <p>
@@ -37,43 +37,43 @@
                 考试页面上的时间仅作为前端用户展示，实际以服务器时间为准！
               </li>
             </ul>
-            <el-alert
+            <t-alert
               v-if="areaFlag"
               :title="'请前往指定区域【' + examInfo.areaName + '】考试'"
-              type="error"
+              theme="error"
               show-icon
               :closable="false"
-            ></el-alert>
-            <el-alert
+            ></t-alert>
+            <t-alert
               v-if="timeErroInfo != ''"
               :title="timeErroInfo"
-              type="error"
+              theme="error"
               show-icon
               :closable="false"
-            ></el-alert>
+            ></t-alert>
           </div>
           <Question
             ref="questionRef"
             @getUserAnswer="getUserAnswer"
             style="height: 500px"
           ></Question>
-          <el-row style="padding-top: 20px">
-            <el-col :span="24"
-              ><el-button
-                type="primary"
+          <t-row style="padding-top: 20px">
+            <t-col :span="12"
+              ><t-button
+                theme="primary"
                 style="width: 100%"
                 size="small"
                 @click="nextQuestion()"
                 :disabled="startBtnFlag"
               >
                 {{ curentQuesNum < 0 ? '开始答题' : '下一题' }}
-              </el-button></el-col
+              </t-button></t-col
             >
-          </el-row>
-        </el-card>
-      </el-col>
-      <el-col :span="8">
-        <el-alert
+          </t-row>
+        </t-card>
+      </t-col>
+      <t-col :span="4">
+        <t-alert
           :title="
             '请确认答题人信息，当前答题人信息为：【' +
             user.ploName +
@@ -85,81 +85,81 @@
           :closable="false"
           effect="dark"
         >
-        </el-alert>
-        <el-card class="answer-controller">
+        </t-alert>
+        <t-card class="answer-controller">
           <template #header>
             <div class="clearfix">
               <span>考试说明</span>
             </div>
           </template>
-          <el-row :gutter="20" style="text-align: center">
-            <el-col :span="8"
-              ><el-tag effect="plain"
-                >题目数量：{{ examInfo.quesNum }}</el-tag
-              ></el-col
+          <t-row :gutter="20" style="text-align: center">
+            <t-col :span="4"
+              ><t-tag effect="plain"
+                >题目数量：{{ examInfo.quesNum }}</t-tag
+              ></t-col
             >
-            <el-col :span="8"
-              ><el-tag effect="plain"
+            <t-col :span="4"
+              ><t-tag effect="plain"
                 >考试时长：{{
                   examInfo.examTime === 0 ? '不限' : examInfo.examTime
-                }}(分)</el-tag
-              ></el-col
+                }}(分)</t-tag
+              ></t-col
             >
-            <el-col :span="8"
-              ><el-tag effect="plain"
+            <t-col :span="4"
+              ><t-tag effect="plain"
                 >考试总分：{{
                   examInfo.scoreMethod === 0
                     ? '100'
                     : examInfo.unitScore * quesNum
-                }}</el-tag
-              ></el-col
+                }}</t-tag
+              ></t-col
             >
-          </el-row>
-          <el-row :gutter="20" style="text-align: center; margin-top: 10px">
-            <el-col :span="8"
-              ><el-tag effect="plain"
+          </t-row>
+          <t-row :gutter="20" style="text-align: center; margin-top: 10px">
+            <t-col :span="4"
+              ><t-tag effect="plain"
                 >单题时长：{{
                   examInfo.quesTime == null ? '不限' : examInfo.quesTime
-                }}(秒)</el-tag
-              ></el-col
+                }}(秒)</t-tag
+              ></t-col
             >
-            <el-col :span="8"
-              ><el-tag
+            <t-col :span="4"
+              ><t-tag
                 :type="examInfo.skipQues === 0 ? 'danger' : ''"
                 effect="plain"
                 >{{
                   examInfo.skipQues === 0 ? '题目不可跳转' : '题目可跳转'
-                }}</el-tag
-              ></el-col
+                }}</t-tag
+              ></t-col
             >
-            <el-col v-if="examInfo.ifBreak === 0" :span="8"
-              ><el-tag type="danger" effect="plain"
-                >考试不可中断</el-tag
-              ></el-col
+            <t-col v-if="examInfo.ifBreak === 0" :span="4"
+              ><t-tag theme="danger" effect="plain"
+                >考试不可中断</t-tag
+              ></t-col
             >
-            <el-col v-if="examInfo.wrongBreak === 0" :span="8"
-              ><el-tag type="danger" effect="plain"
-                >答错自动交卷</el-tag
-              ></el-col
+            <t-col v-if="examInfo.wrongBreak === 0" :span="4"
+              ><t-tag theme="danger" effect="plain"
+                >答错自动交卷</t-tag
+              ></t-col
             >
-            <el-col v-if="examInfo.optionRandom === 1" :span="8"
-              ><el-tag type="danger" effect="plain">选项随机</el-tag></el-col
+            <t-col v-if="examInfo.optionRandom === 1" :span="4"
+              ><t-tag theme="danger" effect="plain">选项随机</t-tag></t-col
             >
-          </el-row>
-        </el-card>
-        <el-card class="answer-controller">
+          </t-row>
+        </t-card>
+        <t-card class="answer-controller">
           <template #header>
             <div class="clearfix">
               <span>答题控制区</span>
             </div>
           </template>
-          <el-row v-if="quesTest.length > 0">
-            <el-col
+          <t-row v-if="quesTest.length > 0">
+            <t-col
               v-for="(item, index) of quesTest"
               :key="index"
-              :span="6"
+              :span="3"
               style="padding-top: 5px; text-align: center"
-              ><el-button
+              ><t-button
                 :type="item.userAnswer === null ? '' : 'success'"
                 style="width: 70px"
                 @click="changeQues(index)"
@@ -169,41 +169,41 @@
                 <font :class="curentQuesNum == index ? 'currentBtn' : ''"
                   >第{{ index + 1 }}题</font
                 >
-              </el-button></el-col
+              </t-button></t-col
             >
-          </el-row>
-          <el-row style="padding-top: 20px">
-            <el-col :span="24">
-              <el-popconfirm
-                title="注意！！！点击确认将提交本场考试！"
+          </t-row>
+          <t-row style="padding-top: 20px">
+            <t-col :span="12">
+              <t-popconfirm
+                content="注意！！！点击确认将提交本场考试！"
                 confirm-button-text="确认交卷"
                 @confirm="handOverTest()"
               >
                 <template #reference>
-                  <el-button
-                    type="primary"
+                  <t-button
+                    theme="primary"
                     style="width: 100%"
                     size="small"
                     :disabled="mustReadFlag"
                   >
                     交 卷
-                  </el-button>
+                  </t-button>
                 </template>
-              </el-popconfirm>
-            </el-col>
-          </el-row>
-        </el-card>
-      </el-col>
-    </el-row>
-    <el-dialog
+              </t-popconfirm>
+            </t-col>
+          </t-row>
+        </t-card>
+      </t-col>
+    </t-row>
+    <t-dialog
       v-if="examResult"
-      title="考试成绩"
-      v-model="dialogVisible"
+      header="考试成绩"
+      v-model:visible="dialogVisible"
       width="50%"
-      :show-close="false"
-      :close-on-click-modal="false"
+      :close-btn="false"
+      :close-on-overlay-click="false"
     >
-      <el-result
+      <t-result
         :icon="
           examResult.userScore == null || examResult.userScore == undefined
             ? 'error'
@@ -216,20 +216,20 @@
         "
         :subTitle="'您得了【' + examResult.userScore + '】分！'"
       >
-      </el-result>
+      </t-result>
       <template #footer>
         <span class="dialog-footer">
-          <el-button type="primary" @click="closeWindow">关 闭</el-button>
+          <t-button theme="primary" @click="closeWindow">关 闭</t-button>
         </span>
       </template>
-    </el-dialog>
+    </t-dialog>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
 import { examTestApi } from '@/api/edu/examTest'
-import { ElMessage } from 'element-plus'
+import { MessagePlugin, Result } from 'tdesign-vue-next'
 import Question from './component/Question.vue'
 
 // 日期处理辅助函数
@@ -278,7 +278,7 @@ const precheck = async () => {
   try {
     const res = await examTestApi.precheckExam(examInfo.value)
     if (res.code !== 200) {
-      ElMessage.error(res.msg)
+      MessagePlugin.error(res.msg)
       return
     }
     examScore.value = res.examScore
@@ -295,7 +295,7 @@ const examRule = () => {
   let testFlag = false
   if (examScore.value.compStat !== 0) {
     testFlag = true
-    ElMessage.error('考试已完成或试卷已被阅卷！')
+    MessagePlugin.error('考试已完成或试卷已被阅卷！')
     return
   }
   const curUnixTime = getCurrentUnixTime()
@@ -362,7 +362,7 @@ const initTest = () => {
       .then((res) => {
         if (curentQuesNum.value >= 0) return resolve()
         if (res.code !== 200) {
-          ElMessage.error(res.msg)
+          MessagePlugin.error(res.msg)
           return reject()
         }
         quesTest.value = res.data
@@ -396,7 +396,7 @@ const nextQuestion = () => {
       if (timer.value == null) timerFunc(examTime.value)
       if (curentQuesNum.value + 1 >= examInfo.value.quesNum) {
         mustReadFlag.value = false
-        ElMessage.error('因为您已完成所有题目的提交，请点击右边的交卷！')
+        MessagePlugin.error('因为您已完成所有题目的提交，请点击右边的交卷！')
         return
       }
       curentQuesNum.value++
@@ -409,7 +409,7 @@ const nextQuestion = () => {
   } else {
     submitAnswer()
     if (curentQuesNum.value + 1 >= examInfo.value.quesNum) {
-      ElMessage.error('已经没有下一题了！')
+      MessagePlugin.error('已经没有下一题了！')
       return
     }
     curentQuesNum.value++
@@ -428,7 +428,7 @@ const submitAnswer = async () => {
     curentQuesNum.value < 0 ||
     curentQuesNum.value >= examInfo.value.quesNum
   ) {
-    ElMessage.error('没有题目可以提交！' + curentQuesNum.value)
+    MessagePlugin.error('没有题目可以提交！' + curentQuesNum.value)
     return
   }
   try {
@@ -437,11 +437,11 @@ const submitAnswer = async () => {
       quesTest.value[curentQuesNum.value]
     )
     if (res.code !== 200) {
-      ElMessage.error(res.msg)
+      MessagePlugin.error(res.msg)
       return
     }
     if (res.msg === 'break') {
-      ElMessage.warning('答错自动交卷！')
+      MessagePlugin.warning('答错自动交卷！')
       handOverTest()
     }
   } catch (error) {
@@ -456,7 +456,7 @@ const handOverTest = () => {
     .handOverTest(examScore.value)
     .then((res) => {
       if (res.code !== 200) {
-        ElMessage.error(res.msg)
+        MessagePlugin.error(res.msg)
         return
       }
       examResult.value = res.data
@@ -517,7 +517,7 @@ onUnmounted(() => {
   padding: 20px;
   .box-card {
     height: calc(100vh - 120px);
-    :deep(.el-card__body) {
+    :deep(.t-card__body) {
       height: calc(100vh - 220px);
       overflow-y: scroll;
     }

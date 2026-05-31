@@ -1,62 +1,62 @@
 <template>
-  <el-dialog
-    :title="dialogTitle"
-    v-model="dialogFormVisible"
-    :close-on-click-modal="false"
+  <t-dialog
+    :header="dialogTitle"
+    v-model:visible="dialogFormVisible"
+    :close-on-overlay-click="false"
     width="600px"
   >
-    <el-form :model="form" size="small" label-width="160px">
-      <el-form-item label="岗位ID" prop="jobLevel">
-        <el-input v-model="form.jobLevel" autocomplete="off"></el-input>
-      </el-form-item>
-      <el-form-item label="岗位名称" prop="jobName">
-        <el-input
+    <t-form :data="form" size="small" label-width="160px">
+      <t-form-item label="岗位ID" name="jobLevel">
+        <t-input v-model="form.jobLevel" autocomplete="off"></t-input>
+      </t-form-item>
+      <t-form-item label="岗位名称" name="jobName">
+        <t-input
           v-model="form.jobName"
           autocomplete="off"
           maxlength="50"
-          show-word-limit
-        ></el-input>
-      </el-form-item>
-      <el-form-item label="部门号码" prop="deptNum">
-        <el-input
+          show-limit-number
+        ></t-input>
+      </t-form-item>
+      <t-form-item label="部门号码" name="deptNum">
+        <t-input
           v-model="form.deptNum"
           type="number"
           autocomplete="off"
-        ></el-input>
-      </el-form-item>
-      <el-form-item label="岗位描述" prop="jobDesc">
-        <el-input
+        ></t-input>
+      </t-form-item>
+      <t-form-item label="岗位描述" name="jobDesc">
+        <t-input
           v-model="form.jobDesc"
           autocomplete="off"
           maxlength="50"
-          show-word-limit
-        ></el-input>
-      </el-form-item>
-      <el-form-item label="所属机构" prop="organ">
-        <el-input v-model="form.organ" autocomplete="off"></el-input>
-      </el-form-item>
-      <el-form-item label="状态" prop="jobStatus">
-        <el-select v-model="form.jobStatus" placeholder="请选择表单状态">
-          <el-option
+          show-limit-number
+        ></t-input>
+      </t-form-item>
+      <t-form-item label="所属机构" name="organ">
+        <t-input v-model="form.organ" autocomplete="off"></t-input>
+      </t-form-item>
+      <t-form-item label="状态" name="jobStatus">
+        <t-select v-model="form.jobStatus" placeholder="请选择表单状态">
+          <t-option
             v-for="item in dictStore.dictList.sys_dict_status"
             :key="item.id"
             :label="item.codeval"
             :value="item.code"
-          ></el-option>
-        </el-select>
-      </el-form-item>
-    </el-form>
+          ></t-option>
+        </t-select>
+      </t-form-item>
+    </t-form>
     <template #footer>
       <span class="dialog-footer">
-        <el-button size="small" @click="dialogFormVisible = false"
-          >取 消</el-button
+        <t-button size="small" @click="dialogFormVisible = false"
+          >取 消</t-button
         >
-        <el-button size="small" type="primary" @click="handleSubmit"
-          >确 定</el-button
+        <t-button size="small" theme="primary" @click="handleSubmit"
+          >确 定</t-button
         >
       </span>
     </template>
-  </el-dialog>
+  </t-dialog>
 </template>
 
 <script setup>
@@ -112,11 +112,11 @@ const handleSubmit = async () => {
     }
     if (res.code !== 200) return
 
-    ElMessage.success(res.msg)
+    MessagePlugin.success(res.msg)
     dialogFormVisible.value = false
     emit('success')
   } catch (error) {
-    ElMessage.error('操作失败，请重试')
+    MessagePlugin.error('操作失败，请重试')
   }
 }
 

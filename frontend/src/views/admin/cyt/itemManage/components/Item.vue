@@ -1,20 +1,20 @@
 <template>
-  <el-container class="view-container">
-    <el-container>
-      <el-main>
+  <t-layout class="view-container">
+    <t-layout>
+      <t-content>
         <div class="artical-content">
           <h3>{{ artical.title }}</h3>
           <div>
             标签：
             <span v-for="item in labelItems" :key="item.label">
-              <el-tag
+              <t-tag
                 v-if="artical[item.field] == item.val"
-                :type="item.type"
+                :theme="item.type"
                 effect="dark"
                 size="small"
               >
                 {{ item.label }}
-              </el-tag>
+              </t-tag>
             </span>
             <div class="artical-icon" v-if="artical.user != undefined">
               <span style="color: #909399; font-size: 14px; padding-right: 10px"
@@ -36,14 +36,14 @@
               >
             </div>
           </div>
-          <el-divider></el-divider>
+          <t-divider></t-divider>
           <div v-if="artical.compType !== 6">
             <div class="author" v-for="member in members" :key="member.id">
-              <el-avatar
+              <t-avatar
                 shape="square"
                 size="large"
                 :src="fsURL + member.user.avatar"
-              ></el-avatar>
+              ></t-avatar>
               <div class="author-info">
                 <span
                   >{{
@@ -57,51 +57,51 @@
             </div>
           </div>
           <div v-else>
-            <el-button type="primary" style="width: 100%" plain
-              >待认领</el-button
+            <t-button theme="primary" style="width: 100%" plain
+              >待认领</t-button
             >
           </div>
           <div class="artical-text" v-html="artical.content"></div>
-          <el-divider></el-divider>
+          <t-divider></t-divider>
           <p v-if="artical.hasOwnProperty('files') && artical.files != null">
-            附件下载：<el-button
+            附件下载：<t-button
               v-for="(file, index) in JSON.parse(artical.files)"
               :key="index"
               size="medium"
               @click="downloadFile(fsURL + file.path)"
               round
-              >{{ file.name }}</el-button
+              >{{ file.name }}</t-button
             >
           </p>
           <div class="artical-operations">
-            <el-button type="primary" disabled icon="iconfont iconzan1" round
-              >&emsp;点 赞&emsp;{{ artical.likeNum }}</el-button
+            <t-button theme="primary" disabled icon="iconfont iconzan1" round
+              >&emsp;点 赞&emsp;{{ artical.likeNum }}</t-button
             >
-            <el-button
-              type="primary"
+            <t-button
+              theme="primary"
               disabled
               icon="iconfont iconshoucang1"
               round
-              >&emsp; 收 藏&emsp;{{ artical.collectNum }}</el-button
+              >&emsp; 收 藏&emsp;{{ artical.collectNum }}</t-button
             >
           </div>
           <div class="block" v-if="progresses.length">
-            <el-divider content-position="left">项目进度</el-divider>
-            <el-progress
+            <t-divider content-position="left">项目进度</t-divider>
+            <t-progress
               style="margin-bottom: 15px"
               :text-inside="true"
               :stroke-width="26"
               :percentage="progresses[0].rate"
               :color="colors"
-            ></el-progress>
-            <el-timeline>
-              <el-timeline-item
+            ></t-progress>
+            <t-timeline>
+              <t-timeline-item
                 v-for="progress in progresses"
                 :key="progress.id"
                 :timestamp="progress.dateTime"
                 placement="top"
               >
-                <el-card>
+                <t-card>
                   <h4>
                     {{
                       dictStore.dictList.cyt_item_type.filter(
@@ -115,32 +115,32 @@
                       progress.hasOwnProperty('files') && progress.files != null
                     "
                   >
-                    附件下载：<el-button
+                    附件下载：<t-button
                       v-for="(file, index) in JSON.parse(progress.files)"
                       :key="index"
                       size="small"
                       @click="downloadFile(fsURL + file.path)"
                       round
-                      >{{ file.name }}</el-button
+                      >{{ file.name }}</t-button
                     >
                   </p>
-                </el-card>
-              </el-timeline-item>
-            </el-timeline>
+                </t-card>
+              </t-timeline-item>
+            </t-timeline>
           </div>
         </div>
-        <el-card class="comment">
-          <el-divider content-position="center"> 评 论 </el-divider>
-          <el-divider>
-            <el-pagination
-              v-model:current-page="currentPage"
+        <t-card class="comment">
+          <t-divider content-position="center"> 评 论 </t-divider>
+          <t-divider>
+            <t-pagination
+              v-model:current="currentPage"
               @current-change="handleCurrentChange"
               :page-size="commnetQueryInfo.pageSize"
-              layout="total, prev, pager, next"
+
               :total="commentTotal"
             >
-            </el-pagination>
-          </el-divider>
+            </t-pagination>
+          </t-divider>
           <div
             v-for="(comment, index) in comments"
             :key="comment.id"
@@ -148,14 +148,14 @@
           >
             <section v-if="comment.user != undefined">
               <div class="comment-avatar">
-                <el-avatar
+                <t-avatar
                   size="small"
                   :src="
                     comment.anonFlag
                       ? fsURL + 'upload/getFile/avatar/avatar.png'
                       : fsURL + comment.user.avatar
                   "
-                ></el-avatar>
+                ></t-avatar>
               </div>
               <div class="comment-info">
                 <span class="comment-header" v-if="comment.anonFlag">匿名</span>
@@ -172,16 +172,16 @@
               </div>
               <div class="comment-content" v-html="comment.content"></div>
               <div class="comment-operations">
-                <el-button
+                <t-button
                   size="small"
-                  type="danger"
+                  theme="danger"
                   icon="iconfont iconxiaoxi"
                   @click="deleteCommentHandler(comment.id)"
                 >
-                  删除评论</el-button
+                  删除评论</t-button
                 >
-                <el-button disabled size="small" icon="iconfont iconzan1"
-                  >* {{ comment.likeNum }}</el-button
+                <t-button disabled size="small" icon="iconfont iconzan1"
+                  >* {{ comment.likeNum }}</t-button
                 >
               </div>
 
@@ -205,27 +205,27 @@
                   </div>
                   <div class="comment-content" v-html="reply.content"></div>
                   <div class="comment-btn">
-                    <el-button
+                    <t-button
                       size="small"
-                      type="danger"
+                      theme="danger"
                       @click="deleteReplyHandler(reply.id)"
-                      >删除回复</el-button
+                      >删除回复</t-button
                     >
                   </div>
                 </section>
               </div>
             </section>
-            <el-divider></el-divider>
+            <t-divider></t-divider>
           </div>
-        </el-card>
-      </el-main>
-    </el-container>
-  </el-container>
+        </t-card>
+      </t-content>
+    </t-layout>
+  </t-layout>
 </template>
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
-import { ElMessage } from 'element-plus'
+import { MessagePlugin } from 'tdesign-vue-next'
 import { useDictStore } from '@/stores'
 import { useRoute } from 'vue-router'
 import {
@@ -286,7 +286,7 @@ const getArtical = async () => {
   try {
     const res = await getItemDetail(id.value)
     if (res.code !== 200) {
-      ElMessage.error(res.msg)
+      MessagePlugin.error(res.msg)
       return
     }
     artical.value = res.data
@@ -294,7 +294,7 @@ const getArtical = async () => {
     isLike.value = res.data.isLike
   } catch (error) {
     console.error('获取项目详情失败:', error)
-    ElMessage.error('获取项目详情失败')
+    MessagePlugin.error('获取项目详情失败')
   }
 }
 
@@ -302,7 +302,7 @@ const getItemMember = async () => {
   try {
     const res = await getItemMembers(id.value)
     if (res.code !== 200) {
-      ElMessage.error(res.msg)
+      MessagePlugin.error(res.msg)
       return
     }
     members.value = res.data
@@ -311,7 +311,7 @@ const getItemMember = async () => {
     }
   } catch (error) {
     console.error('获取项目成员失败:', error)
-    ElMessage.error('获取项目成员失败')
+    MessagePlugin.error('获取项目成员失败')
   }
 }
 
@@ -319,13 +319,13 @@ const getProgress = async () => {
   try {
     const res = await getItemProgress(id.value)
     if (res.code !== 200) {
-      ElMessage.error(res.msg)
+      MessagePlugin.error(res.msg)
       return
     }
     progresses.value = res.data
   } catch (error) {
     console.error('获取项目进度失败:', error)
-    ElMessage.error('获取项目进度失败')
+    MessagePlugin.error('获取项目进度失败')
   }
 }
 
@@ -333,14 +333,14 @@ const getComment = async () => {
   try {
     const res = await getComments(id.value, commnetQueryInfo)
     if (res.code !== 200) {
-      ElMessage.error(res.msg)
+      MessagePlugin.error(res.msg)
       return
     }
     comments.value = res.data.list
     commentTotal.value = res.data.total
   } catch (error) {
     console.error('获取评论失败:', error)
-    ElMessage.error('获取评论失败')
+    MessagePlugin.error('获取评论失败')
   }
 }
 
@@ -348,14 +348,14 @@ const deleteReplyHandler = async (id) => {
   try {
     const res = await deleteReply(id)
     if (res.code !== 200) {
-      ElMessage.error(res.msg)
+      MessagePlugin.error(res.msg)
       return
     }
-    ElMessage.success(res.msg)
+    MessagePlugin.success(res.msg)
     getComment()
   } catch (error) {
     console.error('删除回复失败:', error)
-    ElMessage.error('删除回复失败')
+    MessagePlugin.error('删除回复失败')
   }
 }
 
@@ -363,14 +363,14 @@ const deleteCommentHandler = async (id) => {
   try {
     const res = await deleteComment(id)
     if (res.code !== 200) {
-      ElMessage.error(res.msg)
+      MessagePlugin.error(res.msg)
       return
     }
-    ElMessage.success(res.msg)
+    MessagePlugin.success(res.msg)
     getComment()
   } catch (error) {
     console.error('删除评论失败:', error)
-    ElMessage.error('删除评论失败')
+    MessagePlugin.error('删除评论失败')
   }
 }
 
@@ -390,12 +390,12 @@ onMounted(() => {
 <style lang="less" scoped>
 .view-container {
   height: 100%;
-  background-color: #eaedf1;
+-color: #eaedf1;
 }
 
 .artical-content {
   padding: 20px;
-  background-color: #fff;
+-color: #fff;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
 
@@ -422,7 +422,7 @@ onMounted(() => {
   text-align: center;
 }
 
-.el-tag {
+.t-tag {
   margin-right: 5px;
 }
 
@@ -433,13 +433,13 @@ onMounted(() => {
   box-sizing: border-box;
   border-radius: 4px;
   position: relative;
-  background-color: #fff;
+-color: #fff;
   overflow: hidden;
   opacity: 1;
   display: flex;
   align-items: center;
   transition: opacity 0.2s;
-  background-color: #f4f4f5;
+-color: #f4f4f5;
   color: #909399;
   margin-top: 15px;
   margin-bottom: 15px;
@@ -533,7 +533,7 @@ onMounted(() => {
     color: #666;
     word-break: break-word;
     margin: 10px;
-    background-color: #fff;
+-color: #fff;
   }
 }
 </style>

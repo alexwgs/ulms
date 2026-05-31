@@ -1,21 +1,21 @@
 <template>
-  <el-card class="user-list-card" shadow="hover">
+  <t-card class="user-list-card">
     <template #header>
       <div class="card-header">
-        <el-icon><UserFilled /></el-icon>
+        <UserCircleIcon />
         <span>在线用户</span>
-        <el-tag size="small" round effect="dark" type="success">
+        <t-tag size="small" round effect="dark" theme="success">
           {{ ohtStore.ohtUserList.length }}
-        </el-tag>
+        </t-tag>
       </div>
     </template>
 
     <!-- ==================== 接单组 ==================== -->
     <div class="section" v-if="responders.length">
       <div class="section-header">
-        <el-icon><Avatar /></el-icon>
+        <UserIcon />
         <span class="section-title">接单组</span>
-        <el-tag size="small" round effect="plain">{{ responders.length }}</el-tag>
+        <t-tag size="small" round effect="plain">{{ responders.length }}</t-tag>
       </div>
       <div class="user-cards">
         <div
@@ -25,7 +25,7 @@
           :class="responderCardClass(user)"
         >
           <div class="card-left">
-            <el-avatar
+            <t-avatar
               shape="square"
               :size="42"
               :src="(user.user?.avatar ? fsURL + user.user.avatar : defaultAvatar)"
@@ -45,14 +45,14 @@
             </div>
           </div>
           <div class="card-right">
-            <el-tag
-              :type="responderStatusType(user)"
+            <t-tag
+              :theme="responderStatusType(user)"
               size="small"
               effect="dark"
               round
             >
               {{ responderStatusText(user) }}
-            </el-tag>
+            </t-tag>
             <span class="status-sub" v-if="!user.unfinishCase">{{ user.statusName || '' }}</span>
           </div>
         </div>
@@ -62,9 +62,9 @@
     <!-- ==================== 求助组 ==================== -->
     <div class="section" v-if="seekers.length">
       <div class="section-header seeker-header">
-        <el-icon><WarningFilled /></el-icon>
+        <ErrorCircleFilledIcon />
         <span class="section-title">求助组</span>
-        <el-tag size="small" round effect="plain" type="warning">{{ seekers.length }}</el-tag>
+        <t-tag size="small" round effect="plain" theme="warning">{{ seekers.length }}</t-tag>
       </div>
       <div class="user-cards">
         <div
@@ -74,7 +74,7 @@
           :class="seekerCardClass(user)"
         >
           <div class="card-left">
-            <el-avatar
+            <t-avatar
               shape="square"
               :size="42"
               :src="(user.user?.avatar ? fsURL + user.user.avatar : defaultAvatar)"
@@ -94,14 +94,14 @@
             </div>
           </div>
           <div class="card-right" v-if="user.unfinishCase">
-            <el-tag
-              :type="seekerStatusType(user)"
+            <t-tag
+              :theme="seekerStatusType(user)"
               size="small"
               effect="dark"
               round
             >
               {{ seekerStatusText(user) }}
-            </el-tag>
+            </t-tag>
             <span class="wait-time" v-if="hasWaitTime(user)">
               {{ caseTypeName(user.unfinishCase.caseType) }} {{ formatWaitTime(user.unfinishCase.waitTime) }}
             </span>
@@ -110,13 +110,13 @@
       </div>
     </div>
 
-    <el-empty v-if="!ohtStore.ohtUserList.length" description="暂无在线用户" :image-size="60" />
-  </el-card>
+    <t-empty v-if="!ohtStore.ohtUserList.length" description="暂无在线用户" :image-size="60" />
+  </t-card>
 </template>
 
 <script setup>
 import { computed, ref, onMounted, onUnmounted } from 'vue'
-import { UserFilled, Avatar, WarningFilled } from '@element-plus/icons-vue'
+import { UserCircleIcon, UserIcon, ErrorCircleFilledIcon } from 'tdesign-icons-vue-next'
 import { useOhtStore, useDictStore } from '@/stores'
 
 const ohtStore = useOhtStore()
@@ -274,11 +274,11 @@ function formatWaitTime(waitTime) {
   flex-direction: column;
   overflow: hidden;
 
-  :deep(.el-card__header) {
+  :deep(.t-card__header) {
     padding: 12px 16px;
-    border-bottom: 1px solid var(--el-border-color-lighter);
+    border-bottom: 1px solid var(--td-border-color-lighter);
   }
-  :deep(.el-card__body) {
+  :deep(.t-card__body) {
     flex: 1;
     overflow-y: auto;
     padding: 0;
@@ -291,13 +291,13 @@ function formatWaitTime(waitTime) {
   gap: 8px;
   font-weight: 600;
   font-size: 15px;
-  color: var(--el-text-color-primary);
+  color: var(--td-text-color-primary);
 }
 
 // ========== 分组区域 ==========
 .section {
   &:not(:last-child) {
-    border-bottom: 1px solid var(--el-border-color-lighter);
+    border-bottom: 1px solid var(--td-border-color-lighter);
   }
 }
 
@@ -308,10 +308,10 @@ function formatWaitTime(waitTime) {
   padding: 10px 16px 6px;
   font-size: 13px;
   font-weight: 600;
-  color: var(--el-text-color-secondary);
+  color: var(--td-text-color-secondary);
   position: sticky;
   top: 0;
-  background: var(--el-bg-color);
+background: var(--td-bg-color);
   z-index: 1;
 }
 
@@ -328,8 +328,8 @@ function formatWaitTime(waitTime) {
   margin-bottom: 4px;
   border-radius: 10px;
   border-left: 3px solid transparent;
-  background: var(--el-bg-color);
-  transition: background 0.2s, transform 0.15s;
+background: var(--td-bg-color);
+  transition: 0.2s, transform 0.15s;
 
   &:hover {
     transform: translateX(2px);
@@ -389,19 +389,19 @@ function formatWaitTime(waitTime) {
 .user-name {
   font-size: 13px;
   font-weight: 600;
-  color: var(--el-text-color-primary);
+  color: var(--td-text-color-primary);
   white-space: nowrap;
 }
 
 .user-num {
   font-size: 11px;
-  color: var(--el-text-color-secondary);
+  color: var(--td-text-color-secondary);
   font-family: 'Courier New', monospace;
 }
 
 .user-dept {
   font-size: 11px;
-  color: var(--el-text-color-secondary);
+  color: var(--td-text-color-secondary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -409,7 +409,7 @@ function formatWaitTime(waitTime) {
 
 .user-ext {
   font-size: 11px;
-  color: var(--el-text-color-placeholder);
+  color: var(--td-text-color-placeholder);
 }
 
 // ========== 右侧状态区 ==========
@@ -424,7 +424,7 @@ function formatWaitTime(waitTime) {
 
 .status-sub {
   font-size: 10px;
-  color: var(--el-text-color-secondary);
+  color: var(--td-text-color-secondary);
   white-space: nowrap;
   max-width: 72px;
   overflow: hidden;
@@ -441,7 +441,7 @@ function formatWaitTime(waitTime) {
 html.dark {
   .user-card {
     &.available {
-      background: rgba(103, 194, 58, 0.08);
+background: rgba(103, 194, 58, 0.08);
       border-left-color: rgba(103, 194, 58, 0.45);
       &:hover { background: rgba(103, 194, 58, 0.12); }
     }

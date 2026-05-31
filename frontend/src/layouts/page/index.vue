@@ -2,19 +2,18 @@
   <div
     class="content-container"
     :style="{
-      background: 'var(--el-bg-color-page)',
+      backgroundColor: 'var(--td-bg-color-page)',
       padding: '0 10px 0 10px'
     }"
   >
-    <!-- <Breadcrumb style="margin: 0 0 15px 15px" :items="breadList"></Breadcrumb> -->
-    <el-card class="box-card">
+    <t-card class="box-card" :bordered="false">
       <template #header>
         <div class="card-header">
           <span>{{ breadList.slice(-1)[0] }}</span>
         </div>
       </template>
       <router-view />
-    </el-card>
+    </t-card>
   </div>
 </template>
 
@@ -50,9 +49,9 @@ watch(
   width: 100%;
   border: none;
 
-  :deep(.el-card__header) {
+  :deep(.t-card__header) {
     padding: 12px 20px;
-    border-bottom: 1px solid var(--el-border-color-light);
+    border-bottom: 1px solid var(--td-border-level-1-color);
   }
 }
 

@@ -1,43 +1,43 @@
 <template>
   <div class="container">
-    <el-row :gutter="15" style="height: 300px">
-      <el-col :span="10">
-        <img :src="fsURL + 'upload/getFile/college-cover/' + course.coverImg" width="100%" height="300px;" />
-      </el-col>
-      <el-col :span="14">
-        <el-card style="height: 300px">
-          <el-descriptions :title="course.courseName" :column="2" border>
-            <el-descriptions-item label="课程类型">{{
+    <t-row :gutter="15" style="height: 300px">
+      <t-col :span="5">
+        <img :src="fsURL + 'upload/getFile/college-cover/' + course.coverImg" width="100%" height="300px" />
+      </t-col>
+      <t-col :span="7">
+        <t-card style="height: 300px">
+          <t-descriptions :title="course.courseName" :column="2" bordered>
+            <t-descriptions-item label="课程类型">{{
               course.teachMethod == 2 ? '任务课程' : '常规课程'
-              }}</el-descriptions-item>
-            <el-descriptions-item label="教学方式">{{
+              }}</t-descriptions-item>
+            <t-descriptions-item label="教学方式">{{
               course.courseType == 1 ? '线上学习' : '线下授课'
-              }}</el-descriptions-item>
-            <el-descriptions-item label="授课时数">
-              <el-icon>
-                <Clock />
-              </el-icon> {{ course.hours }}
-            </el-descriptions-item>
-            <el-descriptions-item label="课程积分">
-              <el-icon>
+              }}</t-descriptions-item>
+            <t-descriptions-item label="授课时数">
+              <t-icon>
+                <TimeIcon />
+              </t-icon> {{ course.hours }}
+            </t-descriptions-item>
+            <t-descriptions-item label="课程积分">
+              <t-icon>
                 <Ticket />
-              </el-icon> {{ course.coin }}
-            </el-descriptions-item>
-            <el-descriptions-item label="授课对象">{{
+              </t-icon> {{ course.coin }}
+            </t-descriptions-item>
+            <t-descriptions-item label="授课对象">{{
               course.teachObject
-              }}</el-descriptions-item>
-            <el-descriptions-item label="课程评分">
-              <el-rate v-if="course.courseScore > 0" style="display: inline-block" v-model="course.courseScore" disabled
-                text-color="#ff9900" show-score></el-rate>
+              }}</t-descriptions-item>
+            <t-descriptions-item label="课程评分">
+              <t-rate v-if="course.courseScore > 0" style="display: inline-block" v-model="course.courseScore" disabled
+                text-color="#ff9900" show-score></t-rate>
               <span v-else>暂无评分</span>
-            </el-descriptions-item>
-            <el-descriptions-item label="操作" :span="2">
-              <el-button v-if="course.teachMethod != 2" @click="signCourse()" :disabled="sign == null ? false : true">{{
-                sign == null ? '报名' : sign.handleDate }}</el-button>&emsp;
-              <el-button v-show="sign !== null" @click="goStudy()">在线学习</el-button>&emsp;
-              <el-button v-if="studyLog && course.ifEval == 1" :disabled="studyLog.evalComp == 1"
-                @click="evaluateRef.show(course)">{{ studyLog.evalComp == 1 ? '已评价' : '需评价' }}</el-button>&emsp;
-              <el-button v-if="studyLog && course.ifExam == 1" :disabled="!(
+            </t-descriptions-item>
+            <t-descriptions-item label="操作" :span="1">
+              <t-button v-if="course.teachMethod != 2" @click="signCourse()" :disabled="sign == null ? false : true">{{
+                sign == null ? '报名' : sign.handleDate }}</t-button>&emsp;
+              <t-button v-show="sign !== null" @click="goStudy()">在线学习</t-button>&emsp;
+              <t-button v-if="studyLog && course.ifEval == 1" :disabled="studyLog.evalComp == 1"
+                @click="evaluateRef.show(course)">{{ studyLog.evalComp == 1 ? '已评价' : '需评价' }}</t-button>&emsp;
+              <t-button v-if="studyLog && course.ifExam == 1" :disabled="!(
                 studyLog.ifEval == 0 ||
                 (studyLog.evalComp && studyLog.ifEval)
               )
@@ -45,43 +45,43 @@
                   studyLog.ifEval == 0 || (studyLog.evalComp && studyLog.ifEval)
                     ? '考试'
                     : '请先评价'
-                }}</el-button>
-            </el-descriptions-item>
-          </el-descriptions>
-        </el-card>
-      </el-col>
-    </el-row>
-    <el-row :gutter="15" style="margin-top: 15px">
-      <el-col :span="18">
-        <el-card class="main-card">
-          <el-tabs v-model="tabActive" @tab-click="tabChange">
-            <el-tab-pane label="介绍" name="intro">
-              <el-row :gutter="10">
-                <el-col :span="8"><el-tag :type="course.ifExam === 1 ? 'danger' : 'danger'" effect="plain">{{
-                  course.ifExam === 1 ? '需要考试' : '无需考试' }}</el-tag></el-col>
-                <el-col :span="8"><el-tag :type="course.ifEval === 1 ? 'danger' : 'danger'" effect="plain">{{
-                  course.ifEval === 1 ? '需要评价' : '无需评价' }}</el-tag></el-col>
-                <el-col :span="8"><el-tag v-if="course.evalDate != 0">{{ course.evalDate }}天内完成</el-tag></el-col>
-              </el-row>
+                }}</t-button>
+            </t-descriptions-item>
+          </t-descriptions>
+        </t-card>
+      </t-col>
+    </t-row>
+    <t-row :gutter="15" style="margin-top: 15px">
+      <t-col :span="9">
+        <t-card class="main-card">
+          <t-tabs v-model="tabActive" @change="tabChange">
+            <t-tab-panel label="介绍" name="intro">
+              <t-row :gutter="10">
+                <t-col :span="4"><t-tag :theme="course.ifExam === 1 ? 'danger' : 'danger'" effect="plain">{{
+                  course.ifExam === 1 ? '需要考试' : '无需考试' }}</t-tag></t-col>
+                <t-col :span="4"><t-tag :theme="course.ifEval === 1 ? 'danger' : 'danger'" effect="plain">{{
+                  course.ifEval === 1 ? '需要评价' : '无需评价' }}</t-tag></t-col>
+                <t-col :span="4"><t-tag v-if="course.evalDate != 0">{{ course.evalDate }}天内完成</t-tag></t-col>
+              </t-row>
               <div style="margin-top: 10px" v-html="course.courseDes"></div>
               <div class="menu">
                 <div class="menu-title">课程目录</div>
-                <el-timeline>
-                  <el-timeline-item v-for="(file, index) in course.courseFile" :key="file.fileId" :timestamp="'【' + file.extenName + '】' + ' NO.' + (index + 1)
+                <t-timeline>
+                  <t-timeline-item v-for="(file, index) in course.courseFile" :key="file.fileId" :timestamp="'【' + file.extenName + '】' + ' NO.' + (index + 1)
                     " placement="top">
-                    <el-card v-if="file.fileType === 1">
+                    <t-card v-if="file.fileType === 1">
                       <h4>{{ file.fileName }}</h4>
                       <p>课程学习时长{{ formatDuration(file.duration) }}</p>
-                    </el-card>
+                    </t-card>
                     <p v-else>学习附件 - {{ file.fileName }}</p>
-                  </el-timeline-item>
-                </el-timeline>
+                  </t-timeline-item>
+                </t-timeline>
               </div>
-            </el-tab-pane>
-            <el-tab-pane label="学习情况" name="courseStudy">
+            </t-tab-panel>
+            <t-tab-panel label="学习情况" name="courseStudy">
               <ViewCourseStudy ref="viewCourseStudyRef" height="600px" width="700px"></ViewCourseStudy>
-            </el-tab-pane>
-            <el-tab-pane label="评论" name="comment">
+            </t-tab-panel>
+            <t-tab-panel label="评论" name="comment">
               <div class="comment" v-for="(item, index) in evaluate" :key="index">
                 <div class="comment-avatar">
                   <div class="avartar-box-small">
@@ -97,20 +97,20 @@
                 </div>
                 <div class="comment-content" v-for="(evalItem, evalIndex) in item.evaluate" :key="evalIndex">
                   <b>{{ evalItem.quesCont }}:</b>
-                  <el-rate v-if="evalItem.quesType === 1" v-model="evalItem.cont" disabled show-score
-                    text-color="#ff9900" score-template="{value}"></el-rate>
+                  <t-rate v-if="evalItem.quesType === 1" v-model="evalItem.cont" disabled show-score
+                    text-color="#ff9900" score-template="{value}"></t-rate>
                   <div v-else>{{ evalItem.cont }}</div>
                 </div>
               </div>
-              <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
-                :current-page="queryInfo.pageNum" :page-sizes="[20, 40, 100, 200]" :page-size="queryInfo.pageSize"
-                layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
-            </el-tab-pane>
-          </el-tabs>
-        </el-card>
-      </el-col>
-      <el-col :span="6">
-        <el-card class="teacher-card">
+              <t-pagination @page-size-change="handleSizeChange" @current-change="handleCurrentChange"
+                :current="queryInfo.pageNum" :page-size-options="[20, 40, 100, 200]" :page-size="queryInfo.pageSize"
+ :total="total"></t-pagination>
+            </t-tab-panel>
+          </t-tabs>
+        </t-card>
+      </t-col>
+      <t-col :span="3">
+        <t-card class="teacher-card">
           <div v-if="teacher.avatar == null" style="
               height: 200px;
               width: 100%;
@@ -121,12 +121,12 @@
           </div>
           <img v-else :src="fsURL + 'upload/getFile/college-avatar/' + teacher.avatar" class="image" width="100%" />
           <div style="padding: 14px">
-            <el-tag effect="plain">{{ teacher.ploName }}</el-tag>
-            <el-tag v-if="teacher.skillType">{{ skillType[teacher.skillType]?.label
-            }}{{ skillName[teacher.skillName]?.label }}</el-tag>
+            <t-tag effect="plain">{{ teacher.ploName }}</t-tag>
+            <t-tag v-if="teacher.skillType">{{ skillType[teacher.skillType]?.label
+            }}{{ skillName[teacher.skillName]?.label }}</t-tag>
             <div>
-              <el-rate v-if="teacher.score > 0" style="display: inline-block; padding-top: 10px" v-model="teacher.score"
-                disabled text-color="#ff9900" score-template="{value}" show-score></el-rate><span v-else>暂无评分</span>
+              <t-rate v-if="teacher.score > 0" style="display: inline-block; padding-top: 10px" v-model="teacher.score"
+                disabled text-color="#ff9900" score-template="{value}" show-score></t-rate><span v-else>暂无评分</span>
             </div>
             <div style="
                 font-size: 12px;
@@ -138,12 +138,12 @@
               简介：{{ teacher.introduce }}
             </div>
             <div class="bottom clearfix">
-              <el-link underline="never" @click="router.push('/college/teacher')">查看更多...</el-link>
+              <t-link :underline="false" @click="router.push('/college/teacher')">查看更多...</t-link>
             </div>
           </div>
-        </el-card>
-      </el-col>
-    </el-row>
+        </t-card>
+      </t-col>
+    </t-row>
     <Evaluate ref="evaluateRef"></Evaluate>
   </div>
 </template>
@@ -151,8 +151,8 @@
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { ElMessage } from 'element-plus'
-import { Clock, Ticket } from '@element-plus/icons-vue'
+import { MessagePlugin } from 'tdesign-vue-next'
+import { TimeIcon, TicketIcon } from 'tdesign-icons-vue-next'
 import Evaluate from '@/views/font/college/evaluate/index.vue'
 import ViewCourseStudy from '@/views/font/college/view-course-study/index.vue'
 import { httpInstance } from '@/utils/request'
@@ -205,22 +205,22 @@ const formatDuration = (duration) => {
 
 const getCourse = async () => {
   const res = await httpInstance.get(`college/course/${courseId}`)
-  if (res.code !== 200) return ElMessage.error(res.msg)
+  if (res.code !== 200) return MessagePlugin.error(res.msg)
   course.value = res.course
   teacher.value = res.teacher
 }
 
 const getLog = async () => {
   const res = await httpInstance.get(`college/study/${courseId}`)
-  if (res.code !== 200) return ElMessage.error(res.msg)
+  if (res.code !== 200) return MessagePlugin.error(res.msg)
   sign.value = res.sign
   studyLog.value = res.studyLog
 }
 
 const signCourse = async () => {
   const res = await httpInstance.post('college/study/sign', course.value)
-  if (res.code !== 200) return ElMessage.error(res.msg)
-  ElMessage.success(res.msg)
+  if (res.code !== 200) return MessagePlugin.error(res.msg)
+  MessagePlugin.success(res.msg)
   getLog()
 }
 
@@ -229,7 +229,7 @@ const getEvaluate = async () => {
   const res = await httpInstance.get('college/evaluate/list', {
     params: queryInfo
   })
-  if (res.code !== 200) return ElMessage.error(res.msg)
+  if (res.code !== 200) return MessagePlugin.error(res.msg)
   evaluate.value = res.data.list
   total.value = res.data.total
 }
@@ -288,7 +288,7 @@ onMounted(() => {
       margin-bottom: 15px;
       line-height: 35px;
       padding-left: 10px;
-      background-color: #f5f5f5;
+background-color: #f5f5f5;
       border-left: 10px solid #9b2b23;
     }
   }
@@ -370,7 +370,7 @@ onMounted(() => {
     color: #666;
     word-break: break-word;
     margin: 10px;
-    background-color: #fff;
+background-color: #fff;
   }
 }
 </style>

@@ -1,40 +1,40 @@
 <template>
-  <el-dialog
-    title="分配角色"
-    v-model="dialogVisible"
-    :close-on-click-modal="false"
+  <t-dialog
+    header="分配角色"
+    v-model:visible="dialogVisible"
+    :close-on-overlay-click="false"
     @close="handleClose"
     width="500px"
   >
-    <el-form :model="formData" ref="formRef">
-      <el-select
+    <t-form :data="formData" ref="formRef">
+      <t-select
         v-model="formData.roles"
         size="small"
         multiple
         placeholder="请选择分配角色"
         style="width: 100%"
       >
-        <el-option
+        <t-option
           v-for="item in list"
           :key="item.id"
           :label="item.roleName"
           :value="item.id"
         />
-      </el-select>
-    </el-form>
+      </t-select>
+    </t-form>
 
     <template #footer>
-      <el-button size="small" @click="dialogVisible = false">取消</el-button>
-      <el-button
+      <t-button size="small" @click="dialogVisible = false">取消</t-button>
+      <t-button
         size="small"
-        type="primary"
+        theme="primary"
         @click="submitForm"
         :loading="loading"
       >
         确定
-      </el-button>
+      </t-button>
     </template>
-  </el-dialog>
+  </t-dialog>
 </template>
 
 <script setup>
@@ -95,11 +95,11 @@ const submitForm = async () => {
       throw new Error(res.msg)
     }
 
-    ElMessage.success(res.msg)
+    MessagePlugin.success(res.msg)
     dialogVisible.value = false
     emit('refresh')
   } catch (error) {
-    ElMessage.error(error.message || '角色分配失败')
+    MessagePlugin.error(error.message || '角色分配失败')
   } finally {
     loading.value = false
   }

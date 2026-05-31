@@ -1,10 +1,10 @@
 <template>
   <div>
-    <el-card class="box-card">
-      <el-row style="padding-bottom: 10px" :gutter="10">
-        <el-col :span="4"
-          ><el-button
-            type="primary"
+    <t-card class="box-card">
+      <t-row style="padding-bottom: 10px" :gutter="10">
+        <t-col :span="2"
+          ><t-button
+            theme="primary"
             size="small"
             @click="
               treeNodeManage(
@@ -12,203 +12,193 @@
                 'add'
               )
             "
-            >新增一级节点</el-button
-          ></el-col
+            >新增一级节点</t-button
+          ></t-col
         >
-        <el-col :span="4"
-          ><el-tag :type="currentNode == null ? 'danger' : 'success'">{{
+        <t-col :span="2"
+          ><t-tag :theme="currentNode == null ? 'danger' : 'success'">{{
             currentNode == null ? '选择目录' : '表加入:' + currentNode.name
-          }}</el-tag></el-col
+          }}</t-tag></t-col
         >
-        <el-col :span="3">
-          <el-popconfirm
-            title="确定要讲表移入此分类么？"
+        <t-col :span="2">
+          <t-popconfirm
+            content="确定要讲表移入此分类么？"
             width="250"
             @confirm="moveInTree()"
           >
             <template #reference
-              ><el-button
+              ><t-button
                 slot="reference"
-                type="primary"
-                size="small"
-                icon="arrow-left"
-                >移入</el-button
+                theme="primary"
+                size="small"><template #icon><DynamicIcon name="arrow-left" /></template>移入</t-button
               ></template
             >
-          </el-popconfirm>
-        </el-col>
-        <el-col :span="4">
-          <el-select
+          </t-popconfirm>
+        </t-col>
+        <t-col :span="2">
+          <t-select
             v-model="tableQueryInfo.flag"
             size="small"
             placeholder="请选择过滤规则"
             @change="getTableList"
           >
-            <el-option label="已分类" :value="1"></el-option>
-            <el-option label="未分类" :value="0"></el-option>
-          </el-select>
-        </el-col>
-        <el-col :span="7">
-          <el-input
+            <t-option label="已分类" :value="1"></t-option>
+            <t-option label="未分类" :value="0"></t-option>
+          </t-select>
+        </t-col>
+        <t-col :span="4">
+          <t-input
             placeholder="查询"
             size="small"
             v-model="tableQueryInfo.keyWord"
             class="input-with-select"
           >
-            <el-button
-              slot="append"
-              icon="search"
-              @click="getTableList"
+            <t-button
+              slot="append" @click="getTableList"
               size="small"
-            ></el-button>
-          </el-input>
-        </el-col>
-        <el-col :span="2">
-          <el-button type="danger" size="small" @click="syncTableInfo()"
-            >同步</el-button
+            ><template #icon><DynamicIcon name="search" /></template></t-button>
+          </t-input>
+        </t-col>
+        <t-col :span="1">
+          <t-button theme="danger" size="small" @click="syncTableInfo()"
+            >同步</t-button
           >
-        </el-col>
-      </el-row>
-      <el-row :gutter="20">
-        <el-col :span="8">
-          <el-tree
+        </t-col>
+      </t-row>
+      <t-row :gutter="20">
+        <t-col :span="4">
+          <t-tree
             :data="treeData"
             ref="tree"
-            node-key="id"
-            @node-click="nodeclick"
+            :keys="{ value: 'id', label: 'name', children: 'children' }"
+            @click="nodeclick"
           >
-            <template #default="{ node, data }">
+            <template #default="{ node }">
               <span class="custom-tree-node">
-                <span>{{ data.name }}</span>
+                <span>{{ node.data.name }}</span>
                 <span
-                  ><div v-if="data.treeLevel !== 3">
-                    <el-button
+                  ><div v-if="node.data.treeLevel !== 3">
+                    <t-button
                       link
-                      type="primary"
+                      theme="primary"
                       size="small"
-                      @click="treeNodeManage(data, 'add')"
-                      >新增</el-button
+                      @click="treeNodeManage(node.data, 'add')"
+                      >新增</t-button
                     >
-                    <el-button
+                    <t-button
                       link
-                      type="warning"
+                      theme="warning"
                       size="small"
-                      @click="treeNodeManage(data, 'edit')"
-                      >修改</el-button
+                      @click="treeNodeManage(node.data, 'edit')"
+                      >修改</t-button
                     >
                   </div>
-                  <el-popconfirm
+                  <t-popconfirm
                     v-else
-                    title="确定要讲表移出此分类么？"
+                    content="确定要讲表移出此分类么？"
                     width="250"
-                    @confirm="removeTreeNood(node, data)"
+                    @confirm="removeTreeNood(node)"
                     ><template #reference>
-                      <el-button
+                      <t-button
                         slot="reference"
-                        type="danger"
+                        theme="danger"
                         link
                         size="small"
-                        >删除</el-button
+                        >删除</t-button
                       >
-                    </template></el-popconfirm
+                    </template></t-popconfirm
                   >
                 </span>
               </span>
             </template>
-          </el-tree>
-        </el-col>
-        <el-col :span="16">
-          <el-table
+          </t-tree>
+        </t-col>
+        <t-col :span="8">
+          <CustomTable rowKey="id"
             :data="tableData"
             size="small"
             stripe
             style="width: 100%"
             ref="selectTable"
             height="calc(100vh - 350px)"
-            @selection-change="handleSelectionChange"
-          >
-            <el-table-column type="selection" width="55"></el-table-column>
-            <el-table-column
+            @select-change="handleSelectionChange">
+            <TableColumn type="multiple" width="55"></TableColumn>
+            <TableColumn
               prop="name"
               label="表名"
-              width="180"
-            ></el-table-column>
-            <el-table-column
+              width="180"></TableColumn>
+            <TableColumn
               prop="tableName"
               label="中文名"
-              width="180"
-            ></el-table-column>
-            <el-table-column
+              width="180"></TableColumn>
+            <TableColumn
               prop="memo"
               label="描述"
-              show-overflow-tooltip
-            ></el-table-column>
-            <el-table-column label="操作" width="60">
+              ellipsis></TableColumn>
+            <TableColumn label="操作" width="60">
               <template #default="scope">
-                <el-button
-                  size="small"
-                  icon="edit"
-                  type="warning"
+                <t-button
+                  size="small"theme="warning"
                   @click="updateColumn(scope.row)"
                   circle
-                ></el-button>
+                ><template #icon><DynamicIcon name="edit" /></template></t-button>
               </template>
-            </el-table-column>
-          </el-table>
-        </el-col>
-      </el-row>
-    </el-card>
+            </TableColumn>
+          </CustomTable>
+        </t-col>
+      </t-row>
+    </t-card>
 
-    <el-dialog
-      :title="tableTreeDialogTitle"
-      v-model="tableTreeDialogFormVisible"
+    <t-dialog
+      :header="tableTreeDialogTitle"
+      v-model:visible="tableTreeDialogFormVisible"
     >
-      <el-form
-        :model="treeForm"
+      <t-form
+        :data="treeForm"
         size="small"
         ref="treeForm"
         :rules="treeFormRules"
       >
-        <el-form-item
+        <t-form-item
           label="分类名称"
           prop="name"
           :label-width="formLabelWidth"
         >
-          <el-input v-model="treeForm.name" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="状态" :label-width="formLabelWidth">
-          <el-select v-model="treeForm.status" placeholder="请选择该菜单状态">
-            <el-option label="显示" :value="1"></el-option>
-            <el-option label="隐示" :value="0"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="排序" prop="sort" :label-width="formLabelWidth">
-          <el-input
+          <t-input v-model="treeForm.name" autocomplete="off"></t-input>
+        </t-form-item>
+        <t-form-item label="状态" :label-width="formLabelWidth">
+          <t-select v-model="treeForm.status" placeholder="请选择该菜单状态">
+            <t-option label="显示" :value="1"></t-option>
+            <t-option label="隐示" :value="0"></t-option>
+          </t-select>
+        </t-form-item>
+        <t-form-item label="排序" name="sort" :label-width="formLabelWidth">
+          <t-input
             type="number"
             v-model="treeForm.sort"
             maxlength="6"
             placeholder="由小到大"
             autocomplete="off"
-          ></el-input>
-        </el-form-item>
-      </el-form>
+          ></t-input>
+        </t-form-item>
+      </t-form>
       <template #footer>
         <div class="dialog-footer">
-          <el-button size="small" @click="tableTreeDialogFormVisible = false"
-            >取 消</el-button
+          <t-button size="small" @click="tableTreeDialogFormVisible = false"
+            >取 消</t-button
           >
-          <el-button size="small" type="primary" @click="tableTreeFormSubmit"
-            >确 定</el-button
+          <t-button size="small" theme="primary" @click="tableTreeFormSubmit"
+            >确 定</t-button
           >
         </div>
       </template>
-    </el-dialog>
+    </t-dialog>
     <Column ref="columnRef"></Column>
   </div>
 </template>
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
-import { ElMessage } from 'element-plus'
+import { MessagePlugin } from 'tdesign-vue-next'
 import {
   getTreeData,
   addTreeNode,
@@ -249,11 +239,13 @@ const selectTableRef = ref(null)
 
 const getTreeDataHandler = async () => {
   const res = await getTreeData(-1)
-  if (res.code !== 200) return ElMessage.error(res.msg)
+  if (res.code !== 200) return MessagePlugin.error(res.msg)
   treeData.value = res.data
 }
 
-const nodeclick = (obj, node, self) => {
+const nodeclick = (context) => {
+      const { node: treeNode } = context;
+      const obj = treeNode.data;
   if (obj.treeLevel !== 2) {
     currentNode.value = null
     return
@@ -279,53 +271,52 @@ const treeNodeManage = (data, type) => {
 const tableTreeFormSubmit = async () => {
   if (!treeFormRef.value) return
 
-  await treeFormRef.value.validate(async (valid) => {
-    if (valid) {
-      try {
-        let res
-        if (tableTreeDialogTitle.value === '节点新增') {
-          res = await addTreeNode(treeForm)
-        } else if (tableTreeDialogTitle.value === '节点修改') {
-          res = await updateTreeNode(treeForm)
-        }
-        if (res.code !== 200) return ElMessage.error(res.msg)
-        ElMessage.success(res.msg)
-        tableTreeDialogFormVisible.value = false
-        getTreeDataHandler()
-      } catch (error) {
-        console.error('操作失败:', error)
-        ElMessage.error('操作失败')
+  const valid = await treeFormRef.value.validate()
+  if (valid === true) {
+    try {
+      let res
+      if (tableTreeDialogTitle.value === '节点新增') {
+        res = await addTreeNode(treeForm)
+      } else if (tableTreeDialogTitle.value === '节点修改') {
+        res = await updateTreeNode(treeForm)
       }
-    } else {
-      ElMessage.error('表单校验失败！')
-      return false
+      if (res.code !== 200) return MessagePlugin.error(res.msg)
+      MessagePlugin.success(res.msg)
+      tableTreeDialogFormVisible.value = false
+      getTreeDataHandler()
+    } catch (error) {
+      console.error('操作失败:', error)
+      MessagePlugin.error('操作失败')
     }
-  })
+  } else {
+    MessagePlugin.error('表单校验失败！')
+  }
 }
 
-const removeTreeNood = async (node, data) => {
-  const res = await deleteTreeNode(data.id)
-  if (res.code !== 200) return ElMessage.error(res.msg)
-  ElMessage.success(res.msg)
+const removeTreeNood = async (node) => {
+  const res = await deleteTreeNode(node.data.id)
+  if (res.code !== 200) return MessagePlugin.error(res.msg)
+  MessagePlugin.success(res.msg)
   getTreeDataHandler()
 }
 
 const getTableList = async () => {
   const res = await fetchTableList(tableQueryInfo)
-  if (res.code !== 200) return ElMessage.error(res.msg)
+  if (res.code !== 200) return MessagePlugin.error(res.msg)
   tableData.value = res.data
 }
 
-const handleSelectionChange = (val) => {
-  selectTableNames.value = val.map((list) => list.name)
-  selectTableIds.value = val.map((list) => list.id)
+const handleSelectionChange = (_keys, options) => {
+  const rows = options?.selectedRowData || []
+  selectTableNames.value = rows.map((list) => list.name)
+  selectTableIds.value = rows.map((list) => list.id)
 }
 
 const moveInTree = async () => {
   if (currentNode.value == null)
-    return ElMessage.error('没有选中需移入的分类！')
+    return MessagePlugin.error('没有选中需移入的分类！')
   if (selectTableNames.value.length === 0)
-    return ElMessage.error('至少请选择一张数据表！')
+    return MessagePlugin.error('至少请选择一张数据表！')
   const tableTreeRecords = []
   for (let i = 0; i < selectTableNames.value.length; i++) {
     tableTreeRecords.push({
@@ -338,8 +329,8 @@ const moveInTree = async () => {
     })
   }
   const res = await batchMoveTables(tableTreeRecords)
-  if (res.code !== 200) return ElMessage.error(res.msg)
-  ElMessage.success(res.msg)
+  if (res.code !== 200) return MessagePlugin.error(res.msg)
+  MessagePlugin.success(res.msg)
   if (selectTableRef.value) {
     selectTableRef.value.clearSelection()
   }
@@ -349,8 +340,8 @@ const moveInTree = async () => {
 
 const syncTableInfo = async () => {
   const res = await syncTableData()
-  if (res.code !== 200) return ElMessage.error(res.msg)
-  ElMessage.success(res.msg)
+  if (res.code !== 200) return MessagePlugin.error(res.msg)
+  MessagePlugin.success(res.msg)
 }
 
 const updateColumn = (row) => {

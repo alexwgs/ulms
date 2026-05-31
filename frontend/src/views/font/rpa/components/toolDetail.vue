@@ -1,34 +1,34 @@
 <template>
-  <el-card class="box-card" style="height: calc(100vh - 180px); overflow: auto">
+  <t-card class="box-card" style="height: calc(100vh - 180px); overflow: auto">
     <div>
-      <el-descriptions direction="vertical" size="small" :column="2" border>
-        <el-descriptions-item label="工具名称" :span="2">{{
+      <t-descriptions direction="vertical" size="small" :column="2" border>
+        <t-descriptions-item label="工具名称" :span="1">{{
           record.name
-        }}</el-descriptions-item>
-        <el-descriptions-item label="联系人">
-          <el-tag size="small">{{ record.contacts }}</el-tag>
-        </el-descriptions-item>
-        <el-descriptions-item label="运行时长">{{
+        }}</t-descriptions-item>
+        <t-descriptions-item label="联系人">
+          <t-tag size="small">{{ record.contacts }}</t-tag>
+        </t-descriptions-item>
+        <t-descriptions-item label="运行时长">{{
           record.runTimes
-        }}</el-descriptions-item>
-        <el-descriptions-item label="使用说明" :span="2">
+        }}</t-descriptions-item>
+        <t-descriptions-item label="使用说明" :span="1">
           <div v-html="record.memo"></div>
-        </el-descriptions-item>
-        <el-descriptions-item label="运行参数" :span="2">
-          <el-form
-            :model="fromData"
+        </t-descriptions-item>
+        <t-descriptions-item label="运行参数" :span="1">
+          <t-form
+            :data="fromData"
             :rules="rules"
             ref="ruleFormRef"
             label-width="120px"
           >
             <div v-for="item in list" :key="item.id">
-              <el-form-item
+              <t-form-item
                 :label="item.label"
                 :prop="item.fieldName + ''"
                 :required="item.required"
                 :style="item.orderId < 0 ? 'display:none' : ''"
               >
-                <el-input
+                <t-input
                   v-if="item.type === 'input'"
                   style="width: 100%"
                   v-model="fromData[item.fieldName]"
@@ -38,8 +38,8 @@
                   :rows="getOptionValue(item.options, 'rows')"
                   :placeholder="getOptionValue(item.options, 'placeholder')"
                   size="small"
-                ></el-input>
-                <el-select
+                ></t-input>
+                <t-select
                   v-else-if="item.type === 'select'"
                   style="width: 100%"
                   v-model="fromData[item.fieldName]"
@@ -50,34 +50,32 @@
                     getOptionValue(item.options, 'multipleLimit')
                   "
                 >
-                  <el-option
+                  <t-option
                     v-for="optionItem in getSelectOptions(item.options)"
                     :key="optionItem.value"
                     :label="optionItem.label"
                     :value="optionItem.value"
-                  ></el-option>
-                </el-select>
-                <el-date-picker
+                  ></t-option>
+                </t-select>
+                <t-date-picker
                   v-else-if="item.type === 'dateTime'"
                   size="small"
                   v-model="fromData[item.fieldName]"
-                  :type="getOptionValue(item.options, 'type')"
+                  :mode="getOptionValue(item.options, 'type')"
                   placeholder="选择日期"
-                  :editable="getOptionValue(item.options, 'editable')"
                   :format="getOptionValue(item.options, 'format').toUpperCase()"
-                  :value-format="getOptionValue(item.options, 'valueFormat').toUpperCase()"
-                ></el-date-picker>
-                <el-date-picker
+                  :value-type="getOptionValue(item.options, 'valueFormat').toUpperCase()"
+                ></t-date-picker>
+                <t-date-picker
                   v-else-if="item.type === 'dateRange'"
                   style="width: 100%"
                   size="small"
                   v-model="fromData[item.fieldName]"
-                  :type="getOptionValue(item.options, 'type')"
+                  :mode="getOptionValue(item.options, 'type')"
                   placeholder="选择日期"
-                  :editable="getOptionValue(item.options, 'editable')"
                   :format="getOptionValue(item.options, 'format').toUpperCase()"
-                  :value-format="getOptionValue(item.options, 'valueFormat').toUpperCase()"
-                ></el-date-picker>
+                  :value-type="getOptionValue(item.options, 'valueFormat').toUpperCase()"
+                ></t-date-picker>
                 <UserSelect
                   v-else-if="item.type === 'userSelect'"
                   style="width: 100%"
@@ -101,27 +99,23 @@
                   }"
                 ></OrgCascader>
                 <div v-else-if="item.type === 'batchData'">
-                  <el-input
-                    style="width: 100%"
+                  <t-textarea style="width: 100%"
                     v-model="textareaInput"
-                    type="textarea"
+                    
                     maxlength="2000"
                     :minlength="getOptionValue(item.options, 'minlength')"
                     :rows="getOptionValue(item.options, 'rows')"
                     size="small"
                     @input="changeValue(item.fieldName)"
-                    :validate-event="false"
-                  ></el-input>
-                  <el-input
-                    style="width: 100%; margin-top: 5px"
+                    :validate-event="false" />
+                  <t-textarea style="width: 100%; margin-top: 5px"
                     v-model="fromData[item.fieldName]"
-                    type="textarea"
+                    
                     placeholder="参数预览区"
                     rows="2"
                     size="small"
                     readonly
-                    :validate-event="false"
-                  ></el-input>
+                    :validate-event="false" />
                 </div>
                 <div v-else-if="item.type === 'userInfo'">
                   <UserSelect
@@ -154,27 +148,27 @@
                     }"
                   ></OrgCascader>
                 </div>
-              </el-form-item>
+              </t-form-item>
             </div>
-          </el-form>
-        </el-descriptions-item>
-      </el-descriptions>
-      <el-button
-        type="primary"
+          </t-form>
+        </t-descriptions-item>
+      </t-descriptions>
+      <t-button
+        theme="primary"
         size="small"
         style="width: 100%"
         :disabled="Object.keys(record).length === 0"
         @click="submit"
         :loading="submitBtnFlag || cdTime > 0"
-        >{{ cdTime === 0 ? '提交' : '冷却中...' + cdTime + '秒' }}</el-button
+        >{{ cdTime === 0 ? '提交' : '冷却中...' + cdTime + '秒' }}</t-button
       >
     </div>
-  </el-card>
+  </t-card>
 </template>
 
 <script setup>
 import { ref, reactive, onMounted, onBeforeUnmount } from 'vue'
-import { ElMessage } from 'element-plus'
+import { MessagePlugin } from 'tdesign-vue-next'
 import UserSelect from '@/components/EmployeeSelect.vue'
 import OrgCascader from '@/components/DepartmentSelect.vue'
 import {
@@ -229,11 +223,11 @@ const getTemplete = async () => {
       list.value = res.data
       getColdDown()
     } else {
-      ElMessage.error(res.msg)
+      MessagePlugin.error(res.msg)
     }
   } catch (error) {
     console.error('获取工具模板失败:', error)
-    ElMessage.error('获取工具模板失败')
+    MessagePlugin.error('获取工具模板失败')
   }
 }
 
@@ -248,11 +242,11 @@ const getColdDown = async () => {
         startCountdown()
       }
     } else {
-      ElMessage.error(res.msg)
+      MessagePlugin.error(res.msg)
     }
   } catch (error) {
     console.error('获取冷却时间失败:', error)
-    ElMessage.error('获取冷却时间失败')
+    MessagePlugin.error('获取冷却时间失败')
   }
 }
 
@@ -293,7 +287,7 @@ const writeLog = async (returnCode, returnMessage, paramDefineList) => {
     getColdDown()
   } catch (error) {
     console.error('提交报告失败:', error)
-    ElMessage.error('提交报告失败')
+    MessagePlugin.error('提交报告失败')
   }
 }
 
@@ -303,30 +297,30 @@ const submit = async () => {
   if (!ruleFormRef.value) return
 
   try {
-    await ruleFormRef.value.validate((valid) => {
-      if (valid) {
-        // 处理数组类型的参数
-        Object.keys(fromData.value).map((item) => {
-          const value = fromData.value[item]
-          if (Array.isArray(value)) {
-            fromData.value[item] = value.join(',')
-          }
-        })
-
-        submitBtnFlag.value = true
-
-        // 构建参数列表
-        const paramDefineList = {
-          paramDefineList: [],
-          subscriptionId: record.value.subscribeId
+    const valid = await ruleFormRef.value.validate()
+    if (valid === true) {
+      // 处理数组类型的参数
+      Object.keys(fromData.value).map((item) => {
+        const value = fromData.value[item]
+        if (Array.isArray(value)) {
+          fromData.value[item] = value.join(',')
         }
+      })
 
-        for (const item in list.value) {
-          let value = ''
-          if (
-            Object.prototype.hasOwnProperty.call(
-              fromData.value,
-              list.value[item].fieldName
+      submitBtnFlag.value = true
+
+      // 构建参数列表
+      const paramDefineList = {
+        paramDefineList: [],
+        subscriptionId: record.value.subscribeId
+      }
+
+      for (const item in list.value) {
+        let value = ''
+        if (
+          Object.prototype.hasOwnProperty.call(
+            fromData.value,
+            list.value[item].fieldName
             )
           ) {
             value = fromData.value[list.value[item].fieldName]
@@ -352,9 +346,9 @@ const submit = async () => {
           .then((response) => {
             const resData = response
             if (resData.returnCode === 'SUC0000') {
-              ElMessage.success(resData.body.taskId + '任务提交成功！')
+              MessagePlugin.success(resData.body.taskId + '任务提交成功！')
             } else {
-              ElMessage.error('任务提交失败！' + resData.errorMsg)
+              MessagePlugin.error('任务提交失败！' + resData.errorMsg)
             }
             writeLog(resData.returnCode, resData.errorMsg, paramDefineList)
             submitBtnFlag.value = false
@@ -362,15 +356,14 @@ const submit = async () => {
           .catch((error) => {
             writeLog('ERROR', error.message, paramDefineList)
             submitBtnFlag.value = false
-            ElMessage.error('任务提交失败！' + error.message)
+            MessagePlugin.error('任务提交失败！' + error.message)
           })
-      } else {
-        ElMessage.warning('表单校验失败，请检查！')
-      }
-    })
+    } else {
+      MessagePlugin.warning('表单校验失败，请检查！')
+    }
   } catch (error) {
     console.error('表单验证失败:', error)
-    ElMessage.error('表单验证失败')
+    MessagePlugin.error('表单验证失败')
   }
 }
 

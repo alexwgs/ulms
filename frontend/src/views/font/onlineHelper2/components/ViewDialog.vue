@@ -1,20 +1,20 @@
 <template>
   <div>
-    <el-dialog
-      v-model="articalDialogVisible"
+    <t-dialog
+      v-model:visible="articalDialogVisible"
       width="80%"
-      :before-close="handleClose"
+      @before-close="handleClose"
       top="8vh"
-      :close-on-click-modal="false"
+      :close-on-overlay-click="false"
     >
       <div v-if="artical" class="main-content">
         <div class="title">{{ artical.title }}</div>
         <div style="padding-top: 10px">
           标签：
           <span v-for="item in keyword" :key="item" style="padding-left: 5px">
-            <el-tag effect="dark" size="small">
+            <t-tag effect="dark" size="small">
               {{ item }}
-            </el-tag>
+            </t-tag>
           </span>
           <div class="artical-icon">
             <span style="color: #909399; font-size: 14px; padding-right: 10px"
@@ -29,20 +29,20 @@
           v-if="artical.hasOwnProperty('files') && artical.files != null"
           style="margin-bottom: 0"
         >
-          附件下载：<el-button
+          附件下载：<t-button
             size="small"
             v-for="(file, index) in JSON.parse(artical.files)"
             :key="index"
             @click="downloadFile(file.path)"
-            type="primary"
+            theme="primary"
             plain
-            >{{ file.name }}</el-button
+            >{{ file.name }}</t-button
           >
         </p>
       </div>
       <template #footer>
         <div class="dialog-footer">
-          <el-input
+          <t-input
             v-model.trim="searchWord"
             size="small"
             style="width: 50%; float: left"
@@ -50,19 +50,19 @@
             :clearable="true"
           >
             <template #prepend>关键词高亮</template>
-          </el-input>
-          <el-button size="small" @click="articalDialogVisible = false"
-            >关闭</el-button
+          </t-input>
+          <t-button size="small" @click="articalDialogVisible = false"
+            >关闭</t-button
           >
         </div>
       </template>
-    </el-dialog>
+    </t-dialog>
   </div>
 </template>
 
 <script setup>
 import { ref, watch } from 'vue'
-import { ElMessage } from 'element-plus'
+import { MessagePlugin } from 'tdesign-vue-next'
 import { articalApi } from '@/api/helper/artical'
 
 const fsURL = import.meta.env.VITE_FILE_MANAGE_BASE || 'http://localhost:8080'
@@ -78,7 +78,7 @@ const init = async (journo, searchWordParam) => {
   try {
     const res = await articalApi.getArticalById(journo)
     if (res.code !== 200) {
-      ElMessage.error(res.msg)
+      MessagePlugin.error(res.msg)
       return
     }
     artical.value = res.data
@@ -87,7 +87,7 @@ const init = async (journo, searchWordParam) => {
     searchWord.value = searchWordParam
     articalDialogVisible.value = true
   } catch (error) {
-    ElMessage.error(error.message || '获取文章失败')
+    MessagePlugin.error(error.message || '获取文章失败')
   }
 }
 
@@ -103,13 +103,24 @@ const downloadFile = (path) => {
   }
 }
 
+function escapeHtml(str) {
+  const div = document.createElement('div')
+  div.appendChild(document.createTextNode(str))
+  return div.innerHTML
+}
+
+function escapeRegExp(str) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
 watch(searchWord, (newSearchWord) => {
   if (artical.value && artical.value.content) {
-    const Reg = new RegExp(newSearchWord, 'g')
     if (newSearchWord && newSearchWord.length > 0) {
+      const escaped = escapeHtml(newSearchWord)
+      const Reg = new RegExp(escapeRegExp(escaped), 'g')
       content.value = artical.value.content.replace(
         Reg,
-        `<span style="color: #ff5134;background-color: #e0e400;font-weight: 600;">${newSearchWord}</span>`
+        `<span style="color: #ff5134;background-color: #e0e400;font-weight: 600;">${escaped}</span>`
       )
     } else {
       content.value = artical.value.content
@@ -123,7 +134,7 @@ defineExpose({
 </script>
 
 <style lang="less" scoped>
-:deep(.el-dialog__body) {
+:deep(.t-dialog__body) {
   padding: 10px 20px;
 }
 .main-content {

@@ -6,7 +6,7 @@
     <div class="title">
       <div>{{ statusTip }}</div>
       <div class="margin-top-lg">
-        <el-button type="primary" size="small" @click="backHome"> 返回首页 </el-button>
+        <t-button theme="primary" size="small" @click="backHome"> 返回首页 </t-button>
       </div>
     </div>
   </div>

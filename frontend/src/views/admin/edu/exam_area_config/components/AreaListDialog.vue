@@ -1,74 +1,68 @@
 <template>
-  <el-dialog 
-    :title="dialogTitle" 
-    v-model="dialogVisible" 
-    width="40%" 
-    :close-on-click-modal="false"
+  <t-dialog
+    :header="dialogTitle"
+    v-model:visible="dialogVisible"
+    width="40%"
+    :close-on-overlay-click="false"
   >
     <div>
       <!-- 考场座位维护对话框 -->
-      <el-dialog 
-        width="30%" 
-        title="考场座位维护" 
-        v-model="areaSeatDialog" 
-        append-to-body
+      <t-dialog
+        width="30%"
+        header="考场座位维护"
+        v-model:visible="areaSeatDialog"
+        attach="body"
       >
-        <el-form 
+        <t-form 
           ref="seatRef" 
-          :model="areaListForm" 
-          label-position="right" 
+          :data="areaListForm" 
+          label-align="right" 
           label-width="100px" 
           size="small" 
           :rules="seatRules"
         >
-          <el-form-item label="位置IP" prop="seatIp">
-            <el-input v-model="areaListForm.seatIp"></el-input>
-          </el-form-item>
-          <el-form-item label="位置MAC" prop="seatMac">
-            <el-input v-model="areaListForm.seatMac"></el-input>
-          </el-form-item>
-          <el-form-item label="位置描述" prop="seatDesc">
-            <el-input v-model="areaListForm.seatDesc"></el-input>
-          </el-form-item>
-          <el-button size="small" @click="areaSeatDialog = false">取 消</el-button>
-          <el-button size="small" type="primary" @click="submitAreaSeat">确 定</el-button>
-        </el-form>
-      </el-dialog>
+          <t-form-item label="位置IP" name="seatIp">
+            <t-input v-model="areaListForm.seatIp"></t-input>
+          </t-form-item>
+          <t-form-item label="位置MAC" name="seatMac">
+            <t-input v-model="areaListForm.seatMac"></t-input>
+          </t-form-item>
+          <t-form-item label="位置描述" name="seatDesc">
+            <t-input v-model="areaListForm.seatDesc"></t-input>
+          </t-form-item>
+          <t-button size="small" @click="areaSeatDialog = false">取 消</t-button>
+          <t-button size="small" theme="primary" @click="submitAreaSeat">确 定</t-button>
+        </t-form>
+      </t-dialog>
 
-      <el-button type="primary" size="small" @click="addNewAreaSeat">新增座位</el-button>
-      <el-table :data="areaList" size="small" stripe height="400px">
-        <el-table-column prop="seatIp" label="座位IP" width="130"></el-table-column>
-        <el-table-column prop="seatMac" label="座位MAC"></el-table-column>
-        <el-table-column prop="seatDesc" label="座位描述"></el-table-column>
-        <el-table-column label="操作" width="110">
+      <t-button theme="primary" size="small" @click="addNewAreaSeat">新增座位</t-button>
+      <CustomTable rowKey="id" :data="areaList" size="small" stripe height="400px">
+        <TableColumn colKey="seatIp" label="座位IP" width="130"></TableColumn>
+        <TableColumn colKey="seatMac" label="座位MAC"></TableColumn>
+        <TableColumn colKey="seatDesc" label="座位描述"></TableColumn>
+        <TableColumn label="操作" width="110">
           <template #default="scope">
-            <el-button 
-              type="warning" 
-              icon="Edit" 
-              size="small" 
-              @click="editAreaListBtn(scope.row)"
-            ></el-button>
-            <el-button 
-              type="danger" 
-              icon="Delete" 
-              size="small" 
-              @click="deleteAreaList(scope.row.journo)"
-            ></el-button>
+            <t-button 
+              theme="warning" size="small" 
+              @click="editAreaListBtn(scope.row)"><template #icon><DynamicIcon name="edit" /></template></t-button>
+            <t-button 
+              theme="danger" size="small" 
+              @click="deleteAreaList(scope.row.journo)"><template #icon><DynamicIcon name="delete" /></template></t-button>
           </template>
-        </el-table-column>
-      </el-table>
+        </TableColumn>
+      </CustomTable>
     </div>
     <template #footer>
       <span class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
+        <t-button @click="dialogVisible = false">取 消</t-button>
       </span>
     </template>
-  </el-dialog>
+  </t-dialog>
 </template>
 
 <script setup>
 import { ref, reactive, computed, onMounted, watch } from 'vue'
-import { ElMessage } from 'element-plus'
+import { MessagePlugin } from 'tdesign-vue-next'
 import { examAreaConfigApi } from '@/api/edu/examAreaConfig'
 
 // Props
@@ -133,7 +127,7 @@ onMounted(() => {
 // Methods
 const getAreaList = async () => {
   const res = await examAreaConfigApi.getAreaDetailList({ areaCode: props.areaCode })
-  if (res.code !== 200) return ElMessage.error(res.msg)
+  if (res.code !== 200) return MessagePlugin.error(res.msg)
   areaList.value = res.data
 }
 
@@ -152,7 +146,7 @@ const editAreaListBtn = (row) => {
 
 const submitAreaSeat = async () => {
   const valid = await seatRef.value.validate()
-  if (!valid) return
+  if (valid !== true) return
 
   try {
     let res
@@ -162,19 +156,19 @@ const submitAreaSeat = async () => {
       res = await examAreaConfigApi.addAreaSeat(areaListForm)
     }
 
-    if (res.code !== 200) return ElMessage.error(res.msg)
-    ElMessage.success(res.msg)
+    if (res.code !== 200) return MessagePlugin.error(res.msg)
+    MessagePlugin.success(res.msg)
     getAreaList()
     areaSeatDialog.value = false
   } catch (error) {
-    ElMessage.error('操作失败，请重试')
+    MessagePlugin.error('操作失败，请重试')
   }
 }
 
 const deleteAreaList = async (journo) => {
   const res = await examAreaConfigApi.deleteAreaSeat(journo)
-  if (res.code !== 200) return ElMessage.error(res.msg)
-  ElMessage.success(res.msg)
+  if (res.code !== 200) return MessagePlugin.error(res.msg)
+  MessagePlugin.success(res.msg)
   getAreaList()
   areaSeatDialog.value = false
 }

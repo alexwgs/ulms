@@ -1,46 +1,46 @@
 <template>
   <div>
-    <el-card class="box-card">
-      <el-form
+    <t-card class="box-card">
+      <t-form
         ref="formRef"
-        :model="form"
+        :data="form"
         label-width="80px"
         :rules="formRules"
       >
-        <el-form-item label="板块" prop="category">
-          <el-select v-model="form.category" placeholder="请选择发帖板块">
-            <el-option
+        <t-form-item label="板块" name="category">
+          <t-select v-model="form.category" placeholder="请选择发帖板块">
+            <t-option
               v-for="category in dictStore.dictList.cyt_system_category"
               :key="category.id"
               :label="category.codeval"
               :value="parseInt(category.code)"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="标题" prop="title">
-          <el-input v-model="form.title"></el-input>
-        </el-form-item>
-        <el-form-item label="正文" prop="content">
+            ></t-option>
+          </t-select>
+        </t-form-item>
+        <t-form-item label="标题" name="title">
+          <t-input v-model="form.title"></t-input>
+        </t-form-item>
+        <t-form-item label="正文" name="content">
           <WangEditor v-model="form.content" :height="500" />
-        </el-form-item>
-        <el-form-item>
-          <el-button
-            type="primary"
+        </t-form-item>
+        <t-form-item>
+          <t-button
+            theme="primary"
             :disabled="form.content.length < 1 || submitStat"
             @click="onSubmit(1)"
-            >{{ submitStat ? '正在发布' : '立即发布' }}</el-button
+            >{{ submitStat ? '正在发布' : '立即发布' }}</t-button
           >
-          <el-button @click="onSubmit(2)">存草稿</el-button>
-        </el-form-item>
-      </el-form>
-    </el-card>
+          <t-button @click="onSubmit(2)">存草稿</t-button>
+        </t-form-item>
+      </t-form>
+    </t-card>
   </div>
 </template>
 
 <script setup>
 import { ref, reactive, computed, watch, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { ElMessage } from 'element-plus'
+import { MessagePlugin } from 'tdesign-vue-next'
 import WangEditor from '@/components/WangEditor.vue'
 import { manageNoticeApi } from '@/api/admin/manageNotice'
 import { useDictStore } from '@/stores'
@@ -94,14 +94,14 @@ const initArtical = async () => {
     try {
       const res = await getArticalDetailApi(`cyt/artical/${props.id}`)
       if (res.code !== 200) {
-        ElMessage.error(res.msg)
+        MessagePlugin.error(res.msg)
         return
       }
 
       // 将返回的数据合并到form中
       Object.assign(form, res.data)
     } catch (error) {
-      ElMessage.error('获取文章详情失败')
+      MessagePlugin.error('获取文章详情失败')
       console.error(error)
     }
   }
@@ -118,7 +118,7 @@ const onSubmit = async (status) => {
 
   try {
     const valid = await formRef.value.validate()
-    if (valid) {
+    if (valid === true) {
       submitStat.value = true
       form.status = status
 
@@ -130,18 +130,18 @@ const onSubmit = async (status) => {
       }
 
       if (res.code !== 200) {
-        ElMessage.error(res.msg)
+        MessagePlugin.error(res.msg)
         return
       }
 
-      ElMessage.success(props.id !== 'new' ? '更新成功' : '发布成功')
+      MessagePlugin.success(props.id !== 'new' ? '更新成功' : '发布成功')
       // 可以选择返回上一页或清空表单
       // router.go(-1)
     } else {
-      ElMessage.error('表单验证失败')
+      MessagePlugin.error('表单验证失败')
     }
   } catch (error) {
-    ElMessage.error('提交失败')
+    MessagePlugin.error('提交失败')
     console.error(error)
   } finally {
     submitStat.value = false

@@ -12,13 +12,13 @@
 
     <!-- 加载状态 -->
     <div v-if="loading" class="loading-overlay">
-      <el-icon class="loading-icon"><Loading /></el-icon>
+      <t-icon class="loading-icon"><LoadingIcon /></t-icon>
       <span class="loading-text">加载中...</span>
     </div>
 
     <!-- 错误提示 -->
     <div v-if="error" class="error-overlay">
-      <el-icon class="error-icon"><Warning /></el-icon>
+      <t-icon class="error-icon"><ErrorCircleIcon /></t-icon>
       <span class="error-text">{{ error }}</span>
     </div>
   </div>
@@ -48,7 +48,7 @@ import {
 } from 'echarts/charts'
 import { CanvasRenderer } from 'echarts/renderers'
 import { UniversalTransition } from 'echarts/features'
-import { Loading, Warning } from '@element-plus/icons-vue'
+import { LoadingIcon, ErrorCircleIcon } from 'tdesign-icons-vue-next'
 import { useAppStore } from '@/stores'
 
 // 注册 ECharts 组件
@@ -74,7 +74,7 @@ echarts.use([
 
 // 定义 Dark 主题配置
 const darkTheme = {
-  backgroundColor: 'transparent',
+    backgroundColor: 'transparent',
   textStyle: {
     color: '#B9B8CE'
   },
@@ -348,7 +348,7 @@ onUnmounted(() => {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color: rgba(255, 255, 255, 0.8);
+-color: rgba(255, 255, 255, 0.8);
     border-radius: 4px;
     z-index: 10;
   }

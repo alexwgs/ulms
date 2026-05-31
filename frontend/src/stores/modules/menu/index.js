@@ -101,7 +101,7 @@ const useMenuStore = defineStore('menu', {
 
   actions: {
     setMenuList(partial) {
-      this.menuList = partial
+      this.menuList = partial || []
     },
 
     setRouteMounted(value) {

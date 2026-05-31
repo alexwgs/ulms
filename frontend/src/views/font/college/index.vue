@@ -1,26 +1,24 @@
 <template>
-  <el-container class="home-container">
-    <el-header style="height: 70px">
+  <t-layout class="home-container">
+    <t-header style="height: 70px">
       <div class="nav">
-        <el-menu
+        <t-head-menu
           style="width: 1000px; display: inline-block; font-size: 18px"
-          class="el-menu-demo"
           mode="horizontal"
           active-text-color="#d23333"
           text-color="#000"
-          router
         >
-          <el-menu-item index="/college">首页</el-menu-item>
-          <el-menu-item index="/college/library">课程库</el-menu-item>
-          <el-menu-item index="/college/teacher">讲师风采</el-menu-item>
-          <el-menu-item index="/college/my">学习中心</el-menu-item>
-        </el-menu>
+          <t-menu-item to="/college">首页</t-menu-item>
+          <t-menu-item to="/college/library">课程库</t-menu-item>
+          <t-menu-item to="/college/teacher">讲师风采</t-menu-item>
+          <t-menu-item to="/college/my">学习中心</t-menu-item>
+        </t-head-menu>
       </div>
-    </el-header>
-    <el-main style="background-color: #f7f8fa">
+    </t-header>
+    <t-content style="background-color: #f7f8fa">
       <router-view></router-view>
-    </el-main>
-  </el-container>
+    </t-content>
+  </t-layout>
 </template>
 
 <script setup>
@@ -38,11 +36,11 @@
   width: 100%;
   text-align: center;
   border-bottom: 1px solid #9b2b23;
-  :deep(.el-menu.el-menu--horizontal) {
+  :deep(.t-menu.t-menu--horizontal) {
     border-bottom: none;
   }
 }
-:deep(.el-card__header) {
+:deep(.t-card__header) {
   border-bottom: 1px solid #992929;
   border-left: 10px solid #992929;
 }

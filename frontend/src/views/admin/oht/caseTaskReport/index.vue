@@ -1,32 +1,31 @@
 <template>
-  <el-card class="box-card">
-    <el-row :gutter="15">
-      <el-col :span="18">
-        <el-date-picker @change="dateChangeEvent" size="small" value-format="YYYY-MM-DD" v-model="dateDuration"
-          type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
-      </el-col>
-      <el-col :span="6" class="text-right">
-        <el-button type="primary" size="small" @click="taskApi.downloadTaskSummaryReport(queryInfo)">
-          下载<i class="el-icon-download el-icon--right"></i>
-        </el-button>
-      </el-col>
-    </el-row>
-    <el-table :data="caseTaskList" size="small" :default-sort="{ prop: 'take', order: 'descending' }" stripe
-      height="calc(100vh - 270px)" v-loading="loading">
-      <el-table-column prop="deptNum" sortable label="科室"></el-table-column>
-      <el-table-column prop="groupNum" sortable label="组别"></el-table-column>
-      <el-table-column prop="userId" sortable label="用户编号" width="180"></el-table-column>
-      <el-table-column prop="userName" sortable label="用户姓名"></el-table-column>
-      <el-table-column prop="miss" sortable label="忽略量"></el-table-column>
-      <el-table-column prop="take" sortable label="接起量"></el-table-column>
-      <el-table-column prop="refuse" sortable label="拒绝量"></el-table-column>
-    </el-table>
-  </el-card>
+  <t-card class="box-card">
+    <t-row :gutter="15">
+      <t-col :span="9">
+        <t-date-range-picker @change="dateChangeEvent" size="small" format="YYYY-MM-DD" v-model="dateDuration" :placeholder="['开始日期', '结束日期']"></t-date-range-picker>
+      </t-col>
+      <t-col :span="3" class="text-right">
+        <t-button theme="primary" size="small" @click="taskApi.downloadTaskSummaryReport(queryInfo)">
+          下载
+        </t-button>
+      </t-col>
+    </t-row>
+    <CustomTable rowKey="id" :data="caseTaskList" size="small" :default-sort="{ prop: 'take', order: 'descending' }" stripe
+      height="calc(100vh - 270px)" :loading="loading">
+      <TableColumn colKey="deptNum" sortable label="科室"></TableColumn>
+      <TableColumn colKey="groupNum" sortable label="组别"></TableColumn>
+      <TableColumn colKey="userId" sortable label="用户编号" width="180"></TableColumn>
+      <TableColumn colKey="userName" sortable label="用户姓名"></TableColumn>
+      <TableColumn colKey="miss" sortable label="忽略量"></TableColumn>
+      <TableColumn colKey="take" sortable label="接起量"></TableColumn>
+      <TableColumn colKey="refuse" sortable label="拒绝量"></TableColumn>
+    </CustomTable>
+  </t-card>
 </template>
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
-import { ElMessage } from 'element-plus'
+import { MessagePlugin } from 'tdesign-vue-next'
 import { taskApi } from '@/api/oht/task'
 
 // 响应式数据
@@ -56,13 +55,13 @@ const getTaskSummary = async () => {
     loading.value = true
     const res = await taskApi.getTaskSummary(queryInfo)
     if (res.code !== 200) {
-      ElMessage.error(res.msg)
+      MessagePlugin.error(res.msg)
       return
     }
     caseTaskList.value = res.data
   } catch (error) {
     console.error('获取案件任务列表失败:', error)
-    ElMessage.error('获取案件任务列表失败')
+    MessagePlugin.error('获取案件任务列表失败')
   } finally {
     loading.value = false
   }

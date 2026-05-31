@@ -1,7 +1,8 @@
 <template>
-  <div class="container" v-loading="loading" element-loading-background="rgba(46, 174, 119, 0.5)">
-    <el-row :gutter="10">
-      <el-col :span="18">
+  <t-loading :loading="loading">
+    <div class="container">
+    <t-row :gutter="10">
+      <t-col :span="9">
         <div v-if="currentType === 'wrong'">
           <div class="title">我的错题</div>
           <div class="main-area">
@@ -27,36 +28,37 @@
               <div class="answer">
                 答案：{{ item.question?.answer }}<br />知识库名：{{
                   item.question?.knowledge
-                }}<el-button :icon="Star" class="uncollect-botton" size="small" style="float: right" circle
-                  @click="uncollect(item.journo)"></el-button>
+                }}<t-button class="uncollect-botton" size="small" style="float: right" circle
+                  @click="uncollect(item.journo)"><template #icon><DynamicIcon name="star" /></template></t-button>
               </div>
             </div>
           </div>
         </div>
-      </el-col>
-      <el-col :span="6">
+      </t-col>
+      <t-col :span="3">
         <div class="slogan">
           <div style="padding-top: 40px">
-            <el-button type="primary" :icon="Collection" class="mybutton" @click="changeType('wrong')" round>我 的 错
-              题</el-button>
+            <t-button theme="primary" class="mybutton" @click="changeType('wrong')" round><template #icon><DynamicIcon name="bookmark" /></template>我 的 错
+              题</t-button>
           </div>
           <div style="padding-top: 40px">
-            <el-button type="primary" :icon="Star" class="mybutton" @click="changeType('collect')" round>我 的 收
-              藏</el-button>
+            <t-button theme="primary" class="mybutton" @click="changeType('collect')" round><template #icon><DynamicIcon name="star" /></template>我 的 收
+              藏</t-button>
           </div>
           <img class="brush-icon" src="../../../assets/img/edu/my-questions-logo.png" />
         </div>
-      </el-col>
-    </el-row>
-  </div>
+      </t-col>
+    </t-row>
+    </div>
+  </t-loading>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
 import { brushApi } from '@/api/edu/brush'
 import { questionCollectApi } from '@/api/edu/questionCollect'
-import { ElMessage } from 'element-plus'
-import { Collection, Star } from '@element-plus/icons-vue'
+import { MessagePlugin } from 'tdesign-vue-next'
+import { BookmarkIcon, StarIcon } from 'tdesign-icons-vue-next'
 
 const loading = ref(false)
 const collectList = ref([])
@@ -65,19 +67,19 @@ const currentType = ref('wrong')
 
 const getCollectList = async () => {
   const res = await questionCollectApi.getMyCollect()
-  if (res.code !== 200) return ElMessage.error(res.msg)
+  if (res.code !== 200) return MessagePlugin.error(res.msg)
   collectList.value = res.data
 }
 
 const getWrongQuestion = async () => {
   const res = await brushApi.getWrongQuestion()
-  if (res.code !== 200) return ElMessage.error(res.msg)
+  if (res.code !== 200) return MessagePlugin.error(res.msg)
   wrongList.value = res.data
 }
 
 const uncollect = async (journo) => {
   const res = await questionCollectApi.uncollectQuestion(journo)
-  if (res.code !== 200) return ElMessage.error(res.msg)
+  if (res.code !== 200) return MessagePlugin.error(res.msg)
   collectList.value = res.data
   getCollectList()
 }
@@ -113,7 +115,7 @@ onMounted(() => {
 
 .mybutton {
   color: #31b97f;
-  background-color: #ffffff;
+-color: #ffffff;
   border-color: #ffffff;
   font-size: 20px;
 }
@@ -148,7 +150,7 @@ onMounted(() => {
 
   .uncollect-botton {
     color: #fee300;
-    background-color: transparent;
+-color: transparent;
     border-color: #ffed44;
     margin-right: 10px;
   }
@@ -159,7 +161,7 @@ onMounted(() => {
   margin: 10px;
   padding: 10px;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-  background-color: rgba(255, 255, 255, 0.1);
+-color: rgba(255, 255, 255, 0.1);
   border-radius: 4px;
 }
 </style>

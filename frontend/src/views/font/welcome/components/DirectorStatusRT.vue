@@ -1,59 +1,56 @@
 <template>
-  <el-dialog
-    title="主任状态RT"
-    v-model="dialogVisible"
+  <t-dialog
+    header="主任状态RT"
+    v-model:visible="dialogVisible"
     width="80%"
-    :before-close="handleClose"
+    @before-close="handleClose"
   >
-    <el-form :inline="true" :model="queryForm" class="demo-form-inline">
-      <el-form-item label="日期">
-        <el-date-picker
+    <t-form layout="inline" :data="queryForm" class="demo-form-inline">
+      <t-form-item label="日期">
+        <t-date-picker
           v-model="queryForm.date"
-          type="date"
+          mode="date"
           placeholder="选择日期"
-          value-format="YYYY-MM-DD"
-        ></el-date-picker>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="handleQuery">查询</el-button>
-      </el-form-item>
-    </el-form>
-    <el-table :data="tableData" border style="width: 100%; margin-top: 20px">
-      <el-table-column
+         
+        ></t-date-picker>
+      </t-form-item>
+      <t-form-item>
+        <t-button theme="primary" @click="handleQuery">查询</t-button>
+      </t-form-item>
+    </t-form>
+    <CustomTable rowKey="id" :data="tableData" border style="width: 100%; margin-top: 20px">
+      <TableColumn
         prop="empName"
         label="员工姓名"
-        width="120"
-      ></el-table-column>
-      <el-table-column prop="status" label="状态" width="150">
+        width="120"></TableColumn>
+      <TableColumn colKey="status" label="状态" width="150">
         <template #default="scope">
-          <el-tag :type="getStatusType(scope.row.status)">
+          <t-tag :theme="getStatusType(scope.row.status)">
             {{ getStatusText(scope.row.status) }}
-          </el-tag>
+          </t-tag>
         </template>
-      </el-table-column>
-      <el-table-column
+      </TableColumn>
+      <TableColumn
         prop="startTime"
         label="开始时间"
-        width="180"
-      ></el-table-column>
-      <el-table-column
+        width="180"></TableColumn>
+      <TableColumn
         prop="endTime"
         label="结束时间"
-        width="180"
-      ></el-table-column>
-      <el-table-column prop="duration" label="时长(分钟)"></el-table-column>
-    </el-table>
+        width="180"></TableColumn>
+      <TableColumn colKey="duration" label="时长(分钟)"></TableColumn>
+    </CustomTable>
     <template #footer>
       <span class="dialog-footer">
-        <el-button @click="handleClose">关闭</el-button>
+        <t-button @click="handleClose">关闭</t-button>
       </span>
     </template>
-  </el-dialog>
+  </t-dialog>
 </template>
 
 <script setup>
 import { ref, reactive, watch, onMounted } from 'vue'
-import { ElMessage } from 'element-plus'
+import { MessagePlugin } from 'tdesign-vue-next'
 import { getStatusJourList } from '@/api/welcome/index.js'
 
 const props = defineProps({
@@ -91,13 +88,13 @@ const handleClose = () => {
 
 const handleQuery = () => {
   if (!queryForm.date) {
-    ElMessage.warning('请选择日期')
+    MessagePlugin.warning('请选择日期')
     return
   }
   getStatusJourList(queryForm.date)
     .then((res) => {
       if (res.code !== 200) {
-        ElMessage.error(res.msg)
+        MessagePlugin.error(res.msg)
         return
       }
       tableData.value = res.data || []

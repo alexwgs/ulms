@@ -1,66 +1,66 @@
 <template>
   <div style="padding-left: calc((100vw - 1240px) / 2); max-width: 1200px">
-    <el-card class="box-card">
+    <t-card class="box-card">
       <template #header>
         <div class="clearfix">
           <span>讲师风采</span>
           <div style="float: right; width: 400px">
-            <el-input
+            <t-input
               placeholder="输入讲师姓名或工号查找"
               size="small"
               v-model="queryInfo.query"
               class="input-with-select"
             >
               <template #append>
-                <el-button @click="getTeacherList">
-                  <el-icon><Search /></el-icon>
-                </el-button>
+                <t-button @click="getTeacherList">
+                  <t-icon><Search /></t-icon>
+                </t-button>
               </template>
-            </el-input>
+            </t-input>
           </div>
         </div>
       </template>
-      <el-form
+      <t-form
         ref="queryInfoForm"
-        :model="queryInfo"
-        label-position="left"
+        :data="queryInfo"
+        label-align="left"
         label-width="100px"
       >
-        <el-form-item label="讲师类型">
-          <el-radio-group
+        <t-form-item label="讲师类型">
+          <t-radio-group
             v-model="queryInfo.skillType"
             size="small"
             @change="getTeacherList"
           >
-            <el-radio-button label="">全部</el-radio-button>
-            <el-radio-button
+            <t-radio-button value="">全部</t-radio-button>
+            <t-radio-button
               v-for="item in skillType"
               :key="item.value"
-              :label="item.value"
+              :value="item.value"
               v-show="item.status"
-              >{{ item.label }}</el-radio-button
+              >{{ item.label }}</t-radio-button
             >
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="身份">
-          <el-radio-group
+          </t-radio-group>
+        </t-form-item>
+        <t-form-item label="身份">
+          <t-radio-group
             v-model="queryInfo.skillName"
             size="small"
             @change="getTeacherList"
           >
-            <el-radio-button label="">全部</el-radio-button>
-            <el-radio-button
+            <t-radio-button value="">全部</t-radio-button>
+            <t-radio-button
               v-for="item in skillName"
               :key="item.value"
-              :label="item.value"
+              :value="item.value"
               v-show="item.status"
-              >{{ item.label }}</el-radio-button
+              >{{ item.label }}</t-radio-button
             >
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="排序">
-          <el-link style="" underline="never" @click="sortTeacher('dataDate')"
-            >身份时间<el-icon class="el-icon--right">
+          </t-radio-group>
+        </t-form-item>
+        <t-form-item label="排序">
+          <t-link style="" :underline="false" @click="sortTeacher('dataDate')"
+            >身份时间<t-icon>
               <ArrowDown
                 v-if="
                   queryInfo.order === 'dataDate' &&
@@ -73,13 +73,14 @@
                   queryInfo.orderType === 'asc'
                 "
               />
-              <DCaret v-else /> </el-icon
-          ></el-link>
-          <el-link
+              <CaretDownIcon v-else />
+              </t-icon
+          ></t-link>
+          <t-link
             style="padding-left: 20px"
-            underline="never"
+            :underline="false"
             @click="sortTeacher('score')"
-            >讲师评分<el-icon class="el-icon--right">
+            >讲师评分<t-icon>
               <ArrowDown
                 v-if="
                   queryInfo.order === 'score' && queryInfo.orderType === 'desc'
@@ -90,13 +91,14 @@
                   queryInfo.order === 'score' && queryInfo.orderType === 'asc'
                 "
               />
-              <DCaret v-else /> </el-icon
-          ></el-link>
-          <el-link
+              <CaretDownIcon v-else />
+              </t-icon
+          ></t-link>
+          <t-link
             style="padding-left: 20px"
-            underline="never"
+            :underline="false"
             @click="sortTeacher('courseNum')"
-            >授课数量<el-icon class="el-icon--right">
+            >授课数量<t-icon>
               <ArrowDown
                 v-if="
                   queryInfo.order === 'courseNum' &&
@@ -109,13 +111,14 @@
                   queryInfo.orderType === 'asc'
                 "
               />
-              <DCaret v-else /> </el-icon
-          ></el-link>
-          <el-link
+              <CaretDownIcon v-else />
+              </t-icon
+          ></t-link>
+          <t-link
             style="padding-left: 20px"
-            underline="never"
+            :underline="false"
             @click="sortTeacher('courseHour')"
-            >授课时数<el-icon class="el-icon--right">
+            >授课时数<t-icon>
               <ArrowDown
                 v-if="
                   queryInfo.order === 'courseHour' &&
@@ -128,15 +131,16 @@
                   queryInfo.orderType === 'asc'
                 "
               />
-              <DCaret v-else /> </el-icon
-          ></el-link>
-        </el-form-item>
-      </el-form>
-    </el-card>
-    <el-row :gutter="20">
+              <CaretDownIcon v-else />
+              </t-icon
+          ></t-link>
+        </t-form-item>
+      </t-form>
+    </t-card>
+    <t-row :gutter="20">
       <div v-for="item in teachers" :key="item">
-        <el-col :span="12">
-          <el-card class="box-card">
+        <t-col :span="6">
+          <t-card class="box-card">
             <div style="float: left">
               <div
                 v-if="item.avatar == null"
@@ -166,15 +170,15 @@
               "
               @click="teacherView(item)"
             >
-              <el-tag effect="plain">{{ item.ploName }}</el-tag>
+              <t-tag effect="plain">{{ item.ploName }}</t-tag>
               <div style="margin-left: 10px; display: inline" v-if="item.honor">
-                <el-tag
+                <t-tag
                   style="margin-right: 5px"
                   v-for="(honor, index) in item.honor.split('、')"
                   :key="index"
                   size="small"
-                  type="danger"
-                  >{{ honor }}</el-tag
+                  theme="danger"
+                  >{{ honor }}</t-tag
                 >
               </div>
               <div
@@ -188,50 +192,50 @@
               >
                 简介：{{ item.introduce }}
               </div>
-              <el-row :gutter="10" style="font-size: 12px; margin-top: 5px">
-                <el-col :span="8">培训课程:{{ item.courseNum }}</el-col>
-                <el-col :span="8">授课课时:{{ item.courseHour }}</el-col>
-                <el-col :span="8"
-                  ><el-rate
+              <t-row :gutter="10" style="font-size: 12px; margin-top: 5px">
+                <t-col :span="4">培训课程:{{ item.courseNum }}</t-col>
+                <t-col :span="4">授课课时:{{ item.courseHour }}</t-col>
+                <t-col :span="4"
+                  ><t-rate
                     v-if="item.score > 0"
                     style="display: inline-block"
                     v-model="item.score"
                     disabled
                     text-color="#ff9900"
                     score-template="{value}"
-                  ></el-rate
-                  ><span v-else>暂无评分</span></el-col
+                  ></t-rate
+                  ><span v-else>暂无评分</span></t-col
                 >
-              </el-row>
+              </t-row>
             </div>
             <div style="width: 100%; margin-top: 130px; height: 130px">
-              <el-empty
+              <t-empty
                 :image-size="50"
                 description="暂时无任何知识"
-              ></el-empty>
+              ></t-empty>
             </div>
-          </el-card>
-        </el-col>
+          </t-card>
+        </t-col>
       </div>
-    </el-row>
-    <el-pagination
-      @size-change="handleSizeChange"
+    </t-row>
+    <t-pagination
+      @page-size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-      :current-page="queryInfo.pageNum"
-      :page-sizes="[20, 40, 100, 200]"
+      :current="queryInfo.pageNum"
+      :page-size-options="[20, 40, 100, 200]"
       :page-size="queryInfo.pageSize"
-      layout="total, sizes, prev, pager, next, jumper"
+
       :total="total"
-    ></el-pagination>
+    ></t-pagination>
   </div>
 </template>
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { ElMessage } from 'element-plus'
+import { MessagePlugin } from 'tdesign-vue-next'
 import { httpInstance } from '@/utils/request'
-import { Search, ArrowDown, ArrowUp, DCaret } from '@element-plus/icons-vue'
+import { SearchIcon, ArrowDownIcon, ArrowUpIcon, CaretDownIcon } from 'tdesign-icons-vue-next'
 
 const router = useRouter()
 
@@ -271,7 +275,7 @@ const getTeacherList = async () => {
     params: queryInfo
   })
   if (res.code !== 200) {
-    ElMessage.error(res.msg)
+    MessagePlugin.error(res.msg)
     return
   }
   teachers.value = res.data.list
@@ -297,7 +301,7 @@ const handleCurrentChange = (page) => {
 
 const teacherView = (teacher) => {
   window.localStorage.setItem('teacher', JSON.stringify(teacher))
-  router.push({ path: '/college/teacher/view' })
+  router.push({ name: 'college-teacher-detail', params: { id: teacher.id } })
 }
 
 onMounted(() => {

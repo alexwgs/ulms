@@ -29,4 +29,6 @@ public interface ReplyMapper {
     int updateByPrimaryKey(Reply record);
     //新ID
     int creatNewId();
+
+    int increaseLikeNum(int id);
 }

@@ -1,43 +1,43 @@
 <template>
-  <el-dialog 
-    :title="dialogTitle" 
-    v-model="dialogVisible" 
+  <t-dialog 
+    :header="dialogTitle" 
+    v-model:visible="dialogVisible" 
     width="40%" 
-    :close-on-click-modal="false"
+    :close-on-overlay-click="false"
   >
-    <el-form 
+    <t-form 
       ref="areaConfigFormRef" 
-      :model="areaConfigForm" 
-      label-position="right" 
+      :data="areaConfigForm" 
+      label-align="right" 
       label-width="100px" 
       size="small" 
       :rules="areaConfigRules"
     >
-      <el-form-item label="配置名称" prop="areaName">
-        <el-input v-model="areaConfigForm.areaName"></el-input>
-      </el-form-item>
-      <el-form-item label="配置描述" prop="areaDesc">
-        <el-input v-model="areaConfigForm.areaDesc"></el-input>
-      </el-form-item>
-      <el-form-item label="状态" prop="areaStat">
-        <el-select v-model="areaConfigForm.areaStat" placeholder="请选择状态">
-          <el-option label="生效" :value="1"></el-option>
-          <el-option label="失效" :value="0"></el-option>
-        </el-select>
-      </el-form-item>
-    </el-form>
+      <t-form-item label="配置名称" name="areaName">
+        <t-input v-model="areaConfigForm.areaName"></t-input>
+      </t-form-item>
+      <t-form-item label="配置描述" name="areaDesc">
+        <t-input v-model="areaConfigForm.areaDesc"></t-input>
+      </t-form-item>
+      <t-form-item label="状态" name="areaStat">
+        <t-select v-model="areaConfigForm.areaStat" placeholder="请选择状态">
+          <t-option label="生效" :value="1"></t-option>
+          <t-option label="失效" :value="0"></t-option>
+        </t-select>
+      </t-form-item>
+    </t-form>
     <template #footer>
       <span class="dialog-footer">
-        <el-button size="small" @click="dialogVisible = false">取 消</el-button>
-        <el-button size="small" type="primary" @click="submitAreaConfig">确 定</el-button>
+        <t-button size="small" @click="dialogVisible = false">取 消</t-button>
+        <t-button size="small" theme="primary" @click="submitAreaConfig">确 定</t-button>
       </span>
     </template>
-  </el-dialog>
+  </t-dialog>
 </template>
 
 <script setup>
 import { ref, reactive, computed } from 'vue'
-import { ElMessage } from 'element-plus'
+import { MessagePlugin } from 'tdesign-vue-next'
 import { examAreaConfigApi } from '@/api/edu/examAreaConfig'
 
 // Props
@@ -83,7 +83,7 @@ const areaConfigRules = reactive({
 // Methods
 const submitAreaConfig = async () => {
   const valid = await examAreaConfigApi.areaConfigFormRef.value.validate()
-  if (!valid) return
+  if (valid !== true) return
 
   try {
     let res
@@ -93,12 +93,12 @@ const submitAreaConfig = async () => {
       res = await examAreaConfigApi.addAreaConfig(areaConfigForm)
     }
 
-    if (res.code !== 200) return ElMessage.error(res.msg)
-    ElMessage.success(res.msg)
+    if (res.code !== 200) return MessagePlugin.error(res.msg)
+    MessagePlugin.success(res.msg)
     emit('success')
     dialogVisible.value = false
   } catch (error) {
-    ElMessage.error('操作失败，请重试')
+    MessagePlugin.error('操作失败，请重试')
   }
 }
 </script>

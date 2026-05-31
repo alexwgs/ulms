@@ -1,7 +1,7 @@
 <template>
-  <el-card shadow="hover" :body-style="{ padding: '10px' }">
-    <el-row>
-      <el-col :span="18">
+  <t-card shadow="hover" :body-style="{ padding: '10px' }">
+    <t-row>
+      <t-col :span="9">
         <div class="artical-title">
           <span style="font-weight: 550; font-size: 14px" v-if="articalitem.articalType === 1">[{{ itemCategoryText
             }}]</span>
@@ -10,22 +10,22 @@
             articalitem.title
             }}</router-link>
         </div>
-      </el-col>
-      <el-col :span="3">
+      </t-col>
+      <t-col :span="2">
         <div class="elite-badage">
-          <el-tag v-if="articalitem.topFlag === 1" size="small" type="success" effect="dark">置顶</el-tag>
-          <el-tag v-if="articalitem.eliteFlag === 1" size="small" type="danger" effect="dark">精华</el-tag>
+          <t-tag v-if="articalitem.topFlag === 1" size="small" theme="success" effect="dark">置顶</t-tag>
+          <t-tag v-if="articalitem.eliteFlag === 1" size="small" theme="danger" effect="dark">精华</t-tag>
         </div>
-      </el-col>
-    </el-row>
-    <el-row>
-      <el-col :span="24" style="max-height: 30px; font-size: 12px; padding: 5px">
-      </el-col>
-    </el-row>
+      </t-col>
+    </t-row>
+    <t-row>
+      <t-col :span="12" style="max-height: 30px; font-size: 12px; padding: 5px">
+      </t-col>
+    </t-row>
     <div class="artical-list-info">
-      <el-tag size="small" :type="articalTypeTag" effect="plain">{{
+      <t-tag size="small" :theme="articalTypeTag" effect="plain">{{
         articalTypeText
-        }}</el-tag>
+        }}</t-tag>
       <span v-if="articalitem.user">
         {{ articalitem.user.ploName }}/{{ articalitem.user.ploNum }}
       </span>
@@ -33,10 +33,10 @@
       <span>{{ timeAgo }}</span>
       <span class="icon-list"><i class="iconfont iconfaxian">{{ articalitem.viewNum }} 次查看</i>&nbsp;
         <i class="iconfont iconxiaoxi">{{ articalitem.replyNum }} 条评论</i>&nbsp;
-        <i class="el-icon-collection-tag">{{ articalitem.likeNum + articalitem.collectNum }} 个点赞收藏</i>
+        <i >{{ articalitem.likeNum + articalitem.collectNum }} 个点赞收藏</i>
       </span>
     </div>
-  </el-card>
+  </t-card>
 </template>
 
 <script setup>
@@ -100,7 +100,7 @@ const timeAgo = computed(() => {
 <style lang="less" scoped>
 .link {
   text-decoration: none;
-  color: var(--el-font-color);
+  color: var(--td-font-color);
 }
 
 .artical-title {

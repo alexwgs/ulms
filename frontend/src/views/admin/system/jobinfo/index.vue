@@ -1,54 +1,54 @@
 <template>
-  <el-alert title="操作说明" type="info" :closable="false"
-    description="请正确使用岗位信息：1.岗位编号为3位数字，第一位按照一二线区分设置。2.理论上数值越大岗位级别越高。3.请不要随意设置岗位。" />
-  <el-card class="box-card">
+  <t-alert title="操作说明" theme="info" :closable="false"
+    message="请正确使用岗位信息：1.岗位编号为3位数字，第一位按照一二线区分设置。2.理论上数值越大岗位级别越高。3.请不要随意设置岗位。" />
+  <t-card class="box-card">
     <div class="table-filter">
-      <el-row>
-        <el-col :span="6" v-if="false"> </el-col>
-        <el-col :span="4">
+      <t-row>
+        <t-col :span="3" v-if="false"> </t-col>
+        <t-col :span="2">
           <span>
-            <el-select size="small" v-model="queryInfo.jobStatus" @change="getList" placeholder="岗位状态">
-              <el-option value="" label="全部"></el-option>
-              <el-option v-for="item in dictStore.dictList.sys_dict_status" :key="item.id" :label="item.codeval"
-                :value="String(item.code)"></el-option>
-            </el-select>
+            <t-select size="small" v-model="queryInfo.jobStatus" @change="getList" placeholder="岗位状态">
+              <t-option value="" label="全部"></t-option>
+              <t-option v-for="item in dictStore.dictList.sys_dict_status" :key="item.id" :label="item.codeval"
+                :value="String(item.code)"></t-option>
+            </t-select>
           </span>
-        </el-col>
-        <el-col :span="12"> </el-col>
-        <el-col :span="2">
-          <el-button type="primary" size="small" @click="configManageRef?.openDialog()">新增</el-button>
-        </el-col>
-      </el-row>
-      <el-table :data="tableData" size="small" sortable="custom" @sort-change="tableSort" stripe
+        </t-col>
+        <t-col :span="6"> </t-col>
+        <t-col :span="1">
+          <t-button theme="primary" size="small" @click="configManageRef?.openDialog()">新增</t-button>
+        </t-col>
+      </t-row>
+      <CustomTable rowKey="id" :data="tableData" size="small" sortable="custom" @sort-change="tableSort" stripe
         height="calc(100vh - 380px)">
-        <el-table-column prop="jobLevel" sortable="custom" label="岗位编号" width="160"></el-table-column>
-        <el-table-column prop="jobName" sortable="custom" label="岗位名称" width="120"></el-table-column>
-        <el-table-column prop="deptNum" sortable="custom" label="部门编号"></el-table-column>
-        <el-table-column prop="jobDesc" sortable="custom" label="岗位描述"></el-table-column>
-        <el-table-column prop="organ" label="机构号" width="160"></el-table-column>
-        <el-table-column prop="status" label="状态" width="120">
+        <TableColumn colKey="jobLevel" sortable="custom" label="岗位编号" width="160"></TableColumn>
+        <TableColumn colKey="jobName" sortable="custom" label="岗位名称" width="120"></TableColumn>
+        <TableColumn colKey="deptNum" sortable="custom" label="部门编号"></TableColumn>
+        <TableColumn colKey="jobDesc" sortable="custom" label="岗位描述"></TableColumn>
+        <TableColumn colKey="organ" label="机构号" width="160"></TableColumn>
+        <TableColumn colKey="status" label="状态" width="120">
           <template #default="scope">
-            <el-tag size="small" :type="String(scope.row.jobStatus) === '0' ? 'danger' : 'success'" effect="dark">{{
+            <t-tag size="small" :theme="String(scope.row.jobStatus) === '0' ? 'danger' : 'success'" effect="dark">{{
               dictStore.getDictLabel('sys_dict_status', scope.row.jobStatus)
-            }}</el-tag>
+            }}</t-tag>
           </template>
-        </el-table-column>
-        <el-table-column prop="status" label="操作" width="120">
+        </TableColumn>
+        <TableColumn colKey="status" label="操作" width="120">
           <template #default="scope">
-            <el-button type="primary" size="small" icon="Edit" @click="
+            <t-button theme="primary" size="small" @click="
               configManageRef?.openDialog(
                 JSON.parse(JSON.stringify(scope.row))
               )
-              " circle></el-button>
+              " shape="circle"><template #icon><DynamicIcon name="edit" /></template></t-button>
           </template>
-        </el-table-column>
-      </el-table>
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
-        :current-page="queryInfo.pageNum" :page-sizes="pageSizes" :page-size="queryInfo.pageSize"
-        layout="total, sizes, prev, pager, next, jumper" :total="total">
-      </el-pagination>
+        </TableColumn>
+      </CustomTable>
+      <t-pagination @page-size-change="handleSizeChange" @current-change="handleCurrentChange"
+        :current="queryInfo.pageNum" :page-size-options="pageSizes" :page-size="queryInfo.pageSize"
+ :total="total">
+      </t-pagination>
     </div>
-  </el-card>
+  </t-card>
   <ConfigManage ref="configManageRef"></ConfigManage>
 </template>
 
@@ -81,7 +81,7 @@ onMounted(() => {
 
 const getList = async () => {
   const res = await jobinfoApi.listAllJobLevel(queryInfo)
-  if (res.code !== 200) return ElMessage.error(res.msg)
+  if (res.code !== 200) return MessagePlugin.error(res.msg)
   tableData.value = res.data.list
   total.value = res.data.total
 }
@@ -102,9 +102,9 @@ const handleCurrentChange = (page) => {
   getList()
 }
 
-const tableSort = ({ order, prop }) => {
-  queryInfo.orderType = order === 'ascending' ? ' asc ' : ' desc '
-  queryInfo.order = prop
+const tableSort = ({ sortBy, descending }) => {
+  queryInfo.orderType = !descending ? ' asc ' : ' desc '
+  queryInfo.order = sortBy
   getList()
 }
 </script>
@@ -118,12 +118,12 @@ const tableSort = ({ order, prop }) => {
     margin-left: 20px;
   }
 
-  .el-select {
+  .t-select {
     width: 55%;
   }
 }
 
-.el-link {
+.t-link {
   font-size: 12px;
 }
 

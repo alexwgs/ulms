@@ -1,57 +1,58 @@
 <template>
   <div>
-    <el-card class="box-card">
-      <el-row style="padding-bottom: 10px">
-        <el-col :span="10">
-          <el-radio size="small" v-model="status" :label="-1" border
-            >数据库管理</el-radio
+    <t-card class="box-card">
+      <t-row style="padding-bottom: 10px">
+        <t-col :span="5">
+          <t-radio-group v-model="status" size="small">
+            <t-radio :value="-1" border
+            >数据库管理</t-radio
           >
-          <el-radio size="small" v-model="status" :label="1" border
-            >数据库列表</el-radio
+          <t-radio :value="1" border
+            >数据库列表</t-radio
           >
-        </el-col>
-        <el-col :span="14"> </el-col>
-      </el-row>
-      <el-row :gutter="20">
-        <el-col :span="6">
-          <el-input
+          </t-radio-group>
+        </t-col>
+        <t-col :span="7"> </t-col>
+      </t-row>
+      <t-row :gutter="20">
+        <t-col :span="3">
+          <t-input
             size="small"
             placeholder="输入关键字进行过滤"
             v-model="filterText"
-          ></el-input>
-          <el-tree
+          ></t-input>
+          <t-tree
             :data="treeData"
-            :filter-node-method="filterNode"
-            :props="treePorps"
+            :filter="filterNode"
+            :keys="{ value: 'id', label: 'name', children: 'children' }"
             ref="tree"
-            node-key="id"
-            @node-click="newTablePanel"
-          ></el-tree>
-        </el-col>
-        <el-col :span="18">
-          <el-tabs
+            @click="newTablePanel"
+          ></t-tree>
+        </t-col>
+        <t-col :span="9">
+          <t-tabs
             v-model="tableTabsValue"
             type="card"
             closable
             @tab-remove="removeTab"
           >
-            <el-tab-pane
+            <t-tab-panel
               v-for="item in tabs"
               :key="item.name"
               :label="item.title"
               :name="item.name"
             >
               <TableDetail :tableId="item.content"></TableDetail>
-            </el-tab-pane>
-          </el-tabs>
-        </el-col>
-      </el-row>
-    </el-card>
+            </t-tab-panel>
+          </t-tabs>
+        </t-col>
+      </t-row>
+    </t-card>
   </div>
 </template>
 <script setup>
 import { ref, reactive, onMounted, watch } from 'vue'
-import { ElMessage } from 'element-plus'
+import { MessagePlugin } from 'tdesign-vue-next'
 import { getTreeData } from '@/api/db/index.js'
 import TableDetail from './components/TableDetail.vue'
 
@@ -69,16 +70,18 @@ const treePorps = {
 
 const getTreeDataHandler = async () => {
   const res = await getTreeData(status.value)
-  if (res.code !== 200) return ElMessage.error(res.msg)
+  if (res.code !== 200) return MessagePlugin.error(res.msg)
   treeData.value = res.data
 }
 
-const filterNode = (value, data) => {
-  if (!value) return true
-  return data.name.indexOf(value) !== -1
+const filterNode = (node) => {
+  if (!filterText.value) return true
+  return node.data.name.indexOf(filterText.value) !== -1
 }
 
-const newTablePanel = (obj, node, self) => {
+const newTablePanel = (context) => {
+      const { node: treeNode } = context;
+      const obj = treeNode.data;
   if (obj.treeLevel !== 3) return
   const existingTab = tabs.value.find((item) => item.content === obj.id)
   if (existingTab) {
@@ -103,7 +106,7 @@ const removeTab = (targetName) => {
 
 watch(filterText, (value) => {
   if (tree.value) {
-    tree.value.filter(value)
+    tree.value.refresh()
   }
 })
 

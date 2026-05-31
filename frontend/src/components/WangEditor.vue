@@ -21,7 +21,7 @@
 <script setup>
 import { ref, computed, watch, onBeforeUnmount, shallowRef } from 'vue'
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
-import { ElMessage } from 'element-plus'
+import { MessagePlugin } from 'tdesign-vue-next'
 
 const props = defineProps({
   modelValue: {
@@ -101,7 +101,7 @@ const editorConfig = {
       customInsert(res, insertFn) {
         // res 即服务端的返回结果
         if (res.code !== 200) {
-          ElMessage.error(res.msg || '上传失败')
+          MessagePlugin.error(res.msg || '上传失败')
           return
         }
         // 从响应中获取图片 URL
@@ -114,7 +114,7 @@ const editorConfig = {
       // 上传错误处理
       onError(file, err, res) {
         console.error('上传图片错误:', err, res)
-        ElMessage.error('图片上传失败，请重试')
+        MessagePlugin.error('图片上传失败，请重试')
       },
       // 上传超时
       timeout: 30 * 1000 // 30秒

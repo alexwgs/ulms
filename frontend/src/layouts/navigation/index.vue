@@ -1,97 +1,90 @@
 <template>
-  <el-container class="layout-container">
+  <t-layout class="layout-container">
     <!-- 顶部导航栏 -->
-    <el-header class="header">
+    <t-header class="header">
       <div class="logo" v-if="appStore.logo">
         <img :src="appStore.logo" alt="Logo" />
       </div>
-      
-      <el-menu
-        :default-active="activeMenu"
-        mode="horizontal"
-        background-color="#001529"
-        text-color="#fff"
-        active-text-color="#ffd04b"
+
+      <t-head-menu
+        :value="activeMenu"
+        theme="dark"
         class="menu"
-        @select="handleMenuSelect"
+        @change="handleMenuSelect"
       >
         <!-- 一级菜单项 -->
-        <el-menu-item 
-          v-for="item in topLevelMenus" 
-          :key="item.key" 
-          :index="item.key"
+        <t-menu-item
+          v-for="item in topLevelMenus"
+          :key="item.key"
+          :value="item.key"
         >
-          <el-icon v-if="item.icon">
-            <component :is="item.icon" />
-          </el-icon>
+          <DynamicIcon v-if="item.icon" :name="mapIcon(item.icon)" />
           <span>{{ item.label }}</span>
-        </el-menu-item>
+        </t-menu-item>
 
         <!-- 带子菜单的项 -->
-        <el-sub-menu 
-          v-for="subMenu in subMenus" 
-          :key="subMenu.key" 
-          :index="subMenu.key"
+        <t-submenu
+          v-for="subMenu in subMenus"
+          :key="subMenu.key"
+          :value="subMenu.key"
         >
           <template #title>
-            <el-icon v-if="subMenu.icon">
-              <component :is="subMenu.icon" />
-            </el-icon>
+            <DynamicIcon v-if="subMenu.icon" :name="mapIcon(subMenu.icon)" />
             <span>{{ subMenu.label }}</span>
           </template>
-          
+
           <!-- 二级菜单项 -->
-          <el-menu-item 
-            v-for="child in subMenu.children" 
-            :key="child.key" 
-            :index="child.key"
+          <t-menu-item
+            v-for="child in subMenu.children"
+            :key="child.key"
+            :value="child.key"
           >
             <span>{{ child.label }}</span>
-          </el-menu-item>
-        </el-sub-menu>
-      </el-menu>
+          </t-menu-item>
+        </t-submenu>
+      </t-head-menu>
 
       <!-- 用户信息/操作区 -->
       <div class="user-actions">
-        <el-dropdown @command="handleCommand">
+        <t-dropdown @click="handleCommand">
           <div class="user-info">
-            <el-avatar :src="userStore.avatar" />
+            <t-avatar :image="userStore.avatar" />
             <span class="username">{{ userStore.username }}</span>
           </div>
           <template #dropdown>
-            <el-dropdown-menu>
-              <el-dropdown-item command="userCenter">个人中心</el-dropdown-item>
-              <el-dropdown-item command="logout" divided>退出登录</el-dropdown-item>
-            </el-dropdown-menu>
+            <t-dropdown-menu>
+              <t-dropdown-item :value="'userCenter'">个人中心</t-dropdown-item>
+              <t-dropdown-item :value="'logout'" divider>退出登录</t-dropdown-item>
+            </t-dropdown-menu>
           </template>
-        </el-dropdown>
+        </t-dropdown>
       </div>
-    </el-header>
+    </t-header>
 
-    <el-container>
+    <t-layout>
       <!-- 面包屑导航 -->
-      <el-header class="breadcrumb-header">
-        <el-breadcrumb separator="/">
-          <el-breadcrumb-item 
-            v-for="item in breadcrumbItems" 
+      <t-header class="breadcrumb-header">
+        <t-breadcrumb separator="/">
+          <t-breadcrumb-item
+            v-for="item in breadcrumbItems"
             :key="item.key"
           >
             {{ item.label }}
-          </el-breadcrumb-item>
-        </el-breadcrumb>
-      </el-header>
+          </t-breadcrumb-item>
+        </t-breadcrumb>
+      </t-header>
 
       <!-- 主内容区 -->
-      <el-main class="content">
+      <t-content class="content">
         <router-view />
-      </el-main>
+      </t-content>
 
       <!-- 页脚 -->
-      <el-footer class="footer">
+      <t-footer class="footer">
         {{ appStore.footerText }}
-      </el-footer>
-    </el-container>
-  </el-container>
+      </t-footer>
+    </t-layout>
+  </t-layout>
 </template>
 
 <script setup>
@@ -99,6 +92,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { useAppStore } from '@/stores/app'
+import { mapIcon } from '@/utils/iconMap'
 
 const router = useRouter()
 const userStore = useUserStore()
@@ -125,10 +119,10 @@ const breadcrumbItems = computed(() => {
 })
 
 // 方法
-const handleCommand = (command) => {
-  if (command === 'userCenter') {
+const handleCommand = (data) => {
+  if (data.value === 'userCenter') {
     router.push('/user/center')
-  } else if (command === 'logout') {
+  } else if (data.value === 'logout') {
     handleLogout()
   }
 }
@@ -186,7 +180,7 @@ onMounted(() => {
   display: flex;
   align-items: center;
   padding: 0 24px;
-  background: #001529;
+background: #001529;
   color: white;
   height: 60px;
 }
@@ -220,7 +214,7 @@ onMounted(() => {
 }
 
 .breadcrumb-header {
-  background: #fff;
+background: #fff;
   padding: 0 24px;
   height: 48px;
   display: flex;
@@ -230,7 +224,7 @@ onMounted(() => {
 
 .content {
   padding: 24px;
-  background: #fff;
+background: #fff;
   min-height: calc(100vh - 60px - 48px - 60px);
 }
 
@@ -239,6 +233,6 @@ onMounted(() => {
   padding: 16px 24px;
   height: 60px;
   line-height: 28px;
-  background: #f0f2f5;
+background: #f0f2f5;
 }
 </style>

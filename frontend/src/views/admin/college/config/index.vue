@@ -1,15 +1,15 @@
 <template>
   <div style="height: 100%">
-    <el-card class="box-card">
-      <el-row :gutter="15">
-        <el-col :span="8">
+    <t-card class="box-card">
+      <t-row :gutter="15">
+        <t-col :span="4">
           <CourseTypeConfig ref="courseTypeRef" />
-        </el-col>
-        <el-col :span="16">
+        </t-col>
+        <t-col :span="8">
           <EvaluateTempleteConfig ref="evaluateRef" />
-        </el-col>
-      </el-row>
-    </el-card>
+        </t-col>
+      </t-row>
+    </t-card>
   </div>
 </template>
 

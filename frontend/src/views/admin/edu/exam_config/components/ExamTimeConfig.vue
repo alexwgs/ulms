@@ -1,96 +1,94 @@
 <template>
   <div>
-    <el-dialog
-      title="考试预约配置"
-      v-model="dialogFormVisible"
+    <t-dialog
+      header="考试预约配置"
+      v-model:visible="dialogFormVisible"
       width="60%"
-      :close-on-click-modal="false"
+      :close-on-overlay-click="false"
     >
-      <el-form
-        :model="form"
-        :inline="true"
+      <t-form
+        :data="form"
+        layout="inline"
         ref="formRef"
         size="small"
         :rules="rules"
         class="inline-form"
       >
-        <el-form-item label="预约日期" prop="bookDate">
-          <el-date-picker
+        <t-form-item label="预约日期" name="bookDate">
+          <t-date-picker
             v-model="form.bookDate"
-            type="date"
-            value-format="YYYY-MM-DD"
+            mode="date"
+           
             placeholder="选择日期"
           />
-        </el-form-item>
-        <el-form-item label="预约类型" prop="bookType">
-          <el-select v-model="form.bookType" placeholder="请选择预约类型">
-            <el-option label="常规" :value="0" />
-            <el-option label="补考" :value="1" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="时间规则" prop="bookCode">
-          <el-select v-model="form.bookCode" placeholder="请选择时间配置">
-            <el-option
+        </t-form-item>
+        <t-form-item label="预约类型" name="bookType">
+          <t-select v-model="form.bookType" placeholder="请选择预约类型">
+            <t-option label="常规" :value="0" />
+            <t-option label="补考" :value="1" />
+          </t-select>
+        </t-form-item>
+        <t-form-item label="时间规则" name="bookCode">
+          <t-select v-model="form.bookCode" placeholder="请选择时间配置">
+            <t-option
               v-for="item in timeConfig"
               :key="item.bookCode"
               :label="item.bookName + '[' + item.bookDesc + ']'"
               :value="item.bookCode"
             />
-          </el-select>
-        </el-form-item>
-        <el-button type="primary" size="small" @click="addBookInfo"
-          >新增</el-button
+          </t-select>
+        </t-form-item>
+        <t-button theme="primary" size="small" @click="addBookInfo"
+          >新增</t-button
         >
-      </el-form>
-      <el-table :data="data" size="small" height="300px">
-        <el-table-column property="bookDate" label="预约日期" width="150" />
-        <el-table-column property="bookCode" label="规则名称">
+      </t-form>
+      <CustomTable rowKey="id" :data="data" size="small" height="300px">
+        <TableColumn property="bookDate" label="预约日期" width="150" />
+        <TableColumn property="bookCode" label="规则名称">
           <template #default="scope">
             {{ returnBookName(scope.row.bookCode) }}
           </template>
-        </el-table-column>
-        <el-table-column property="bookType" label="预约类型" width="80">
+        </TableColumn>
+        <TableColumn property="bookType" label="预约类型" width="80">
           <template #default="scope">
-            <el-tag
+            <t-tag
               size="small"
-              :type="scope.row.bookType == 0 ? 'success' : 'danger'"
+              :theme="scope.row.bookType == 0 ? 'success' : 'danger'"
               effect="plain"
             >
-              {{ scope.row.bookType == 0 ? '常规' : '补考' }}</el-tag
+              {{ scope.row.bookType == 0 ? '常规' : '补考' }}</t-tag
             >
           </template>
-        </el-table-column>
-        <el-table-column label="操作" width="80">
+        </TableColumn>
+        <TableColumn label="操作" width="80">
           <template #default="scope">
-            <el-button
-              type="danger"
-              icon="delete"
-              size="small"
+            <t-button
+              theme="danger" size="small"
               @click="deleteBookInfo(scope.row.infoCode)"
               circle
-            />
+            ><template #icon><DynamicIcon name="delete" /></template></t-button>
           </template>
-        </el-table-column>
-      </el-table>
+        </TableColumn>
+      </CustomTable>
       <template #footer>
         <span class="dialog-footer">
-          <el-button size="small" @click="dialogFormVisible = false"
-            >取 消</el-button
+          <t-button size="small" @click="dialogFormVisible = false"
+            >取 消</t-button
           >
-          <el-button
+          <t-button
             size="small"
-            type="primary"
+            theme="primary"
             @click="dialogFormVisible = false"
-            >确 定</el-button
+            >确 定</t-button
           >
         </span>
       </template>
-    </el-dialog>
+    </t-dialog>
   </div>
 </template>
 <script setup>
 import { ref, reactive } from 'vue'
-import { ElMessage } from 'element-plus'
+import { MessagePlugin } from 'tdesign-vue-next'
 import { bookInfoApi } from '@/api/edu/bookInfo'
 import { useDictStore } from '@/stores'
 
@@ -120,31 +118,31 @@ const show = (examCode) => {
 const getTimeConfig = async () => {
   try {
     const res = await bookInfoApi.getBookConfigList({ status: 1 })
-    if (res.code !== 200) return ElMessage.error(res.msg)
+    if (res.code !== 200) return MessagePlugin.error(res.msg)
     timeConfig.value = res.data
   } catch (error) {
-    ElMessage.error('获取时间配置失败')
+    MessagePlugin.error('获取时间配置失败')
   }
 }
 
 const listBookInfo = async () => {
   try {
     const res = await bookInfoApi.getExamBookTimeInfo(form.examCode)
-    if (res.code !== 200) return ElMessage.error(res.msg)
+    if (res.code !== 200) return MessagePlugin.error(res.msg)
     data.value = res.data
   } catch (error) {
-    ElMessage.error('获取预约信息失败')
+    MessagePlugin.error('获取预约信息失败')
   }
 }
 
 const deleteBookInfo = async (infoCode) => {
   try {
     const res = await bookInfoApi.deleteExamBookInfo(infoCode)
-    if (res.code !== 200) return ElMessage.error(res.msg)
-    ElMessage.success(res.msg)
+    if (res.code !== 200) return MessagePlugin.error(res.msg)
+    MessagePlugin.success(res.msg)
     listBookInfo()
   } catch (error) {
-    ElMessage.error('删除预约信息失败')
+    MessagePlugin.error('删除预约信息失败')
   }
 }
 
@@ -152,14 +150,14 @@ const addBookInfo = async () => {
   if (!formRef.value) return
 
   const valid = await formRef.value.validate()
-  if (valid) {
+  if (valid === true) {
     try {
       const res = await bookInfoApi.addNewExamBookTimeInfo(form)
-      if (res.code !== 200) return ElMessage.error(res.msg)
-      ElMessage.success(res.msg)
+      if (res.code !== 200) return MessagePlugin.error(res.msg)
+      MessagePlugin.success(res.msg)
       listBookInfo()
     } catch (error) {
-      ElMessage.error('添加预约信息失败')
+      MessagePlugin.error('添加预约信息失败')
     }
   }
 }
@@ -175,10 +173,10 @@ defineExpose({
 })
 </script>
 <style lang="less" scoped>
-.inline-form .el-input {
-  --el-input-width: 180px;
+.inline-form .t-input {
+  --td-input-width: 180px;
 }
-.inline-form .el-select {
-  --el-select-width: 180px;
+.inline-form .t-select {
+  --td-select-width: 180px;
 }
 </style>

@@ -1,0 +1,1 @@
+import{h as t}from"./index-BspsdquE.js";const r={getCourseTypeTree:()=>t({url:"college/course/type/tree",method:"get"}),updateCourseType:e=>t({url:"college/course/type",method:"put",data:e}),addCourseType:e=>t({url:"college/course/type",method:"post",data:e}),deleteCourseType:e=>t({url:`college/course/type/${e}`,method:"delete"})};export{r as c};

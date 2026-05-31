@@ -1,8 +1,8 @@
 <template>
   <div>
-    <el-alert
+    <t-alert
       title='点击选择"科室"可下钻至小组数据。点击"BACK"可返回"科室"数据！'
-      type="success"
+      theme="success"
       effect="dark"
       :closable="false"
     />
@@ -23,7 +23,7 @@
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import * as echarts from 'echarts'
 import { httpInstance } from '@/utils/request'
-import { ElMessage } from 'element-plus'
+import { MessagePlugin } from 'tdesign-vue-next'
 
 const props = defineProps({
   className: {
@@ -120,7 +120,7 @@ const init = async (courseId) => {
   try {
     const res = await httpInstance.get(`college/report/view/${courseId}`)
     if (res.code !== 200) {
-      ElMessage.error(res.msg)
+      MessagePlugin.error(res.msg)
       return
     }
     data.value = res.data

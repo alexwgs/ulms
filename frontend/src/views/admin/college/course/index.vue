@@ -1,38 +1,35 @@
 <template>
   <div style="height: 100%">
-    <el-card class="box-card">
-      <el-row :gutter="20">
-        <el-col :span="8">
-          <el-input
+    <t-card class="box-card">
+      <t-row :gutter="20">
+        <t-col :span="4">
+          <t-input
             placeholder="模糊搜索"
             size="small"
             v-model="queryInfo.query"
           >
-            <el-button
-              slot="append"
-              icon="Search"
-              @click="getCourseTable()"
-            ></el-button>
-          </el-input>
-        </el-col>
-        <el-col :span="6">
-          <el-select
+            <t-button
+              slot="append" @click="getCourseTable()"><template #icon><DynamicIcon name="search" /></template></t-button>
+          </t-input>
+        </t-col>
+        <t-col :span="3">
+          <t-select
             v-model="queryInfo.status"
             size="small"
             placeholder="请选择发布状态"
             @change="getCourseTable()"
           >
-            <el-option label="全部" value=""></el-option>
-            <el-option label="已发布" :value="1"></el-option>
-            <el-option label="未发布" :value="0"></el-option>
-          </el-select>
-        </el-col>
-        <el-col :span="8">
-          <el-button type="primary" size="small" @click="courseManager(null)"
-            >新建课程</el-button
+            <t-option label="全部" value=""></t-option>
+            <t-option label="已发布" :value="1"></t-option>
+            <t-option label="未发布" :value="0"></t-option>
+          </t-select>
+        </t-col>
+        <t-col :span="4">
+          <t-button theme="primary" size="small" @click="courseManager(null)"
+            >新建课程</t-button
           >
-          <el-button
-            type="primary"
+          <t-button
+            theme="primary"
             size="small"
             @click="
               $global.downloadExcel(
@@ -41,128 +38,118 @@
                 '课程详情明细.xlsx'
               )
             "
-            >下载课程列表</el-button
+            >下载课程列表</t-button
           >
-        </el-col>
-      </el-row>
-      <el-alert
+        </t-col>
+      </t-row>
+      <t-alert
         title="操作说明"
-        type="info"
+        theme="info"
         :closable="false"
-        description="请正确使用字典配置：1.点击名单可以查看或配置考试名单。2.试题请配置。3.点击复议可以查看该考试的复议情况！4.红色的时钟表示该场考试需要设置考试预约时间"
+        message="请正确使用字典配置：1.点击名单可以查看或配置考试名单。2.试题请配置。3.点击复议可以查看该考试的复议情况！4.红色的时钟表示该场考试需要设置考试预约时间"
       >
-      </el-alert>
-      <el-table
+      </t-alert>
+      <CustomTable rowKey="id"
         :data="courses"
         size="small"
         height="calc(100vh - 400px)"
         stripe
         @sort-change="tableSort"
-        style="width: 100%"
-      >
-        <el-table-column
+        style="width: 100%">
+        <TableColumn
           prop="courseName"
           label="课程名称"
           sortable="custom"
-          show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column
+          ellipsis></TableColumn>
+        <TableColumn
           prop="endDate"
           label="有效时间"
           sortable="custom"
-          show-overflow-tooltip
-        >
+          ellipsis>
           <template #default="scope">
             {{ scope.row.begDate }} ~ {{ scope.row.endDate }}</template
           >
-        </el-table-column>
-        <el-table-column
+        </TableColumn>
+        <TableColumn
           prop="teachMethod"
           label="类型"
           sortable="custom"
           width="70px"
-          show-overflow-tooltip
-        >
+          ellipsis>
           <template #default="scope">{{
             scope.row.teachMethod == 1 ? '常规' : '任务'
           }}</template>
-        </el-table-column>
-        <el-table-column
+        </TableColumn>
+        <TableColumn
           prop="studyType"
           label="形式"
           sortable="custom"
           width="70px"
-          show-overflow-tooltip
-        >
+          ellipsis>
           <template #default="scope">{{
             scope.row.studyType == 1 ? '线上' : '线下'
           }}</template>
-        </el-table-column>
-        <el-table-column
+        </TableColumn>
+        <TableColumn
           prop="teachObject"
           label="授课对象"
           sortable="custom"
           width="100px"
-          show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column
+          ellipsis></TableColumn>
+        <TableColumn
           prop="coverImg"
           label="封面"
           sortable="custom"
           width="70px"
-          show-overflow-tooltip
-        >
+          ellipsis>
           <template #default="scope"
-            ><el-link
+            ><t-link
               @click="coverRef.show(scope.row.coverImg, scope.row.courseId)"
               :type="scope.row.coverImg == null ? 'danger' : 'primary'"
             >
               {{ scope.row.coverImg == null ? '否' : '已配置' }}
-            </el-link></template
+            </t-link></template
           >
-        </el-table-column>
-        <el-table-column
+        </TableColumn>
+        <TableColumn
           prop="recommendFlag"
           label="滚屏/分类"
           sortable="custom"
           width="140px"
-          show-overflow-tooltip
-        >
+          ellipsis>
           <template #default="scope"
-            ><el-button @click="showRecommend(scope.row)" size="small" link
+            ><t-button @click="showRecommend(scope.row)" size="small" link
               >{{ scope.row.topFlag < 1 ? '否' : '是' }}[{{
                 scope.row.topFlag
               }}]/ {{ scope.row.recommend ? scope.row.recommend : '否' }}[{{
                 scope.row.recommendFlag
               }}]
-            </el-button></template
+            </t-button></template
           >
-        </el-table-column>
-        <el-table-column
+        </TableColumn>
+        <TableColumn
           prop="ifExam"
           label="附件"
           sortable="custom"
-          width="70px"
-        >
+          width="70px">
           <template #default="scope">
-            <el-link
+            <t-link
               @click="
                 courseFileRef.show(scope.row.courseFile, scope.row.courseId)
               "
               :type="scope.row.courseFile.length > 0 ? 'primary' : 'danger'"
             >
               {{ scope.row.courseFile.length > 0 ? '已配置' : '否' }}
-            </el-link></template
+            </t-link></template
           >
-        </el-table-column>
-        <el-table-column
+        </TableColumn>
+        <TableColumn
           prop="ifExam"
           label="考试"
           sortable="custom"
-          width="70px"
-        >
+          width="70px">
           <template #default="scope">
-            <el-link
+            <t-link
               @click="examConfigRef.show(scope.row.courseId)"
               :type="scope.row.ifExam ? 'primary' : 'danger'"
             >
@@ -173,17 +160,16 @@
                     : '已配置'
                   : '否'
               }}
-            </el-link></template
+            </t-link></template
           >
-        </el-table-column>
-        <el-table-column
+        </TableColumn>
+        <TableColumn
           prop="ifEval"
           label="评价"
           sortable="custom"
-          width="70px"
-        >
+          width="70px">
           <template #default="scope">
-            <el-link
+            <t-link
               @click="satisfyRef.show(scope.row)"
               :type="scope.row.ifEval ? 'primary' : 'danger'"
             >
@@ -194,53 +180,46 @@
                     : '已配置'
                   : '否'
               }}
-            </el-link></template
+            </t-link></template
           >
-        </el-table-column>
-        <el-table-column
+        </TableColumn>
+        <TableColumn
           prop="status"
           label="状态"
           sortable="custom"
-          width="75px"
-        >
+          width="75px">
           <template #default="scope"
-            ><el-tag
+            ><t-tag
               @click="updateStatus(scope.row)"
               :type="scope.row.status ? 'success' : 'danger'"
               size="small"
             >
               {{ scope.row.status ? '已发布' : '未发布' }}
-            </el-tag></template
+            </t-tag></template
           >
-        </el-table-column>
-        <el-table-column
+        </TableColumn>
+        <TableColumn
           prop="handleDate"
           label="操作时间"
           sortable="custom"
-          show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column label="操作" fixed="right" width="150px">
+          ellipsis></TableColumn>
+        <TableColumn label="操作" fixed="right" width="150px">
           <template #default="scope">
-            <el-button
-              type="primary"
-              icon="Edit"
-              size="small"
+            <t-button
+              theme="primary" size="small"
               @click="courseManager(scope.row)"
-              circle
-            ></el-button>
-            <el-button
+              shape="circle"><template #icon><DynamicIcon name="edit" /></template></t-button>
+            <t-button
               v-if="scope.row.bookExam === 1"
-              type="danger"
-              icon="Time"
-              size="small"
+              theme="danger" size="small"
               @click="() => bookInfoRef.show(scope.row.examCode)"
-              circle
-            ></el-button>
-            <el-popover placement="top" width="400" trigger="click">
+              shape="circle"
+            ><template #icon><DynamicIcon name="time" /></template></t-button>
+            <t-popup placement="top" width="400" trigger="click">
               <p>报表下载</p>
               <div style="text-align: right; margin: 0">
-                <el-button
-                  type="primary"
+                <t-button
+                  theme="primary"
                   size="small"
                   @click="
                     $global.downloadExcel(
@@ -249,10 +228,10 @@
                       '课程学习记录明细BY人员.xlsx'
                     )
                   "
-                  >学习报表</el-button
+                  >学习报表</t-button
                 >
-                <el-button
-                  type="primary"
+                <t-button
+                  theme="primary"
                   size="small"
                   @click="
                     $global.downloadExcel(
@@ -261,10 +240,10 @@
                       '课程考试记录BY人员.xlsx'
                     )
                   "
-                  >考试报表</el-button
+                  >考试报表</t-button
                 >
-                <el-button
-                  type="primary"
+                <t-button
+                  theme="primary"
                   size="small"
                   @click="
                     $global.downloadExcel(
@@ -273,77 +252,74 @@
                       '满意度评价明细By课程.xlsx'
                     )
                   "
-                  >满意度报表</el-button
+                  >满意度报表</t-button
                 >
               </div>
               <template #reference>
-                <el-button
+                <t-button
                   style="margin-left: 10px"
-                  type="warning"
-                  icon="Document"
-                  size="small"
-                  circle
-                ></el-button>
+                  theme="warning" size="small"
+                  shape="circle"><template #icon><DynamicIcon name="file" /></template></t-button>
               </template>
-            </el-popover>
-            <el-button
+            </t-popup>
+            <t-button
               size="small"
               round
               @click="() => taskListRef.show(scope.row.courseId)"
-              >任务</el-button
+              >任务</t-button
             >
           </template>
-        </el-table-column>
-      </el-table>
-      <el-pagination
-        @size-change="handleSizeChange"
+        </TableColumn>
+      </CustomTable>
+      <t-pagination
+        @page-size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :current-page="queryInfo.pageNum"
-        :page-sizes="[20, 40, 100, 200]"
+        :current="queryInfo.pageNum"
+        :page-size-options="[20, 40, 100, 200]"
         :page-size="queryInfo.pageSize"
-        layout="total, sizes, prev, pager, next, jumper"
+
         :total="total"
-      ></el-pagination>
-    </el-card>
+      ></t-pagination>
+    </t-card>
 
     <!-- 弹出窗口 -->
-    <el-dialog
-      :title="courseFormTitle"
-      :close-on-click-modal="false"
+    <t-dialog
+      :header="courseFormTitle"
+      :close-on-overlay-click="false"
       width="80%"
       @close="onClose"
-      v-model="courseFormVisible"
+      v-model:visible="courseFormVisible"
     >
-      <el-form
+      <t-form
         ref="courseForm"
-        :model="courseFormData"
+        :data="courseFormData"
         :rules="rules"
         size="small"
         label-width="100px"
       >
-        <el-row :gutter="15">
-          <el-col :span="24">
-            <el-form-item label="课程名称" prop="courseName">
-              <el-input
+        <t-row :gutter="15">
+          <t-col :span="12">
+            <t-form-item label="课程名称" name="courseName">
+              <t-input
                 v-model="courseFormData.courseName"
                 placeholder="请输入名称课程课程名称"
                 :maxlength="50"
-                show-word-limit
+                show-limit-number
                 clearable
                 :style="{ width: '100%' }"
-              ></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="讲师" prop="lecturer">
-              <el-select
+              ></t-input>
+            </t-form-item>
+          </t-col>
+          <t-col :span="6">
+            <t-form-item label="讲师" name="lecturer">
+              <t-select
                 v-model="courseFormData.lecturer"
                 placeholder="请选择讲师"
                 filterable
                 clearable
                 style="height: 20px; width: 100%"
               >
-                <el-option
+                <t-option
                   v-for="(item, index) in teachers"
                   :key="index"
                   :label="
@@ -353,46 +329,36 @@
                     (item.status === 0 ? '[无效]' : '1')
                   "
                   :value="item.ploNum"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="日期范围" prop="dateRange">
-              <el-date-picker
-                type="daterange"
-                v-model="courseFormData.dateRange"
-                format="YYYY-MM-DD"
-                value-format="YYYY-MM-DD"
-                style="width: 100%"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-                range-separator="至"
-                clearable
-              ></el-date-picker>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="课程积分" prop="coin">
-              <el-input-number
+                ></t-option>
+              </t-select>
+            </t-form-item>
+          </t-col>
+          <t-col :span="6">
+            <t-form-item label="日期范围" name="dateRange">
+              <t-date-range-picker v-model="courseFormData.dateRange" format="YYYY-MM-DD" style="width: 100%" :placeholder="['开始日期', '结束日期']" clearable ></t-date-range-picker>
+            </t-form-item>
+          </t-col>
+          <t-col :span="6">
+            <t-form-item label="课程积分" name="coin">
+              <t-input-number
                 v-model="courseFormData.coin"
                 placeholder="课程积分"
                 :step="0.5"
-              ></el-input-number>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="课程时数" prop="hours">
-              <el-input-number
+              ></t-input-number>
+            </t-form-item>
+          </t-col>
+          <t-col :span="6">
+            <t-form-item label="课程时数" name="hours">
+              <t-input-number
                 v-model="courseFormData.hours"
                 placeholder="课程时数"
                 :step="0.5"
-              ></el-input-number>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="所属分类" prop="courseType">
-              <el-cascader
+              ></t-input-number>
+            </t-form-item>
+          </t-col>
+          <t-col :span="6">
+            <t-form-item label="所属分类" name="courseType">
+              <t-cascader
                 v-model="courseFormData.courseType"
                 :options="courseTypeTree"
                 @change="
@@ -400,30 +366,30 @@
                 "
                 :props="{ checkStrictly: true, value: 'id', label: 'name' }"
                 :style="{ width: '100%' }"
-              ></el-cascader>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="授课对象" prop="teachObject">
-              <el-select
+              ></t-cascader>
+            </t-form-item>
+          </t-col>
+          <t-col :span="6">
+            <t-form-item label="授课对象" name="teachObject">
+              <t-select
                 v-model="courseFormData.teachObject"
                 placeholder="请选择选项随机"
                 :style="{ width: '100%' }"
               >
-                <el-option label="全体员工" value="全体员工"></el-option>
-                <el-option
+                <t-option label="全体员工" value="全体员工"></t-option>
+                <t-option
                   v-for="(item, index) in teachObject"
                   :key="index"
                   :label="item.groupName + '[' + item.ploNum + '人]'"
                   :value="item.groupName"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="授课方式" prop="teachMethod">
-              <el-radio-group v-model="courseFormData.teachMethod" size="small">
-                <el-radio-button
+                ></t-option>
+              </t-select>
+            </t-form-item>
+          </t-col>
+          <t-col :span="6">
+            <t-form-item label="授课方式" name="teachMethod">
+              <t-radio-group v-model="courseFormData.teachMethod" size="small">
+                <t-radio-button
                   v-for="(item, index) in dictStore.getDictByNames(
                     'trm_course_teach_method',
                     1
@@ -431,14 +397,14 @@
                   :key="index"
                   :value="Number(item.code)"
                   :label="item.codeval"
-                ></el-radio-button>
-              </el-radio-group>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="学习方式" prop="studyType">
-              <el-radio-group v-model="courseFormData.studyType" size="small">
-                <el-radio-button
+                ></t-radio-button>
+              </t-radio-group>
+            </t-form-item>
+          </t-col>
+          <t-col :span="6">
+            <t-form-item label="学习方式" name="studyType">
+              <t-radio-group v-model="courseFormData.studyType" size="small">
+                <t-radio-button
                   v-for="(item, index) in dictStore.getDictByNames(
                     'trm_course_study_type',
                     1
@@ -446,97 +412,94 @@
                   :key="index"
                   :value="Number(item.code)"
                   :label="item.codeval"
-                ></el-radio-button>
-              </el-radio-group>
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item label="课程描述" prop="courseDes">
-              <el-input
-                type="textarea"
-                v-model="courseFormData.courseDes"
+                ></t-radio-button>
+              </t-radio-group>
+            </t-form-item>
+          </t-col>
+          <t-col :span="12">
+            <t-form-item label="课程描述" name="courseDes">
+              <t-textarea v-model="courseFormData.courseDes"
                 placeholder="请输入课程描述"
                 :maxlength="2000"
-                show-word-limit
+                show-limit-number
                 :autosize="{ minRows: 4, maxRows: 8 }"
-                :style="{ width: '100%' }"
-              ></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-      </el-form>
+                :style="{ width: '100%' }" />
+            </t-form-item>
+          </t-col>
+        </t-row>
+      </t-form>
 
       <template #footer>
         <div class="dialog-footer">
-          <el-button size="small" @click="courseFormVisible = false"
-            >取消</el-button
+          <t-button size="small" @click="courseFormVisible = false"
+            >取消</t-button
           >
-          <el-button size="small" type="primary" @click="submitForm()"
-            >确定</el-button
+          <t-button size="small" theme="primary" @click="submitForm()"
+            >确定</t-button
           >
         </div>
       </template>
-    </el-dialog>
+    </t-dialog>
 
-    <el-dialog
-      title="课程推荐"
-      :close-on-click-modal="false"
+    <t-dialog
+      header="课程推荐"
+      :close-on-overlay-click="false"
       width="60%"
       @close="onClose"
-      v-model="recommendFormVisible"
+      v-model:visible="recommendFormVisible"
     >
-      <el-alert
+      <t-alert
         title="操作说明"
-        type="info"
+        theme="info"
         :closable="false"
-        description="滚动广告输入0则为不展示。输入数字大于1则有大到小滚动。推荐分类，输入相同分类名称则自动归类在首页推荐栏位展示"
-      ></el-alert>
-      <el-form
+        message="滚动广告输入0则为不展示。输入数字大于1则有大到小滚动。推荐分类，输入相同分类名称则自动归类在首页推荐栏位展示"
+      ></t-alert>
+      <t-form
         ref="recommendFormRef"
-        :inline="true"
-        :model="recommendForm"
+        layout="inline"
+        :data="recommendForm"
         :rules="rules"
         size="small"
         class="form-inline"
       >
-        <el-form-item label="滚动广告" prop="topFlag">
-          <el-input
+        <t-form-item label="滚动广告" name="topFlag">
+          <t-input
             v-model="recommendForm.topFlag"
             type="number"
             placeholder="输入数字从大至小"
             :maxlength="2"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="推荐分类" prop="recommend">
-          <el-input
+          ></t-input>
+        </t-form-item>
+        <t-form-item label="推荐分类" name="recommend">
+          <t-input
             v-model="recommendForm.recommend"
             placeholder="请输入推荐类别"
             :maxlength="20"
-            show-word-limit
+            show-limit-number
             clearable
             :style="{ width: '100%' }"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="分类顺序" prop="recommendFlag">
-          <el-input
+          ></t-input>
+        </t-form-item>
+        <t-form-item label="分类顺序" name="recommendFlag">
+          <t-input
             v-model="recommendForm.recommendFlag"
             type="number"
             placeholder="输入数字从大至小"
             :maxlength="2"
-          ></el-input>
-        </el-form-item>
-      </el-form>
+          ></t-input>
+        </t-form-item>
+      </t-form>
       <template #footer>
         <div class="dialog-footer">
-          <el-button size="small" @click="recommendFormVisible = false"
-            >取消</el-button
+          <t-button size="small" @click="recommendFormVisible = false"
+            >取消</t-button
           >
-          <el-button size="small" type="primary" @click="submitRecommendForm()"
-            >确定</el-button
+          <t-button size="small" theme="primary" @click="submitRecommendForm()"
+            >确定</t-button
           >
         </div>
       </template>
-    </el-dialog>
+    </t-dialog>
     <CourseFile ref="courseFileRef" @refresh="getCourseTable"></CourseFile>
     <Satisfy ref="satisfyRef" @refresh="getCourseTable"></Satisfy>
     <Cover ref="coverRef" @refresh="getCourseTable"></Cover>
@@ -547,7 +510,7 @@
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
-import { ElMessage } from 'element-plus'
+import { MessagePlugin } from 'tdesign-vue-next'
 import CourseFile from './components/CourseFile.vue'
 import Satisfy from './components/Satisfy.vue'
 import Cover from './components/Cover.vue'
@@ -640,11 +603,11 @@ const recommendForm = reactive({
 const getCourseTable = async () => {
   try {
     const res = await courseApi.getAdminCourseList(queryInfo)
-    if (res.code !== 200) return ElMessage.error(res.msg)
+    if (res.code !== 200) return MessagePlugin.error(res.msg)
     courses.value = res.data.list
     total.value = res.data.total
   } catch (error) {
-    ElMessage.error('获取课程列表失败')
+    MessagePlugin.error('获取课程列表失败')
   }
 }
 
@@ -659,9 +622,9 @@ const handleCurrentChange = (page) => {
 }
 
 const tableSort = (data) => {
-  if (data.order === 'ascending') queryInfo.orderType = ' asc '
-  else if (data.order === 'descending') queryInfo.orderType = ' desc '
-  queryInfo.order = data.prop
+  if (!data.descending) queryInfo.orderType = ' asc '
+  else if (data.descending) queryInfo.orderType = ' desc '
+  queryInfo.order = data.sortBy
   getCourseTable()
 }
 
@@ -709,33 +672,32 @@ const courseManager = (course) => {
   courseFormVisible.value = true
 }
 
-const submitForm = () => {
+const submitForm = async () => {
   if (!courseForm.value) return
 
   courseFormData.begDate = courseFormData.dateRange[0]
   courseFormData.endDate = courseFormData.dateRange[1]
   // courseFormData.courseType = courseFormData.courseType.pop()
 
-  courseForm.value.validate(async (valid) => {
-    if (valid) {
-      try {
-        let res
-        if (courseFormTitle.value === '课程新增') {
-          res = await courseApi.saveCourse(courseFormData)
-        } else {
-          res = await courseApi.updateCourse(courseFormData)
-        }
-        if (res.code !== 200) return ElMessage.error(res.msg)
-        ElMessage.success(res.msg)
-        getCourseTable()
-        courseFormVisible.value = false
-      } catch (error) {
-        ElMessage.error('保存课程失败')
+  const valid = await courseForm.value.validate()
+  if (valid === true) {
+    try {
+      let res
+      if (courseFormTitle.value === '课程新增') {
+        res = await courseApi.saveCourse(courseFormData)
+      } else {
+        res = await courseApi.updateCourse(courseFormData)
       }
-    } else {
-      ElMessage.error('表单校验失败！请检查表单！')
+      if (res.code !== 200) return MessagePlugin.error(res.msg)
+      MessagePlugin.success(res.msg)
+      getCourseTable()
+      courseFormVisible.value = false
+    } catch (error) {
+      MessagePlugin.error('保存课程失败')
     }
-  })
+  } else {
+    MessagePlugin.error('表单校验失败！请检查表单！')
+  }
 }
 
 // 以下为推荐首页的方法
@@ -752,12 +714,12 @@ const submitRecommendForm = async () => {
   if (recommendForm.recommend == null) recommendForm.recommend = ' '
   try {
     const res = await courseApi.updateCourse(recommendForm)
-    if (res.code !== 200) return ElMessage.error(res.msg)
-    ElMessage.success(res.msg)
+    if (res.code !== 200) return MessagePlugin.error(res.msg)
+    MessagePlugin.success(res.msg)
     getCourseTable()
     recommendFormVisible.value = false
   } catch (error) {
-    ElMessage.error('保存推荐设置失败')
+    MessagePlugin.error('保存推荐设置失败')
   }
 }
 
@@ -767,11 +729,11 @@ const updateStatus = async (row) => {
       row.courseId,
       row.status ? 0 : 1
     )
-    if (res.code !== 200) return ElMessage.error(res.msg)
-    ElMessage.success(res.msg)
+    if (res.code !== 200) return MessagePlugin.error(res.msg)
+    MessagePlugin.success(res.msg)
     getCourseTable()
   } catch (error) {
-    ElMessage.error('更新课程状态失败')
+    MessagePlugin.error('更新课程状态失败')
   }
 }
 
@@ -786,24 +748,24 @@ const loadInitialData = async () => {
     if (courseTypeRes.code === 200) {
       courseTypeTree.value = courseTypeRes.data
     } else {
-      ElMessage.error(courseTypeRes.msg)
+      MessagePlugin.error(courseTypeRes.msg)
     }
 
     if (teachersRes.code === 200) {
       teachers.value = teachersRes.data
     } else {
-      ElMessage.error(teachersRes.msg)
+      MessagePlugin.error(teachersRes.msg)
     }
 
     if (teachGroupRes.code === 200) {
       teachObject.value = teachGroupRes.data
     } else {
-      ElMessage.error(teachGroupRes.msg)
+      MessagePlugin.error(teachGroupRes.msg)
     }
 
     await getCourseTable()
   } catch (error) {
-    ElMessage.error('加载初始数据失败')
+    MessagePlugin.error('加载初始数据失败')
   }
 }
 
@@ -813,11 +775,11 @@ onMounted(() => {
 </script>
 
 <style lang="less" scoped>
-.form-inline .el-input {
-  --el-input-width: 150px;
+.form-inline .t-input {
+  --td-input-width: 150px;
 }
 
-.form-inline .el-select {
-  --el-select-width: 150px;
+.form-inline .t-select {
+  --td-select-width: 150px;
 }
 </style>

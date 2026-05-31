@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 import ReconnectingWebSocket from 'reconnecting-websocket'
 import router from '@/router'
 import { useOhtStore } from '@/stores'
-import { ElNotification } from 'element-plus'
+import { NotifyPlugin } from 'tdesign-vue-next'
 import todoVoice from '@/assets/voice/todoVoice.mp3'
 import ohtVoice from '@/assets/voice/ohtVoice.mp3'
 import messageVoice from '@/assets/voice/messageVoice.mp3'
@@ -457,12 +457,13 @@ export const useWsStore = defineStore('websocket', {
       // 右下角弹窗
       const typeMap = { notice: 'info', warning: 'warning', info: 'info', error: 'error' }
       const messageBody = typeof content === 'string' ? content : (content ? JSON.stringify(content) : '')
-      ElNotification({
+      const notifyType = typeMap[msg.data?.type] || 'info'
+      const notifyFn = NotifyPlugin[notifyType] || NotifyPlugin.info
+      notifyFn({
         title: title || '系统通知',
-        message: messageBody || `来自 ${module} 模块的消息`,
-        type: typeMap[msg.data?.type] || 'info',
+        content: messageBody || `来自 ${module} 模块的消息`,
         duration: 5000,
-        position: 'bottom-right'
+        placement: 'bottom-right'
       })
 
       // 浏览器弹窗 —— 通过 localStorage 传递数据

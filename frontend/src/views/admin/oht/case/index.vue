@@ -1,79 +1,78 @@
 <template>
-  <el-card class="box-card">
-    <el-row :gutter="15">
-      <el-col :span="10">
-        <el-date-picker @change="getCaseList" size="small" value-format="YYYY-MM-DD" v-model="dateDuration"
-          type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
-      </el-col>
-      <el-col :span="8">
-        <el-input placeholder="请输入内容" size="small" v-model="queryInfo.query" @change="getCaseList">
+  <t-card class="box-card">
+    <t-row :gutter="15">
+      <t-col :span="4">
+        <t-date-range-picker @change="getCaseList" size="small" format="YYYY-MM-DD" v-model="dateDuration" :placeholder="['开始日期', '结束日期']"></t-date-range-picker>
+      </t-col>
+      <t-col :span="5">
+        <t-input placeholder="请输入内容" size="small" v-model="queryInfo.query" @change="getCaseList">
           <template #prepend>
-            <el-select v-model="queryInfo.queryType" size="small" style="width: 130px" placeholder="请选择">
-              <el-option label="案件ID" value="caseId"></el-option>
-              <el-option label="发起人" value="buildId"></el-option>
-              <el-option label="接起人" value="pickId"></el-option>
-            </el-select>
+            <t-select v-model="queryInfo.queryType" size="small" style="width: 130px" placeholder="请选择">
+              <t-option label="案件ID" value="caseId"></t-option>
+              <t-option label="发起人" value="buildId"></t-option>
+              <t-option label="接起人" value="pickId"></t-option>
+            </t-select>
           </template>
-        </el-input>
-      </el-col>
-      <el-col :span="6" class="text-right">
-        <el-button type="primary" size="small" @click="caseApi.downloadCaseReport(queryInfo)">
-          下载<i class="el-icon-download el-icon--right"></i>
-        </el-button>
-      </el-col>
-    </el-row>
-    <el-table :data="caseTableQuery" size="small" sortable="custom" @sort-change="tableSort" stripe
-      height="calc(100vh - 325px)" v-loading="loading">
-      <el-table-column label="推送明细" width="120">
+        </t-input>
+      </t-col>
+      <t-col :span="3" class="text-right">
+        <t-button theme="primary" size="small" @click="caseApi.downloadCaseReport(queryInfo)">
+          下载
+        </t-button>
+      </t-col>
+    </t-row>
+    <CustomTable rowKey="id" :data="caseTableQuery" size="small" sortable="custom" @sort-change="tableSort" stripe
+      height="calc(100vh - 325px)" :loading="loading">
+      <TableColumn label="推送明细" width="120">
         <template #default="{ row }">
-          <el-button-group>
-            <el-button type="primary" icon="Bell" size="small" @click="pushDetail(row.caseId)"></el-button>
-            <el-button type="primary" icon="ChatLineRound" size="small" @click="viewChatRecord(row)"
-              :disabled="row.caseStatus <= 1"></el-button>
-          </el-button-group>
+          <t-button-group>
+            <t-button theme="primary" size="small" @click="pushDetail(row.caseId)"><template #icon><DynamicIcon name="notification" /></template></t-button>
+            <t-button theme="primary" size="small" @click="viewChatRecord(row)"
+              :disabled="row.caseStatus <= 1"><template #icon><DynamicIcon name="chat-bubble" /></template></t-button>
+          </t-button-group>
         </template>
-      </el-table-column>
-      <el-table-column prop="dataTime" sortable="custom" label="建案日期" width="150"></el-table-column>
-      <el-table-column prop="caseStatus" sortable="custom" label="状态">
+      </TableColumn>
+      <TableColumn colKey="dataTime" sortable="custom" label="建案日期" width="150"></TableColumn>
+      <TableColumn colKey="caseStatus" sortable="custom" label="状态">
         <template #default="{ row }">
           {{ getDictLabel('oht_case_status', row.caseStatus) }}
         </template>
-      </el-table-column>
-      <el-table-column prop="caseType" sortable="custom" label="案件状态">
+      </TableColumn>
+      <TableColumn colKey="caseType" sortable="custom" label="案件状态">
         <template #default="{ row }">
           {{ getDictLabel('oht_case_type', row.caseType) }}
         </template>
-      </el-table-column>
-      <el-table-column prop="buildUser.ploName" label="建案工号"></el-table-column>
-      <el-table-column prop="buildExtn" sortable="custom" label="建案分机"></el-table-column>
-      <el-table-column prop="bcompType" sortable="custom" label="建案人类型">
+      </TableColumn>
+      <TableColumn colKey="buildUser.ploName" label="建案工号"></TableColumn>
+      <TableColumn colKey="buildExtn" sortable="custom" label="建案分机"></TableColumn>
+      <TableColumn colKey="bcompType" sortable="custom" label="建案人类型">
         <template #default="{ row }">
           {{ getDictLabel('oht_case_bcompType', row.bcompType) }}
         </template>
-      </el-table-column>
-      <el-table-column prop="bcompMemo" sortable="custom" label="建案备注"></el-table-column>
-      <el-table-column prop="bcompTime" sortable="custom" label="建案人处理时间"></el-table-column>
-      <el-table-column prop="pickUser.ploName" label="受理工号"></el-table-column>
-      <el-table-column prop="pickTime" sortable="custom" label="受理时间">
+      </TableColumn>
+      <TableColumn colKey="bcompMemo" sortable="custom" label="建案备注"></TableColumn>
+      <TableColumn colKey="bcompTime" sortable="custom" label="建案人处理时间"></TableColumn>
+      <TableColumn colKey="pickUser.ploName" label="受理工号"></TableColumn>
+      <TableColumn colKey="pickTime" sortable="custom" label="受理时间">
         <template #default="{ row }">
           {{ formatDateTime(row.pickTime) }}
         </template>
-      </el-table-column>
-      <el-table-column prop="pickExtn" sortable="custom" label="受理分机"></el-table-column>
-      <el-table-column prop="custId" sortable="custom" label="客户信息"></el-table-column>
-      <el-table-column prop="pcompType" sortable="custom" label="结案类型">
+      </TableColumn>
+      <TableColumn colKey="pickExtn" sortable="custom" label="受理分机"></TableColumn>
+      <TableColumn colKey="custId" sortable="custom" label="客户信息"></TableColumn>
+      <TableColumn colKey="pcompType" sortable="custom" label="结案类型">
         <template #default="{ row }">
           {{ getDictLabel('oht_case_pcompType', row.pcompType) }}
         </template>
-      </el-table-column>
-      <el-table-column prop="pcompMemo" sortable="custom" label="结案备注" show-overflow-tooltip></el-table-column>
-      <el-table-column prop="pcompTime" sortable="custom" label="结案时间"></el-table-column>
-      <el-table-column prop="waitTime" label="等待时长" sortable="custom"></el-table-column>
-    </el-table>
-    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
-      :current-page="queryInfo.pageNum" :page-sizes="pageSizes" :page-size="queryInfo.pageSize"
-      layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
-  </el-card>
+      </TableColumn>
+      <TableColumn colKey="pcompMemo" sortable="custom" label="结案备注" ellipsis></TableColumn>
+      <TableColumn colKey="pcompTime" sortable="custom" label="结案时间"></TableColumn>
+      <TableColumn colKey="waitTime" label="等待时长" sortable="custom"></TableColumn>
+    </CustomTable>
+    <t-pagination @page-size-change="handleSizeChange" @current-change="handleCurrentChange"
+      :current="queryInfo.pageNum" :page-size-options="pageSizes" :page-size="queryInfo.pageSize"
+ :total="total"></t-pagination>
+  </t-card>
 
   <!-- 案件推送明细模态框 -->
   <CasePushDetailDialog v-model:visible="pushDetailModalFlag" :push-list="pushList" />
@@ -84,7 +83,7 @@
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
-import { ElMessage } from 'element-plus'
+import { MessagePlugin } from 'tdesign-vue-next'
 import { useDictStore } from '@/stores'
 import CasePushDetailDialog from './components/CasePushDetailDialog.vue'
 import CaseChatRecordDialog from './components/CaseChatRecordDialog.vue'
@@ -140,14 +139,14 @@ const getCaseList = async () => {
     }
     const res = await caseApi.getCaseList(queryInfo)
     if (res.code !== 200) {
-      ElMessage.error(res.msg)
+      MessagePlugin.error(res.msg)
       return
     }
     caseTableQuery.value = res.data.list
     total.value = res.data.total
   } catch (error) {
     console.error('获取案件列表失败:', error)
-    ElMessage.error('获取案件列表失败')
+    MessagePlugin.error('获取案件列表失败')
   } finally {
     loading.value = false
   }
@@ -166,9 +165,9 @@ const handleCurrentChange = (page) => {
 }
 
 // 表格排序
-const tableSort = ({ prop, order }) => {
-  queryInfo.order = prop
-  queryInfo.orderType = order === 'ascending' ? 'asc' : 'desc'
+const tableSort = ({ sortBy, descending }) => {
+  queryInfo.order = sortBy
+  queryInfo.orderType = !descending ? 'asc' : 'desc'
   getCaseList()
 }
 
@@ -178,14 +177,14 @@ const pushDetail = async (caseId) => {
     loading.value = true
     const res = await taskApi.getTaskByCaseId(caseId)
     if (res.code !== 200) {
-      ElMessage.error(res.msg)
+      MessagePlugin.error(res.msg)
       return
     }
     pushList.value = res.data
     pushDetailModalFlag.value = true
   } catch (error) {
     console.error('获取推送明细失败:', error)
-    ElMessage.error('获取推送明细失败')
+    MessagePlugin.error('获取推送明细失败')
   } finally {
     loading.value = false
   }
@@ -200,14 +199,14 @@ const viewChatRecord = async (row) => {
       id: row.caseId
     })
     if (res.code !== 200) {
-      ElMessage.error(res.msg)
+      MessagePlugin.error(res.msg)
       return
     }
     chatRecords.value = res.data
     chatRecordsModalFlag.value = true
   } catch (error) {
     console.error('获取聊天记录失败:', error)
-    ElMessage.error('获取聊天记录失败')
+    MessagePlugin.error('获取聊天记录失败')
   } finally {
     loading.value = false
   }

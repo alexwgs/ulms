@@ -1,7 +1,7 @@
 <template>
-  <el-footer class="app-footer" height="40px">
+  <t-footer class="app-footer" height="40px">
     <div class="footer">招商银行信用卡|武汉分中心武汉营运中心|业务管理室</div>
-  </el-footer>
+  </t-footer>
 </template>
 
 <script>
@@ -16,7 +16,7 @@ export default {
   align-items: center;
   justify-content: center;
   height: 100%;
-  color: var(--el-text-color-secondary);
+  color: var(--td-text-color-secondary);
   text-align: center;
 }
 </style>

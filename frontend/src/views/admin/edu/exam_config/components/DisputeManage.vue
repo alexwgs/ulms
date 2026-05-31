@@ -1,68 +1,68 @@
 <template>
   <div>
-    <el-dialog title="复议列表" v-model="dialogTableVisible" fullscreen>
-      <el-row :gutter="15">
-        <el-col :span="6">
-          <el-select v-model="queryInfo.disputeResult" size="small" placeholder="复议状态" @change="listDisputeList">
-            <el-option v-for="item in dictStore.dictList.trm_exam_dispute_result" :key="item.code" :label="item.codeval" :value="parseInt(item.code)" />
-          </el-select>
-        </el-col>
-      </el-row>
-      <el-table :data="disputeList" size="small">
-        <el-table-column property="quesCode" label="题目编号" width="120" />
-        <el-table-column property="quesStem" label="题干" show-overflow-tooltip />
-        <el-table-column property="options" label="选项" width="200">
+    <t-dialog header="复议列表" v-model:visible="dialogTableVisible" mode="full-screen">
+      <t-row :gutter="15">
+        <t-col :span="3">
+          <t-select v-model="queryInfo.disputeResult" size="small" placeholder="复议状态" @change="listDisputeList">
+            <t-option v-for="item in dictStore.dictList.trm_exam_dispute_result" :key="item.code" :label="item.codeval" :value="parseInt(item.code)" />
+          </t-select>
+        </t-col>
+      </t-row>
+      <CustomTable rowKey="id" :data="disputeList" size="small">
+        <TableColumn property="quesCode" label="题目编号" width="120" />
+        <TableColumn property="quesStem" label="题干" ellipsis />
+        <TableColumn property="options" label="选项" width="200">
           <template #default="scope">
             <div v-if="scope.row.quesType === 2">
-              <el-checkbox v-for="option in scope.row.options.split(',')" :key="option" :value="scope.row.answer.split(',')" :label="option">{{option}}</el-checkbox>
+              <t-checkbox v-for="option in scope.row.options.split(',')" :key="option" :checked="scope.row.answer.split(',').includes(option)" disabled>{{option}}</t-checkbox>
             </div>
             <div v-else>
-              <el-radio v-for="option in scope.row.options.split(',')" :key="option" :value="scope.row.answer" class="ques-option" :label="option">{{option}}</el-radio>
+              <t-radio v-for="option in scope.row.options.split(',')" :key="option" :checked="option === scope.row.answer" class="ques-option" disabled>{{option}}</t-radio>
             </div>
           </template>
-        </el-table-column>
-        <el-table-column label="复议明细" width="120px">
+        </TableColumn>
+        <TableColumn label="复议明细" width="120px">
           <template #default="scope">
-            <el-popover placement="right" width="500" trigger="click">
+            <t-popup placement="right" width="500" trigger="click">
               <template #reference>
-                <el-button size="small">复议{{scope.row.dispNum}}人次</el-button>
+                <t-button size="small">复议{{scope.row.dispNum}}人次</t-button>
               </template>
-              <el-table :data="scope.row.quesDisputes" size="small">
-                <el-table-column width="150" property="userAnswer" label="用户答案" />
-                <el-table-column property="disputeMemo" label="复议理由" />
-                <el-table-column width="80" property="ploNum" label="复议工号" />
-                <el-table-column width="100" property="dataDate" label="复议时间" />
-              </el-table>
-            </el-popover>
+              <CustomTable rowKey="id" :data="scope.row.quesDisputes" size="small">
+                <TableColumn width="150" property="userAnswer" label="用户答案" />
+                <TableColumn property="disputeMemo" label="复议理由" />
+                <TableColumn width="80" property="ploNum" label="复议工号" />
+                <TableColumn width="100" property="dataDate" label="复议时间" />
+              </CustomTable>
+            </t-popup>
           </template>
-        </el-table-column>
-        <el-table-column property="disputeResult" label="复议回复" width="120px">
+        </TableColumn>
+        <TableColumn property="disputeResult" label="复议回复" width="120px">
           <template #default="scope">
             {{dictStore.getDictLabel('trm_exam_dispute_result', scope.row.disputeResult)}}
           </template>
-        </el-table-column>
-        <el-table-column property="disputeResult" label="操作">
+        </TableColumn>
+        <TableColumn property="disputeResult" label="操作">
           <template #default="scope">
-            <el-button type="success" size="small" @click="disputeSubmit(scope.row, 1)" plain>复议通过</el-button>
-            <el-button type="danger" size="small" @click="disputeSubmit(scope.row, 0)" plain>复议不过</el-button>
+            <t-button theme="success" size="small" @click="disputeSubmit(scope.row, 1)" plain>复议通过</t-button>
+            <t-button theme="danger" size="small" @click="disputeSubmit(scope.row, 0)" plain>复议不过</t-button>
           </template>
-        </el-table-column>
-      </el-table>
-      <el-pagination
-        @size-change="handleSizeChange"
+        </TableColumn>
+      </CustomTable>
+      <t-pagination
+        @page-size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-sizes="pageSizes"
+        :current="currentPage"
+        :page-size-options="pageSizes"
         :page-size="queryInfo.pageSize"
-        layout="total, sizes, prev, pager, next, jumper"
+
         :total="total"
       />
-    </el-dialog>
+    </t-dialog>
   </div>
 </template>
 <script setup>
 import { ref, reactive } from 'vue'
-import { ElMessage } from 'element-plus'
+import { MessagePlugin } from 'tdesign-vue-next'
 import { useDictStore } from '@/stores'
 import { questionDisputeApi } from '@/api/edu/questionDispute'
 
@@ -94,11 +94,11 @@ const show = (examCode) => {
 const listDisputeList = async () => {
   try {
     const res = await questionDisputeApi.listDisputeList({ params: queryInfo })
-    if (res.code !== 200) return ElMessage.error(res.msg)
+    if (res.code !== 200) return MessagePlugin.error(res.msg)
     disputeList.value = res.data.list
     total.value = res.data.total
   } catch (error) {
-    ElMessage.error('获取复议列表失败')
+    MessagePlugin.error('获取复议列表失败')
   }
 }
 
@@ -117,11 +117,11 @@ const disputeSubmit = async (row, disputeResult) => {
   row.examCode = queryInfo.examCode
   try {
     const res = await questionDisputeApi.updateDispute(row)
-    if (res.code !== 200) return ElMessage.error(res.msg)
-    ElMessage.success(res.msg)
+    if (res.code !== 200) return MessagePlugin.error(res.msg)
+    MessagePlugin.success(res.msg)
     listDisputeList()
   } catch (error) {
-    ElMessage.error('提交复议结果失败')
+    MessagePlugin.error('提交复议结果失败')
   }
 }
 defineExpose({

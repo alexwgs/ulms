@@ -1,6 +1,6 @@
 <template>
-  <transition name="el-zoom-in-top">
-    <el-card
+  <transition name="zoom-in-top">
+    <t-card
       ref="notificationCardRef"
       class="container"
       v-show="visiable"
@@ -8,20 +8,20 @@
       @mouseleave="visiable = false"
       type="border-card"
     >
-      <el-tabs
+      <t-tabs
         v-model="activeName"
-        @tab-click="handleClick"
+        @change="handleClick"
         style="height: 350px"
       >
-        <el-tab-pane label="通知" name="first">
+        <t-tab-panel label="通知" name="first">
           <div style="height: 300px; overflow: auto">
-            <el-collapse
+            <t-collapse
               v-model="activeNames"
               @change="handleChange"
               height="100%"
               accordion
             >
-              <el-collapse-item
+              <t-collapse-panel
                 v-for="item in noticeMessage"
                 :name="item.id"
                 :title="
@@ -35,32 +35,32 @@
                 :class="item.ifRead ? 'read' : 'unread'"
               >
                 <div>{{ item.content }}</div>
-              </el-collapse-item>
-            </el-collapse>
+              </t-collapse-panel>
+            </t-collapse>
           </div>
-        </el-tab-pane>
-        <el-tab-pane label="消息" name="second">
-          <el-empty></el-empty>
-        </el-tab-pane>
-        <el-tab-pane label="待办事项" name="third">
-          <el-empty></el-empty>
-        </el-tab-pane>
-      </el-tabs>
+        </t-tab-panel>
+        <t-tab-panel label="消息" name="second">
+          <t-empty></t-empty>
+        </t-tab-panel>
+        <t-tab-panel label="待办事项" name="third">
+          <t-empty></t-empty>
+        </t-tab-panel>
+      </t-tabs>
       <div class="manage-box">
         <div class="left-btn" @click="cleanAll">
-          <el-icon><CircleCheck /></el-icon> 清空全部
+          <CheckCircleFilledIcon /> 清空全部
         </div>
         <div class="right-btn" @click="visiable = false">
-          <el-icon><CircleClose /></el-icon> 关闭
+          <CloseCircleFilledIcon /> 关闭
         </div>
       </div>
-    </el-card>
+    </t-card>
   </transition>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue'
-import { CircleCheck, CircleClose } from '@element-plus/icons-vue'
+import { CheckCircleFilledIcon, CloseCircleFilledIcon } from 'tdesign-icons-vue-next'
 
 const notificationCardRef = ref(null)
 const activeName = ref('first')
@@ -124,7 +124,7 @@ defineExpose({
   height: 415px;
   position: absolute;
   right: 5%;
-  :deep(.el-card__body) {
+  :deep(.t-card__body) {
     padding-top: 0;
   }
   .manage-box {

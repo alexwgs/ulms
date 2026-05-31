@@ -1,103 +1,103 @@
 <template>
-  <el-dialog
-    :title="dialogTitle"
-    v-model="dialogVisible"
+  <t-dialog
+    :header="dialogTitle"
+    v-model:visible="dialogVisible"
     width="50%"
-    :close-on-click-modal="false"
-    :before-close="handleClose"
+    :close-on-overlay-click="false"
+    @before-close="handleClose"
   >
-    <el-form
+    <t-form
       ref="formRef"
-      :model="formData"
+      :data="formData"
       :rules="rules"
       size="small"
       label-width="100px"
     >
-      <el-row :gutter="15">
-        <el-col :span="24">
-          <el-form-item label="显示名称" prop="label">
-            <el-input
+      <t-row :gutter="15">
+        <t-col :span="12">
+          <t-form-item label="显示名称" name="label">
+            <t-input
               v-model="formData.label"
               placeholder="请输入字段显示名称"
               maxlength="50"
-              show-word-limit
+              show-limit-number
               clearable
             />
-          </el-form-item>
-        </el-col>
+          </t-form-item>
+        </t-col>
 
-        <el-col :span="24">
-          <el-form-item label="字段参数名称" prop="fieldName">
-            <el-input
+        <t-col :span="12">
+          <t-form-item label="字段参数名称" name="fieldName">
+            <t-input
               v-model="formData.fieldName"
               placeholder="请输入字段参数名称"
               maxlength="50"
-              show-word-limit
+              show-limit-number
               clearable
             />
-          </el-form-item>
-        </el-col>
+          </t-form-item>
+        </t-col>
 
-        <el-col :span="24">
-          <el-form-item label="组件类型" prop="type">
-            <el-select
+        <t-col :span="12">
+          <t-form-item label="组件类型" name="type">
+            <t-select
               v-model="formData.type"
               placeholder="请选择控件类型"
               @change="handleComponentTypeChange"
             >
-              <el-option
+              <t-option
                 v-for="item in componentTypes"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
               />
-            </el-select>
-          </el-form-item>
-        </el-col>
+            </t-select>
+          </t-form-item>
+        </t-col>
 
-        <el-col :span="24">
+        <t-col :span="12">
           <TemplateComponent
             ref="templateComponentRef"
             :type="formData.type"
             :field="formData"
             @update-options="updateOptions"
           />
-        </el-col>
+        </t-col>
 
-        <el-col :span="12">
-          <el-form-item label="必填标志" prop="required">
-            <el-select
+        <t-col :span="6">
+          <t-form-item label="必填标志" name="required">
+            <t-select
               v-model="formData.required"
               placeholder="请选择必填标志"
               style="width: 100%"
             >
-              <el-option label="必填" :value="1" />
-              <el-option label="非必填" :value="0" />
-            </el-select>
-          </el-form-item>
-        </el-col>
+              <t-option label="必填" :value="1" />
+              <t-option label="非必填" :value="0" />
+            </t-select>
+          </t-form-item>
+        </t-col>
 
-        <el-col :span="12">
-          <el-form-item label="排序" prop="orderId">
-            <el-input-number
+        <t-col :span="6">
+          <t-form-item label="排序" name="orderId">
+            <t-input-number
               v-model="formData.orderId"
               :min="-999"
               :max="999"
               :step="1"
               controls-position="right"
             />
-          </el-form-item>
-        </el-col>
-      </el-row>
-    </el-form>
+          </t-form-item>
+        </t-col>
+      </t-row>
+    </t-form>
 
     <template #footer>
-      <el-button @click="dialogVisible = false">取消</el-button>
-      <el-button type="primary" @click="submitForm" :loading="loading">
+      <t-button @click="dialogVisible = false">取消</t-button>
+      <t-button theme="primary" @click="submitForm" :loading="loading">
         确定
-      </el-button>
+      </t-button>
     </template>
-  </el-dialog>
+  </t-dialog>
 </template>
 
 <script setup>
@@ -210,11 +210,11 @@ const submitForm = async () => {
   try {
     // 验证子组件
     const validComponent = await templateComponentRef.value.validate()
-    if (!validComponent) return
+    if (validComponent !== true) return
 
     // 验证主表单
     const validForm = await formRef.value.validate()
-    if (!validForm) return
+    if (validForm !== true) return
 
     loading.value = true
     const payload = {
@@ -233,11 +233,11 @@ const submitForm = async () => {
       throw new Error(res.msg)
     }
 
-    ElMessage.success(res.msg)
+    MessagePlugin.success(res.msg)
     props.refresh?.()
     handleClose()
   } catch (error) {
-    ElMessage.error(error.message || '操作失败')
+    MessagePlugin.error(error.message || '操作失败')
   } finally {
     loading.value = false
   }
@@ -250,11 +250,11 @@ defineExpose({
 </script>
 
 <style lang="less" scoped>
-.el-form-item {
+.t-form-item {
   margin-bottom: 18px;
 }
 
-.el-input-number {
+.t-input-number {
   width: 100%;
 }
 </style>

@@ -1,51 +1,51 @@
 <template>
-  <el-tabs type="border-card">
+  <t-tabs type="border-card">
     <div class="identity-font">
       <b>当前身份:{{ getIdentity }}</b>
-      <el-button
+      <t-button
         v-show="true"
         size="small"
         style="margin-left: 10px"
-        type="warning"
+        theme="warning"
         @click="editIdentity()"
         plain
-        >修改</el-button
+        >修改</t-button
       >
     </div>
-    <el-tab-pane v-for="item in statusType" :key="item.id">
+    <t-tab-panel v-for="item in statusType" :key="item.id">
       <template #label>
         <span style="color: red; font-weight: 700">
-          <el-icon v-if="item.statusName == '我在'"><Aim /></el-icon>
-          <el-icon v-else><Position /></el-icon>
+          <t-icon v-if="item.statusName == '我在'"><MapAimingIcon /></t-icon>
+          <t-icon v-else><LocationIcon /></t-icon>
           {{ item.statusName }}
         </span>
       </template>
       <div v-for="item1 in item.children" :key="item1.id">
-        <el-divider content-position="left">{{ item1.statusName }}</el-divider>
-        <el-radio-group
+        <t-divider content-position="left">{{ item1.statusName }}</t-divider>
+        <t-radio-group
           v-model="userStatus"
           ref="radio"
           @change="statusChange($event, item1.children)"
           size="small"
         >
-          <el-radio-button
+          <t-radio-button
             v-for="item2 in item1.children"
             :key="item2.id"
-            :label="item2.statusName"
-          ></el-radio-button>
-        </el-radio-group>
+            :value="item2.statusName"
+          ></t-radio-button>
+        </t-radio-group>
       </div>
-    </el-tab-pane>
+    </t-tab-panel>
     <div class="online-info">
       当前状态[{{ userStatus }}]持续时长：{{ userStatusMi }} 分钟
     </div>
-  </el-tabs>
+  </t-tabs>
 </template>
 
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
-import { ElMessage, ElMessageBox } from 'element-plus'
-import { Aim, Position } from '@element-plus/icons-vue'
+import { MessagePlugin, DialogPlugin } from 'tdesign-vue-next'
+import { MapAimingIcon, LocationIcon } from 'tdesign-icons-vue-next'
 import { getStatusTree } from '@/api/welcome/index.js'
 
 const emit = defineEmits(['editIdentity', 'changeUserStatus'])
@@ -100,7 +100,7 @@ const getStatusType = async () => {
   try {
     const res = await getStatusTree()
     if (res.code !== 200) {
-      ElMessage.error(res.msg)
+      MessagePlugin.error(res.msg)
       return
     }
     statusType.value = res.data || []
@@ -115,7 +115,7 @@ const statusChange = (e, data) => {
   emit('changeUserStatus', e)
 
   if (e === '自定义') {
-    ElMessageBox.prompt('请输入您的自定义工作内容[2到6个字符]', '提示', {
+    DialogPlugin.prompt('请输入您的自定义工作内容[2到6个字符]', '提示', {
       confirmButtonText: '确定',
       showClose: false,
       showCancelButton: false,
@@ -131,7 +131,7 @@ const statusChange = (e, data) => {
         userStatusTimer()
       })
       .catch(() => {
-        ElMessage.info('取消输入')
+        MessagePlugin.info('取消输入')
       })
   } else {
     sendWebSocketMessage(statusChangeMsg.value)

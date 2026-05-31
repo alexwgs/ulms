@@ -1,14 +1,14 @@
 <template>
-    <el-dialog title="授课对象分组配置" :visible.sync="visiable" :close-on-click-modal="false" :close-on-press-escape="false" :show-close="false">
-    <el-input v-model="groupName" size="small" placeholder="授课对象分组名称"></el-input>
+    <t-dialog header="授课对象分组配置" :visible="visiable" :close-on-overlay-click="false" :close-on-esc-keydown="false" :close-btn="false" @close="emit('update:visiable', false)">
+    <t-input v-model="groupName" size="small" placeholder="授课对象分组名称"></t-input>
 
-    <el-button-group size="small">
-      <el-button size="small" type="primary" @click="openEmpTree('101')">一线员工</el-button>
-      <el-button size="small" type="primary" @click="openEmpTree('100')">业务主任</el-button>
-      <el-button size="small" type="primary" @click="openEmpTree('199')">主管</el-button>
-    </el-button-group>
-    
-    <el-dialog title="选择员工" v-model="treeDialogVisiable" width="500px">
+    <t-button-group size="small">
+      <t-button size="small" theme="primary" @click="openEmpTree('101')">一线员工</t-button>
+      <t-button size="small" theme="primary" @click="openEmpTree('100')">业务主任</t-button>
+      <t-button size="small" theme="primary" @click="openEmpTree('199')">主管</t-button>
+    </t-button-group>
+
+    <t-dialog header="选择员工" :visible="treeDialogVisiable" width="500px" @close="treeDialogVisiable = false">
       <EmployeeSelect
         conditionType="joblevel"
         v-model="selectedPloNum"
@@ -19,16 +19,16 @@
       ></EmployeeSelect>
       <template #footer>
         <div class="dialog-footer">
-          <el-button size="small" @click="treeDialogVisiable = false">确 定</el-button>
+          <t-button size="small" @click="treeDialogVisiable = false">确 定</t-button>
         </div>
       </template>
-    </el-dialog>
+    </t-dialog>
 
-    <div slot="footer" class="dialog-footer">
-      <el-button size="small" type="primary" @click="submitSelected()">确定</el-button>
-      <el-button size="small" @click="visiable = !visiable">关闭</el-button>
-    </div>
-    </el-dialog>
+    <template #footer>
+      <t-button size="small" theme="primary" @click="submitSelected()">确定</t-button>
+      <t-button size="small" @click="emit('update:visiable', false)">关闭</t-button>
+    </template>
+    </t-dialog>
 </template>
 <script setup>
 import { ref, reactive } from 'vue'

@@ -1,6 +1,6 @@
 // stores/oht.js
 import { defineStore } from 'pinia'
-import { ElNotification } from 'element-plus'
+import { NotifyPlugin } from 'tdesign-vue-next'
 import dayjs from 'dayjs'
 import { useWsStore } from '@/stores/modules/ws' // 假设你有全局store
 
@@ -203,12 +203,11 @@ export const useOhtStore = defineStore('oht', {
               'todo'
             )
 
-            ElNotification({
+            NotifyPlugin.info({
               title: `待办提醒：${item.title}`,
-              message: item.content,
-              type: 'info',
+              content: item.content,
               duration: 0,
-              position: 'bottom-right'
+              placement: 'bottom-right'
             })
 
             alertLists.splice(i, 1)
@@ -304,12 +303,11 @@ export const useOhtStore = defineStore('oht', {
 
       wsStore.setDesktopNotification('[举手系统]新的举手订单', message, 'oht')
 
-      ElNotification({
+      NotifyPlugin.info({
         title: '[举手系统]新的举手订单',
-        message,
-        type: 'info',
+        content: message,
         duration: 0,
-        position: 'top-right'
+        placement: 'top-right'
       })
     },
 

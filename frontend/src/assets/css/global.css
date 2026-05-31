@@ -12,21 +12,17 @@ body,
     min-height: 600px;
 }
 
-.el-card{
+.t-card{
     box-shadow:  0 1px 1px rgba(0,0,0,0.15) !important;
 }
 
-.el-pagination {
+.t-pagination {
     margin-top: 15px;
 }
 
-.el-alert {
+.t-alert {
     margin-top: 15px;
     margin-bottom: 15px;
-}
-.globalScrollbar .el-scrollbar__wrap {
-    margin-bottom: -17px !important;
-    margin-right: -17px !important;
 }
 .avartar-box-mini {
     width: 28px;

@@ -1,252 +1,245 @@
 <template>
   <div>
-    <el-card class="main-container">
-      <el-row style="padding-bottom: 10px" :gutter="15">
-        <el-col :span="14">
-          <el-input
+    <t-card class="main-container">
+      <t-row style="padding-bottom: 10px" :gutter="15">
+        <t-col :span="7">
+          <t-input
             placeholder="输入要搜索的内容"
             size="small"
             v-model="queryInfo.query"
           >
             <template #prepend>
-              <el-select
+              <t-select
                 v-model="queryInfo.querytype"
                 size="small"
                 style="width: 100px"
                 placeholder="请选择"
               >
-                <el-option label="分组名称" value="groupName"></el-option>
-              </el-select>
+                <t-option label="分组名称" value="groupName"></t-option>
+              </t-select>
             </template>
             <template #append>
-              <el-button icon="Search" size="small"></el-button>
+              <t-button size="small"><template #icon><DynamicIcon name="search" /></template></t-button>
             </template>
-          </el-input>
-        </el-col>
-        <el-col :span="4">
-          <el-button
-            type="primary"
+          </t-input>
+        </t-col>
+        <t-col :span="2">
+          <t-button
+            theme="primary"
             size="small"
             @click="manageBrushConfig(null)"
-            >新增配置</el-button
+            >新增配置</t-button
           >
-        </el-col>
-        <el-col :span="4">
-          <el-button
-            type="primary"
+        </t-col>
+        <t-col :span="2">
+          <t-button
+            theme="primary"
             size="small"
             @click="
               $refs.uploadExcelRef.show({ url: 'edu/excel/in/daily/group' })
             "
-            >名单批量管理</el-button
+            >名单批量管理</t-button
           >
-        </el-col>
-      </el-row>
-      <el-table
+        </t-col>
+      </t-row>
+      <CustomTable rowKey="id"
         :data="tableData"
         size="small"
         stripe
         style="width: 100%"
         height="calc(100vh - 300px)"
-        @sort-change="tableSort"
-      >
-        <el-table-column prop="groupId" label="ID" width="60">
+        @sort-change="tableSort">
+        <TableColumn colKey="groupId" label="ID" width="60">
           <template #default="scope">{{ scope.row.groupId }}</template>
-        </el-table-column>
-        <el-table-column
+        </TableColumn>
+        <TableColumn
           prop="groupName"
           label="分组名称"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-        <el-table-column label="答题上线(日/月)" sortable width="140">
+          ellipsis>
+        </TableColumn>
+        <TableColumn label="答题上线(日/月)" sortable width="140">
           <template #default="scope">{{
             scope.row.dayLimit + ' / ' + scope.row.monthLimit
           }}</template>
-        </el-table-column>
-        <el-table-column
+        </TableColumn>
+        <TableColumn
           prop="optionRand"
           label="选项随机"
           sortable
-          width="140"
-        >
+          width="140">
           <template #default="scope">{{
             dictStore.getDictLabel('yes_or_not', scope.row.optionRand)
           }}</template>
-        </el-table-column>
-        <el-table-column
+        </TableColumn>
+        <TableColumn
           prop="mistakeFirst"
           label="错题优先"
           sortable
-          width="140"
-        >
+          width="140">
           <template #default="scope">{{
             dictStore.getDictLabel('yes_or_not', scope.row.mistakeFirst)
           }}</template>
-        </el-table-column>
-        <el-table-column
+        </TableColumn>
+        <TableColumn
           prop="answerTime"
           label="答题时长"
           sortable
-          width="140"
-        ></el-table-column>
-        <el-table-column prop="libCode" label="题库" sortable width="140">
+          width="140"></TableColumn>
+        <TableColumn colKey="libCode" label="题库" sortable width="140">
           <template #default="scope"
-            ><el-button
-              type="primary"
+            ><t-button
+              theme="primary"
               size="small"
               @click="manageLibCode(scope.row)"
               link
-              >管理题库</el-button
+              >管理题库</t-button
             ></template
           >
-        </el-table-column>
-        <el-table-column label="错题集" sortable width="140">
+        </TableColumn>
+        <TableColumn label="错题集" sortable width="140">
           <template #default="scope"
             >{{ scope.row.wrongDay === 0 ? '不限' : scope.row.wrongDay }} /
             {{ scope.row.wrongLimit }}</template
           >
-        </el-table-column>
-        <el-table-column label="收藏夹" sortable width="140">
+        </TableColumn>
+        <TableColumn label="收藏夹" sortable width="140">
           <template #default="scope"
             >{{ scope.row.collectDay === 0 ? '不限' : scope.row.collectDay }} /
             {{
               scope.row.collectLimit === 0 ? '不限' : scope.row.collectLimit
             }}</template
           >
-        </el-table-column>
-        <el-table-column prop="handleDate" label="操作" width="50">
+        </TableColumn>
+        <TableColumn colKey="handleDate" label="操作" width="50">
           <template #default="scope">
-            <el-button
-              type="primary"
-              icon="Edit"
-              size="small"
+            <t-button
+              theme="primary" size="small"
               @click="manageBrushConfig(scope.row)"
-              circle
-            ></el-button>
+              shape="circle"><template #icon><DynamicIcon name="edit" /></template></t-button>
           </template>
-        </el-table-column>
-      </el-table>
-      <el-pagination
-        @size-change="handleSizeChange"
+        </TableColumn>
+      </CustomTable>
+      <t-pagination
+        @page-size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-sizes="pageSizes"
+        :current="currentPage"
+        :page-size-options="pageSizes"
         :page-size="queryInfo.pageSize"
-        layout="total, sizes, prev, pager, next, jumper"
+
         :total="total"
-      ></el-pagination>
-    </el-card>
+      ></t-pagination>
+    </t-card>
     <!-- 以下内容用着题库管理  -->
-    <el-dialog
-      title="题库管理"
-      v-model="quesLibVisible"
+    <t-dialog
+      header="题库管理"
+      v-model:visible="quesLibVisible"
       width="60%"
-      :close-on-click-modal="false"
+      :close-on-overlay-click="false"
     >
-      <el-card class="tree-box">
-        <el-tree
+      <t-card class="tree-box">
+        <t-tree
           :data="treeData"
           ref="treeRef"
-          node-key="libCode"
-          show-checkbox
+          :keys="{ value: 'libCode', label: 'libName', children: 'children' }"
+          checkable
+          v-model="checkedKeys"
         >
-          <template #default="{ node, data }">
+          <template #default="{ node }">
             <span class="custom-tree-node">
               <span
-                >{{ data.libName }}
-                <el-tag v-if="data.libLevel === 2" size="small">{{
-                  data.quesNum
-                }}</el-tag></span
+                >{{ node.data.libName }}
+                <t-tag v-if="node.data.libLevel === 2" size="small">{{
+                  node.data.quesNum
+                }}</t-tag></span
               >
             </span>
           </template>
-        </el-tree>
-      </el-card>
+        </t-tree>
+      </t-card>
       <template #footer>
         <span class="dialog-footer">
-          <el-button size="small" @click="quesLibVisible = false"
-            >关 闭</el-button
+          <t-button size="small" @click="quesLibVisible = false"
+            >关 闭</t-button
           >
-          <el-button type="primary" size="small" @click="libCodeUpdate()"
-            >提交修改</el-button
+          <t-button theme="primary" size="small" @click="libCodeUpdate()"
+            >提交修改</t-button
           >
         </span>
       </template>
-    </el-dialog>
-    <el-dialog
-      title="配置维护"
-      v-model="brushConfigVisible"
+    </t-dialog>
+    <t-dialog
+      header="配置维护"
+      v-model:visible="brushConfigVisible"
       width="60%"
-      :close-on-click-modal="false"
+      :close-on-overlay-click="false"
     >
-      <el-form
-        :model="brushForm"
+      <t-form
+        :data="brushForm"
         :rules="rules"
         size="small"
         ref="brushConfigForm"
         label-width="100px"
         class="demo-ruleForm"
       >
-        <el-form-item label="组ID" prop="groupId">
-          <el-input v-model="brushForm.groupId" type="number"></el-input>
-        </el-form-item>
-        <el-form-item label="分组名称" prop="groupName">
-          <el-input v-model="brushForm.groupName"></el-input>
-        </el-form-item>
-        <el-form-item label="月答题上线" prop="monthLimit">
-          <el-input v-model="brushForm.monthLimit" type="number"></el-input>
-        </el-form-item>
-        <el-form-item label="日答题上线" prop="dayLimit">
-          <el-input v-model="brushForm.dayLimit" type="number"></el-input>
-        </el-form-item>
-        <el-form-item label="答题时长" prop="answerTime">
-          <el-input v-model="brushForm.answerTime" type="number"></el-input>
-        </el-form-item>
-        <el-form-item label="选项随机" prop="optionRand">
-          <el-select v-model="brushForm.optionRand" placeholder="请选择">
-            <el-option
+        <t-form-item label="组ID" name="groupId">
+          <t-input v-model="brushForm.groupId" type="number"></t-input>
+        </t-form-item>
+        <t-form-item label="分组名称" name="groupName">
+          <t-input v-model="brushForm.groupName"></t-input>
+        </t-form-item>
+        <t-form-item label="月答题上线" name="monthLimit">
+          <t-input v-model="brushForm.monthLimit" type="number"></t-input>
+        </t-form-item>
+        <t-form-item label="日答题上线" name="dayLimit">
+          <t-input v-model="brushForm.dayLimit" type="number"></t-input>
+        </t-form-item>
+        <t-form-item label="答题时长" name="answerTime">
+          <t-input v-model="brushForm.answerTime" type="number"></t-input>
+        </t-form-item>
+        <t-form-item label="选项随机" name="optionRand">
+          <t-select v-model="brushForm.optionRand" placeholder="请选择">
+            <t-option
               v-for="item in dictStore.dict.yes_or_not"
               :key="item.code"
               :label="item.codeval"
               :value="parseInt(item.code)"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="错题优先" prop="mistakeFirst">
-          <el-select v-model="brushForm.mistakeFirst" placeholder="暂时停用">
-            <el-option
+            ></t-option>
+          </t-select>
+        </t-form-item>
+        <t-form-item label="错题优先" name="mistakeFirst">
+          <t-select v-model="brushForm.mistakeFirst" placeholder="暂时停用">
+            <t-option
               v-for="item in dictStore.dict.yes_or_not"
               :key="item.code"
               :label="item.codeval"
               :value="parseInt(item.code)"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="错题天数" prop="wrongDay">
-          <el-input v-model="brushForm.wrongDay" type="number"></el-input>
-        </el-form-item>
-        <el-form-item label="错题题数" prop="wrongLimit">
-          <el-input v-model="brushForm.wrongLimit" type="number"></el-input>
-        </el-form-item>
-        <el-form-item label="收藏天数" prop="collectDay">
-          <el-input v-model="brushForm.collectDay" type="number"></el-input>
-        </el-form-item>
-        <el-form-item label="收藏题数" prop="collectLimit">
-          <el-input v-model="brushForm.collectLimit" type="number"></el-input>
-        </el-form-item>
-      </el-form>
+            ></t-option>
+          </t-select>
+        </t-form-item>
+        <t-form-item label="错题天数" name="wrongDay">
+          <t-input v-model="brushForm.wrongDay" type="number"></t-input>
+        </t-form-item>
+        <t-form-item label="错题题数" name="wrongLimit">
+          <t-input v-model="brushForm.wrongLimit" type="number"></t-input>
+        </t-form-item>
+        <t-form-item label="收藏天数" name="collectDay">
+          <t-input v-model="brushForm.collectDay" type="number"></t-input>
+        </t-form-item>
+        <t-form-item label="收藏题数" name="collectLimit">
+          <t-input v-model="brushForm.collectLimit" type="number"></t-input>
+        </t-form-item>
+      </t-form>
       <template #footer>
         <span class="dialog-footer">
-          <el-button size="small" @click="brushConfigVisible = false"
-            >关 闭</el-button
+          <t-button size="small" @click="brushConfigVisible = false"
+            >关 闭</t-button
           >
-          <el-button type="primary" size="small" @click="configUpdate()"
-            >提交修改</el-button
+          <t-button theme="primary" size="small" @click="configUpdate()"
+            >提交修改</t-button
           >
         </span>
       </template>
-    </el-dialog>
+    </t-dialog>
 
     <UploadExcel
       ref="uploadExcelRef"
@@ -257,7 +250,7 @@
 </template>
 <script setup>
 import { ref, reactive, onMounted, nextTick } from 'vue'
-import { ElMessage } from 'element-plus'
+import { MessagePlugin } from 'tdesign-vue-next'
 import UploadExcel from '@/components/UploadExcel.vue'
 import { brushApi } from '@/api/edu/brush'
 import { useDictStore } from '@/stores'
@@ -321,6 +314,7 @@ const rules = {
 
 // 引用
 const treeRef = ref(null)
+const checkedKeys = ref([])
 const brushConfigForm = ref(null)
 
 // 生命周期
@@ -332,28 +326,28 @@ onMounted(() => {
 // 方法
 async function listBrushConfigData() {
   const res = await brushApi.listBrushConfig(queryInfo)
-  if (res.code !== 200) return ElMessage.error(res.msg)
+  if (res.code !== 200) return MessagePlugin.error(res.msg)
   total.value = res.data.total
   tableData.value = res.data.list
 }
 
 async function getTreeDataList() {
   const res = await brushApi.getTreeData()
-  if (res.code !== 200) return ElMessage.error(res.msg)
+  if (res.code !== 200) return MessagePlugin.error(res.msg)
   treeData.value = res.data
 }
 
 async function updateBrushConfigData() {
   const res = await brushApi.updateBrushConfig(brushForm)
-  if (res.code !== 200) return ElMessage.error(res.msg)
-  ElMessage.success(res.msg)
+  if (res.code !== 200) return MessagePlugin.error(res.msg)
+  MessagePlugin.success(res.msg)
   listBrushConfigData()
 }
 
 async function addBrushConfigData() {
   const res = await brushApi.addBrushConfig(brushForm)
-  if (res.code !== 200) return ElMessage.error(res.msg)
-  ElMessage.success(res.msg)
+  if (res.code !== 200) return MessagePlugin.error(res.msg)
+  MessagePlugin.success(res.msg)
   listBrushConfigData()
 }
 
@@ -364,14 +358,15 @@ function manageLibCode(row) {
   quesLibVisible.value = true
   nextTick(() => {
     if (libCodes != null && libCodes !== '') {
-      treeRef.value.setCheckedKeys(libCodes.split(','))
+      checkedKeys.value = libCodes.split(',')
+    } else {
+      checkedKeys.value = []
     }
   })
 }
 
 function libCodeUpdate() {
-  const checked = treeRef.value.getCheckedKeys(true, false)
-  brushForm.libCode = checked.join(',')
+  brushForm.libCode = checkedKeys.value.join(',')
   updateBrushConfigData()
   quesLibVisible.value = false
 }
@@ -386,19 +381,16 @@ function manageBrushConfig(row) {
   brushConfigVisible.value = true
 }
 
-function configUpdate() {
-  brushConfigForm.value.validate(async (valid) => {
-    if (valid) {
-      if (curentOperateType.value === 'edit') {
-        await brushApi.updateBrushConfigData()
-      } else {
-        await brushApi.addBrushConfigData()
-      }
-      brushConfigVisible.value = false
+async function configUpdate() {
+  const valid = await brushConfigForm.value.validate()
+  if (valid === true) {
+    if (curentOperateType.value === 'edit') {
+      await brushApi.updateBrushConfigData()
     } else {
-      return false
+      await brushApi.addBrushConfigData()
     }
-  })
+    brushConfigVisible.value = false
+  }
 }
 
 function getTableList() {
@@ -416,9 +408,9 @@ function handleCurrentChange(page) {
 }
 
 function tableSort(data) {
-  if (data.order === 'ascending') queryInfo.orderType = ' asc '
-  else if (data.order === 'descending') queryInfo.orderType = ' desc '
-  queryInfo.order = data.prop
+  if (!data.descending) queryInfo.orderType = ' asc '
+  else if (data.descending) queryInfo.orderType = ' desc '
+  queryInfo.order = data.sortBy
   listBrushConfigData()
 }
 </script>

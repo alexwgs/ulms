@@ -14,4 +14,7 @@ public interface ReplyService {
 	public int updateSelectiveReplyById(Reply record);
 	
 	public Reply getReplyById(int id);
+
+	public int increaseLikeNum(Integer id);
+
 }

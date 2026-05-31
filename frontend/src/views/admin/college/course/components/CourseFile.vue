@@ -1,39 +1,40 @@
 <template>
   <div>
-    <el-dialog
-      title="附件管理"
-      v-model="dialogVisible"
-      :close-on-click-modal="false"
+    <t-dialog
+      header="附件管理"
+      v-model:visible="dialogVisible"
+      :close-on-overlay-click="false"
       width="80%"
-      :before-close="handleClose"
+      @before-close="handleClose"
     >
-      <el-alert
+      <t-alert
         title="1.先选择上传文件类型。2.点击放大镜选择文件。3.可自行修改文件学习时长及文件显示名称！"
-        type="info"
-      ></el-alert>
-      <el-row :gutter="15" v-loading="loading">
-        <el-col :span="6">
-          <el-radio-group
+        theme="info"
+      ></t-alert>
+      <t-loading :loading="loading">
+        <t-row :gutter="15">
+        <t-col :span="3">
+          <t-radio-group
             v-model="formData.fileType"
             size="small"
             @change="changeFiletype"
           >
-            <el-radio-button :value="1" label="学习附件"></el-radio-button>
-            <el-radio-button :value="2" label="学习资料"></el-radio-button>
-          </el-radio-group>
-        </el-col>
-        <el-col :span="4">
-          <el-input
+            <t-radio-button :value="1" label="学习附件"></t-radio-button>
+            <t-radio-button :value="2" label="学习资料"></t-radio-button>
+          </t-radio-group>
+        </t-col>
+        <t-col :span="2">
+          <t-input
             v-model="formData.duration"
             size="small"
             placeholder="学习时长"
-          ></el-input>
-        </el-col>
-        <el-col :span="10">
-          <el-upload
+          ></t-input>
+        </t-col>
+        <t-col :span="5">
+          <t-upload
             ref="fileUploadRef"
             :action="fsURL + uploadUrl"
-            :on-success="handleSuccess"
+            @success="handleSuccess"
             :before-upload="getFileDuration"
             :auto-upload="false"
             :multiple="false"
@@ -44,10 +45,10 @@
                 : ''
             "
             :show-file-list="true"
-            :on-change="handleChange"
+            @change="handleChange"
             :file-list="fileList"
           >
-            <el-input
+            <t-input
               v-model="formData.fileName"
               style="width: 100%"
               size="small"
@@ -55,135 +56,131 @@
               readonly
             >
               <template #append>
-                <el-button size="small" icon="Search"></el-button>
+                <t-button size="small"><template #icon><DynamicIcon name="search" /></template></t-button>
               </template>
-            </el-input>
-          </el-upload>
-        </el-col>
-        <el-col :span="4">
-          <el-button
+            </t-input>
+          </t-upload>
+        </t-col>
+        <t-col :span="2">
+          <t-button
             size="small"
-            icon="Upload"
-            type="primary"
+            theme="primary"
             @click="submitFile"
-            >上传</el-button
+            ><template #icon><DynamicIcon name="upload" /></template>上传</t-button
           >
-        </el-col>
-      </el-row>
-      <el-row :gutter="15">
-        <el-col :span="14">
-          <el-table
+        </t-col>
+      </t-row>
+      </t-loading>
+      <t-row :gutter="15">
+        <t-col :span="7">
+          <CustomTable rowKey="id"
             :data="video"
             size="small"
             border
             style="width: 100%; margin-top: 10px"
-            height="300"
-          >
-            <el-table-column prop="fileName" label="文件名">
+            height="300">
+            <TableColumn colKey="fileName" label="文件名">
               <template #default="scope">
-                <el-input
+                <t-input
                   v-model="scope.row.fileName"
                   size="small"
                   placeholder="请输入文件名"
-                ></el-input>
+                ></t-input>
               </template>
-            </el-table-column>
-            <el-table-column prop="duration" label="时长(S)" width="80">
+            </TableColumn>
+            <TableColumn colKey="duration" label="时长(S)" width="80">
               <template #default="scope">
-                <el-input
+                <t-input
                   v-model="scope.row.duration"
                   size="small"
                   placeholder="请输入时长"
-                ></el-input>
+                ></t-input>
               </template>
-            </el-table-column>
-            <el-table-column
+            </TableColumn>
+            <TableColumn
               prop="extenName"
               label="扩展名"
-              width="60"
-            ></el-table-column>
-            <el-table-column prop="status" label="状态" width="70">
+              width="60"></TableColumn>
+            <TableColumn colKey="status" label="状态" width="70">
               <template #default="scope">
-                <el-tag
-                  :type="scope.row.status ? 'success' : 'danger'"
+                <t-tag
+                  :theme="scope.row.status ? 'success' : 'danger'"
                   @click="changeStatus(scope.row)"
-                  >{{ scope.row.status ? '有效' : '无效' }}</el-tag
+                  >{{ scope.row.status ? '有效' : '无效' }}</t-tag
                 >
               </template>
-            </el-table-column>
-            <el-table-column prop="fileOrder" label="排序" width="80">
+            </TableColumn>
+            <TableColumn colKey="fileOrder" label="排序" width="80">
               <template #default="scope">
-                <el-input
+                <t-input
                   type="number"
                   v-model="scope.row.fileOrder"
                   size="small"
                   placeholder="数字越大越靠前"
-                ></el-input>
+                ></t-input>
               </template>
-            </el-table-column>
-          </el-table>
-        </el-col>
-        <el-col :span="10">
-          <el-table
+            </TableColumn>
+          </CustomTable>
+        </t-col>
+        <t-col :span="5">
+          <CustomTable rowKey="id"
             :data="file"
             size="small"
             border
             style="width: 100%; margin-top: 10px"
-            height="300"
-          >
-            <el-table-column prop="fileName" label="文件名">
+            height="300">
+            <TableColumn colKey="fileName" label="文件名">
               <template #default="scope">
-                <el-input
+                <t-input
                   v-model="scope.row.fileName"
                   size="small"
                   placeholder="请输入文件名"
-                ></el-input>
+                ></t-input>
               </template>
-            </el-table-column>
-            <el-table-column
+            </TableColumn>
+            <TableColumn
               prop="extenName"
               label="扩展名"
-              width="60"
-            ></el-table-column>
-            <el-table-column prop="status" label="状态" width="70">
+              width="60"></TableColumn>
+            <TableColumn colKey="status" label="状态" width="70">
               <template #default="scope">
-                <el-tag
-                  :type="scope.row.status ? 'success' : 'danger'"
+                <t-tag
+                  :theme="scope.row.status ? 'success' : 'danger'"
                   @click="changeStatus(scope.row)"
-                  >{{ scope.row.status ? '有效' : '无效' }}</el-tag
+                  >{{ scope.row.status ? '有效' : '无效' }}</t-tag
                 >
               </template>
-            </el-table-column>
-            <el-table-column prop="fileOrder" label="排序" width="80">
+            </TableColumn>
+            <TableColumn colKey="fileOrder" label="排序" width="80">
               <template #default="scope">
-                <el-input
+                <t-input
                   type="number"
                   v-model="scope.row.fileOrder"
                   size="small"
                   placeholder="数字越大越靠前"
-                ></el-input>
+                ></t-input>
               </template>
-            </el-table-column>
-          </el-table>
-        </el-col>
-      </el-row>
+            </TableColumn>
+          </CustomTable>
+        </t-col>
+      </t-row>
       <template #footer>
         <span class="dialog-footer">
-          <el-button size="small" @click="dialogVisible = false"
-            >取 消</el-button
+          <t-button size="small" @click="dialogVisible = false"
+            >取 消</t-button
           >
-          <el-button size="small" type="primary" @click="batchUpdate()"
-            >更 新</el-button
+          <t-button size="small" theme="primary" @click="batchUpdate()"
+            >更 新</t-button
           >
         </span>
       </template>
-    </el-dialog>
+    </t-dialog>
   </div>
 </template>
 <script setup>
 import { ref, reactive, watch } from 'vue'
-import { ElMessage } from 'element-plus'
-import { Search, Upload } from '@element-plus/icons-vue'
+import { MessagePlugin } from 'tdesign-vue-next'
+import { SearchIcon, UploadIcon } from 'tdesign-icons-vue-next'
 import { courseFileApi } from '@/api/college/courseFile'
 
 // 获取VITE的环境参数
@@ -237,7 +234,7 @@ const handleChange = (fileData) => {
     if (fileUploadRef.value) {
       fileUploadRef.value.clearFiles()
     }
-    return ElMessage.error('上传文件过大！最大300MB，当前：' + fileSize + 'MB')
+    return MessagePlugin.error('上传文件过大！最大300MB，当前：' + fileSize + 'MB')
   }
 
   formData.fileName = fileData.name
@@ -248,7 +245,7 @@ const handleSuccess = (response, fileData) => {
   loading.value = false
   if (response.code !== 200) {
     clearFileUpload()
-    return ElMessage.error(response.msg)
+    return MessagePlugin.error(response.msg)
   }
 
   const upFile = {
@@ -303,7 +300,7 @@ const getFileDuration = (fileData) => {
   } else if (ext === 'pdf') {
     formData.duration = 300
   } else if (formData.fileType === 1) {
-    ElMessage.error('您所提交的文件格式不支持！目前仅支持【mp3、mp4】')
+    MessagePlugin.error('您所提交的文件格式不支持！目前仅支持【mp3、mp4】')
     return false
   }
 }
@@ -311,11 +308,11 @@ const getFileDuration = (fileData) => {
 const insert = async (record) => {
   try {
     const res = await courseFileApi.addCourseFile(record)
-    if (res.code !== 200) return ElMessage.error(res.msg)
-    ElMessage.success(res.msg)
+    if (res.code !== 200) return MessagePlugin.error(res.msg)
+    MessagePlugin.success(res.msg)
     emit('refresh')
   } catch (error) {
-    ElMessage.error('添加文件失败')
+    MessagePlugin.error('添加文件失败')
   }
 }
 
@@ -324,11 +321,11 @@ const batchUpdate = async () => {
     const res = await courseFileApi.updateCourseFile(
       video.value.concat(file.value)
     )
-    if (res.code !== 200) return ElMessage.error(res.msg)
-    ElMessage.success(res.msg)
+    if (res.code !== 200) return MessagePlugin.error(res.msg)
+    MessagePlugin.success(res.msg)
     dialogVisible.value = false
   } catch (error) {
-    ElMessage.error('批量更新失败')
+    MessagePlugin.error('批量更新失败')
   }
 }
 

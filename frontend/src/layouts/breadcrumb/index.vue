@@ -1,33 +1,33 @@
 <!-- <template>
-  <el-breadcrumb class="container-breadcrumb" separator="/">
-    <el-breadcrumb-item>
-      <el-icon><grid /></el-icon>
-    </el-breadcrumb-item>
-    <el-breadcrumb-item v-for="item in items" :key="item">
+  <t-breadcrumb class="container-breadcrumb" separator="/">
+    <t-breadcrumb-item>
+      <t-icon><grid /></t-icon>
+    </t-breadcrumb-item>
+    <t-breadcrumb-item v-for="item in items" :key="item">
       {{ item }}
-    </el-breadcrumb-item>
-  </el-breadcrumb>
+    </t-breadcrumb-item>
+  </t-breadcrumb>
 </template> -->
 
 <!-- <template>
-  <el-page-header>
+  <div>
     <template #breadcrumb>
-      <el-breadcrumb class="container-breadcrumb" separator="/">
-        <el-breadcrumb-item>
-          <el-icon><grid /></el-icon>
-        </el-breadcrumb-item>
-        <el-breadcrumb-item v-for="item in items" :key="item">
+      <t-breadcrumb class="container-breadcrumb" separator="/">
+        <t-breadcrumb-item>
+          <t-icon><grid /></t-icon>
+        </t-breadcrumb-item>
+        <t-breadcrumb-item v-for="item in items" :key="item">
           {{ item }}
-        </el-breadcrumb-item>
-      </el-breadcrumb>
+        </t-breadcrumb-item>
+      </t-breadcrumb>
     </template>
     <template #content>
       <span class="text-large font-600 mr-3"> Title </span>
     </template>
-  </el-page-header>
+  </div>
 </template> -->
 <script setup>
-import { Grid } from '@element-plus/icons-vue'
+// Grid icon no longer needed — using TDesign
 
 defineProps({
   items: {
@@ -41,19 +41,19 @@ defineProps({
 .container-breadcrumb {
   margin: 16px 0;
 
-  :deep(.el-breadcrumb__item) {
-    .el-breadcrumb__inner {
-      color: var(--el-text-color-secondary);
+  :deep(.t-breadcrumb__item) {
+    .t-breadcrumb__inner {
+      color: var(--td-text-color-secondary);
 
       &:hover {
-        color: var(--el-color-primary);
+        color: var(--td-brand-color);
         cursor: pointer;
       }
     }
 
     &:last-child {
-      .el-breadcrumb__inner {
-        color: var(--el-text-color-regular);
+      .t-breadcrumb__inner {
+        color: var(--td-text-color-primary);
         font-weight: 500;
       }
     }

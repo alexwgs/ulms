@@ -1,96 +1,80 @@
 <template>
-  <el-alert
+  <t-alert
     title="操作说明"
-    type="info"
+    theme="info"
     :closable="false"
-    description="请正确使用信息点信息：1.基于IP地址获取终端相关信息及员工登录信息。2.分机号码已无实际意义，主要为过往登记Avaya电话分机。3.楼层仅供参考，部分楼层搬位置后IP已与楼层不一一对应。"
+    message="请正确使用信息点信息：1.基于IP地址获取终端相关信息及员工登录信息。2.分机号码已无实际意义，主要为过往登记Avaya电话分机。3.楼层仅供参考，部分楼层搬位置后IP已与楼层不一一对应。"
   />
-  <el-card class="box-card">
-    <el-row :gutter="20">
-      <el-col :span="14">
-        <el-input
+  <t-card class="box-card">
+    <t-row :gutter="20">
+      <t-col :span="7">
+        <t-input
           size="small"
           placeholder="请输入内容"
           v-model="queryInfo.query"
           class="input-with-select"
         >
           <template #prepend>
-            <el-select
+            <t-select
               size="small"
               style="width: 100px"
               v-model="queryInfo.queryType"
               placeholder="请选择"
             >
-              <el-option label="分机号" value="extnNum"></el-option>
-              <el-option label="PC_IP" value="pcIp"></el-option>
-              <el-option label="MEMO" value="memo"></el-option>
-              <el-option label="员工编号" value="ploNum"></el-option>
-              <el-option label="楼层" value="floorNum"></el-option>
-            </el-select>
+              <t-option label="分机号" value="extnNum"></t-option>
+              <t-option label="PC_IP" value="pcIp"></t-option>
+              <t-option label="MEMO" value="memo"></t-option>
+              <t-option label="员工编号" value="ploNum"></t-option>
+              <t-option label="楼层" value="floorNum"></t-option>
+            </t-select>
           </template>
           <template #append>
-            <el-button
-              icon="Search"
-              size="small"
-              @click="getStationList"
-            ></el-button>
+            <t-button size="small"
+              @click="getStationList"><template #icon><DynamicIcon name="search" /></template></t-button>
           </template>
-        </el-input>
-      </el-col>
-      <el-col :span="10">
-        <el-button type="primary" size="small" @click="addStation"
-          >添加信息点</el-button
+        </t-input>
+      </t-col>
+      <t-col :span="5">
+        <t-button theme="primary" size="small" @click="addStation"
+          >添加信息点</t-button
         >
-      </el-col>
-    </el-row>
-    <el-alert title="操作说明" type="info" :closable="false">
-      <template #description>
-        请正确使用部门编号：1.一共需设置4位数字。2.第一位为地区编码3为武汉。3.第二位为科室编号。4.最后两位为组别编号。
-      </template>
-    </el-alert>
-    <el-table
+      </t-col>
+    </t-row>
+    <CustomTable rowKey="id"
       :data="stationList"
       size="small"
       @sort-change="tableSort"
-      height="calc(100vh - 400px)"
-    >
-      <el-table-column type="index"></el-table-column>
-      <el-table-column
+      height="calc(100vh - 400px)">
+      <TableColumn type="index"></TableColumn>
+      <TableColumn
         label="分机号"
         prop="extnNum"
-        sortable="custom"
-      ></el-table-column>
-      <el-table-column
+        sortable="custom"></TableColumn>
+      <TableColumn
         label="楼层"
         prop="floorNum"
-        sortable="custom"
-      ></el-table-column>
-      <el-table-column
+        sortable="custom"></TableColumn>
+      <TableColumn
         label="分机IP"
         prop="extnIp"
-        sortable="custom"
-      ></el-table-column>
-      <el-table-column
+        sortable="custom"></TableColumn>
+      <TableColumn
         label="电脑IP"
         prop="pcIp"
-        sortable="custom"
-      ></el-table-column>
-      <el-table-column
+        sortable="custom"></TableColumn>
+      <TableColumn
         label="员工"
         prop="ploNum"
-        sortable="custom"
-      ></el-table-column>
-      <el-table-column
+        sortable="custom"></TableColumn>
+      <TableColumn
         label="更新时间"
         prop="updateTime"
-        sortable="custom"
-      ></el-table-column>
-      <el-table-column
+        sortable="custom"></TableColumn>
+      <TableColumn
         label="备注"
         prop="memo"
         sortable="custom"
-        show-overflow-tooltip
-      >
+        ellipsis>
         <template #default="scope">
           <div v-if="scope.row.memo && JSON.parse(scope.row.memo).os">
             操作系统：{{ JSON.parse(scope.row.memo).os }} 系统位数：{{
@@ -99,99 +83,89 @@
             客户端信息：{{ JSON.parse(scope.row.memo).clientInfo }}
           </div>
         </template>
-      </el-table-column>
-      <el-table-column label="操作" fixed="right" width="120">
+      </TableColumn>
+      <TableColumn label="操作" fixed="right" width="120">
         <template #default="scope">
-          <el-button
-            size="small"
-            icon="Edit"
-            type="warning"
+          <t-button
+            size="small" theme="warning"
             @click="handleEdit(scope.$index, scope.row)"
-            circle
-          ></el-button>
-          <el-button
-            size="small"
-            icon="Delete"
-            type="danger"
+            shape="circle"><template #icon><DynamicIcon name="edit" /></template></t-button>
+          <t-button
+            size="small" theme="danger"
             @click="handleDelete(scope.$index, scope.row)"
-            circle
-          ></el-button>
+            shape="circle"><template #icon><DynamicIcon name="delete" /></template></t-button>
         </template>
-      </el-table-column>
-    </el-table>
-    <el-pagination
-      @size-change="handleSizeChange"
+      </TableColumn>
+    </CustomTable>
+    <t-pagination
+      @page-size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-      :current-page="queryInfo.pageNum"
-      :page-sizes="pageSizes"
+      :current="queryInfo.pageNum"
+      :page-size-options="pageSizes"
       :page-size="queryInfo.pageSize"
-      layout="total, sizes, prev, pager, next, jumper"
+
       :total="total"
     >
-    </el-pagination>
-  </el-card>
+    </t-pagination>
+  </t-card>
   <!-- 弹出窗口 -->
-  <el-dialog
-    :title="dialogTitle"
-    :close-on-click-modal="false"
-    v-model="dialogFormVisible"
+  <t-dialog
+    :header="dialogTitle"
+    :close-on-overlay-click="false"
+    v-model:visible="dialogFormVisible"
   >
-    <el-form :model="stationForm" ref="stationFormRef" :rules="stationRules">
-      <el-form-item label="分机号" :label-width="formLabelWidth" prop="extnNum">
-        <el-input
+    <t-form :data="stationForm" ref="stationFormRef" :rules="stationRules">
+      <t-form-item label="分机号" :label-width="formLabelWidth" name="extnNum">
+        <t-input
           size="small"
           v-model="stationForm.extnNum"
           autocomplete="off"
-        ></el-input>
-      </el-form-item>
-      <el-form-item label="分机IP" :label-width="formLabelWidth" prop="extnIp">
-        <el-input
+        ></t-input>
+      </t-form-item>
+      <t-form-item label="分机IP" :label-width="formLabelWidth" name="extnIp">
+        <t-input
           size="small"
           v-model="stationForm.extnIp"
           autocomplete="off"
-        ></el-input>
-      </el-form-item>
-      <el-form-item label="电脑IP" :label-width="formLabelWidth" prop="pcIp">
-        <el-input
+        ></t-input>
+      </t-form-item>
+      <t-form-item label="电脑IP" :label-width="formLabelWidth" name="pcIp">
+        <t-input
           size="small"
           v-model="stationForm.pcIp"
           autocomplete="off"
           :disabled="pcIpDisabled"
-        ></el-input>
-      </el-form-item>
-      <el-form-item
+        ></t-input>
+      </t-form-item>
+      <t-form-item
         label="员工绑定"
         :label-width="formLabelWidth"
         prop="ploNum"
       >
-        <el-input
+        <t-input
           size="small"
           v-model="stationForm.ploNum"
           autocomplete="off"
-        ></el-input>
-      </el-form-item>
-      <el-form-item label="备注" :label-width="formLabelWidth" prop="memo">
-        <el-input
-          size="small"
-          type="textarea"
+        ></t-input>
+      </t-form-item>
+      <t-form-item label="备注" :label-width="formLabelWidth" name="memo">
+        <t-textarea size="small"
           :autosize="{ minRows: 2, maxRows: 4 }"
           placeholder="信息点备注"
-          v-model="stationForm.memo"
-        >
-        </el-input>
-      </el-form-item>
-    </el-form>
+          v-model="stationForm.memo" />
+      </t-form-item>
+    </t-form>
     <template #footer>
       <span class="dialog-footer">
-        <el-button size="small" @click="dialogFormVisible = false"
-          >取 消</el-button
+        <t-button size="small" @click="dialogFormVisible = false"
+          >取 消</t-button
         >
-        <el-button size="small" type="primary" @click="dialogFormSubmit"
-          >确 定</el-button
+        <t-button size="small" theme="primary" @click="dialogFormSubmit"
+          >确 定</t-button
         >
       </span>
     </template>
-  </el-dialog>
+  </t-dialog>
 </template>
 
 <script setup>
@@ -249,7 +223,7 @@ onMounted(() => {
 
 const getStationList = async () => {
   const res = await stationApi.listStation(queryInfo)
-  if (res.code !== 200) return ElMessage.error(res.msg)
+  if (res.code !== 200) return MessagePlugin.error(res.msg)
   stationList.value = res.data.list
   total.value = res.data.total
 }
@@ -263,18 +237,18 @@ const handleEdit = (index, row) => {
 
 const handleDelete = async (index, row) => {
   try {
-    await ElMessageBox.confirm('此操作将永久删除该记录, 是否继续?', '提示', {
+    await DialogPlugin.confirm('此操作将永久删除该记录, 是否继续?', '提示', {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
       type: 'warning'
     }).then(async () => {
       const res = await stationApi.deleteStation(row.pcIp)
-      if (res.code !== 200) return ElMessage.error(res.msg)
-      ElMessage.success(res.msg)
+      if (res.code !== 200) return MessagePlugin.error(res.msg)
+      MessagePlugin.success(res.msg)
       getStationList()
     })
   } catch (error) {
-    ElMessage.error('取消删除')
+    MessagePlugin.error('取消删除')
   }
 }
 
@@ -302,24 +276,26 @@ const handleCurrentChange = (page) => {
 }
 
 const dialogFormSubmit = async () => {
+  const valid = await stationFormRef.value.validate()
+  if (valid !== true) return
+
   try {
-    await stationFormRef.value.validate()
     const res =
       dialogTitle.value === '信息点新增'
         ? await stationApi.addStation('station', stationForm)
         : await stationApi.updateStation('station', stationForm)
     if (res.code !== 200) return
-    ElMessage.success(res.msg)
+    MessagePlugin.success(res.msg)
     dialogFormVisible.value = false
     getStationList()
   } catch (error) {
-    ElMessage.error('表单校验失败！请检查表单！')
+    MessagePlugin.error('表单校验失败！请检查表单！')
   }
 }
 
-const tableSort = ({ order, prop }) => {
-  queryInfo.orderType = order === 'ascending' ? ' asc ' : ' desc '
-  queryInfo.order = prop
+const tableSort = ({ sortBy, descending }) => {
+  queryInfo.orderType = !descending ? ' asc ' : ' desc '
+  queryInfo.order = sortBy
   getStationList()
 }
 </script>

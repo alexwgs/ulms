@@ -1,87 +1,86 @@
 <template>
   <div style="padding-left: calc((100vw - 1240px) / 2); max-width: 1200px">
-    <el-row :gutter="20">
-      <el-col :span="6">
-        <el-card class="box-card">
+    <t-row :gutter="20">
+      <t-col :span="3">
+        <t-card class="box-card">
           <template #header>
             <div class="clearfix">
               <span>全部课程分类</span>
             </div>
           </template>
           <div style="margin-bottom: 10px">
-            <el-input placeholder="输入关键字进行过滤" size="small" v-model="filterText"></el-input>
+            <t-input placeholder="输入关键字进行过滤" size="small" v-model="filterText"></t-input>
           </div>
           <div style="height: calc(100vh - 255px); overflow: auto">
-            <el-tree style="margin-top: 5px" :data="tree" @node-click="courseType" node-key="id"
-              :props="{ children: 'children', label: 'name' }" default-expand-all highlight-current
-              :filter-node-method="filterNode" ref="treeRef"></el-tree>
+            <t-tree style="margin-top: 5px" :data="tree" @click="courseType" :keys="{ value: 'id', label: 'name', children: 'children' }" expand-all activable
+              v-model:actived="activeValue" :filter="filterNode" ref="treeRef"></t-tree>
           </div>
-        </el-card>
-      </el-col>
-      <el-col :span="18">
-        <el-card class="box-card">
+        </t-card>
+      </t-col>
+      <t-col :span="9">
+        <t-card class="box-card">
           <template #header>
             <div class="clearfix">
               <span>课程库</span>
               <div style="float: right; width: 400px">
-                <el-input placeholder="当前目录下搜索课程" size="small" v-model="queryInfo.query">
+                <t-input placeholder="当前目录下搜索课程" size="small" v-model="queryInfo.query">
                   <template #append>
-                    <el-button @click="getCourse">
-                      <el-icon>
+                    <t-button @click="getCourse">
+                      <t-icon>
                         <Search />
-                      </el-icon>
-                    </el-button>
+                      </t-icon>
+                    </t-button>
                   </template>
-                </el-input>
+                </t-input>
               </div>
             </div>
           </template>
           <div class="filter">
             <div class="left" style="line-height: 40px">
-              当前筛选：<el-tag v-if="currentNode == null">全部</el-tag><el-tag v-else closable type="danger" effect="plain"
-                @close="() => courseType(null)">{{ currentNode.name }}</el-tag>
+              当前筛选：<t-tag v-if="currentNode == null">全部</t-tag><t-tag v-else closable theme="danger" effect="plain"
+                @close="() => courseType(null)">{{ currentNode.name }}</t-tag>
             </div>
             <div class="right">
-              <el-link class="filter-link" underline="never" @click="sortCourse('courseScore')">评分<el-icon
-                  v-if="queryInfo.order === 'courseScore'" class="el-icon--right">
+              <t-link class="filter-link" :underline="false" @click="sortCourse('courseScore')">评分<t-icon
+                  v-if="queryInfo.order === 'courseScore'">
                   <ArrowDown v-if="queryInfo.orderType === 'desc'" />
                   <ArrowUp v-else />
-                </el-icon><el-icon v-else class="el-icon--right">
+                </t-icon><t-icon v-else>
                   <Sort />
-                </el-icon></el-link>
-              <el-link class="filter-link" underline="never" @click="sortCourse('handleDate')">更新时间<el-icon
-                  v-if="queryInfo.order === 'handleDate'" class="el-icon--right">
+                </t-icon></t-link>
+              <t-link class="filter-link" :underline="false" @click="sortCourse('handleDate')">更新时间<t-icon
+                  v-if="queryInfo.order === 'handleDate'">
                   <ArrowDown v-if="queryInfo.orderType === 'desc'" />
                   <ArrowUp v-else />
-                </el-icon><el-icon v-else class="el-icon--right">
+                </t-icon><t-icon v-else>
                   <Sort />
-                </el-icon></el-link>
-              <el-link class="filter-link" underline="never" @click="sortCourse('studyNum')">学习人数<el-icon
-                  v-if="queryInfo.order === 'studyNum'" class="el-icon--right">
+                </t-icon></t-link>
+              <t-link class="filter-link" :underline="false" @click="sortCourse('studyNum')">学习人数<t-icon
+                  v-if="queryInfo.order === 'studyNum'">
                   <ArrowDown v-if="queryInfo.orderType === 'desc'" />
                   <ArrowUp v-else />
-                </el-icon><el-icon v-else class="el-icon--right">
+                </t-icon><t-icon v-else>
                   <Sort />
-                </el-icon></el-link>
-              <el-link class="filter-link" underline="never" @click="sortCourse('courseName')">课程名称<el-icon
-                  v-if="queryInfo.order === 'courseName'" class="el-icon--right">
+                </t-icon></t-link>
+              <t-link class="filter-link" :underline="false" @click="sortCourse('courseName')">课程名称<t-icon
+                  v-if="queryInfo.order === 'courseName'">
                   <ArrowDown v-if="queryInfo.orderType === 'desc'" />
                   <ArrowUp v-else />
-                </el-icon><el-icon v-else class="el-icon--right">
+                </t-icon><t-icon v-else>
                   <Sort />
-                </el-icon></el-link>
-              <el-link class="filter-link" underline="never" @click="sortCourse('lecturer')">授课讲师<el-icon
-                  v-if="queryInfo.order === 'lecturer'" class="el-icon--right">
+                </t-icon></t-link>
+              <t-link class="filter-link" :underline="false" @click="sortCourse('lecturer')">授课讲师<t-icon
+                  v-if="queryInfo.order === 'lecturer'">
                   <ArrowDown v-if="queryInfo.orderType === 'desc'" />
                   <ArrowUp v-else />
-                </el-icon><el-icon v-else class="el-icon--right">
+                </t-icon><t-icon v-else>
                   <Sort />
-                </el-icon></el-link>
+                </t-icon></t-link>
             </div>
           </div>
-          <el-row :gutter="15" style="height: calc(100vh - 300px); overflow: auto">
-            <el-col :span="8" v-for="item in courses" :key="item.courseId" style="margin-top: 10px">
-              <el-card @click="gotoCourseView(item.courseId)" :body-style="{ padding: '0px' }" shadow="always"
+          <t-row :gutter="15" style="height: calc(100vh - 300px); overflow: auto">
+            <t-col :span="4" v-for="item in courses" :key="item.courseId" style="margin-top: 10px">
+              <t-card @click="gotoCourseView(item.courseId)" :body-style="{ padding: '0px' }" :shadow="true"
                 class="course-panel" :title="item.courseName">
                 <img :src="fsURL + 'upload/getFile/college-cover/' + item.coverImg" width="100%" />
                 <div class="info">
@@ -90,9 +89,9 @@
                       margin-top: -181px;
                       margin-left: -20px;
                     ">
-                    <el-tag :type="item.studyType == 2 ? 'danger' : 'primary'" size="small" effect="dark">{{
+                    <t-tag :theme="item.studyType == 2 ? 'danger' : 'primary'" size="small" effect="dark">{{
                       item.studyType == 2 ? '任务课程' : '常规课程'
-                      }}</el-tag>
+                      }}</t-tag>
                   </div>
                   <div class="text-trim">
                     {{ item.courseName }}
@@ -114,8 +113,8 @@
                     </div>
                     <div class="line">
                       <div class="line-info left">
-                        <el-rate v-if="item.courseScore > 0" v-model="item.courseScore" disabled text-color="#ff9900"
-                          score-template="{value}"></el-rate><span v-else>暂无评分</span>
+                        <t-rate v-if="item.courseScore > 0" v-model="item.courseScore" disabled text-color="#ff9900"
+                          score-template="{value}"></t-rate><span v-else>暂无评分</span>
                       </div>
                       <div class="right line-info">
                         {{ item.studyNum }}人学习
@@ -123,25 +122,25 @@
                     </div>
                   </div>
                 </div>
-              </el-card>
-            </el-col>
-          </el-row>
-          <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
-            :current-page="queryInfo.pageNum" :page-sizes="[15, 30, 60, 120]" :page-size="queryInfo.pageSize"
-            layout="total, sizes, prev, pager, next, jumper" :total="total">
-          </el-pagination>
-        </el-card>
-      </el-col>
-    </el-row>
+              </t-card>
+            </t-col>
+          </t-row>
+          <t-pagination @page-size-change="handleSizeChange" @current-change="handleCurrentChange"
+            :current="queryInfo.pageNum" :page-size-options="[15, 30, 60, 120]" :page-size="queryInfo.pageSize"
+ :total="total">
+          </t-pagination>
+        </t-card>
+      </t-col>
+    </t-row>
   </div>
 </template>
 
 <script setup>
 import { ref, reactive, watch, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { ElMessage } from 'element-plus'
+import { MessagePlugin } from 'tdesign-vue-next'
 import { httpInstance } from '@/utils/request'
-import { Search, ArrowDown, ArrowUp, Sort } from '@element-plus/icons-vue'
+import { SearchIcon, ArrowDownIcon, ArrowUpIcon, SwapIcon } from 'tdesign-icons-vue-next'
 
 const route = useRoute()
 const router = useRouter()
@@ -164,6 +163,7 @@ const filterText = ref('')
 const currentNode = ref(null)
 const total = ref(0)
 const treeRef = ref(null)
+const activeValue = ref([])
 
 const getTree = () => {
   return new Promise((resolve, reject) => {
@@ -171,7 +171,7 @@ const getTree = () => {
       .get('college/course/type/tree')
       .then((res) => {
         if (res.code !== 200) {
-          ElMessage.error(res.msg)
+          MessagePlugin.error(res.msg)
           return reject(res.msg)
         }
         tree.value = res.data
@@ -185,9 +185,9 @@ const getTree = () => {
   })
 }
 
-const filterNode = (value, data) => {
-  if (!value) return true
-  return data.name.indexOf(value) !== -1
+const filterNode = (node) => {
+  if (!filterText.value) return true
+  return node.data.name.indexOf(filterText.value) !== -1
 }
 
 const getCourse = async () => {
@@ -195,7 +195,7 @@ const getCourse = async () => {
     params: queryInfo
   })
   if (res.code !== 200) {
-    ElMessage.error(res.msg)
+    MessagePlugin.error(res.msg)
     return
   }
   courses.value = res.data.list
@@ -209,18 +209,25 @@ const sortCourse = (order) => {
   getCourse()
 }
 
-const courseType = (data) => {
+const courseType = (context) => {
+  // Extract data from TDesign @click context, or use raw value from programmatic calls
+  let data
+  if (context && context.node) {
+    data = context.node.data
+  } else {
+    data = context
+  }
+
   if (data != null && data !== undefined) {
     currentNode.value = data
     queryInfo.courseType = data.id
   } else if (data === null) {
     currentNode.value = null
     queryInfo.courseType = null
-    treeRef.value?.setCurrentKey(queryInfo.courseType)
+    activeValue.value = []
   } else if (data === undefined) {
     if (queryInfo.courseType !== null) {
-      treeRef.value?.setCurrentKey(queryInfo.courseType)
-      currentNode.value = treeRef.value?.getCurrentNode()
+      activeValue.value = [queryInfo.courseType]
     }
   }
   getCourse()
@@ -247,7 +254,7 @@ const handleCurrentChange = (page) => {
 }
 
 watch(filterText, (val) => {
-  treeRef.value?.filter(val)
+  treeRef.value?.refresh()
 })
 
 onMounted(() => {
@@ -266,7 +273,7 @@ onMounted(() => {
 .filter {
   width: 100%;
   height: 40px;
-  background-color: #f5f5f5;
+background-color: #f5f5f5;
   border: solid 1px #e4e4e4;
   font-size: 14px;
 

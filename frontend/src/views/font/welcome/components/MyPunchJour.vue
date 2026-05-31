@@ -1,70 +1,59 @@
 <template>
-  <el-dialog
-    title="考勤记录"
-    v-model="dialogVisible"
+  <t-dialog
+    header="考勤记录"
+    v-model:visible="dialogVisible"
     width="80%"
-    :before-close="handleClose"
+    @before-close="handleClose"
   >
-    <el-form :inline="true" :model="queryForm" class="demo-form-inline">
-      <el-form-item label="日期">
-        <el-date-picker
-          v-model="queryForm.date"
-          type="daterange"
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          value-format="YYYY-MM-DD"
-        ></el-date-picker>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="handleQuery">查询</el-button>
-        <el-button @click="handleReset">重置</el-button>
-      </el-form-item>
-    </el-form>
-    <el-table :data="tableData" border style="width: 100%; margin-top: 20px">
-      <el-table-column
+    <t-form layout="inline" :data="queryForm" class="demo-form-inline">
+      <t-form-item label="日期">
+        <t-date-range-picker v-model="queryForm.date" :placeholder="['开始日期', '结束日期']" ></t-date-range-picker>
+      </t-form-item>
+      <t-form-item>
+        <t-button theme="primary" @click="handleQuery">查询</t-button>
+        <t-button @click="handleReset">重置</t-button>
+      </t-form-item>
+    </t-form>
+    <CustomTable rowKey="id" :data="tableData" border style="width: 100%; margin-top: 20px">
+      <TableColumn
         prop="punchInTime"
         label="上班时间"
-        width="180"
-      ></el-table-column>
-      <el-table-column
+        width="180"></TableColumn>
+      <TableColumn
         prop="punchOutTime"
         label="下班时间"
-        width="180"
-      ></el-table-column>
-      <el-table-column
+        width="180"></TableColumn>
+      <TableColumn
         prop="duration"
         label="时长"
-        width="120"
-      ></el-table-column>
-      <el-table-column
+        width="120"></TableColumn>
+      <TableColumn
         prop="workDuration"
         label="工作时长"
-        width="120"
-      ></el-table-column>
-      <el-table-column prop="status" label="状态" width="100">
+        width="120"></TableColumn>
+      <TableColumn colKey="status" label="状态" width="100">
         <template #default="scope">
-          <el-tag v-if="scope.row.status === 1" type="success">正常</el-tag>
-          <el-tag v-else-if="scope.row.status === 2" type="warning"
-            >迟到</el-tag
+          <t-tag v-if="scope.row.status === 1" theme="success">正常</t-tag>
+          <t-tag v-else-if="scope.row.status === 2" theme="warning"
+            >迟到</t-tag
           >
-          <el-tag v-else-if="scope.row.status === 3" type="danger">早退</el-tag>
-          <el-tag v-else type="info">缺卡</el-tag>
+          <t-tag v-else-if="scope.row.status === 3" theme="danger">早退</t-tag>
+          <t-tag v-else theme="info">缺卡</t-tag>
         </template>
-      </el-table-column>
-      <el-table-column prop="remark" label="备注"></el-table-column>
-    </el-table>
+      </TableColumn>
+      <TableColumn colKey="remark" label="备注"></TableColumn>
+    </CustomTable>
     <template #footer>
       <span class="dialog-footer">
-        <el-button @click="handleClose">关闭</el-button>
+        <t-button @click="handleClose">关闭</t-button>
       </span>
     </template>
-  </el-dialog>
+  </t-dialog>
 </template>
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
-import { ElMessage } from 'element-plus'
+import { MessagePlugin } from 'tdesign-vue-next'
 
 const dialogVisible = ref(false)
 const tableData = ref([])
@@ -83,7 +72,7 @@ const handleClose = () => {
 
 const handleQuery = () => {
   if (!queryForm.date || queryForm.date.length < 2) {
-    ElMessage.warning('请选择日期范围')
+    MessagePlugin.warning('请选择日期范围')
     return
   }
   const params = {
@@ -104,13 +93,13 @@ const getPunchJourList = async (params) => {
     )
     const data = await res.json()
     if (data.code !== 200) {
-      ElMessage.error(data.msg)
+      MessagePlugin.error(data.msg)
       return
     }
     tableData.value = data.data || []
   } catch (error) {
     console.error('获取考勤记录失败', error)
-    ElMessage.error('获取考勤记录失败')
+    MessagePlugin.error('获取考勤记录失败')
   }
 }
 

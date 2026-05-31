@@ -1,77 +1,73 @@
 <template>
   <div :loading="loadingFlag">
-    <el-steps
+    <t-steps
       ref="taskStepsRef"
-      :active="currentStep"
+      :current="currentStep"
       simple
       finish-status="success"
     >
-      <el-step title="心情打卡" :icon="Star" v-if="tabFlag.mood"></el-step>
-      <el-step title="今日身份" :icon="User" v-if="tabFlag.identity"></el-step>
-      <el-step
-        title="公布栏学习"
-        :icon="Reading"
-        v-if="tabFlag.artical"
-      ></el-step>
-      <el-step
-        title="每日一招"
-        :icon="Calendar"
-        v-if="tabFlag.question"
-      ></el-step>
-    </el-steps>
+      <t-step title="心情打卡" v-if="tabFlag.mood"><template #icon><DynamicIcon name="star" /></template></t-step>
+      <t-step title="今日身份" v-if="tabFlag.identity"><template #icon><DynamicIcon name="user" /></template></t-step>
+      <t-step
+        title="公布栏学习"v-if="tabFlag.artical"
+      ><template #icon><DynamicIcon name="book-open" /></template></t-step>
+      <t-step
+        title="每日一招"v-if="tabFlag.question"
+      ><template #icon><DynamicIcon name="calendar" /></template></t-step>
+    </t-steps>
     <div class="main-content">
       <div v-if="moodPic" v-show="currentItem === '心情打卡'">
-        <el-row align="middle">
+        <t-row align="middle">
           <div>
-            <el-alert
+            <t-alert
               title="点击选择你今天的心情哦，点击直接提交！"
-              type="success"
+              theme="success"
               center
               :closable="false"
-            ></el-alert>
+            ></t-alert>
           </div>
-          <el-col
+          <t-col
             v-for="mood in moodPic"
-            :span="8"
+            :span="4"
             :key="mood.id"
             style="height: 120px"
           >
             <div class="moon-class" @click="submitMood(mood.moodType)">
-              <el-image
+              <t-image
                 style="width: 100px; height: 100px"
                 :src="mood.moodPic"
                 fit="fill"
                 :alt="mood.moodInfo"
-              ></el-image>
+              ></t-image>
             </div>
-          </el-col>
-        </el-row>
+          </t-col>
+        </t-row>
       </div>
       <div v-show="currentItem === '今日身份'">
         <div style="width: 100%; text-align: center; padding-top: 15px">
           <h4>请选择今日身份</h4>
         </div>
-        <el-row>
-          <el-col :span="24">
-            <el-checkbox-group v-model="identityArry" size="small" :max="2">
-              <el-checkbox
+        <t-row>
+          <t-col :span="12">
+            <t-checkbox-group v-model="identityArry" size="small" :max="2">
+              <t-checkbox
                 style="margin-top: 10px"
-                label=""
+                value=""
                 @change="handleNoIdentityChange"
                 border
-                >无身份</el-checkbox
+                >无身份</t-checkbox
               >
-              <el-checkbox
+              <t-checkbox
                 style="margin-top: 10px"
                 v-for="item in identityList"
                 :key="item.id"
                 :disabled="disabledFlag"
-                :label="item.statusName"
+                :value="item.statusName"
                 border
-              ></el-checkbox>
-            </el-checkbox-group>
-          </el-col>
-        </el-row>
+              ></t-checkbox>
+            </t-checkbox-group>
+          </t-col>
+        </t-row>
       </div>
       <div v-show="currentItem === '公布栏学习'">
         <h4>{{ artical.title }}</h4>
@@ -79,12 +75,12 @@
           <div v-html="artical.content"></div>
         </div>
         <div style="width: 100%; text-align: center; padding-top: 15px">
-          <el-button
-            type="primary"
+          <t-button
+            theme="primary"
             size="small"
             v-if="dailyScore && dailyScore.valid === 0"
             @click="submitArticalStudy()"
-            >学完了</el-button
+            >学完了</t-button
           >
         </div>
       </div>
@@ -103,11 +99,11 @@
             class="file-view"
             v-if="question.fileType === 'jpg' || question.fileType === 'png'"
           >
-            <el-image
+            <t-image
               style="width: 100px; height: 100px"
               :src="fileUrl"
               :preview-src-list="srcList"
-            ></el-image>
+            ></t-image>
           </div>
           <div v-else-if="question.fileType === 'mp4'">
             <video :src="fileUrl" controls height="400px"></video>
@@ -116,37 +112,37 @@
             <audio :src="fileUrl" controls width="300px"></audio>
           </div>
           <div class="ques-options" v-if="question.quesType === 2">
-            <el-checkbox
+            <t-checkbox
               v-for="(item, index) in options"
               :key="index"
               v-model="answer.checkbox"
               class="ques-option"
               @change="submitAnswer"
-              :label="item"
+              :value="item"
               border
-              >{{ item }}</el-checkbox
+              >{{ item }}</t-checkbox
             >
           </div>
           <div class="ques-options" v-else>
-            <el-radio
+            <t-radio
               v-for="(item, index) in options"
               :key="index"
               v-model="answer.radio"
               class="ques-option"
               @change="submitAnswer"
-              :label="item"
+              :value="item"
               border
-              >{{ item }}</el-radio
+              >{{ item }}</t-radio
             >
           </div>
           <div v-if="quesExplainFlag">答案解析:{{ question.quesExplain }}</div>
         </div>
         <div style="width: 100%; text-align: center; padding-top: 15px">
-          <el-button
-            type="primary"
+          <t-button
+            theme="primary"
             v-if="dailyScore && dailyScore.valid === 0"
             @click="submitQuestion()"
-            >确 定</el-button
+            >确 定</t-button
           >
         </div>
       </div>
@@ -156,8 +152,8 @@
 
 <script setup>
 import { ref, reactive, computed, nextTick } from 'vue'
-import { ElMessage, ElNotification } from 'element-plus'
-import { Star, User, Reading, Calendar } from '@element-plus/icons-vue'
+import { MessagePlugin, NotifyPlugin } from 'tdesign-vue-next'
+import { StarIcon, UserIcon, BookOpenIcon, CalendarIcon } from 'tdesign-icons-vue-next'
 import {
   getDailyQuestionInit,
   getQuestionBank,
@@ -210,7 +206,7 @@ const init = (quesDate) => {
   getDailyQuestionInit(quesDate)
     .then((res) => {
       if (res.code !== 200) {
-        ElMessage.error(res.msg)
+        MessagePlugin.error(res.msg)
         return
       }
       if (res.flag) {
@@ -225,7 +221,7 @@ const init = (quesDate) => {
           artical: false,
           question: false
         })
-        ElMessage.warning(res.msg)
+        MessagePlugin.warning(res.msg)
       }
     })
     .then(() => {
@@ -284,7 +280,7 @@ const dataLoading = () => {
 const getQuestion = () => {
   getQuestionBank(dailyScore.value.quesCode).then((res) => {
     if (res.code !== 200) {
-      ElMessage.error(res.msg)
+      MessagePlugin.error(res.msg)
       return
     }
     question.value = res.data
@@ -316,7 +312,7 @@ const getQuestion = () => {
 const getIdentity = () => {
   getIdentityList().then((res) => {
     if (res.code !== 200) {
-      ElMessage.error(res.msg)
+      MessagePlugin.error(res.msg)
       return
     }
     identityList.value = res.data
@@ -326,7 +322,7 @@ const getIdentity = () => {
 const getMoodPic = () => {
   apiGetMoodPic().then((res) => {
     if (res.code !== 200) {
-      ElMessage.error(res.msg)
+      MessagePlugin.error(res.msg)
       return
     }
     moodPic.value = res.data
@@ -336,7 +332,7 @@ const getMoodPic = () => {
 const getArtical = () => {
   getArticalDetail(dailyConfig.value.articalId).then((res) => {
     if (res.code !== 200) {
-      ElMessage.error(res.msg)
+      MessagePlugin.error(res.msg)
       return
     }
     artical.value = res.data
@@ -345,25 +341,25 @@ const getArtical = () => {
 
 const submitMood = async (moodType) => {
   if (moodType == null || moodType === '') {
-    ElMessage.error('请选择心情！')
+    MessagePlugin.error('请选择心情！')
     return
   }
   dailyScore.value.moodType = moodType
   try {
     const res = await apiSubmitMood(dailyScore.value)
     if (res.code !== 200) {
-      ElMessage.error(res.msg)
+      MessagePlugin.error(res.msg)
       return
     }
     nextStep()
   } catch (error) {
-    ElMessage.error('提交失败')
+    MessagePlugin.error('提交失败')
   }
 }
 
 const sendIdentityChangeMsg = () => {
   if (identityArry.value.length < 1) {
-    ElMessage.error('请至少选择一个身份！')
+    MessagePlugin.error('请至少选择一个身份！')
     return
   }
   const identityChange = {
@@ -390,11 +386,11 @@ const submitArticalStudy = async () => {
     try {
       const res = await apiSubmitArticalStudy(dailyScore.value)
       if (res.code !== 200) {
-        ElMessage.error(res.msg)
+        MessagePlugin.error(res.msg)
         return
       }
     } catch (error) {
-      ElMessage.error('提交失败')
+      MessagePlugin.error('提交失败')
       return
     }
   }
@@ -404,7 +400,7 @@ const submitArticalStudy = async () => {
 const submitQuestion = async () => {
   const ans = answer.checkbox.join(',') + answer.radio
   if (ans == null || ans.length < 1) {
-    ElMessage.error('请先选择答题的选项！')
+    MessagePlugin.error('请先选择答题的选项！')
     return
   }
   question.value.category = ans
@@ -414,21 +410,21 @@ const submitQuestion = async () => {
       dailyScore: JSON.stringify(dailyScore.value)
     })
     if (res.code !== 200) {
-      ElMessage.error(res.msg)
+      MessagePlugin.error(res.msg)
       return
     }
     dailyScore.value = res.data
     if (res.data.valid === 0) {
-      ElNotification.error({
+      NotifyPlugin.error({
         title: '答题错误',
         message: '正确答案：[' + question.value.answer + ']'
       })
       quesExplainFlag.value = true
     } else {
-      ElNotification.success({ title: '答题正确', message: '任务完成！' })
+      NotifyPlugin.success({ title: '答题正确', message: '任务完成！' })
     }
   } catch (error) {
-    ElMessage.error('提交失败')
+    MessagePlugin.error('提交失败')
   }
 }
 
@@ -436,7 +432,7 @@ const nextStep = () => {
   currentStep.value++
   if (taskStepsRef.value && taskStepsRef.value.$children) {
     if (taskStepsRef.value.$children.length < currentStep.value - 1) {
-      ElMessage.error('任务数量和当前任务出错！')
+      MessagePlugin.error('任务数量和当前任务出错！')
       return
     }
     if (taskStepsRef.value.$children[currentStep.value - 1]) {
@@ -541,12 +537,12 @@ defineExpose({
       line-height: 1.6;
       display: block;
     }
-    :deep(.el-checkbox__label),
-    :deep(.el-radio__label) {
+    :deep(.t-checkbox__label),
+    :deep(.t-radio__label) {
       display: inline;
     }
-    .el-radio.is-bordered,
-    .el-checkbox.is-bordered {
+    .t-radio.is-bordered,
+    .t-checkbox.is-bordered {
       padding: 8px 20px 8px 10px;
       border-radius: 4px;
       box-sizing: border-box;
@@ -554,13 +550,13 @@ defineExpose({
     }
   }
 }
-:deep(.el-drawer) {
+:deep(.t-drawer) {
   padding: 15px;
   margin: 20px 20px 0 20px;
   border-radius: 20px;
   width: unset;
 }
-.is-simple.el-step {
+.is-simple.t-step {
   min-width: 250px;
 }
 .submit-container {

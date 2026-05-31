@@ -1,67 +1,111 @@
 <template>
   <div class="comment-container">
-    <el-pagination v-if="commentTotal > 0" v-model:current-page="currentPage" @current-change="handlePageChange"
-      :page-size="queryInfo.pageSize" layout="total, prev, pager, next" :total="commentTotal"
-      style="margin-bottom: 15px">
-    </el-pagination>
+    <t-pagination
+      v-if="commentTotal > 0"
+      v-model:current="currentPage"
+      @current-change="handlePageChange"
+      :page-size="queryInfo.pageSize"
+      :total="commentTotal"
+      style="margin-bottom: 15px"
+    />
+    <t-list :split="true">
+      <t-list-item  v-for="(comment, index) in comments" :key="comment.id">
 
-    <div v-for="(comment, index) in comments" :key="comment.id" class="comment-item">
-      <div class="comment-avatar">
-        <div class="avartar-box-mini">
-          <img :src="getAvatar(comment.user)" />
-        </div>
-      </div>
-      <div class="comment-info">
-        <span class="comment-header">{{ getUserName(comment.user) }}</span>
-        <div class="comment-time">
-          {{ getFloorNum(index) }}楼 · {{ comment.dateTime }}
-        </div>
-      </div>
-      <div class="comment-content" v-html="comment.content"></div>
-      <div class="comment-operations">
-        <el-button size="small" @click="handleReply(comment.id)">
-          回复
-        </el-button>
-        <el-button size="small" :type="isLikedComment(comment) ? 'primary' : ''"
-          @click="handleLike(2, comment.id, index)">
-          赞 * {{ comment.likeNum }}
-        </el-button>
-      </div>
+    <t-comment
+      :author="getUserName(comment.user)"
+      :datetime="getFloorNum(index) + '楼 · ' + comment.dateTime"
+      class="comment-reply"
+    >
+      <template #avatar>
+        <t-avatar shape="round" size="40px">
+          <img :src="getAvatar(comment.user)" class="avatar-img" />
+        </t-avatar>
+      </template>
 
-      <div v-if="replyId === comment.id" class="reply-form">
-        <WangEditor v-model="replyForm.content" height="300"></WangEditor>
+      <template #content>
+        <div v-html="comment.content"></div>
+      </template>
+
+      <template #actions>
+        <t-space key="thumbUp" :size="6" class="action-item" @click="handleLike(2, comment.id, index)">
+          <t-icon name="thumb-up" :color="isLikedComment(comment) ? 'red' : 'default'" />
+          <span>{{ comment.likeNum }}</span>
+        </t-space>
+        <t-space key="chat" :size="6" class="action-item" @click="handleReply(comment.id)">
+          <t-icon name="chat" />
+          <span>回复TA</span>
+        </t-space>
+      </template>
+
+      <template #reply>
+        <div v-if="comment.replys && comment.replys.length">
+          <t-comment
+            v-for="reply in comment.replys"
+            :key="reply.id"
+            :author="reply.anonFlag ? '匿名' : getUserName(reply.user) + ' 回复'"
+            :datetime="reply.dateTime"
+          >
+            <template #avatar>
+              <t-avatar shape="round" size="32px">
+                <img :src="getAvatar(reply.user)" class="avatar-img" />
+              </t-avatar>
+            </template>
+            <template #content>
+              <div v-html="reply.content"></div>
+            </template>
+            <template #actions>
+              <t-space key="thumbUp" :size="6" class="action-item" @click="handleLike(3, reply.id, index)">
+                <t-icon name="thumb-up" :color="isLikedComment(reply) ? 'blue' : 'default'" />
+                <span>{{ reply.likeNum }}</span>
+              </t-space>
+              <t-space key="chat" :size="6" class="action-item" @click="handleReply(reply.id)">
+                <t-icon name="chat" />
+                <span>回复TA</span>
+              </t-space>
+            </template>
+          </t-comment>
+        </div>
+        <div v-if="replyId === comment.id" class="reply-form">
+          <WangEditor v-model="replyForm.content" height="200" />
+          <div class="comment-btn">
+            <t-checkbox v-if="showAnonOption" v-model="replyAnonFlag">匿名</t-checkbox>
+            <t-button
+              theme="primary"
+              size="small"
+              :disabled="!replyForm.content || replyBtnFlag"
+              @click="submitReply(comment.id, comment.userid)"
+            >
+              提交回复
+            </t-button>
+          </div>
+        </div>
+      </template>
+    </t-comment>
+      </t-list-item>
+    </t-list>
+
+
+    <!-- Sticky bottom comment bar -->
+    <div v-if="showCommentForm" ref="stickyBarRef" class="comment-sticky-bar" :class="{ 'is-expanded': commentExpanded }">
+      <div class="sticky-bar-trigger" @click="expandComment">
+        <t-icon name="edit" />
+        <span v-if="!commentExpanded">发表评论...</span>
+        <span v-else @click.stop="commentExpanded = false" class="collapse-btn">
+          <t-icon name="chevron-down" /> 收起
+        </span>
+      </div>
+      <div v-show="commentExpanded" class="sticky-bar-body" ref="stickyBarBodyRef">
+        <WangEditor v-model="commentForm.content" height="200" />
         <div class="comment-btn">
-          <el-checkbox v-if="showAnonOption" v-model="replyAnonFlag">匿名</el-checkbox>
-          <el-button type="primary" size="small" :disabled="!replyForm.content || replyBtnFlag"
-            @click="submitReply(comment.id, comment.userid)">
-            提交回复
-          </el-button>
+          <t-checkbox v-if="showAnonOption" v-model="commentAnonFlag">匿名</t-checkbox>
+          <t-button
+            theme="primary"
+            :disabled="!commentForm.content || commentBtnFlag"
+            @click="handleSubmitComment"
+          >
+            提交评论
+          </t-button>
         </div>
-      </div>
-
-      <div v-for="reply in comment.replys" :key="reply.id" class="reply-item">
-        <div class="comment-info">
-          <span class="comment-header">
-            {{ reply.anonFlag ? '匿名' : getUserName(reply.user) }} 回复
-          </span>
-          <div class="comment-time">{{ reply.dateTime }}</div>
-        </div>
-        <div class="comment-content" v-html="reply.content"></div>
-      </div>
-    </div>
-
-    <el-pagination v-if="commentTotal > 0" v-model:current-page="currentPage" @current-change="handlePageChange"
-      :page-size="queryInfo.pageSize" layout="total, prev, pager, next" :total="commentTotal" style="margin-top: 15px">
-    </el-pagination>
-
-    <div v-if="showCommentForm" class="comment-form">
-      <el-divider content-position="center">评 论</el-divider>
-      <WangEditor v-model="commentForm.content" height="300"></WangEditor>
-      <div class="comment-btn">
-        <el-checkbox v-if="showAnonOption" v-model="commentAnonFlag">匿名</el-checkbox>
-        <el-button type="primary" :disabled="!commentForm.content || commentBtnFlag" @click="handleSubmitComment">
-          提交评论
-        </el-button>
       </div>
     </div>
     <div v-else class="comment-closed">
@@ -71,9 +115,10 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
-import { ElMessage } from 'element-plus'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { MessagePlugin } from 'tdesign-vue-next'
 import WangEditor from '@/components/WangEditor.vue'
+import defaultAvatarImg from '@/assets/img/default_avatar.png'
 import {
   toggleLike,
   addComment,
@@ -107,7 +152,6 @@ const props = defineProps({
 const emit = defineEmits(['comment-submitted'])
 
 const fsURL = import.meta.env.VITE_FILE_MANAGE_BASE || ''
-const defaultAvatar = `${fsURL}upload/getFile/avatar/avatar.png`
 
 const currentPage = ref(1)
 const comments = ref([])
@@ -117,6 +161,7 @@ const commentBtnFlag = ref(false)
 const replyBtnFlag = ref(false)
 const commentAnonFlag = ref(false)
 const replyAnonFlag = ref(false)
+const commentExpanded = ref(false)
 
 const queryInfo = ref({
   pageSize: 10,
@@ -141,7 +186,7 @@ const replyForm = ref({
 const user = ref({})
 
 const getAvatar = (userInfo) => {
-  if (!userInfo?.avatar) return defaultAvatar
+  if (!userInfo?.avatar) return defaultAvatarImg
   return fsURL + userInfo.avatar
 }
 
@@ -167,7 +212,7 @@ const fetchComments = async () => {
   try {
     const res = await getCommentList(props.articalId, queryInfo.value)
     if (res.code !== 200) {
-      ElMessage.error(res.msg)
+      MessagePlugin.error(res.msg)
       return
     }
     comments.value = res.data.list
@@ -192,7 +237,7 @@ const handleLike = async (type, id, index) => {
   try {
     const res = await toggleLike(type, id)
     if (res.code !== 200) {
-      ElMessage.error(res.msg)
+      MessagePlugin.error(res.msg)
       return
     }
     if (type === 2) {
@@ -206,15 +251,30 @@ const handleLike = async (type, id, index) => {
         status: 1
       })
     }
-    ElMessage.success(res.msg)
+    MessagePlugin.success(res.msg)
   } catch (error) {
     console.error('点赞失败', error)
   }
 }
 
+const stickyBarRef = ref(null)
+const stickyBarBodyRef = ref(null)
+
+const expandComment = () => {
+  commentExpanded.value = true
+}
+
+const handleClickOutside = (e) => {
+  if (!commentExpanded.value) return
+  const bar = stickyBarRef.value
+  if (bar && !bar.contains(e.target)) {
+    commentExpanded.value = false
+  }
+}
+
 const handleSubmitComment = async () => {
   if (commentForm.value.content.length > 1000) {
-    ElMessage.error('文本字数过多，最多可输入1000个字符！')
+    MessagePlugin.error('文本字数过多，最多可输入1000个字符！')
     return
   }
   commentBtnFlag.value = true
@@ -222,12 +282,13 @@ const handleSubmitComment = async () => {
   try {
     const res = await addComment(commentForm.value)
     if (res.code !== 200) {
-      ElMessage.error(res.msg)
+      MessagePlugin.error(res.msg)
       return
     }
-    ElMessage.success(res.msg)
+    MessagePlugin.success(res.msg)
     commentForm.value.content = ''
     commentAnonFlag.value = false
+    commentExpanded.value = false
     await fetchComments()
     emit('comment-submitted')
   } catch (error) {
@@ -239,7 +300,7 @@ const handleSubmitComment = async () => {
 
 const submitReply = async (commentId, toUser) => {
   if (replyForm.value.content.length > 1000) {
-    ElMessage.error('文本字数过多，最多可输入1000个字符！')
+    MessagePlugin.error('文本字数过多，最多可输入1000个字符！')
     return
   }
   replyBtnFlag.value = true
@@ -248,10 +309,10 @@ const submitReply = async (commentId, toUser) => {
   try {
     const res = await addReply(replyForm.value)
     if (res.code !== 200) {
-      ElMessage.error(res.msg)
+      MessagePlugin.error(res.msg)
       return
     }
-    ElMessage.success(res.msg)
+    MessagePlugin.success(res.msg)
     replyForm.value.content = ''
     replyAnonFlag.value = false
     replyId.value = -1
@@ -270,6 +331,11 @@ onMounted(() => {
     user.value = JSON.parse(userInfo)
   }
   fetchComments()
+  document.addEventListener('mousedown', handleClickOutside)
+})
+
+onBeforeUnmount(() => {
+  document.removeEventListener('mousedown', handleClickOutside)
 })
 
 defineExpose({
@@ -279,86 +345,90 @@ defineExpose({
 
 <style lang="less" scoped>
 .comment-container {
-  .comment-item {
-    padding: 15px 0;
-    border-bottom: 1px solid #eee;
 
-    .comment-avatar {
-      display: inline-block;
-      vertical-align: top;
-
-      .avartar-box-mini {
-        width: 40px;
-        height: 40px;
-        border-radius: 4px;
-        overflow: hidden;
-
-        img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
+  margin-bottom: 50px;
+  .comment-reply {
+    > .t-comment__inner {
+      > .t-comment__content {
+        > .t-comment__actions {
+          margin-right: 24px;
         }
       }
     }
-
-    .comment-info {
-      display: inline-block;
-      margin-left: 10px;
-      vertical-align: top;
-
-      .comment-header {
-        font-weight: bold;
-        color: #333;
-      }
-
-      .comment-time {
-        font-size: 12px;
-        color: #999;
-        margin-top: 4px;
-      }
-    }
-
-    .comment-content {
-      margin-top: 10px;
-      padding-left: 50px;
-      word-break: break-all;
-    }
-
-    .comment-operations {
-      margin-top: 10px;
-      padding-left: 50px;
-    }
-
-    .reply-form {
-      margin-top: 15px;
-      padding-left: 50px;
-    }
-
-    .reply-item {
-      margin-left: 50px;
-      margin-top: 15px;
-      padding: 10px;
-      background: #f9f9f9;
-      border-radius: 4px;
-    }
+  }
+  .reply-form {
+    margin-top: 12px;
+    padding: 12px;
+    background: #f9f9f9;
+    border-radius: 8px;
   }
 
-  .comment-form {
-    margin-top: 20px;
-
-    .comment-btn {
-      margin-top: 10px;
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      gap: 10px;
-    }
+  .comment-btn {
+    margin-top: 10px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
   }
 
   .comment-closed {
     text-align: center;
     padding: 30px;
     color: #888;
+  }
+
+  :deep(.t-comment__content) {
+    word-break: break-all;
+    img {
+      max-width: 100%;
+    }
+  }
+
+  .comment-sticky-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: #fff;
+    box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.1);
+    transition: height 0.3s ease;
+    height: 50px;
+
+    &.is-expanded {
+      height: auto;
+      min-height: 320px;
+    }
+
+    .sticky-bar-trigger {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 20px;
+      cursor: pointer;
+      color: #999;
+      border-bottom: 1px solid #eee;
+      font-size: 14px;
+
+      &:hover {
+        color: #666;
+      }
+
+      .collapse-btn {
+        margin-left: auto;
+        color: #0052d9;
+        font-size: 13px;
+        cursor: pointer;
+
+        &:hover {
+          color: #0034a5;
+        }
+      }
+    }
+
+    .sticky-bar-body {
+      padding: 12px 20px;
+    }
   }
 }
 </style>

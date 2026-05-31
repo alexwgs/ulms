@@ -1,21 +1,21 @@
 <template>
   <div class="logInfo" v-if="user">
-    <el-badge
+    <t-badge
       :value="unreadCount"
       :type="unreadCount > 0 ? 'danger' : 'success'"
       class="badge-box"
       :max="10"
     >
-      <el-button
+      <t-button
         type="text"
         class="notice-btn"
         @click.stop="notificationRef?.show()"
       >
-        <el-icon><Message /></el-icon>
-      </el-button>
-    </el-badge>
+        <ChatIcon />
+      </t-button>
+    </t-badge>
     <div class="avatar_box" @click="profile">
-      <el-avatar size="medium" :src="fsURL + user.avatar"></el-avatar>
+      <t-avatar size="medium" :src="fsURL + user.avatar"></t-avatar>
     </div>
     <div
       size="small"
@@ -27,7 +27,7 @@
         >{{ userStatus }}</b
       >
     </div>
-    <el-collapse-transition>
+    <t-collapse-transition>
       <div
         v-show="userStatusPopFlag"
         class="user-status-popup"
@@ -47,10 +47,10 @@
           "
         ></DirectorStatus>
         <div class="logout">
-          <el-button size="small" type="danger" @click="logout">登出</el-button>
+          <t-button size="small" theme="danger" @click="logout">登出</t-button>
         </div>
       </div>
-    </el-collapse-transition>
+    </t-collapse-transition>
     <Identity :updateFlag="identityUpdateFlag"></Identity>
     <Notification ref="notificationRef" style="z-index: 999"></Notification>
   </div>
@@ -59,7 +59,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { Message } from '@element-plus/icons-vue'
+import { ChatIcon } from 'tdesign-icons-vue-next'
 import Identity from './Identity.vue'
 import DirectorStatus from './DirectorStatus.vue'
 import Notification from './Notification.vue'
@@ -169,7 +169,7 @@ const hasPermission = (permission) => {
   top: 50px;
   right: 0;
   width: 300px;
-  background: white;
+background: white;
   border: 1px solid #e4e7ed;
   border-radius: 4px;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);

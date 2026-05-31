@@ -1,55 +1,55 @@
 <template>
-  <el-dialog title="转接关系管理" :close-on-click-modal="false" v-model="dialogVisible">
-    <el-form :model="dispatchForm" ref="dispatchFormRef">
-      <el-table :data="dispatchForm" border style="width: 100%">
-        <el-table-column label="监听群组" width="180">
+  <t-dialog header="转接关系管理" :close-on-overlay-click="false" v-model:visible="dialogVisible">
+    <t-form :data="dispatchForm" ref="dispatchFormRef">
+      <CustomTable rowKey="id" :data="dispatchForm" border style="width: 100%">
+        <TableColumn label="监听群组" width="180">
           <template #default="{ row }">
-            <el-select v-model="row.roleCode" size="small" placeholder="请选择">
-              <el-option
+            <t-select v-model="row.roleCode" size="small" placeholder="请选择">
+              <t-option
                 v-for="item in ohtRoleTableList"
                 :key="item.roleCode"
                 :label="item.roleName"
                 :value="item.roleCode"
-              ></el-option>
-            </el-select>
+              ></t-option>
+            </t-select>
           </template>
-        </el-table-column>
-        <el-table-column label="优先级" width="180">
+        </TableColumn>
+        <TableColumn label="优先级" width="180">
           <template #default="{ row }">
-            <el-input size="small" v-model="row.priority" type="number" autocomplete="off" placeholder=""></el-input>
+            <t-input size="small" v-model="row.priority" type="number" autocomplete="off" placeholder=""></t-input>
           </template>
-        </el-table-column>
-        <el-table-column label="等待时长">
+        </TableColumn>
+        <TableColumn label="等待时长">
           <template #default="{ row }">
-            <el-input size="small" v-model="row.waitTime" type="number" autocomplete="off" placeholder=""></el-input>
+            <t-input size="small" v-model="row.waitTime" type="number" autocomplete="off" placeholder=""></t-input>
           </template>
-        </el-table-column>
-        <el-table-column label="跨楼层">
+        </TableColumn>
+        <TableColumn label="跨楼层">
           <template #default="{ row }">
-            <el-select size="small" v-model="row.stepFloor" placeholder="请选择">
-              <el-option
+            <t-select size="small" v-model="row.stepFloor" placeholder="请选择">
+              <t-option
                 v-for="item in dictStore.dictList.oht_step_floor"
                 :key="item.code"
                 :label="item.codeval"
                 :value="item.code"
-              ></el-option>
-            </el-select>
+              ></t-option>
+            </t-select>
           </template>
-        </el-table-column>
-        <el-table-column label="操作">
+        </TableColumn>
+        <TableColumn label="操作">
           <template #default="{ $index }">
-            <el-button size="small" type="danger" @click="removeDispatchItem($index)">删除</el-button>
+            <t-button size="small" theme="danger" @click="removeDispatchItem($index)">删除</t-button>
           </template>
-        </el-table-column>
-      </el-table>
-    </el-form>
+        </TableColumn>
+      </CustomTable>
+    </t-form>
     <template #footer>
       <div class="dialog-footer">
-        <el-button size="small" @click="dialogVisible = false">取 消</el-button>
-        <el-button size="small" type="primary" @click="submitDispatch">确 定</el-button>
+        <t-button size="small" @click="dialogVisible = false">取 消</t-button>
+        <t-button size="small" theme="primary" @click="submitDispatch">确 定</t-button>
       </div>
     </template>
-  </el-dialog>
+  </t-dialog>
 </template>
 
 <script setup>

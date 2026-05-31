@@ -1,20 +1,20 @@
 <template>
-  <el-container class="view-container">
-    <el-container>
-      <el-main>
+  <t-layout class="view-container">
+    <t-layout>
+      <t-content>
         <div class="artical-content">
-          <el-breadcrumb separator="/">
-            <el-breadcrumb-item :to="{ path: '/' }">系统</el-breadcrumb-item>
-            <el-breadcrumb-item>{{ categoryName }}</el-breadcrumb-item>
-            <el-breadcrumb-item>{{ artical.title }}</el-breadcrumb-item>
-          </el-breadcrumb>
+          <t-breadcrumb separator="/">
+            <t-breadcrumb-item :to="{ path: '/' }">系统</t-breadcrumb-item>
+            <t-breadcrumb-item>{{ categoryName }}</t-breadcrumb-item>
+            <t-breadcrumb-item>{{ artical.title }}</t-breadcrumb-item>
+          </t-breadcrumb>
           <h3>{{ artical.title }}</h3>
           <div>
             标签：
             <span v-for="item in labelItems" :key="item.label">
-              <el-tag v-if="artical[item.field] == item.val" :type="item.type" effect="dark" size="small">
+              <t-tag v-if="artical[item.field] == item.val" :theme="item.type" effect="dark" size="small">
                 {{ item.label }}
-              </el-tag>
+              </t-tag>
             </span>
             <div class="artical-icon">
               <span v-if="artical.user" style="color: #909399; font-size: 14px; padding-right: 10px">发布人：{{
@@ -35,29 +35,29 @@
               </i>
             </div>
           </div>
-          <el-divider></el-divider>
+          <t-divider></t-divider>
           <div class="artical-text" v-html="artical.content"></div>
-          <el-divider></el-divider>
+          <t-divider></t-divider>
           <p v-if="artical.hasOwnProperty('files') && artical.files != null">
-            附件下载：<el-button v-for="(file, index) in parseFiles(artical.files)" :key="index" size="medium"
-              @click="downloadFile(file.path)" type="primary" plain>{{ file.name }}</el-button>
+            附件下载：<t-button v-for="(file, index) in parseFiles(artical.files)" :key="index" size="medium"
+              @click="downloadFile(file.path)" theme="primary" plain>{{ file.name }}</t-button>
           </p>
           <div class="artical-operations">
-            <el-button :type="isLike == 0 ? '' : 'primary'" :disabled="isLike == 1 ? true : false"
+            <t-button :type="isLike == 0 ? '' : 'primary'" :disabled="isLike == 1 ? true : false"
               icon="iconfont iconzan1" @click="setLike(1, artical.id)" round>&emsp;点 赞&emsp;{{ artical.likeNum
-              }}</el-button>
-            <el-button :type="isCollect == 0 ? '' : 'primary'" icon="iconfont iconshoucang1" @click="setCollect"
+              }}</t-button>
+            <t-button :type="isCollect == 0 ? '' : 'primary'" icon="iconfont iconshoucang1" @click="setCollect"
               round>&emsp;{{ artical.isCollect == 0 ? '' : '已' }} 收 藏&emsp;{{
                 artical.collectNum
-              }}</el-button>
+              }}</t-button>
           </div>
         </div>
-        <el-card class="comment">
-          <el-divider>
-            <el-pagination v-model:current-page="currentPage" @current-change="handleCurrentChange"
-              :page-size="commnetQueryInfo.pageSize" layout="total, prev, pager, next" :total="commentTotal">
-            </el-pagination>
-          </el-divider>
+        <t-card class="comment">
+          <t-divider>
+            <t-pagination v-model:current="currentPage" @current-change="handleCurrentChange"
+              :page-size="commnetQueryInfo.pageSize" :total="commentTotal">
+            </t-pagination>
+          </t-divider>
           <div v-for="(comment, index) in comments" :key="comment.id" class="text item">
             <section v-if="comment.user != undefined">
               <div class="comment-avatar">
@@ -81,24 +81,24 @@
               </div>
               <div class="comment-content" v-html="comment.content"></div>
               <div class="comment-operations">
-                <el-button v-if="flags.commentFlag" size="small" icon="iconfont iconxiaoxi" @click="reply(comment.id)">
-                  回复</el-button>
-                <el-button v-if="
+                <t-button v-if="flags.commentFlag" size="small" icon="iconfont iconxiaoxi" @click="reply(comment.id)">
+                  回复</t-button>
+                <t-button v-if="
                   comment.likes.filter((item) => item.userId == user.ploNum)
                     .length == 0
                 " size="small" icon="iconfont iconzan1" @click="setLike(2, comment.id, index)">
-                  * {{ comment.likeNum }}</el-button>
-                <el-button v-else type="danger" disabled size="small" icon="iconfont iconzan1">* {{ comment.likeNum
-                  }}</el-button>
+                  * {{ comment.likeNum }}</t-button>
+                <t-button v-else theme="danger" disabled size="small" icon="iconfont iconzan1">* {{ comment.likeNum
+                  }}</t-button>
               </div>
               <div v-if="replyId == comment.id">
                 <WangEditor v-model="replyForm.content" height="300"></WangEditor>
                 <div class="comment-btn">
-                  <el-checkbox v-if="flags.anonFlag" v-model="replyAnonFlag">匿名</el-checkbox>
-                  <el-button size="small" type="primary" :disabled="replyForm.content.length < 1
+                  <t-checkbox v-if="flags.anonFlag" v-model="replyAnonFlag">匿名</t-checkbox>
+                  <t-button size="small" theme="primary" :disabled="replyForm.content.length < 1
                     ? true
                     : false || replyBtnFlag
-                    " @click="submitReply(comment.id, comment.userid)">提交回复</el-button>
+                    " @click="submitReply(comment.id, comment.userid)">提交回复</t-button>
                 </div>
               </div>
               <div v-for="reply in comment.replys" :key="reply.id" class="reply">
@@ -115,30 +115,30 @@
                 </section>
               </div>
             </section>
-            <el-divider></el-divider>
+            <t-divider></t-divider>
           </div>
           <div v-if="flags.commentFlag">
-            <el-divider content-position="center" style="margin-bottom: 30px">
+            <t-divider content-position="center" style="margin-bottom: 30px">
               评 论
-            </el-divider>
+            </t-divider>
             <WangEditor v-model="commentForm.content" height="300"></WangEditor>
             <div class="comment-btn">
-              <el-checkbox v-if="flags.anonFlag" v-model="commentAnonFlag">匿名</el-checkbox>
-              &emsp;<el-button type="primary" :disabled="commentForm.content.length < 1 || commentBtnFlag
+              <t-checkbox v-if="flags.anonFlag" v-model="commentAnonFlag">匿名</t-checkbox>
+              &emsp;<t-button theme="primary" :disabled="commentForm.content.length < 1 || commentBtnFlag
                 ? true
                 : false
-                " @click="submitComment(artical.pubUser)">提交评论</el-button>
+                " @click="submitComment(artical.pubUser)">提交评论</t-button>
             </div>
           </div>
-        </el-card>
-      </el-main>
-    </el-container>
-  </el-container>
+        </t-card>
+      </t-content>
+    </t-layout>
+  </t-layout>
 </template>
 <script setup>
 import { ref, reactive, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import { ElMessage } from 'element-plus'
+import { MessagePlugin } from 'tdesign-vue-next'
 import WangEditor from '@/components/WangEditor.vue'
 import { httpInstance } from '@/utils/request'
 import useDictStore from '@/stores/modules/dict'
@@ -243,14 +243,14 @@ const getArtical = async () => {
   try {
     const res = await httpInstance.get(`cyt/artical/${id.value}`)
     if (res.code !== 200) {
-      ElMessage.error(res.msg)
+      MessagePlugin.error(res.msg)
       return
     }
     Object.assign(artical, res.data)
     isCollect.value = res.data.isCollect
     isLike.value = res.data.isLike
   } catch (error) {
-    ElMessage.error(error.message || '获取文章失败')
+    MessagePlugin.error(error.message || '获取文章失败')
   }
 }
 
@@ -260,7 +260,7 @@ const setCollect = async () => {
       `cyt/collect/${id.value}/${isCollect.value}`
     )
     if (res.code !== 200) {
-      ElMessage.error(res.msg)
+      MessagePlugin.error(res.msg)
       return
     }
     if (isCollect.value === 0) {
@@ -270,9 +270,9 @@ const setCollect = async () => {
       isCollect.value = 0
       artical.collectNum--
     }
-    ElMessage.success(res.msg)
+    MessagePlugin.success(res.msg)
   } catch (error) {
-    ElMessage.error(error.message || '操作失败')
+    MessagePlugin.error(error.message || '操作失败')
   }
 }
 
@@ -280,7 +280,7 @@ const setLike = async (type, targetId, index) => {
   try {
     const res = await httpInstance.post(`cyt/like/${type}/${targetId}`)
     if (res.code !== 200) {
-      ElMessage.error(res.msg)
+      MessagePlugin.error(res.msg)
       return
     }
     if (type === 1) {
@@ -297,9 +297,9 @@ const setLike = async (type, targetId, index) => {
         status: 1
       })
     }
-    ElMessage.success(res.msg)
+    MessagePlugin.success(res.msg)
   } catch (error) {
-    ElMessage.error(error.message || '操作失败')
+    MessagePlugin.error(error.message || '操作失败')
   }
 }
 
@@ -309,13 +309,13 @@ const getComment = async () => {
       params: commnetQueryInfo
     })
     if (res.code !== 200) {
-      ElMessage.error(res.msg)
+      MessagePlugin.error(res.msg)
       return
     }
     comments.value = res.data.list
     commentTotal.value = res.data.total
   } catch (error) {
-    ElMessage.error(error.message || '获取评论失败')
+    MessagePlugin.error(error.message || '获取评论失败')
   }
 }
 
@@ -328,7 +328,7 @@ const submitComment = async (toUser) => {
   commentForm.toUser = toUser
   commentForm.anonFlag = commentAnonFlag.value ? 1 : 0
   if (commentForm.content.length >= 1000) {
-    ElMessage.error('文本字数过多，最多可输入1000个字符！')
+    MessagePlugin.error('文本字数过多，最多可输入1000个字符！')
     return
   }
   commentForm.articalId = id.value
@@ -337,24 +337,24 @@ const submitComment = async (toUser) => {
     const res = await httpInstance.post('cyt/comment/', commentForm)
     if (res.code !== 200) {
       commentBtnFlag.value = false
-      ElMessage.error(res.msg)
+      MessagePlugin.error(res.msg)
       return
     }
     commentBtnFlag.value = false
-    ElMessage.success(res.msg)
+    MessagePlugin.success(res.msg)
     getComment()
     commentForm.content = ''
     artical.replyNum++
   } catch (error) {
     commentBtnFlag.value = false
-    ElMessage.error(error.message || '提交失败')
+    MessagePlugin.error(error.message || '提交失败')
   }
 }
 
 const submitReply = async (commentId, toUser) => {
   replyForm.anonFlag = replyAnonFlag.value ? 1 : 0
   if (replyForm.content.length >= 1000) {
-    ElMessage.error('文本字数过多，最多可输入1000个字符！')
+    MessagePlugin.error('文本字数过多，最多可输入1000个字符！')
     return
   }
   replyForm.articalId = id.value
@@ -365,18 +365,18 @@ const submitReply = async (commentId, toUser) => {
     const res = await httpInstance.post('cyt/reply/', replyForm)
     if (res.code !== 200) {
       replyBtnFlag.value = false
-      ElMessage.error(res.msg)
+      MessagePlugin.error(res.msg)
       return
     }
     replyBtnFlag.value = false
-    ElMessage.success(res.msg)
+    MessagePlugin.success(res.msg)
     getComment()
     replyForm.content = ''
     replyId.value = -1
     artical.replyNum++
   } catch (error) {
     replyBtnFlag.value = false
-    ElMessage.error(error.message || '提交失败')
+    MessagePlugin.error(error.message || '提交失败')
   }
 }
 
@@ -396,7 +396,7 @@ onMounted(() => {
 .view-container {
   height: 100%;
   width: 100%;
-  background-color: #eaedf1;
+-color: #eaedf1;
 }
 
 .artical-header {
@@ -406,7 +406,7 @@ onMounted(() => {
 
 .artical-content {
   padding: 20px;
-  background-color: #fff;
+-color: #fff;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
 
@@ -439,7 +439,7 @@ onMounted(() => {
   text-align: center;
 }
 
-.el-tag {
+.t-tag {
   margin-right: 5px;
 }
 
@@ -450,13 +450,13 @@ onMounted(() => {
   box-sizing: border-box;
   border-radius: 4px;
   position: relative;
-  background-color: #fff;
+-color: #fff;
   overflow: hidden;
   opacity: 1;
   display: flex;
   align-items: center;
   transition: opacity 0.2s;
-  background-color: #f4f4f5;
+-color: #f4f4f5;
   color: #909399;
   margin-top: 15px;
   margin-bottom: 15px;
@@ -555,7 +555,7 @@ onMounted(() => {
     color: #666;
     word-break: break-word;
     margin: 10px;
-    background-color: #fff;
+-color: #fff;
   }
 }
 </style>

@@ -1,8 +1,7 @@
 <template>
-  <el-select
+  <t-select
     v-if="conditionType === 'search'"
     :style="{ width: width }"
-    :allow-clear="allowClear"
     :size="moduleSize"
     v-model:model-value="ploNum"
     :loading="loading"
@@ -10,11 +9,10 @@
     placeholder="请输入姓名、工号、期数、组别查询（可模糊查询）"
     filterable
     :clearable="clearable"
-    :remote-method="handleSearch"
+    @search="handleSearch"
     @change="handleChange"
-    remote
   >
-    <el-option
+    <t-option
       v-for="item of options"
       :key="item.ploNum"
       :value="item.ploNum"
@@ -28,13 +26,12 @@
         item.groupName +
         ']'
       "
-    ></el-option>
-  </el-select>
+    ></t-option>
+  </t-select>
 
-  <el-select
+  <t-select
     v-else-if="conditionType === 'joblevel'"
     :style="{ width: width }"
-    :allow-clear="allowClear"
     :size="moduleSize"
     v-model:model-value="ploNum"
     :loading="loading"
@@ -42,7 +39,7 @@
     :clearable="clearable"
     placeholder="请选择..."
   >
-    <el-option
+    <t-option
       v-for="item of options"
       :key="item.ploNum"
       :value="item.ploNum"
@@ -55,14 +52,13 @@
         ' - ' +
         item.groupName +
         ']'
-      }}</el-option
+      }}</t-option
     >
-  </el-select>
+  </t-select>
 
-  <el-select
+  <t-select
     v-else-if="conditionType === 'info'"
     :style="{ width: width }"
-    :allow-clear="allowClear"
     :size="moduleSize"
     v-model:model-value="ploNum"
     :loading="loading"
@@ -73,7 +69,7 @@
     @search="handleSearch"
     @change="getUser"
   >
-    <el-option
+    <t-option
       v-for="item of options"
       :key="item.ploNum"
       :value="item.ploNum"
@@ -86,13 +82,13 @@
         ' - ' +
         item.groupName +
         ']'
-      }}</el-option
+      }}</t-option
     >
-  </el-select>
+  </t-select>
 </template>
 <script setup>
 import { ref, onMounted, watch } from 'vue'
-import { ElMessage } from 'element-plus'
+import { MessagePlugin } from 'tdesign-vue-next'
 import { findEmployee, findEmployeeByJobLevel } from '@/api/permissionAPI'
 import { useUserStore, useAppStore } from '@/stores'
 const { moduleSize } = useAppStore()
@@ -184,7 +180,7 @@ const handleSearch = async (e) => {
     options.value = res.data
   } catch (error) {
     console.error('搜索失败:', error)
-    ElMessage.error('搜索失败，请重试')
+    MessagePlugin.error('搜索失败，请重试')
   } finally {
     loading.value = false
   }
@@ -202,7 +198,7 @@ const getOptions = async () => {
     if (props.conditionType === 'joblevel') {
       const res = await findEmployeeByJobLevel(props.params)
       if (res.code !== 200) {
-        ElMessage.error(res.msg)
+        MessagePlugin.error(res.msg)
         return
       }
       options.value = res.data
@@ -217,7 +213,7 @@ const getOptions = async () => {
     } else if (props.conditionType === 'info') {
       const res = await findEmployee(queryInfo.value)
       if (res.code !== 200) {
-        ElMessage.error(res.msg)
+        MessagePlugin.error(res.msg)
         return
       }
       options.value = res.data
@@ -227,7 +223,7 @@ const getOptions = async () => {
     }
   } catch (e) {
     console.error('获取选项失败:', e)
-    ElMessage.error('获取选项失败，请重试')
+    MessagePlugin.error('获取选项失败，请重试')
   } finally {
     loading.value = false
   }

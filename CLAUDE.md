@@ -9,7 +9,7 @@ ULMS (统一登录管理平台, "A6广场") — a unified login management platf
 ## Tech Stack
 
 - **Backend**: Java 17, Spring Boot 3.5.7, MyBatis 3.0.5, Oracle (Druid connection pool), Redis (Lettuce), Sa-Token (session/auth), WebSocket
-- **Frontend**: Vue 3 (Composition API), Vite 6, Element Plus 2, Pinia 3, Vue Router 4, ECharts 6, Axios
+- **Frontend**: Vue 3 (Composition API), Vite 6, TDesign Vue Next 1.20, Pinia 3, Vue Router 4, ECharts 6, Axios
 - **Build**: Maven (backend), Vite (frontend)
 
 ## Commands
@@ -81,9 +81,23 @@ Each business module follows the same pattern: `controller/` → `service/` (int
 
 **Key frontend details:**
 - `@` alias maps to `src/`.
-- Auto-imports: Vue APIs (`ref`, `reactive`, etc.) and Element Plus components are auto-imported at build time via `unplugin-auto-import` and `unplugin-vue-components`.
+- Auto-imports: Vue APIs (`ref`, `reactive`, etc.) and TDesign Vue Next components are auto-imported at build time via `unplugin-auto-import` and `unplugin-vue-components`.
 - The router guard in `router/index.js` fetches user info and menu tree on first navigation, then dynamically adds child routes. It handles token expiry and redirect-on-404.
 - `base` path in Vite config is `/ulms/` — matches the backend context path.
+
+### CustomTable wrapper (migration bridge)
+
+TDesign Vue Next v1.20 Table reads columns **exclusively** from the `:columns` prop (Array of column definition objects). Unlike Element Plus where `<el-table-column>` children are live components that register with their parent table, TDesign's `TableColumn` is not a standalone component — `t-table-column` does not resolve and produces empty tables.
+
+**Solution**: `CustomTable.vue` wraps TDesign's Table with slot-based column parsing:
+- `<CustomTable>` replaces `<t-table>` (passes through all Table props/events)
+- `<TableColumn>` replaces `<t-table-column>` (a stub component that only defines column props)
+- CustomTable parses `<TableColumn>` VNodes from its default slot, extracts column definitions and slot render functions, then passes them to TDesign's Table via `:columns` and dynamic named slots
+- Column cell templates (e.g. `<template #default="scope">`) are forwarded as TDesign cell slots keyed by `colKey`
+- Props are normalized: `prop` → `colKey`, `label` → `title` for Element Plus compatibility
+- Exposed methods: `clearSelection()`, `getData(key)` forward to the inner Table instance
+
+**Important**: Always use `<CustomTable>` + `<TableColumn>` instead of `<t-table>` + `<t-table-column>`. TableColumn does not need importing when used in templates — it is globally registered in `main.js`.
 
 ### Environments
 

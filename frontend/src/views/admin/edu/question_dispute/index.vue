@@ -1,82 +1,79 @@
 <template>
   <div>
-    <el-card class="main-container">
-      <el-alert
+    <t-card class="main-container">
+      <t-alert
         title="操作说明"
-        type="info"
-        description="此处仅针对学霸刷题中反馈的题目问题。无论选择复议通过还是复议不过均不对原题做任何联动。如需修改题目请自行于题库配置维护！"
+        theme="info"
+        message="此处仅针对学霸刷题中反馈的题目问题。无论选择复议通过还是复议不过均不对原题做任何联动。如需修改题目请自行于题库配置维护！"
         :closable="false"
       >
-      </el-alert>
-      <el-row style="padding-bottom: 10px" :gutter="15">
-        <el-col :span="4">
-          <el-select
+      </t-alert>
+      <t-row style="padding-bottom: 10px" :gutter="15">
+        <t-col :span="2">
+          <t-select
             v-model="queryInfo.disputeResult"
             size="small"
             placeholder="复议状态"
             @change="listDisputeList"
           >
-            <el-option
+            <t-option
               v-for="item in dictStore.dictList.trm_exam_dispute_result"
               :key="item.code"
               :label="item.codeval"
               :value="parseInt(item.code)"
-            ></el-option>
-          </el-select>
-        </el-col>
-        <el-col :span="10"> </el-col>
-        <el-col :span="4"> </el-col>
-        <el-col :span="4"> </el-col>
-      </el-row>
-      <el-table :data="disputeList" size="small" height="calc(100vh - 400px)">
-        <el-table-column
+            ></t-option>
+          </t-select>
+        </t-col>
+        <t-col :span="5"> </t-col>
+        <t-col :span="2"> </t-col>
+        <t-col :span="2"> </t-col>
+      </t-row>
+      <CustomTable rowKey="id" :data="disputeList" size="small" height="calc(100vh - 400px)">
+        <TableColumn
           property="quesCode"
           label="题目编号"
-          width="120"
-        ></el-table-column>
-        <el-table-column
+          width="120"></TableColumn>
+        <TableColumn
           property="quesStem"
           label="题干"
-          show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column property="options" label="原始选项/答案" width="200">
+          ellipsis></TableColumn>
+        <TableColumn property="options" label="原始选项/答案" width="200">
           <template #default="scope">
             <div v-if="scope.row.quesType === 2">
-              <el-checkbox-group v-model="scope.row.answer">
-                <el-checkbox
+              <t-checkbox-group v-model="scope.row.answer">
+                <t-checkbox
                   v-for="(option, index) in scope.row.options"
                   :key="index"
                   :value="option"
                   :label="option"
-                ></el-checkbox>
-              </el-checkbox-group>
+                ></t-checkbox>
+              </t-checkbox-group>
             </div>
             <div v-else>
-              <el-radio-group v-model="scope.row.answer" class="ques-option">
-                <el-radio
+              <t-radio-group v-model="scope.row.answer" class="ques-option">
+                <t-radio
                   v-for="(option, index) in scope.row.options"
                   :key="index"
                   :value="option"
                   class="ques-option"
                   :label="option"
-                ></el-radio>
-              </el-radio-group>
+                ></t-radio>
+              </t-radio-group>
             </div>
           </template>
-        </el-table-column>
-        <el-table-column label="复议明细" width="120px">
+        </TableColumn>
+        <TableColumn label="复议明细" width="120px">
           <template #default="scope">
             <DisputeDetailPopover
               :dispute-data="scope.row.quesDisputes"
               :dispute-count="scope.row.dispNum"
             />
           </template>
-        </el-table-column>
-        <el-table-column
+        </TableColumn>
+        <TableColumn
           property="disputeResult"
           label="复议回复"
-          width="120px"
-        >
+          width="120px">
           <template #default="scope">
             {{
               getDictionaryLabel(
@@ -85,42 +82,42 @@
               )
             }}
           </template>
-        </el-table-column>
-        <el-table-column property="disputeResult" label="操作">
+        </TableColumn>
+        <TableColumn property="disputeResult" label="操作">
           <template #default="scope">
-            <el-button
-              type="success"
+            <t-button
+              theme="success"
               size="small"
               @click="disputeSubmit(scope.row, 1)"
               plain
-              >复议通过</el-button
+              >复议通过</t-button
             >
-            <el-button
-              type="danger"
+            <t-button
+              theme="danger"
               size="small"
               @click="disputeSubmit(scope.row, 0)"
               plain
-              >复议不过</el-button
+              >复议不过</t-button
             >
           </template>
-        </el-table-column>
-      </el-table>
-      <el-pagination
-        @size-change="handleSizeChange"
+        </TableColumn>
+      </CustomTable>
+      <t-pagination
+        @page-size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :current-page="queryInfo.pageNum"
-        :page-sizes="pageSizes"
+        :current="queryInfo.pageNum"
+        :page-size-options="pageSizes"
         :page-size="queryInfo.pageSize"
-        layout="total, sizes, prev, pager, next, jumper"
+
         :total="total"
-      ></el-pagination>
-    </el-card>
+      ></t-pagination>
+    </t-card>
   </div>
 </template>
 
 <script setup>
 import { ref, reactive, onMounted, computed } from 'vue'
-import { ElMessage } from 'element-plus'
+import { MessagePlugin } from 'tdesign-vue-next'
 import DisputeDetailPopover from './components/DisputeDetailPopover.vue'
 import { questionDisputeApi } from '@/api/edu/questionDispute'
 import { useDictStore } from '@/stores'
@@ -153,7 +150,7 @@ onMounted(() => {
 const listDisputeList = async () => {
   try {
     const res = await questionDisputeApi.getQuestionDisputeList(queryInfo)
-    if (res.code !== 200) return ElMessage.error(res.msg)
+    if (res.code !== 200) return MessagePlugin.error(res.msg)
     disputeList.value = res.data.list
     total.value = res.data.total
     disputeList.value.forEach((item) => {
@@ -164,7 +161,7 @@ const listDisputeList = async () => {
       }
     })
   } catch (error) {
-    ElMessage.error('获取数据失败，请重试')
+    MessagePlugin.error('获取数据失败，请重试')
   }
 }
 
@@ -182,11 +179,11 @@ const disputeSubmit = async (row, disputeResult) => {
   try {
     const updatedRow = { ...row, disputeResult, examCode: null }
     const res = await questionDisputeApi.updateDispute(updatedRow)
-    if (res.code !== 200) return ElMessage.error(res.msg)
-    ElMessage.success(res.msg)
+    if (res.code !== 200) return MessagePlugin.error(res.msg)
+    MessagePlugin.success(res.msg)
     listDisputeList()
   } catch (error) {
-    ElMessage.error('操作失败，请重试')
+    MessagePlugin.error('操作失败，请重试')
   }
 }
 

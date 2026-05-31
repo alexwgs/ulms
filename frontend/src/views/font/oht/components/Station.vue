@@ -1,32 +1,32 @@
 <template>
-  <el-dialog title="座位信息核对" v-model="dialogVisible" :close-on-click-modal="false" :close-on-press-escape="false"
-    :show-close="false">
-    <el-alert title="请注意，请正确输入您当前所使用电脑对应到分机号码！若错误输入，可能导致功能不可使用！" type="warning" show-icon>
-    </el-alert>
-    <el-form :model="stationForm" ref="stationRef" :rules="stationRules">
-      <el-form-item label="Ip地址" prop="pcIp" :label-width="stationLabelWidth">
-        <el-input size="small" v-model="stationForm.pcIp" autocomplete="off" :placeholder="ohtStore.station.pcIp"
-          disabled></el-input>
-      </el-form-item>
-      <el-form-item label="所在楼层" prop="floorNum" :label-width="stationLabelWidth">
-        <el-input size="small" v-model="stationForm.floorNum" autocomplete="off"
-          :placeholder="ohtStore.station.floorNum" readonly></el-input>
-      </el-form-item>
-      <el-form-item label="分机号码" prop="extnNum" :label-width="stationLabelWidth">
-        <el-input size="small" v-model="stationForm.extnNum" autocomplete="off"
-          :placeholder="ohtStore.station.extnNum"></el-input>
-      </el-form-item>
-    </el-form>
+  <t-dialog header="座位信息核对" v-model:visible="dialogVisible" :close-on-overlay-click="false" :close-on-esc-keydown="false"
+    :close-btn="false">
+    <t-alert title="请注意，请正确输入您当前所使用电脑对应到分机号码！若错误输入，可能导致功能不可使用！" theme="warning" show-icon>
+    </t-alert>
+    <t-form :data="stationForm" ref="stationRef" :rules="stationRules">
+      <t-form-item label="Ip地址" name="pcIp" :label-width="stationLabelWidth">
+        <t-input size="small" v-model="stationForm.pcIp" autocomplete="off" :placeholder="ohtStore.station.pcIp"
+          disabled></t-input>
+      </t-form-item>
+      <t-form-item label="所在楼层" name="floorNum" :label-width="stationLabelWidth">
+        <t-input size="small" v-model="stationForm.floorNum" autocomplete="off"
+          :placeholder="ohtStore.station.floorNum" readonly></t-input>
+      </t-form-item>
+      <t-form-item label="分机号码" name="extnNum" :label-width="stationLabelWidth">
+        <t-input size="small" v-model="stationForm.extnNum" autocomplete="off"
+          :placeholder="ohtStore.station.extnNum"></t-input>
+      </t-form-item>
+    </t-form>
     <div class="dialog-footer">
-      <el-button size="small" @click="dialogVisible = false">取 消</el-button>
-      <el-button size="small" type="primary" @click="submitExtNum">确 定</el-button>
+      <t-button size="small" @click="dialogVisible = false">取 消</t-button>
+      <t-button size="small" theme="primary" @click="submitExtNum">确 定</t-button>
     </div>
-  </el-dialog>
+  </t-dialog>
 </template>
 
 <script setup>
 import { ref, reactive, computed, onMounted } from 'vue'
-import { ElMessage } from 'element-plus'
+import { MessagePlugin } from 'tdesign-vue-next'
 import { useOhtStore } from '@/stores'
 import { httpInstance } from '@/utils/request'
 import { getLocalIp } from '@/utils/tools'
@@ -89,25 +89,24 @@ const openDialog = () => {
 const submitExtNum = async () => {
   // 验证表单
   if (stationRef.value) {
-    stationRef.value.validate(async (valid) => {
-      if (valid) {
-        try {
-          // 提交数据
-          const res = await httpInstance.post('station/update', stationForm)
-          if (res.code !== 200) return ElMessage.error(res.msg)
-          // 显示成功消息
-          ElMessage.success(res.msg)
-          // 更新 store 中的 station 数据
-          ohtStore.setStation(res.station)
-          // 关闭对话框
-          dialogVisible.value = false
-        } catch (error) {
-          ElMessage.error('提交失败！请稍后重试。')
-        }
-      } else {
-        return ElMessage.error('请正确填写表单！')
+    const valid = await stationRef.value.validate()
+    if (valid === true) {
+      try {
+        // 提交数据
+        const res = await httpInstance.post('station/update', stationForm)
+        if (res.code !== 200) return MessagePlugin.error(res.msg)
+        // 显示成功消息
+        MessagePlugin.success(res.msg)
+        // 更新 store 中的 station 数据
+        ohtStore.setStation(res.station)
+        // 关闭对话框
+        dialogVisible.value = false
+      } catch (error) {
+        MessagePlugin.error('提交失败！请稍后重试。')
       }
-    })
+    } else {
+      MessagePlugin.error('请正确填写表单！')
+    }
   }
 }
 defineExpose({

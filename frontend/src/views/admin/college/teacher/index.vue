@@ -1,293 +1,271 @@
 <template>
   <div style="height: 100%">
-    <el-card class="box-card">
-      <el-row :gutter="20">
-        <el-col :span="8">
-          <el-input
+    <t-card class="box-card">
+      <t-row :gutter="20">
+        <t-col :span="4">
+          <t-input
             placeholder="模糊搜索"
             size="small"
             v-model="queryInfo.query"
           >
-            <el-button
-              slot="append"
-              icon="Search"
-              @click="getLecturer()"
-            ></el-button>
-          </el-input>
-        </el-col>
-        <el-col :span="6">
-          <el-select
+            <t-button
+              slot="append" @click="getLecturer()"><template #icon><DynamicIcon name="search" /></template></t-button>
+          </t-input>
+        </t-col>
+        <t-col :span="3">
+          <t-select
             v-model="queryInfo.status"
             size="small"
             placeholder="请选择发布状态"
             @change="getLecturer()"
           >
-            <el-option label="全部" value=""></el-option>
-            <el-option label="有效" :value="1"></el-option>
-            <el-option label="无效" :value="0"></el-option>
-          </el-select>
-        </el-col>
-        <el-col :span="8">
-          <el-button type="primary" size="small" @click="teacherManager(null)"
-            >新建讲师</el-button
+            <t-option label="全部" value=""></t-option>
+            <t-option label="有效" :value="1"></t-option>
+            <t-option label="无效" :value="0"></t-option>
+          </t-select>
+        </t-col>
+        <t-col :span="4">
+          <t-button theme="primary" size="small" @click="teacherManager(null)"
+            >新建讲师</t-button
           >
-        </el-col>
-      </el-row>
-      <el-alert
+        </t-col>
+      </t-row>
+      <t-alert
         title="操作说明"
-        type="info"
-        description="请正确使用字典配置：1.虚拟账号请工号输入XN开头。2.非虚拟账号请使用选择控件选人，勿手工修改姓名及工号。3.若不对外展示的讲师或离职人员请将状态设置为失效。"
+        theme="info"
+        message="请正确使用字典配置：1.虚拟账号请工号输入XN开头。2.非虚拟账号请使用选择控件选人，勿手工修改姓名及工号。3.若不对外展示的讲师或离职人员请将状态设置为失效。"
         :closable="false"
       >
-      </el-alert>
-      <el-table
+      </t-alert>
+      <CustomTable rowKey="id"
         :data="teachers"
         size="small"
         height="calc(100vh - 400px)"
         stripe
         @sort-change="tableSort"
-        style="width: 100%"
-      >
-        <el-table-column
+        style="width: 100%">
+        <TableColumn
           prop="ploName"
           label="讲师姓名"
           width="100px"
-          show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column
+          ellipsis></TableColumn>
+        <TableColumn
           prop="ploNum"
           label="讲师工号"
           sortable="custom"
-          show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column
+          ellipsis></TableColumn>
+        <TableColumn
           prop="dataDate"
           label="身份时间"
           sortable="custom"
-          show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column
+          ellipsis></TableColumn>
+        <TableColumn
           prop="skillType"
           label="身份类型"
           sortable="custom"
-          width="100px"
-        >
+          width="100px">
           <template #default="scope">{{
             skillType[scope.row.skillType].label
           }}</template>
-        </el-table-column>
-        <el-table-column
+        </TableColumn>
+        <TableColumn
           prop="skillName"
           label="身份名称"
           sortable="custom"
-          width="100px"
-        >
+          width="100px">
           <template #default="scope">{{
             skillName[scope.row.skillName].label
           }}</template>
-        </el-table-column>
-        <el-table-column
+        </TableColumn>
+        <TableColumn
           prop="courseNum"
           label="授课数"
           sortable="custom"
-          width="90px"
-        ></el-table-column>
-        <el-table-column
+          width="90px"></TableColumn>
+        <TableColumn
           prop="courseHour"
           label="授课时数"
           sortable="custom"
-          width="100px"
-        ></el-table-column>
-        <el-table-column
+          width="100px"></TableColumn>
+        <TableColumn
           prop="score"
           label="评分"
           sortable="custom"
-          width="90px"
-        ></el-table-column>
-        <el-table-column
+          width="90px"></TableColumn>
+        <TableColumn
           prop="status"
           label="状态"
           sortable="custom"
-          width="90px"
-        >
+          width="90px">
           <template #default="scope"
-            ><el-tag
+            ><t-tag
               @click="updateStatus(scope.row)"
               :type="scope.row.status ? 'success' : 'danger'"
               size="small"
               >{{ scope.row.status ? '有效' : '无效' }}[{{
                 scope.row.status
-              }}]</el-tag
+              }}]</t-tag
             ></template
           >
-        </el-table-column>
-        <el-table-column label="操作" fixed="right" width="90px">
+        </TableColumn>
+        <TableColumn label="操作" fixed="right" width="90px">
           <template #default="scope">
-            <el-button
-              type="primary"
-              icon="Edit"
-              size="small"
+            <t-button
+              theme="primary" size="small"
               @click="teacherManager(scope.row)"
-              circle
-            ></el-button>
+              shape="circle"><template #icon><DynamicIcon name="edit" /></template></t-button>
           </template>
-        </el-table-column>
-      </el-table>
-      <el-pagination
-        @size-change="handleSizeChange"
+        </TableColumn>
+      </CustomTable>
+      <t-pagination
+        @page-size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :current-page="queryInfo.pageNum"
-        :page-sizes="pageSizes"
+        :current="queryInfo.pageNum"
+        :page-size-options="pageSizes"
         :page-size="queryInfo.pageSize"
-        layout="total, sizes, prev, pager, next, jumper"
+
         :total="total"
-      ></el-pagination>
-    </el-card>
+      ></t-pagination>
+    </t-card>
 
     <!-- 弹出窗口 -->
-    <el-dialog
-      :title="teacherFormTitle"
-      :close-on-click-modal="false"
+    <t-dialog
+      :header="teacherFormTitle"
+      :close-on-overlay-click="false"
       width="80%"
       @close="onClose"
-      v-model="teacherFormVisible"
+      v-model:visible="teacherFormVisible"
     >
-      <el-form
+      <t-form
         ref="teacherForm"
-        :model="teacherFormData"
+        :data="teacherFormData"
         :rules="rules"
         size="small"
         label-width="auto"
         style="max-width: 600px"
       >
-        <el-form-item label="工号" prop="ploNum">
-          <el-input
+        <t-form-item label="工号" name="ploNum">
+          <t-input
             v-model="teacherFormData.ploNum"
             placeholder="请选择讲师信息"
             clearable
             :style="{ width: '100%' }"
           >
-            <el-button
-              slot="append"
-              @click="treeDialogVisiable = !treeDialogVisiable"
-              icon="Search"
-            ></el-button>
-          </el-input>
-        </el-form-item>
+            <t-button slot="append" @click="treeDialogVisiable = !treeDialogVisiable"><template #icon><DynamicIcon name="search" /></template></t-button>
+          </t-input>
+        </t-form-item>
 
-        <el-form-item label="姓名" prop="ploName">
-          <el-input
+        <t-form-item label="姓名" name="ploName">
+          <t-input
             v-model="teacherFormData.ploName"
             placeholder="请输入讲师姓名"
             clearable
             :style="{ width: '100%' }"
-          ></el-input>
-        </el-form-item>
+          ></t-input>
+        </t-form-item>
 
-        <el-form-item label="讲师类型" prop="skillType">
-          <el-select
+        <t-form-item label="讲师类型" name="skillType">
+          <t-select
             v-model="teacherFormData.skillType"
             placeholder="请选择讲师类型"
             clearable
             :style="{ width: '100%' }"
           >
-            <el-option
+            <t-option
               v-for="item in skillType"
               :key="item.value"
               :value="item.value"
               :label="item.label"
               :disabled="!item.status"
-            ></el-option>
-          </el-select>
-        </el-form-item>
+            ></t-option>
+          </t-select>
+        </t-form-item>
 
-        <el-form-item label="分类名称" prop="skillName">
-          <el-select
+        <t-form-item label="分类名称" name="skillName">
+          <t-select
             v-model="teacherFormData.skillName"
             placeholder="请选择分类名称"
             clearable
             :style="{ width: '100%' }"
           >
-            <el-option
+            <t-option
               v-for="item in skillName"
               :key="item.value"
               :value="item.value"
               :label="item.label"
               :disabled="!item.status"
-            ></el-option>
-          </el-select>
-        </el-form-item>
+            ></t-option>
+          </t-select>
+        </t-form-item>
 
-        <el-form-item label="身份时间" prop="dataDate">
-          <el-date-picker
+        <t-form-item label="身份时间" name="dataDate">
+          <t-date-picker
             v-model="teacherFormData.dataDate"
-            type="date"
-            value-format="YYYY-MM-DD"
+            mode="date"
+           
             placeholder="身份获取时间"
             clearable
             :style="{ width: '100%' }"
-          ></el-date-picker>
-        </el-form-item>
+          ></t-date-picker>
+        </t-form-item>
 
-        <el-form-item label="讲师荣誉" prop="honor">
-          <el-input
+        <t-form-item label="讲师荣誉" name="honor">
+          <t-input
             v-model="teacherFormData.honor"
             placeholder="输入荣誉名称，多荣誉、分开"
             clearable
             :style="{ width: '100%' }"
-          ></el-input>
-        </el-form-item>
+          ></t-input>
+        </t-form-item>
 
-        <el-form-item label="手动排序" prop="status">
-          <el-input
+        <t-form-item label="手动排序" name="status">
+          <t-input
             v-model="teacherFormData.status"
             placeholder="0为失效，越大越靠前"
             clearable
             :style="{ width: '100%' }"
             type="number"
             maxlength="2"
-          ></el-input>
-        </el-form-item>
+          ></t-input>
+        </t-form-item>
 
-        <el-form-item label="讲师简介" prop="introduce">
-          <el-input
-            v-model="teacherFormData.introduce"
-            type="textarea"
+        <t-form-item label="讲师简介" name="introduce">
+          <t-textarea v-model="teacherFormData.introduce"
+            
             placeholder="请输入讲师简介"
             :maxlength="2000"
-            show-word-limit
+            show-limit-number
             :autosize="{ minRows: 4, maxRows: 4 }"
-            :style="{ width: '100%' }"
-          ></el-input>
-        </el-form-item>
+            :style="{ width: '100%' }" />
+        </t-form-item>
 
-        <el-form-item label="上传" prop="avatar">
-          <el-upload
+        <t-form-item label="上传" name="avatar">
+          <t-upload
             ref="avatar"
             :action="fsURL + 'upload/file/college-avatar'"
             :file-list="fileList"
-            :on-success="handleSuccess"
+            @success="handleSuccess"
             :multiple="false"
             :limit="1"
             list-type="picture-card"
             accept="image/*"
           >
-            <el-icon><Plus /></el-icon>
-          </el-upload>
-        </el-form-item>
-      </el-form>
+            <AddIcon />
+          </t-upload>
+        </t-form-item>
+      </t-form>
       <template #footer>
         <div class="dialog-footer">
-          <el-button size="small" @click="teacherFormVisible = false"
-            >取消</el-button
+          <t-button size="small" @click="teacherFormVisible = false"
+            >取消</t-button
           >
-          <el-button size="small" type="primary" @click="submitForm()"
-            >确定</el-button
+          <t-button size="small" theme="primary" @click="submitForm()"
+            >确定</t-button
           >
         </div>
       </template>
-    </el-dialog>
-    <el-dialog title="选择员工" v-model="treeDialogVisiable" width="500px">
+    </t-dialog>
+    <t-dialog header="选择员工" v-model:visible="treeDialogVisiable" width="500px">
       <EmployeeSelect
         conditionType="search"
         v-model="teacherFormData.ploNum"
@@ -296,18 +274,19 @@
       ></EmployeeSelect>
       <template #footer>
         <div class="dialog-footer">
-          <el-button size="small" @click="treeDialogVisiable = false"
-            >确 定</el-button
+          <t-button size="small" @click="treeDialogVisiable = false"
+            >确 定</t-button
           >
         </div>
       </template>
-    </el-dialog>
+    </t-dialog>
   </div>
 </template>
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
-import { ElMessage } from 'element-plus'
+import { AddIcon } from 'tdesign-icons-vue-next'
+import { MessagePlugin } from 'tdesign-vue-next'
 import EmployeeSelect from '../../../../components/EmployeeSelect.vue'
 import { teacherApi } from '@/api/college/teacher'
 
@@ -374,11 +353,11 @@ const pageSizes = [10, 20, 50, 100]
 const getLecturer = async () => {
   try {
     const res = await teacherApi.getTeacherList(queryInfo)
-    if (res.code !== 200) return ElMessage.error(res.msg)
+    if (res.code !== 200) return MessagePlugin.error(res.msg)
     teachers.value = res.data.list
     total.value = res.data.total
   } catch (error) {
-    ElMessage.error('获取讲师列表失败')
+    MessagePlugin.error('获取讲师列表失败')
   }
 }
 
@@ -393,9 +372,9 @@ const handleCurrentChange = (page) => {
 }
 
 const tableSort = (data) => {
-  if (data.order === 'ascending') queryInfo.orderType = ' asc '
-  else if (data.order === 'descending') queryInfo.orderType = ' desc '
-  queryInfo.order = data.prop
+  if (!data.descending) queryInfo.orderType = ' asc '
+  else if (data.descending) queryInfo.orderType = ' desc '
+  queryInfo.order = data.sortBy
   getLecturer()
 }
 
@@ -434,28 +413,26 @@ const teacherManager = (lecturer) => {
   teacherFormVisible.value = true
 }
 
-const submitForm = () => {
+const submitForm = async () => {
   if (!teacherForm.value) return
 
-  teacherForm.value.validate(async (valid) => {
-    if (!valid) return
-    else {
-      try {
-        let res
-        if (teacherFormTitle.value === '新增讲师') {
-          res = await teacherApi.addTeacher(teacherFormData)
-        } else {
-          res = await teacherApi.updateTeacher(teacherFormData)
-        }
-        if (res.code !== 200) return ElMessage.error(res.msg)
-        ElMessage.success(res.msg)
-        getLecturer()
-        teacherFormVisible.value = false
-      } catch (error) {
-        ElMessage.error('保存讲师失败')
-      }
+  const valid = await teacherForm.value.validate()
+  if (valid !== true) return
+
+  try {
+    let res
+    if (teacherFormTitle.value === '新增讲师') {
+      res = await teacherApi.addTeacher(teacherFormData)
+    } else {
+      res = await teacherApi.updateTeacher(teacherFormData)
     }
-  })
+    if (res.code !== 200) return MessagePlugin.error(res.msg)
+    MessagePlugin.success(res.msg)
+    getLecturer()
+    teacherFormVisible.value = false
+  } catch (error) {
+    MessagePlugin.error('保存讲师失败')
+  }
 }
 
 const getUserInfo = (user) => {
@@ -466,7 +443,7 @@ const getUserInfo = (user) => {
 
 const handleSuccess = (response, file, fileList) => {
   if (response.code !== 200) {
-    return ElMessage.error(response.msg)
+    return MessagePlugin.error(response.msg)
   }
   const fileName = response.file.fileId + '.' + response.file.fileSuffix
   teacherFormData.avatar = fileName
@@ -476,11 +453,11 @@ const updateStatus = async (row) => {
   try {
     row.status = row.status === 0 ? 1 : 0
     const res = await teacherApi.updateTeacher(row)
-    if (res.code !== 200) return ElMessage.error(res.msg)
-    ElMessage.success(res.msg)
+    if (res.code !== 200) return MessagePlugin.error(res.msg)
+    MessagePlugin.success(res.msg)
     getLecturer()
   } catch (error) {
-    ElMessage.error('更新讲师状态失败')
+    MessagePlugin.error('更新讲师状态失败')
   }
 }
 

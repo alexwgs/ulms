@@ -1,26 +1,26 @@
 <template>
-  <el-dialog title="今日身份选择" v-model="identityVisiable" :close-on-click-modal="false" :close-on-press-escape="false"
-    :show-close="false">
-    <el-alert style="margin-top: -20px;" title="请注意，值星慎重选择，若选择错误，请在顶部状态栏下拉框中更新状态！" type="warning" show-icon>
-    </el-alert>
-    <el-form>
-      <el-form-item label="今日身份" prop="type">
-        <el-checkbox-group v-model="identityArry" size="small" :max="2">
-          <el-checkbox label="" @change="noIdentity" border>无身份</el-checkbox>
-          <el-checkbox v-for="item in identityList" :key="item.id" :disabled="disabledFlag" :label="item.statusName"
-            border></el-checkbox>
-        </el-checkbox-group>
-      </el-form-item>
-    </el-form>
+  <t-dialog header="今日身份选择" v-model:visible="identityVisiable" :close-on-overlay-click="false" :close-on-esc-keydown="false"
+    :close-btn="false">
+    <t-alert style="margin-top: -20px;" title="请注意，值星慎重选择，若选择错误，请在顶部状态栏下拉框中更新状态！" theme="warning" show-icon>
+    </t-alert>
+    <t-form>
+      <t-form-item label="今日身份" name="type">
+        <t-checkbox-group v-model="identityArry" size="small" :max="2">
+          <t-checkbox value="" @change="noIdentity" border>无身份</t-checkbox>
+          <t-checkbox v-for="item in identityList" :key="item.id" :disabled="disabledFlag" :value="item.statusName"
+            border></t-checkbox>
+        </t-checkbox-group>
+      </t-form-item>
+    </t-form>
     <template #footer="scope">
-      <el-button @click="identityVisible = !updateFlag">取消</el-button>
-      <el-button type="primary" @click="sendIdentityChangeMsg">确 定</el-button>
+      <t-button @click="identityVisible = !updateFlag">取消</t-button>
+      <t-button theme="primary" @click="sendIdentityChangeMsg">确 定</t-button>
     </template>
-  </el-dialog>
+  </t-dialog>
 </template>
 <script setup>
 import { ref, reactive, computed, onMounted } from 'vue'
-import { ElMessage } from 'element-plus'
+import { MessagePlugin } from 'tdesign-vue-next'
 import { useOhtStore, useWsStore } from '@/stores'
 // import webSocketService from './websocket'
 import { statusTypeApi } from '@/api/oht/statusType'
@@ -66,10 +66,10 @@ const identityVisiable = computed({
 const getIdentityList = async () => {
   try {
     const res = await statusTypeApi.getIdentityList()
-    if (res.code !== 200) return ElMessage.error(res.msg)
+    if (res.code !== 200) return MessagePlugin.error(res.msg)
     identityList.value = res.data
   } catch (error) {
-    ElMessage.error('获取身份列表失败！')
+    MessagePlugin.error('获取身份列表失败！')
   }
 }
 
@@ -81,7 +81,7 @@ const noIdentity = (flag) => {
 
 // 发送身份变更消息
 const sendIdentityChangeMsg = () => {
-  if (identityArry.value.length < 1) return ElMessage.error('请至少选择一个身份！')
+  if (identityArry.value.length < 1) return MessagePlugin.error('请至少选择一个身份！')
   identityChange.userStatus = ohtStore.userStatus === null ? 0 : ohtStore.userStatus
   identityChange.content = identityArry.value.join(',')
   if (useWsStore.connectionStatus === 'connected') {

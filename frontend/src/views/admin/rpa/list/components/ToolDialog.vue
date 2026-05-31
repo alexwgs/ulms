@@ -1,166 +1,162 @@
 <template>
-  <el-dialog
-    :title="dialogTitle"
-    v-model="dialogVisible"
+  <t-dialog
+    :header="dialogTitle"
+    v-model:visible="dialogVisible"
     width="60%"
-    :close-on-click-modal="false"
-    :before-close="handleClose"
-    :fullscreen="false"
+    :close-on-overlay-click="false"
+    @before-close="handleClose"
   >
-    <el-form
+    <t-form
       ref="toolFormRef"
-      :model="formData"
+      :data="formData"
       :rules="rules"
       size="small"
       label-width="120px"
     >
-      <el-col :span="24">
-        <el-form-item label="服务名称" prop="name">
-          <el-input
+      <t-col :span="12">
+        <t-form-item label="服务名称" name="name">
+          <t-input
             v-model="formData.name"
             placeholder="请输入前端显示的RPA名称，建议保持与海螺API借调名称一致"
             :maxlength="50"
-            show-word-limit
+            show-limit-number
             clearable
           />
-        </el-form-item>
-      </el-col>
+        </t-form-item>
+      </t-col>
 
-      <el-col :span="24">
-        <el-form-item label="分类" prop="category" required>
-          <el-select v-model="formData.category" placeholder="请选择工具类别">
-            <el-option
+      <t-col :span="12">
+        <t-form-item label="分类" name="category" required>
+          <t-select v-model="formData.category" placeholder="请选择工具类别">
+            <t-option
               v-for="item in dictStore.dictList.rpa_tool_list_category"
               :key="item.code"
               :label="item.codeval"
               :value="item.code"
             />
-          </el-select>
-        </el-form-item>
-      </el-col>
+          </t-select>
+        </t-form-item>
+      </t-col>
 
-      <el-col :span="24">
-        <el-form-item label="RPA说明" prop="memo">
-          <el-input
-            type="textarea"
-            v-model="formData.memo"
+      <t-col :span="12">
+        <t-form-item label="RPA说明" name="memo">
+          <t-textarea v-model="formData.memo"
             placeholder="请输入RPA功能说明"
             :maxlength="1000"
-            show-word-limit
+            show-limit-number
             clearable
-            :rows="3"
-          />
-        </el-form-item>
-      </el-col>
+            :rows="3" />
+        </t-form-item>
+      </t-col>
 
-      <el-col :span="24">
-        <el-form-item label="订阅号" prop="subscribeId" required>
-          <el-input
+      <t-col :span="12">
+        <t-form-item label="订阅号" name="subscribeId" required>
+          <t-input
             v-model="formData.subscribeId"
             placeholder="请从RPA数字助理门户- API服务借调 中获取"
             :maxlength="100"
-            show-word-limit
+            show-limit-number
             clearable
           />
-        </el-form-item>
-      </el-col>
+        </t-form-item>
+      </t-col>
 
-      <el-col :span="24">
-        <el-form-item label="调用密钥" prop="apiSec">
-          <el-input
+      <t-col :span="12">
+        <t-form-item label="调用密钥" name="apiSec">
+          <t-input
             v-model="formData.apiSec"
             placeholder="请从RPA数字助理门户- API服务借调 中获取"
             :maxlength="100"
-            show-word-limit
+            show-limit-number
             clearable
           />
-        </el-form-item>
-      </el-col>
+        </t-form-item>
+      </t-col>
 
-      <el-col :span="24">
-        <el-form-item label="请求地址" prop="url">
-          <el-input
+      <t-col :span="12">
+        <t-form-item label="请求地址" name="url">
+          <t-input
             v-model="formData.url"
             placeholder="请求的API服务借调服务地址"
             :maxlength="500"
-            show-word-limit
+            show-limit-number
             clearable
           />
-        </el-form-item>
-      </el-col>
+        </t-form-item>
+      </t-col>
 
-      <el-col :span="24">
-        <el-form-item label="Authorization" prop="auth" required>
-          <el-input
+      <t-col :span="12">
+        <t-form-item label="Authorization" name="auth" required>
+          <t-input
             v-model="formData.auth"
             placeholder="请输入Authorization"
             :maxlength="1000"
-            show-word-limit
+            show-limit-number
             clearable
           />
-        </el-form-item>
-      </el-col>
+        </t-form-item>
+      </t-col>
 
-      <el-col :span="12">
-        <el-form-item label="运行时长" prop="runTimes" required>
-          <el-input
+      <t-col :span="6">
+        <t-form-item label="运行时长" name="runTimes" required>
+          <t-input
             v-model.number="formData.runTimes"
             placeholder="请输入预计运行耗时，单位秒"
             type="number"
             min="0"
           />
-        </el-form-item>
-      </el-col>
+        </t-form-item>
+      </t-col>
 
-      <el-col :span="12">
-        <el-form-item label="联系人" prop="contacts" required>
-          <el-input
+      <t-col :span="6">
+        <t-form-item label="联系人" name="contacts" required>
+          <t-input
             v-model="formData.contacts"
             placeholder="工号/姓名"
             :maxlength="50"
-            show-word-limit
+            show-limit-number
             clearable
           />
-        </el-form-item>
-      </el-col>
+        </t-form-item>
+      </t-col>
 
-      <el-col :span="12">
-        <el-form-item label="状态" prop="status">
-          <el-select
+      <t-col :span="6">
+        <t-form-item label="状态" name="status">
+          <t-select
             v-model="formData.status"
             placeholder="请选择状态"
             style="width: 100%"
           >
-            <el-option label="有效" :value="1" />
-            <el-option label="无效" :value="0" />
-          </el-select>
-        </el-form-item>
-      </el-col>
+            <t-option label="有效" :value="1" />
+            <t-option label="无效" :value="0" />
+          </t-select>
+        </t-form-item>
+      </t-col>
 
-      <el-col :span="12">
-        <el-form-item label="排序" prop="sortId">
-          <el-input-number
+      <t-col :span="6">
+        <t-form-item label="排序" name="sortId">
+          <t-input-number
             v-model="formData.sortId"
             :min="1"
             :step="1"
             controls-position="right"
           />
-        </el-form-item>
-      </el-col>
-    </el-form>
+        </t-form-item>
+      </t-col>
+    </t-form>
 
     <template #footer>
-      <el-button @click="handleClose">取消</el-button>
-      <el-button type="primary" @click="submitForm" :loading="loading">
+      <t-button @click="handleClose">取消</t-button>
+      <t-button theme="primary" @click="submitForm" :loading="loading">
         确定
-      </el-button>
+      </t-button>
     </template>
-  </el-dialog>
+  </t-dialog>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue'
-import { ElMessage } from 'element-plus'
+import { MessagePlugin } from 'tdesign-vue-next'
 import { useDictStore } from '@/stores'
 import { addRpaTool, updateRpaTool } from '@/api/rpa/rpa.js'
 
@@ -246,7 +242,7 @@ const handleClose = () => {
 const submitForm = async () => {
   try {
     const valid = await toolFormRef.value.validate()
-    if (!valid) return
+    if (valid !== true) return
 
     loading.value = true
 
@@ -258,11 +254,11 @@ const submitForm = async () => {
     }
     if (res.code !== 200) return
 
-    ElMessage.success(res.msg)
+    MessagePlugin.success(res.msg)
     emit('refresh')
     handleClose()
   } catch (error) {
-    ElMessage.error(error.message || '操作失败')
+    MessagePlugin.error(error.message || '操作失败')
   } finally {
     loading.value = false
   }
@@ -275,11 +271,11 @@ defineExpose({
 </script>
 
 <style lang="less" scoped>
-.el-form-item {
+.t-form-item {
   margin-bottom: 18px;
 }
 
-.el-input-number {
+.t-input-number {
   width: 100%;
 }
 </style>

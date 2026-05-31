@@ -1,42 +1,42 @@
 <template>
-  <el-container class="home-container">
-    <el-header>
+  <t-layout class="home-container">
+    <t-header>
       <div class="logo">
         <img src="@/assets/img/edu/studyLogo.png" />
       </div>
       <div class="nav">
-        <el-menu style="width: 800px" class="el-menu-demo" mode="horizontal" background-color="#0c717d"
+        <t-head-menu style="width: 800px" mode="horizontal"-color="#0c717d"
           active-text-color="#fff" text-color="#fff" router>
           <!-- 为 el-sub-menu 添加唯一的 index -->
-          <el-sub-menu index="1" style="font-size: 18px">
+          <t-submenu index="1" style="font-size: 18px">
             <template #title>学霸榜 ></template>
             <!-- 移除 router 属性，使用 index 指定路由路径 -->
-            <el-menu-item index="/edu/rankBoard">个人榜</el-menu-item>
-            <el-menu-item index="/edu/RankBoard2">团队榜</el-menu-item>
-          </el-sub-menu>
+            <t-menu-item index="/edu/rankBoard">个人榜</t-menu-item>
+            <t-menu-item index="/edu/RankBoard2">团队榜</t-menu-item>
+          </t-submenu>
 
           <!-- 其他菜单项同理 -->
-          <el-menu-item index="/edu/brush">刷题入口 ></el-menu-item>
-          <el-menu-item index="/edu/myexam">我的考试 ></el-menu-item>
-          <el-menu-item index="/edu/myquestion">我的题库 ></el-menu-item>
-          <el-menu-item index="/edu/competition">知识竞赛 ></el-menu-item>
-        </el-menu>
+          <t-menu-item index="/edu/brush">刷题入口 ></t-menu-item>
+          <t-menu-item index="/edu/myexam">我的考试 ></t-menu-item>
+          <t-menu-item index="/edu/myquestion">我的题库 ></t-menu-item>
+          <t-menu-item index="/edu/competition">知识竞赛 ></t-menu-item>
+        </t-head-menu>
       </div>
       <div class="left-sticks"></div>
       <div class="right-sticks"></div>
-    </el-header>
-    <el-main class="main">
+    </t-header>
+    <t-content class="main">
       <router-view></router-view>
-    </el-main>
+    </t-content>
     <div class="bottomBg"></div>
-  </el-container>
+  </t-layout>
 </template>
 
 <script setup></script>
 
 <style lang="less" scoped>
 .home-container {
-  background-color: #0c717d;
+-color: #0c717d;
   color: rgb(255, 255, 255);
   height: 100vh;
   min-height: 600px;
@@ -60,8 +60,8 @@
 
 .left-sticks {
   position: absolute;
-  background-image: url(../../../assets/img/edu/left-sticks.png);
-  background-size: 100% 100%;
+-image: url(../../../assets/img/edu/left-sticks.png);
+-size: 100% 100%;
   left: 10%;
   top: 40px;
   width: 200px;
@@ -70,8 +70,8 @@
 
 .right-sticks {
   position: absolute;
-  background-image: url(../../../assets/img/edu/right-sticks.png);
-  background-size: 100% 100%;
+-image: url(../../../assets/img/edu/right-sticks.png);
+-size: 100% 100%;
   right: 0;
   top: 30px;
   width: 250px;
@@ -82,8 +82,8 @@
   position: absolute;
   width: 100%;
   bottom: 0px;
-  background-image: url(../../../assets/img/edu/bottom.png);
-  background-size: 100% 100%;
+-image: url(../../../assets/img/edu/bottom.png);
+-size: 100% 100%;
   height: 200px;
 }
 
@@ -95,15 +95,15 @@
   z-index: 1;
 }
 
-.el-menu.el-menu--horizontal {
+.t-menu.t-menu--horizontal {
   border-bottom: solid 0;
 }
 
-.el-menu--horizontal>.el-menu-item {
+.t-menu--horizontal>.t-menu-item {
   font-size: 18px;
 }
 
-:deep(.el-sub-menu > .el-sub-menu__title) {
+:deep(.t-sub-menu > .t-sub-menu__title) {
   font-size: 18px;
 }
 </style>

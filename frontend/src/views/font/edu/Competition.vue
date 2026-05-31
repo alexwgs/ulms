@@ -1,17 +1,19 @@
 <template>
-  <div class="container" v-loading="loading" element-loading-background="rgba(46, 174, 119, 0.5)">
-      <el-row>
-        <el-col :span="18">
+  <t-loading :loading="loading">
+    <div class="container">
+      <t-row>
+        <t-col :span="9">
           占位
-        </el-col>
-        <el-col :span="6">
+        </t-col>
+        <t-col :span="3">
           <div class="slogan">
             <div></div>
             <img class="brush-icon" src="../../../assets/img/edu/my-questions-logo.png">
           </div>
-        </el-col>
-      </el-row>
-  </div>
+        </t-col>
+      </t-row>
+    </div>
+  </t-loading>
 </template>
 
 <script setup>

@@ -1,8 +1,8 @@
 <template>
   <div class="oht-chat-container">
-    <el-row :gutter="15" class="main-row">
+    <t-row :gutter="15" class="main-row">
       <!-- 左侧聊天区域 -->
-      <el-col :span="16">
+      <t-col :span="8">
         <div class="chat-wrapper">
           <!-- 状态栏 - 融入操作bar -->
           <div class="chat-status-bar">
@@ -10,26 +10,23 @@
           </div>
 
           <!-- 聊天窗口 -->
-          <el-card class="chat-card" shadow="hover">
+          <t-card class="chat-card">
             <!-- 聊天头部 -->
             <div class="chat-header">
               <div class="chat-title">
-                <el-icon>
-                  <ChatDotRound />
-                </el-icon>
                 <span>在线沟通</span>
               </div>
               <div class="chat-tips">
-                <el-icon>
-                  <InfoFilled />
-                </el-icon>
+                <t-icon>
+                  <InfoCircleFilledIcon />
+                </t-icon>
                 <span>消息最多保留100条</span>
               </div>
             </div>
 
             <!-- 消息区域 -->
             <div class="message-container" ref="messageDiv">
-              <el-scrollbar ref="messageScrollbar" height="100%">
+              <div ref="messageScrollbar" height="100%">
                 <div class="message-list">
                   <div v-for="(item, index) in messageCont" :key="index" class="message-item"
                     :class="[getMessageClass(item.direction)]">
@@ -68,13 +65,13 @@
                     </div>
                     <!-- 系统消息 -->
                     <div v-if="item.direction === 3" class="message-content system">
-                      <el-tag type="info" effect="dark" size="small">
+                      <t-tag theme="info" effect="dark" size="small">
                         {{ item.content }}
-                      </el-tag>
+                      </t-tag>
                     </div>
                   </div>
                 </div>
-              </el-scrollbar>
+              </div>
             </div>
 
             <!-- 输入区域 -->
@@ -84,81 +81,81 @@
                 <div class="toolbar-left">
                   <!-- Emoji按钮 -->
                   <div class="tool-item">
-                    <el-popover placement="top-start" :width="320" trigger="click">
+                    <t-popup placement="top-start" :width="320" trigger="click">
                       <template #reference>
-                        <el-button text @click="toggleEmoji">
-                          <el-icon size="20">
-                            <Sunny />
-                          </el-icon>
-                        </el-button>
+                        <t-button text @click="toggleEmoji">
+                          <t-icon size="20">
+                            <SunnyIcon />
+                          </t-icon>
+                        </t-button>
                       </template>
                       <div class="emoji-picker-container">
                         <emoji-picker v-if="showEmoji" @select="onEmojiSelect" />
                       </div>
-                    </el-popover>
+                    </t-popup>
                   </div>
 
                   <!-- 快捷消息 -->
                   <div class="tool-item">
-                    <el-dropdown @command="selectQuickMemo" trigger="click">
-                      <el-button text>
-                        <el-icon size="20">
-                          <Document />
-                        </el-icon>
+                    <t-dropdown @click="selectQuickMemo" trigger="click">
+                      <t-button text>
+                        <t-icon size="20">
+                          <FileIcon />
+                        </t-icon>
                         <span class="btn-text">快捷消息</span>
-                      </el-button>
+                      </t-button>
                       <template #dropdown>
-                        <el-dropdown-menu>
-                          <el-dropdown-item v-for="item in quickMemo" :key="item.journo" :command="item.memo">
+                        <t-dropdown-menu>
+                          <t-dropdown-item v-for="item in quickMemo" :key="item.journo" :command="item.memo">
                             {{ item.memo }}
-                          </el-dropdown-item>
-                        </el-dropdown-menu>
+                          </t-dropdown-item>
+                        </t-dropdown-menu>
                       </template>
-                    </el-dropdown>
+                    </t-dropdown>
                   </div>
                 </div>
 
                 <div class="toolbar-right">
-                  <el-button text type="danger" @click="clearChatMessage">
-                    <el-icon size="18">
-                      <Delete />
-                    </el-icon>
+                  <t-button text theme="danger" @click="clearChatMessage">
+                    <t-icon size="18">
+                      <DeleteIcon />
+                    </t-icon>
                     <span class="btn-text">清屏</span>
-                  </el-button>
+                  </t-button>
                 </div>
               </div>
 
               <!-- 输入框 -->
               <div class="input-wrapper">
-                <el-input v-model="chatContent" type="textarea" :rows="3" placeholder="请输入消息内容..."
+                <t-textarea v-model="chatContent"  :rows="3" placeholder="请输入消息内容..."
                   @keyup.enter="handleMessage" resize="none" />
               </div>
 
               <!-- 发送按钮 -->
               <div class="send-area">
                 <span class="tips">Enter 发送消息</span>
-                <el-button type="success" @click="handleMessage" :disabled="!chatContent.trim()" :loading="sending">
-                  <el-icon>
-                    <Promotion />
-                  </el-icon>
+                <t-button theme="success" @click="handleMessage" :disabled="!chatContent.trim()" :loading="sending">
+                  <t-icon>
+                    <NotificationIcon />
+                  </t-icon>
                   发送
-                </el-button>
+                </t-button>
               </div>
             </div>
-          </el-card>
+          </t-card>
         </div>
-      </el-col>
+      </t-col>
 
       <!-- 右侧基本信息 -->
-      <el-col :span="8">
+      <t-col :span="4">
         <div class="right-panel">
           <!-- 基本信息卡片 -->
-          <el-card class="info-card" shadow="hover">
+          <t-card class="info-card" shadow="hover">
             <template #header>
               <div class="card-header">
-                <el-icon>
-                  <UserFilled />
-                </el-icon>
+                <t-icon>
+                  <UserCircleIcon />
+                </t-icon>
                 <span>基本信息</span>
               </div>
             </template>
@@ -171,43 +168,43 @@
               <div class="info-item" v-if="ohtStore.station">
                 <span class="label">位置信息：</span>
                 <div class="tags">
-                  <el-tag type="primary" effect="dark" size="small">
+                  <t-tag theme="primary" effect="dark" size="small">
                     EXT: {{ ohtStore.station.extnNum }}
-                  </el-tag>
-                  <el-tag type="success" effect="dark" size="small">
+                  </t-tag>
+                  <t-tag theme="success" effect="dark" size="small">
                     楼层: {{ ohtStore.station.floorNum }}
-                  </el-tag>
+                  </t-tag>
                 </div>
-                <el-button type="primary" link @click="stationRef.openDialog()">
+                <t-button theme="primary" link @click="stationRef.openDialog()">
                   修改
-                </el-button>
+                </t-button>
               </div>
 
               <div class="info-item" v-if="ohtStore.ohtRole.roleType === 1">
                 <span class="label">接单数据：</span>
                 <div class="tags">
-                  <el-tag type="success" effect="light">接起: {{ ohtStore.taskCaseNum.takeNum }}</el-tag>
-                  <el-tag type="warning" effect="light">忽略: {{ ohtStore.taskCaseNum.ignoreNum }}</el-tag>
-                  <el-tag type="danger" effect="light">拒绝: {{ ohtStore.taskCaseNum.refuseNum }}</el-tag>
+                  <t-tag theme="success" effect="light">接起: {{ ohtStore.taskCaseNum.takeNum }}</t-tag>
+                  <t-tag theme="warning" effect="light">忽略: {{ ohtStore.taskCaseNum.ignoreNum }}</t-tag>
+                  <t-tag theme="danger" effect="light">拒绝: {{ ohtStore.taskCaseNum.refuseNum }}</t-tag>
                 </div>
               </div>
 
               <div class="info-item">
                 <span class="label">快捷操作：</span>
-                <el-button type="primary" size="small" @click="historyCaseRef.viewHistoryCase()">
-                  <el-icon>
-                    <Clock />
-                  </el-icon>
+                <t-button theme="primary" size="small" @click="historyCaseRef.viewHistoryCase()">
+                  <t-icon>
+                    <TimeIcon />
+                  </t-icon>
                   历史案件
-                </el-button>
+                </t-button>
               </div>
             </div>
-          </el-card>
+          </t-card>
           <!-- 用户列表 -->
           <UserList />
         </div>
-      </el-col>
-    </el-row>
+      </t-col>
+    </t-row>
 
     <!-- 弹窗组件 -->
     <Station ref="stationRef" />
@@ -217,17 +214,8 @@
 
 <script setup>
 import { ref, reactive, onMounted, nextTick, computed } from 'vue'
-import { ElMessage } from 'element-plus'
-import {
-  ChatDotRound,
-  InfoFilled,
-  Document,
-  Delete,
-  Promotion,
-  UserFilled,
-  Clock,
-  Sunny
-} from '@element-plus/icons-vue'
+import { MessagePlugin } from 'tdesign-vue-next'
+import { ChatIcon, InfoCircleFilledIcon, FileIcon, DeleteIcon, NotificationIcon, UserCircleIcon, TimeIcon, SunnyIcon } from 'tdesign-icons-vue-next'
 import EmojiPicker from 'vue3-emoji-picker'
 import 'vue3-emoji-picker/css'
 import CommandBar from './components/CommandBar.vue'
@@ -257,7 +245,7 @@ const defaultAvatar = new URL('@/assets/img/default_avatar.png', import.meta.url
 
 const message = reactive({
   modal: 'oht',
-  type: 'message',
+  theme: 'message',
   content: '',
   avatar: ''
 })
@@ -281,7 +269,7 @@ const shouldShowTime = (index) => {
 
 const handleMessage = () => {
   if (chatContent.value.trim() === '') {
-    return ElMessage.warning('请输入要发送的内容！')
+    return MessagePlugin.warning('请输入要发送的内容！')
   }
   if (wsStore.connectionStatus === 'connected') {
     sending.value = true
@@ -309,10 +297,10 @@ const setScrollTop = () => {
 const getQuickMemo = async () => {
   try {
     const res = await quickMemoApi.getQuickMemoList({ type: 1 })
-    if (res.code !== 200) return ElMessage.error('获取信息失败！')
+    if (res.code !== 200) return MessagePlugin.error('获取信息失败！')
     quickMemo.value = res.data.list
   } catch (error) {
-    ElMessage.error('获取快捷消息失败！')
+    MessagePlugin.error('获取快捷消息失败！')
   }
 }
 
@@ -323,7 +311,7 @@ const selectQuickMemo = (data) => {
 const clearChatMessage = () => {
   wsStore.message = []
   messageCont.value = wsStore.message
-  ElMessage.success('聊天记录已清空')
+  MessagePlugin.success('聊天记录已清空')
 }
 
 const toggleEmoji = () => {
@@ -374,7 +362,7 @@ onMounted(() => {
     justify-content: space-between;
     align-items: center;
     padding: 12px 16px;
-    background: linear-gradient(135deg, #409eff 0%, #67c23a 100%);
+background: linear-gradient(135deg, #409eff 0%, #67c23a 100%);
     color: white;
 
     .chat-title {
@@ -399,7 +387,7 @@ onMounted(() => {
   height: calc(100vh - 580px);
   min-height: 300px;
   overflow: hidden;
-  background: var(--el-bg-color);
+background: var(--td-bg-color);
   padding: 15px;
 
   .message-list {
@@ -417,7 +405,7 @@ onMounted(() => {
 
           .bubble {
             .bubble-content {
-              background: white;
+background: white;
               border: 1px solid #e8e8e8;
 
               .bubble-arrow {
@@ -440,13 +428,13 @@ onMounted(() => {
 
           .bubble {
             .bubble-content {
-              background: #95ec69;
+background: #95ec69;
               border: 1px solid #95ec69;
 
               .bubble-arrow {
                 right: -8px;
                 left: auto;
-                border-left-color: #95ec69;
+                border-left-colorbackground: #95ec69;
                 border-right-color: transparent;
               }
             }
@@ -466,7 +454,7 @@ onMounted(() => {
       margin-bottom: 10px;
 
       span {
-        background: #dadada;
+background: #dadada;
         color: white;
         padding: 2px 10px;
         border-radius: 3px;
@@ -520,7 +508,7 @@ onMounted(() => {
 
 .input-area {
   border-top: 1px solid #e8e8e8;
-  background: var(--el-bg-color);
+background: var(--td-bg-color);
   padding: 10px 15px;
 
   .toolbar {
@@ -616,15 +604,15 @@ onMounted(() => {
   }
 }
 
-:deep(.el-card) {
+:deep(.t-card) {
   border-radius: 12px;
 }
 
-:deep(.el-scrollbar__wrap) {
+:deep(.t-scrollbar__wrap) {
   overflow-x: hidden;
 }
 
-:deep(.el-textarea__inner) {
+:deep(.t-textarea__inner) {
   border-radius: 8px;
 }
 </style>

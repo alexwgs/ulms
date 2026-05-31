@@ -1,11 +1,11 @@
 <template>
-  <el-card :body-style="{ padding: '0px' }" shadow="always" class="course-panel">
+  <t-card :body-style="{ padding: '0px' }" :shadow="true" class="course-panel">
     <div @click="gotoCourseView(item.courseId)" :title="item.courseName">
       <img :src="fsURL + 'upload/getFile/college-cover/' + item.coverImg" width="100%" />
       <div class="info">
         <div style="position: absolute; margin-top: -181px; margin-left: -20px">
-          <el-tag :type="teachMethod == 2 ? 'danger' : 'primary'" size="small" effect="dark">{{ teachMethod == 2 ?
-            '任务课程' : '常规课程' }}</el-tag>
+          <t-tag :theme="teachMethod == 2 ? 'danger' : 'primary'" size="small" effect="dark">{{ teachMethod == 2 ?
+            '任务课程' : '常规课程' }}</t-tag>
         </div>
         <div class="text-trim">
           {{ item.courseName }}
@@ -20,7 +20,7 @@
         </div>
       </div>
     </div>
-  </el-card>
+  </t-card>
 </template>
 
 <script setup>
@@ -57,7 +57,7 @@ const gotoCourseView = (courseId) => {
   white-space: nowrap;
 }
 
-:deep(.el-card__body) {
+:deep(.t-card__body) {
   padding: 0;
 }
 

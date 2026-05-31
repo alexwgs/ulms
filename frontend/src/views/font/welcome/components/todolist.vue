@@ -1,13 +1,66 @@
 <template>
-  <el-dialog :title="'[' + selectDay + ']日程管理'" v-model="calendarDialogVisible" width="80%"
-    :close-on-click-modal="false" :close-on-press-escape="false" :show-close="false">
-    <el-tabs v-model="activeName" @tab-click="refreshData" style="margin-top: -30px">
-      <el-tab-pane label="当日待办" name="todo">
-        <el-button type="primary" size="small" :icon="Plus" @click="openTodoDialog('add')">添加待办</el-button>
-        <el-table :data="todoList.filter((item) => item.status == 0)" height="250px" style="width: 100%">
-          <el-table-column prop="priority" sortable label="优先级" width="140">
+  <t-dialog :header="'[' + selectDay + ']日程管理'" v-model:visible="calendarDialogVisible" width="80%"
+    :close-on-overlay-click="false" :close-on-esc-keydown="false" :close-btn="false">
+    <t-tabs v-model="activeName" @change="refreshData" style="margin-top: -30px">
+      <t-tab-panel label="当日待办" value="todo">
+        <t-button theme="primary" size="small" @click="openTodoDialog('add')"><template #icon><DynamicIcon name="add" /></template>添加待办</t-button>
+        <CustomTable rowKey="id" :data="todoList.filter((item) => item.status == 0)" height="250px" style="width: 100%">
+          <TableColumn colKey="priority" sortable label="优先级" width="140">
             <template #default="scope">
-              <el-tag size="small" :type="scope.row.priority != null &&
+              <t-tag size="small" :theme="scope.row.priority != null &&
+                  scope.row.priority.indexOf('紧急') > -1
+                  ? 'danger'
+                  : 'primary'
+                " variant="outline">
+                {{
+                  scope.row.priority != null &&
+                    scope.row.priority.indexOf('紧急') > -1
+                    ? '紧急'
+                    : '不紧急'
+                }}
+              </t-tag>
+              <t-tag size="small" style="margin-left: 5px" :theme="scope.row.priority != null &&
+                  scope.row.priority.indexOf('重要') > -1
+                  ? 'warning'
+                  : 'primary'
+                " variant="outline">
+                {{
+                  scope.row.priority != null &&
+                    scope.row.priority.indexOf('重要') > -1
+                    ? '重要'
+                    : '不重要'
+                }}
+              </t-tag>
+            </template>
+          </TableColumn>
+          <TableColumn colKey="title" label="摘要（鼠标移入可查看详细）">
+            <template #default="scope">
+              <t-popup placement="top-start" :title="scope.row.title" width="300" trigger="hover"
+                :content="scope.row.content">
+                <t-button variant="text" ghost>{{ scope.row.title }}</t-button>
+              </t-popup>
+            </template>
+          </TableColumn>
+          <TableColumn colKey="alertFlag" sortable label="提醒" width="120">
+            <template #default="scope">
+              {{ scope.row.alertFlag === 1 ? scope.row.alertTime : '否' }}
+            </template>
+          </TableColumn>
+          <TableColumn label="操作" width="140">
+            <template #default="scope">
+              <t-button size="small" theme="primary" :disabled="scope.row.userId === 'admin'"
+                @click="updateTodo(scope.row)" shape="circle"><template #icon><DynamicIcon name="edit" /></template></t-button>
+              <t-button size="small" theme="danger" :disabled="scope.row.userId === 'admin'"
+                @click="deleteTodo(scope.row)" shape="circle"><template #icon><DynamicIcon name="delete" /></template></t-button>
+              <t-button size="small" theme="success" :disabled="scope.row.userId === 'admin'"
+                @click="completeTodo(scope.row)" shape="circle"><template #icon><DynamicIcon name="check" /></template></t-button>
+            </template>
+          </TableColumn>
+        </CustomTable>
+        <CustomTable rowKey="id" :data="todoList.filter((item) => item.status == 1)" height="150px" style="width: 100%">
+          <TableColumn colKey="priority" sortable label="优先级" width="140">
+            <template #default="scope">
+              <t-tag size="small" :theme="scope.row.priority != null &&
                   scope.row.priority.indexOf('紧急') > -1
                   ? 'danger'
                   : 'info'
@@ -18,8 +71,8 @@
                     ? '紧急'
                     : '不紧急'
                 }}
-              </el-tag>
-              <el-tag size="small" style="margin-left: 5px" :type="scope.row.priority != null &&
+              </t-tag>
+              <t-tag size="small" style="margin-left: 5px" :theme="scope.row.priority != null &&
                   scope.row.priority.indexOf('重要') > -1
                   ? 'warning'
                   : 'info'
@@ -30,174 +83,115 @@
                     ? '重要'
                     : '不重要'
                 }}
-              </el-tag>
+              </t-tag>
             </template>
-          </el-table-column>
-          <el-table-column prop="title" label="摘要（鼠标移入可查看详细）">
+          </TableColumn>
+          <TableColumn colKey="title" label="摘要">
             <template #default="scope">
-              <el-popover placement="top-start" :title="scope.row.title" width="300" trigger="hover"
+              <t-popup placement="top-start" :title="scope.row.title" width="300" trigger="hover"
                 :content="scope.row.content">
                 <template #reference>
-                  <el-link underline="never">{{ scope.row.title }}</el-link>
+                  <t-link underline="never">{{ scope.row.title }}</t-link>
                 </template>
-              </el-popover>
+              </t-popup>
             </template>
-          </el-table-column>
-          <el-table-column prop="alertFlag" sortable label="提醒" width="120">
+          </TableColumn>
+          <TableColumn colKey="alertFlag" sortable label="提醒" width="120">
             <template #default="scope">
               {{ scope.row.alertFlag === 1 ? scope.row.alertTime : '否' }}
             </template>
-          </el-table-column>
-          <el-table-column label="操作" width="140">
+          </TableColumn>
+          <TableColumn label="操作" width="140">
             <template #default="scope">
-              <el-button size="small" type="primary" :disabled="scope.row.userId === 'admin'"
-                @click="updateTodo(scope.row)" :icon="Edit" circle></el-button>
-              <el-button size="small" type="danger" :disabled="scope.row.userId === 'admin'"
-                @click="deleteTodo(scope.row)" :icon="Delete" circle></el-button>
-              <el-button size="small" type="success" :disabled="scope.row.userId === 'admin'"
-                @click="completeTodo(scope.row)" :icon="Check" circle></el-button>
+              <t-button size="small" theme="primary" :disabled="scope.row.userId === 'admin'"
+                @click="updateTodo(scope.row)" shape="circle"><template #icon><DynamicIcon name="edit" /></template></t-button>
+              <t-button size="small" theme="danger" :disabled="scope.row.userId === 'admin'"
+                @click="deleteTodo(scope.row)" shape="circle"><template #icon><DynamicIcon name="delete" /></template></t-button>
+              <t-button size="small" theme="success" :disabled="scope.row.userId === 'admin'"
+                @click="completeTodo(scope.row)" shape="circle"><template #icon><DynamicIcon name="refresh" /></template></t-button>
             </template>
-          </el-table-column>
-        </el-table>
-        <el-table :data="todoList.filter((item) => item.status == 1)" height="150px" style="width: 100%">
-          <el-table-column prop="priority" sortable label="优先级" width="140">
-            <template #default="scope">
-              <el-tag size="small" :type="scope.row.priority != null &&
-                  scope.row.priority.indexOf('紧急') > -1
-                  ? 'danger'
-                  : 'info'
-                " effect="dark">
-                {{
-                  scope.row.priority != null &&
-                    scope.row.priority.indexOf('紧急') > -1
-                    ? '紧急'
-                    : '不紧急'
-                }}
-              </el-tag>
-              <el-tag size="small" style="margin-left: 5px" :type="scope.row.priority != null &&
-                  scope.row.priority.indexOf('重要') > -1
-                  ? 'warning'
-                  : 'info'
-                " effect="dark">
-                {{
-                  scope.row.priority != null &&
-                    scope.row.priority.indexOf('重要') > -1
-                    ? '重要'
-                    : '不重要'
-                }}
-              </el-tag>
-            </template>
-          </el-table-column>
-          <el-table-column prop="title" label="摘要">
-            <template #default="scope">
-              <el-popover placement="top-start" :title="scope.row.title" width="300" trigger="hover"
-                :content="scope.row.content">
-                <template #reference>
-                  <el-link underline="never">{{ scope.row.title }}</el-link>
-                </template>
-              </el-popover>
-            </template>
-          </el-table-column>
-          <el-table-column prop="alertFlag" sortable label="提醒" width="120">
-            <template #default="scope">
-              {{ scope.row.alertFlag === 1 ? scope.row.alertTime : '否' }}
-            </template>
-          </el-table-column>
-          <el-table-column label="操作" width="140">
-            <template #default="scope">
-              <el-button size="small" type="primary" :disabled="scope.row.userId === 'admin'"
-                @click="updateTodo(scope.row)" :icon="Edit" circle></el-button>
-              <el-button size="small" type="danger" :disabled="scope.row.userId === 'admin'"
-                @click="deleteTodo(scope.row)" :icon="Delete" circle></el-button>
-              <el-button size="small" type="success" :disabled="scope.row.userId === 'admin'"
-                @click="completeTodo(scope.row)" :icon="RefreshRight" circle></el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-      </el-tab-pane>
-      <el-tab-pane v-if="hasPermission('main:directorStatus:manager')" label="日程记录" name="schedule" hight="600px">
-        <el-row>
-          <el-col :span="8">在线时长:{{ durationFormatter(totalTime) }}</el-col>
-          <el-col :span="8">我在时长:{{ durationFormatter(onseatTime) }}</el-col>
-          <el-col :span="8">离开时长:{{ durationFormatter(offseatTime) }}</el-col>
-        </el-row>
-        <el-table :data="statusJourList.filter((item) => item.statusId !== 0)" height="400px" style="width: 100%">
-          <el-table-column prop="begTime" sortable label="开始时间" width="120"></el-table-column>
-          <el-table-column prop="endTime" sortable label="结束时间" width="120"></el-table-column>
-          <el-table-column prop="statusName" label="状态">
+          </TableColumn>
+        </CustomTable>
+      </t-tab-panel>
+      <t-tab-panel v-if="hasPermission('main:directorStatus:manager')" label="日程记录" value="schedule">
+        <t-row>
+          <t-col :span="4">在线时长:{{ durationFormatter(totalTime) }}</t-col>
+          <t-col :span="4">我在时长:{{ durationFormatter(onseatTime) }}</t-col>
+          <t-col :span="4">离开时长:{{ durationFormatter(offseatTime) }}</t-col>
+        </t-row>
+        <CustomTable rowKey="id" :data="statusJourList.filter((item) => item.statusId !== 0)" height="400px" style="width: 100%">
+          <TableColumn colKey="begTime" sortable label="开始时间" width="120"></TableColumn>
+          <TableColumn colKey="endTime" sortable label="结束时间" width="120"></TableColumn>
+          <TableColumn colKey="statusName" label="状态">
             <template #default="slot">
               {{
                 slot.row.statusName +
                 (slot.row.memo == null ? '' : '[' + slot.row.memo + ']')
               }}
             </template>
-          </el-table-column>
-          <el-table-column prop="duration" sortable label="持续时间" width="100">
+          </TableColumn>
+          <TableColumn colKey="duration" sortable label="持续时间" width="100">
             <template #default="slot">
               {{ durationFormatter(slot.row.duration) }}
             </template>
-          </el-table-column>
-        </el-table>
-      </el-tab-pane>
-      <el-tab-pane label="每日一学" name="task" v-if="currentDate >= selectDay">
+          </TableColumn>
+        </CustomTable>
+      </t-tab-panel>
+      <t-tab-panel label="每日一学" value="task" v-show="currentDate >= selectDay">
         <DailyTask ref="dailyTaskRef"></DailyTask>
-      </el-tab-pane>
-    </el-tabs>
+      </t-tab-panel>
+    </t-tabs>
     <template #footer>
       <span class="dialog-footer">
-        <el-button size="small" @click="onclose">取 消</el-button>
+        <t-button size="small" @click="onclose">取 消</t-button>
       </span>
     </template>
 
-    <el-dialog width="50%" title="待办事项" v-model="innerVisible" append-to-body>
-      <el-form :model="todoForm" :rules="rules" ref="todoFormRef" label-width="100px">
-        <el-form-item label="待办摘要" prop="title">
-          <el-input size="small" v-model="todoForm.title"></el-input>
-        </el-form-item>
-        <el-form-item label="待办详情" prop="content">
-          <el-input size="small" type="textarea" v-model="todoForm.content"></el-input>
-        </el-form-item>
-        <el-form-item label="优先级" prop="name">
-          <el-checkbox-group size="small" v-model="priorityList">
-            <el-checkbox label="重要"></el-checkbox>
-            <el-checkbox label="紧急"></el-checkbox>
-          </el-checkbox-group>
-          <el-tag v-for="(tag, index) in priorityList" :key="index" :type="tag === '重要' ? 'warning' : 'danger'">
+    <t-dialog width="50%" header="待办事项" v-model:visible="innerVisible" attach="body">
+      <t-form :data="todoForm" :rules="rules" ref="todoFormRef" label-width="100px">
+        <t-form-item label="待办摘要" name="title">
+          <t-input size="small" v-model="todoForm.title"></t-input>
+        </t-form-item>
+        <t-form-item label="待办详情" name="content">
+          <t-textarea size="small" v-model="todoForm.content" />
+        </t-form-item>
+        <t-form-item label="优先级" name="name">
+          <t-checkbox-group size="small" v-model="priorityList">
+            <t-checkbox value="重要"></t-checkbox>
+            <t-checkbox value="紧急"></t-checkbox>
+          </t-checkbox-group>
+          <t-tag v-for="(tag, index) in priorityList" :key="index" :theme="tag === '重要' ? 'warning' : 'danger'">
             {{ tag }}
-          </el-tag>
-        </el-form-item>
-        <el-form-item label="是否提醒" required>
-          <el-col :span="5">
-            <el-switch size="small" v-model="alertFlag" @change="alertSwitch"></el-switch>
-          </el-col>
-          <el-col :span="18">
-            <el-form-item prop="time">
-              <el-time-picker size="small" placeholder="选择时间" :disabled="!alertFlag" value-format="HH:mm:ss"
-                v-model="todoForm.alertTime" style="width: 100%"></el-time-picker>
-            </el-form-item>
-          </el-col>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" size="small" @click="submitTodoForm()">{{
+          </t-tag>
+        </t-form-item>
+        <t-form-item label="是否提醒" required>
+          <t-row>
+            <t-col :span="3">
+              <t-switch size="small" v-model="alertFlag" @change="alertSwitch"></t-switch>
+            </t-col>
+            <t-col :span="9">
+              <t-form-item name="time">
+                <t-time-picker size="small" placeholder="选择时间" :disabled="!alertFlag"
+                  v-model="todoForm.alertTime" style="width: 100%"></t-time-picker>
+              </t-form-item>
+            </t-col>
+          </t-row>
+        </t-form-item>
+        <t-form-item>
+          <t-button theme="primary" size="small" @click="submitTodoForm()">{{
             todoType === 'add' ? '立即创建' : '提交修改'
-            }}</el-button>
-          <el-button size="small" @click="innerVisible = false">取 消</el-button>
-        </el-form-item>
-      </el-form>
-    </el-dialog>
-  </el-dialog>
+            }}</t-button>
+          <t-button size="small" @click="innerVisible = false">取 消</t-button>
+        </t-form-item>
+      </t-form>
+    </t-dialog>
+  </t-dialog>
 </template>
 
 <script setup>
 import { ref, reactive, computed, onMounted, nextTick } from 'vue'
-import { ElMessage, ElMessageBox } from 'element-plus'
-import {
-  Plus,
-  Edit,
-  Delete,
-  Check,
-  RefreshRight
-} from '@element-plus/icons-vue'
+import { MessagePlugin, DialogPlugin } from 'tdesign-vue-next'
+import { AddIcon, EditIcon, DeleteIcon, CheckIcon, RefreshIcon } from 'tdesign-icons-vue-next'
 import {
   getTodoList as apiGetTodoList,
   addTodo as apiAddTodo,
@@ -259,7 +253,7 @@ const getTodoListData = () => {
   apiGetTodoList(selectDay.value)
     .then((res) => {
       if (res.code !== 200) {
-        ElMessage.error(res.msg)
+        MessagePlugin.error(res.msg)
         return
       }
       todoList.value = res.data || []
@@ -281,7 +275,9 @@ const getTodoListData = () => {
           parent.taskData.filter((e) => e.event === '').length > 0
         ) {
           calendarDialogVisible.value = true
-          activeName.value = 'task'
+          if (currentDate.value >= selectDay.value) {
+            activeName.value = 'task'
+          }
           nextTick(() => {
             if (dailyTaskRef.value) {
               dailyTaskRef.value.init()
@@ -316,7 +312,7 @@ const getStatusJourData = async () => {
   try {
     const res = await getStatusJourList(selectDay.value)
     if (res.code !== 200) {
-      ElMessage.error(res.msg)
+      MessagePlugin.error(res.msg)
       return
     }
     statusJourList.value = res.data || []
@@ -336,10 +332,10 @@ const getStatusJourData = async () => {
   }
 }
 
-const refreshData = (e) => {
-  if (e.name === 'schedule') {
+const refreshData = (value) => {
+  if (value === 'schedule') {
     getStatusJourData()
-  } else if (e.name === 'task') {
+  } else if (value === 'task') {
     if (selectDay.value === currentDate.value) {
       if (dailyTaskRef.value) dailyTaskRef.value.init()
     } else {
@@ -363,39 +359,38 @@ const alertSwitch = (e) => {
 }
 
 const submitTodoForm = async () => {
-  todoFormRef.value?.validate(async (valid) => {
-    if (valid) {
-      todoForm.dataDate = selectDay.value
-      todoForm.priority = priorityList.value.join(',')
+  const valid = await todoFormRef.value?.validate()
+  if (valid === true) {
+    todoForm.dataDate = selectDay.value
+    todoForm.priority = priorityList.value.join(',')
 
-      if (todoForm.alertFlag === 1 && todoForm.alertTime === '') {
-        ElMessage.error('请填写提醒时间！')
-        return
-      }
-
-      try {
-        let res
-        if (todoType.value === 'add') {
-          res = await apiAddTodo(todoForm)
-        } else {
-          res = await apiUpdateTodo(todoForm)
-        }
-
-        if (res.code !== 200) {
-          ElMessage.error(res.msg)
-          return
-        }
-        ElMessage.success(res.msg)
-      } catch (error) {
-        ElMessage.error('操作失败')
-        return
-      }
-
-      calendarUpdateFlag.value = 1
-      innerVisible.value = false
-      getTodoListData()
+    if (todoForm.alertFlag === 1 && todoForm.alertTime === '') {
+      MessagePlugin.error('请填写提醒时间！')
+      return
     }
-  })
+
+    try {
+      let res
+      if (todoType.value === 'add') {
+        res = await apiAddTodo(todoForm)
+      } else {
+        res = await apiUpdateTodo(todoForm)
+      }
+
+      if (res.code !== 200) {
+        MessagePlugin.error(res.msg)
+        return
+      }
+      MessagePlugin.success(res.msg)
+    } catch (error) {
+      MessagePlugin.error('操作失败')
+      return
+    }
+
+    calendarUpdateFlag.value = 1
+    innerVisible.value = false
+    getTodoListData()
+  }
 }
 
 const openTodoDialog = (type) => {
@@ -426,7 +421,7 @@ const updateTodo = (row) => {
 }
 
 const deleteTodo = (row) => {
-  ElMessageBox.confirm('你是否确定永久删除此待办，不可恢复', '确认信息', {
+  DialogPlugin.confirm('你是否确定永久删除此待办，不可恢复', '确认信息', {
     distinguishCancelAndClose: true,
     confirmButtonText: '确认',
     cancelButtonText: '放弃删除'
@@ -435,14 +430,14 @@ const deleteTodo = (row) => {
       try {
         const res = await apiDeleteTodo(row.id)
         if (res.code !== 200) {
-          ElMessage.error(res.msg)
+          MessagePlugin.error(res.msg)
           return
         }
-        ElMessage.success(res.msg)
+        MessagePlugin.success(res.msg)
         getTodoListData()
         calendarUpdateFlag.value = 1
       } catch (error) {
-        ElMessage.error('删除失败')
+        MessagePlugin.error('删除失败')
       }
     })
     .catch(() => { })
@@ -454,14 +449,14 @@ const completeTodo = async (row) => {
   try {
     const res = await apiUpdateTodo(data)
     if (res.code !== 200) {
-      ElMessage.error(res.msg)
+      MessagePlugin.error(res.msg)
       return
     }
-    ElMessage.success(res.msg)
+    MessagePlugin.success(res.msg)
     getTodoListData()
     calendarUpdateFlag.value = 1
   } catch (error) {
-    ElMessage.error('操作失败')
+    MessagePlugin.error('操作失败')
   }
 }
 

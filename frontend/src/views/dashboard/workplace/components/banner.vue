@@ -1,6 +1,6 @@
 <template>
   <a-col class="banner">
-    <a-col :span="8">
+    <a-col :span="4">
       <a-typography-title :heading="5" style="margin-top: 0">
         欢迎！ {{ userInfo.name }}
       </a-typography-title>
@@ -25,7 +25,7 @@
   .banner {
     width: 100%;
     padding: 0 20px 0 20px;
-    background-color: var(--color-bg-2);
+-color: var(--color-bg-2);
     border-radius: 4px 4px 0 0;
   }
 

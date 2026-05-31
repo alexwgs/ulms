@@ -1,24 +1,24 @@
 <!-- IconSelect.vue -->
 <template>
-  <el-popover
+  <t-popup
     v-model:visible="popoverVisible"
     placement="bottom"
     width="400px"
     trigger="click"
   >
     <template #reference>
-      <el-input
+      <t-input
         :model-value="modelValue"
         placeholder="点击选择图标"
         class="icon-select-input"
         readonly
       >
         <template #prefix>
-          <el-icon v-if="modelValue">
+          <t-icon v-if="modelValue">
             <component :is="modelValue" />
-          </el-icon>
+          </t-icon>
         </template>
-      </el-input>
+      </t-input>
     </template>
 
     <!-- 新增图标列表容器 -->
@@ -29,18 +29,18 @@
         class="icon-item"
         @click="selectIcon(icon)"
       >
-        <el-icon class="icon">
+        <t-icon class="icon">
           <component :is="icon.component" />
-        </el-icon>
+        </t-icon>
         <span class="icon-name">{{ icon.name }}</span>
       </div>
     </div>
-  </el-popover>
+  </t-popup>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue'
-import * as ElementPlusIconsVue from '@element-plus/icons-vue'
+import * as ElementPlusIconsVue from 'tdesign-icons-vue-next'
 
 const props = defineProps({
   modelValue: {
@@ -99,7 +99,7 @@ const selectIcon = (icon) => {
 }
 
 .icon-item:hover {
-  background-color: var(--el-color-primary-light-9);
+-color: var(--td-color-primary-light-9);
   transform: scale(1.05);
 }
 

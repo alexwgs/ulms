@@ -44,4 +44,10 @@ public class ReplyServiceImpl implements ReplyService {
 		return replyMapper.selectByPrimaryKey(id);
 	}
 
+	@Override
+	public int increaseLikeNum(Integer id) {
+		return replyMapper.increaseLikeNum(id);
+	}
+
+
 }

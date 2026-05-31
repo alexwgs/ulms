@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="试题预览" v-model="dialogVisible" width="50%">
+  <t-dialog header="试题预览" v-model:visible="dialogVisible" width="50%">
     <div class="main-container" v-if="question !== null">
       <div class="ques-title">
         [{{
@@ -17,7 +17,7 @@
           (question.fileType === 'jpg' || question.fileType === 'png')
         "
       >
-        <el-image
+        <t-image
           style="width: 100px; height: 100px"
           :src="fileUrl"
           :preview-src-list="srcList"
@@ -30,8 +30,8 @@
         <audio :src="fileUrl" controls width="300px"></audio>
       </div>
       <div class="ques-options" v-if="question.quesType === 2">
-        <el-checkbox-group v-model="answer.checkbox">
-          <el-checkbox
+        <t-checkbox-group v-model="answer.checkbox">
+          <t-checkbox
             v-for="(item, index) of options"
             :key="index"
             class="ques-option"
@@ -39,28 +39,29 @@
             :value="item"
             border
             disabled
-          ></el-checkbox>
-        </el-checkbox-group>
+          ></t-checkbox>
+        </t-checkbox-group>
       </div>
       <div class="ques-options" v-else>
-        <el-radio
-          v-for="(item, index) of options"
-          :key="index"
-          v-model="answer.radio"
-          class="ques-option"
-          :label="item"
-          border
-          disabled
-          >{{ item }}</el-radio
-        >
+        <t-radio-group v-model="answer.radio">
+          <t-radio
+            v-for="(item, index) of options"
+            :key="index"
+            class="ques-option"
+            :value="item"
+            border
+            disabled
+            >{{ item }}</t-radio
+          >
+        </t-radio-group>
       </div>
     </div>
     <template #footer>
       <span class="dialog-footer">
-        <el-button size="small" @click="dialogVisible = false">关 闭</el-button>
+        <t-button size="small" @click="dialogVisible = false">关 闭</t-button>
       </span>
     </template>
-  </el-dialog>
+  </t-dialog>
 </template>
 <script setup>
 import { ref, reactive } from 'vue'
@@ -142,18 +143,18 @@ defineExpose({
       display: block;
     }
 
-    .el-radio,
-    .el-checkbox {
+    .t-radio,
+    .t-checkbox {
       color: #000;
     }
 
-    :deep(.el-checkbox__label),
-    :deep(.el-radio__label) {
+    :deep(.t-checkbox__label),
+    :deep(.t-radio__label) {
       display: inline;
     }
 
-    .el-radio.is-bordered,
-    .el-checkbox.is-bordered {
+    .t-radio.is-bordered,
+    .t-checkbox.is-bordered {
       padding: 8px 20px 8px 10px;
       border-radius: 4px;
       box-sizing: border-box;

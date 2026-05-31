@@ -1,86 +1,85 @@
 <template>
-  <el-alert
+  <t-alert
     title="操作说明"
-    type="info"
+    theme="info"
     :closable="false"
-    description="请正确使用用户信息：1.用户列表取自人员成长平台。2.需要注意本系统角色与成长平台不一致，如有新入职员工，需搜索后手动分配角色。3.该页面数据每个整点更新。"
+    message="请正确使用用户信息：1.用户列表取自人员成长平台。2.需要注意本系统角色与成长平台不一致，如有新入职员工，需搜索后手动分配角色。3.该页面数据每个整点更新。"
   />
-  <el-card class="management-card">
+  <t-card class="management-card">
     <!-- 搜索区域 -->
-    <el-row :gutter="20" class="search-row">
-      <el-col :span="10">
-        <el-input
+    <t-row :gutter="20" class="search-row">
+      <t-col :span="5">
+        <t-input
           size="small"
           placeholder="请输入内容"
           v-model="queryInfo.query"
           class="search-input"
         >
           <template #prepend>
-            <el-select
+            <t-select
               size="small"
               v-model="queryInfo.queryType"
               placeholder="请选择"
               style="width: 100px"
             >
-              <el-option label="姓名" value="ploName" />
-              <el-option label="工号" value="ploNum" />
-              <el-option label="科室" value="deptNum" />
-              <el-option label="组别" value="DeptGroup" />
-              <el-option label="AgentId" value="agentNum" />
-            </el-select>
+              <t-option label="姓名" value="ploName" />
+              <t-option label="工号" value="ploNum" />
+              <t-option label="科室" value="deptNum" />
+              <t-option label="组别" value="DeptGroup" />
+              <t-option label="AgentId" value="agentNum" />
+            </t-select>
           </template>
           <template #append>
-            <el-button size="small" icon="Search" @click="getEmployeeList" />
+            <t-button size="small" @click="getEmployeeList"><template #icon><DynamicIcon name="search" /></template></t-button>
           </template>
-        </el-input>
-      </el-col>
+        </t-input>
+      </t-col>
 
-      <el-col :span="8">
-        <el-select
+      <t-col :span="4">
+        <t-select
           size="small"
           v-model="employmentStatus"
           placeholder="请选择是否在职名单"
           @change="getEmployeeList"
         >
-          <el-option label="全部" value="all" />
-          <el-option label="在职" value="00" />
-          <el-option label="离职" value="01" />
-        </el-select>
-      </el-col>
+          <t-option label="全部" value="all" />
+          <t-option label="在职" value="00" />
+          <t-option label="离职" value="01" />
+        </t-select>
+      </t-col>
 
-      <el-col :span="6" class="text-right">
-        <el-button size="small" type="primary" :disabled="true">
+      <t-col :span="3" class="text-right">
+        <t-button size="small" theme="primary" :disabled="true">
           添加新用户
-        </el-button>
-      </el-col>
-    </el-row>
+        </t-button>
+      </t-col>
+    </t-row>
     <!-- 员工表格 -->
-    <el-table
+    <CustomTable rowKey="id"
       size="small"
       :data="list"
       height="calc(100vh - 400px)"
-      v-loading="loading"
-    >
-      <el-table-column label="科室" width="100" prop="deptName" />
-      <el-table-column label="组别" width="100" prop="groupName" />
-      <el-table-column label="工号" width="90" prop="ploNum" />
-      <el-table-column label="姓名" width="90">
+      :loading="loading">
+      <TableColumn label="科室" width="100" colKey="deptName" />
+      <TableColumn label="组别" width="100" colKey="groupName" />
+      <TableColumn label="工号" width="90" colKey="ploNum" />
+      <TableColumn label="姓名" width="90">
         <template #default="{ row }">
-          <el-popover trigger="hover" placement="top" width="200">
+          <t-popup trigger="hover" placement="top" width="200">
             <template #default>
               <p>姓名: {{ row.ploName }}</p>
               <p>住址: {{ row.ploAddr }}</p>
               <p>电话: {{ row.ploMobil }}</p>
             </template>
             <template #reference>
-              <el-tag size="small">{{ row.ploName }}</el-tag>
+              <t-tag size="small">{{ row.ploName }}</t-tag>
             </template>
-          </el-popover>
+          </t-popup>
         </template>
-      </el-table-column>
-      <el-table-column label="AgentId" width="90" prop="agentNum" />
-      <el-table-column label="期数" width="90" prop="batchGroup" />
-      <el-table-column label="岗位" width="100" prop="jobLevel">
+      </TableColumn>
+      <TableColumn label="AgentId" width="90" colKey="agentNum" />
+      <TableColumn label="期数" width="90" colKey="batchGroup" />
+      <TableColumn label="岗位" width="100" colKey="jobLevel">
         <template #default="{ row }">
           <!-- jobLevelList 是一个数组，包含所有岗位信息 -->
           {{
@@ -91,38 +90,35 @@
               : String(row.jobLevel)
           }}
         </template>
-      </el-table-column>
-      <el-table-column label="入职日期" width="120" prop="inDate" />
-      <el-table-column label="离职日期" width="120" prop="outDate" />
-      <el-table-column label="操作" fixed="right">
+      </TableColumn>
+      <TableColumn label="入职日期" width="120" colKey="inDate" />
+      <TableColumn label="离职日期" width="120" colKey="outDate" />
+      <TableColumn label="操作" fixed="right">
         <template #default="{ row }">
-          <el-button
-            type="warning"
-            size="small"
-            icon="Edit"
-            @click="handleEdit(row)"
+          <t-button
+            theme="warning"
+            size="small" @click="handleEdit(row)"
             :disabled="true"
-            circle
-          />
-          <el-button size="small" @click="openRoleDialog(row)">
+            shape="circle"><template #icon><DynamicIcon name="edit" /></template></t-button>
+          <t-button size="small" @click="openRoleDialog(row)">
             角色分配
-          </el-button>
+          </t-button>
         </template>
-      </el-table-column>
-    </el-table>
+      </TableColumn>
+    </CustomTable>
 
     <!-- 分页组件 -->
-    <el-pagination
-      @size-change="handleSizeChange"
+    <t-pagination
+      @page-size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-      :current-page="queryInfo.pageNum"
-      :page-sizes="[20, 100, 500]"
+      :current="queryInfo.pageNum"
+      :page-size-options="[20, 100, 500]"
       :page-size="queryInfo.pageSize"
-      layout="total, sizes, prev, pager, next, jumper"
+
       :total="total"
       class="pagination"
     />
-  </el-card>
+  </t-card>
 
   <!-- 角色分配对话框 -->
   <RoleDialog ref="roleDialogRef" @refresh="getEmployeeList" />

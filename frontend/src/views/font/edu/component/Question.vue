@@ -4,7 +4,8 @@
       <span style="float: right; padding: 3px 0">此题剩余时间：{{ quesTime < 0 ? 'N/A' : $moment.utc(quesTime *
         1000).format("HH:mm:ss")}}</span>
     </div>
-    <div class="main-container" v-loading="loading">
+    <t-loading :loading="loading">
+      <div class="main-container">
       <div class="ques-title">
         [{{
           question.quesType === 2
@@ -15,7 +16,7 @@
         }}]{{ question.quesStem }}
       </div>
       <div class="file-view" v-if="question.fileType === 'jpg' || question.fileType === 'png'">
-        <el-image style="width: 100px; height: 100px" :src="fileUrl" :preview-src-list="srcList"></el-image>
+        <t-image style="width: 100px; height: 100px" :src="fileUrl" :preview-src-list="srcList"></t-image>
       </div>
       <div v-else-if="question.fileType === 'mp4'">
         <video :src="fileUrl" controls height="400px"></video>
@@ -24,14 +25,19 @@
         <audio :src="fileUrl" controls width="300px"></audio>
       </div>
       <div class="ques-options" v-if="question.quesType === 2">
-        <el-checkbox v-for="(item, index) of options" :key="index" v-model="answer.checkbox" class="ques-option"
-          @change="submitAnswer" :label="item" border>{{ item }}</el-checkbox>
+        <t-checkbox-group v-model="answer.checkbox" @change="submitAnswer">
+          <t-checkbox v-for="(item, index) of options" :key="index" class="ques-option"
+            :value="item" border>{{ item }}</t-checkbox>
+        </t-checkbox-group>
       </div>
       <div class="ques-options" v-else>
-        <el-radio v-for="(item, index) of options" :key="index" v-model="answer.radio" class="ques-option"
-          @change="submitAnswer" :label="item" border>{{ item }}</el-radio>
+        <t-radio-group v-model="answer.radio" @change="submitAnswer">
+          <t-radio v-for="(item, index) of options" :key="index" class="ques-option"
+            :value="item" border>{{ item }}</t-radio>
+        </t-radio-group>
       </div>
     </div>
+    </t-loading>
   </div>
 </template>
 <script setup>
@@ -165,19 +171,19 @@ defineExpose({
       // font-size: 15px;
     }
 
-    .el-radio,
-    .el-checkbox {
+    .t-radio,
+    .t-checkbox {
       color: #000;
     }
 
-    :deep(.el-checkbox__label),
-    :deep(.el-radio__label) {
+    :deep(.t-checkbox__label),
+    :deep(.t-radio__label) {
       display: inline;
       // font-size: 15px;
     }
 
-    .el-radio.is-bordered,
-    .el-checkbox.is-bordered {
+    .t-radio.is-bordered,
+    .t-checkbox.is-bordered {
       padding: 8px 20px 8px 10px;
       border-radius: 4px;
       box-sizing: border-box;

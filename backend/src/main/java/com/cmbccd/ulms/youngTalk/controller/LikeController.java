@@ -9,6 +9,7 @@ import com.cmbccd.ulms.youngTalk.domain.LikeExample.Criteria;
 import com.cmbccd.ulms.youngTalk.service.ArticalService;
 import com.cmbccd.ulms.youngTalk.service.CommentService;
 import com.cmbccd.ulms.youngTalk.service.LikeService;
+import com.cmbccd.ulms.youngTalk.service.ReplyService;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,6 +27,8 @@ public class LikeController {
 	private ArticalService articalService;
 	@Resource
 	private CommentService commentService;
+	@Resource
+	private ReplyService replyService;
 
 	@PostMapping(value = "like/{likeType}/{id}")
 	public Msg setLike(@PathVariable("id") int id, @PathVariable("likeType") int likeType) {
@@ -62,6 +65,8 @@ public class LikeController {
 			articalService.increaseLikeNum(id);
 		} else if (likeType == 2) {
 			commentService.increaseLikeNum(id);
+		} else if (likeType == 3) {
+			replyService.increaseLikeNum(id);
 		}
 		return Msg.success("点赞成功！");
 	}

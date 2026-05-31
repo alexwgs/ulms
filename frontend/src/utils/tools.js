@@ -1,3 +1,14 @@
+import DOMPurify from 'dompurify'
+
+/**
+ * Sanitize HTML string to prevent XSS.
+ * Allows safe formatting tags while stripping scripts and event handlers.
+ */
+export function sanitizeHtml(dirty) {
+  if (!dirty) return ''
+  return DOMPurify.sanitize(dirty)
+}
+
 /**
  * 下载模板
  * @param {String} fileName 模板文件名带上扩展名

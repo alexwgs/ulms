@@ -96,7 +96,7 @@
         </a-statistic>
       </a-space>
     </a-grid-item>
-    <a-grid-item :span="24">
+    <a-grid-item :span="12">
       <a-divider class="panel-border" />
     </a-grid-item>
   </a-grid>
@@ -115,7 +115,7 @@
   }
   .col-avatar {
     margin-right: 12px;
-    background-color: var(--color-fill-2);
+-color: var(--color-fill-2);
   }
   .up-icon {
     color: rgb(var(--red-6));

@@ -1,6 +1,6 @@
 <template>
-  <el-row style="margin-top: 15px; box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)">
-    <el-col :span="24">
+  <t-row style="margin-top: 15px; box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)">
+    <t-col :span="12">
       <div class="page-list">
         <div class="list-fl">
           <div class="page-tit">排行榜</div>
@@ -16,12 +16,11 @@
                 ><img :src="fsURL + item.user.avatar" title="占位符"
               /></span>
               <div class="sty-tit" style="padding-left: 10px">
-                <b
-                  href=""
+                <span
                   target="_blank"
                   :title="item.user.ploName"
                   class="text-trim text-name"
-                  >{{ item.user.ploName }}</b
+                  >{{ item.user.ploName }}</span
                 >
                 <div class="text-trim" :title="item.user.deptName">
                   部门：{{ item.user.deptName }}
@@ -34,8 +33,8 @@
           </div>
         </ul>
       </div>
-    </el-col>
-  </el-row>
+    </t-col>
+  </t-row>
 </template>
 
 <script setup>
@@ -57,11 +56,11 @@ const fsURL = import.meta.env.VITE_FILE_BASE_URL
 }
 .page-list {
   width: 100%;
-  background-color: #fff;
+background-color: #fff;
   .list-fl {
     width: 12%;
     height: 264px;
-    background: url(@/assets/img/edu/list-bg-2.png);
+background: url(@/assets/img/edu/list-bg-2.png);
     float: left;
     .page-tit {
       line-height: 24px;
@@ -99,7 +98,7 @@ const fsURL = import.meta.env.VITE_FILE_BASE_URL
 .list-sty {
   width: 87%;
   display: inline-block;
-  background: #fbfbfb;
+background: #fbfbfb;
   padding-top: 3px;
   box-sizing: border-box;
   padding-left: 27px;

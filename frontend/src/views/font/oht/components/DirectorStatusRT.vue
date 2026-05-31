@@ -1,40 +1,40 @@
 <template>
-  <el-dialog
+  <t-dialog
     width="80%"
-    title="业务主任实时状态表"
-    v-model="rtVisiable"
-    :close-on-click-modal="false"
-    :close-on-press-escape="false"
-    :show-close="false"
+    header="业务主任实时状态表"
+    v-model:visible="rtVisiable"
+    :close-on-overlay-click="false"
+    :close-on-esc-keydown="false"
+    :close-btn="false"
   >
-    <!-- <el-row :gutter="20">
-      <el-col :span="8">
-        <el-select size="small" v-model="floor" placeholder="根据楼层过滤" @change="filterData($event, 'floor')">
-          <el-option v-for="item in floors" :key="item" :label="item+' 楼'" :value="item"></el-option>
-        </el-select>
-      </el-col>
-      <el-col :span="8">
-        <el-select size="small" v-model="dept" placeholder="根据科室过滤" @change="filterData($event, 'dept')">
-          <el-option v-for="item in dictStore.dict.cyt_artical_resp_dept" :key="item.id" :label="item.codeval" :value="item.code"></el-option>
-        </el-select>
-      </el-col>
-      <el-col :span="8"></el-col>
-    </el-row> -->
-    <el-alert
+    <!-- <t-row :gutter="20">
+      <t-col :span="4">
+        <t-select size="small" v-model="floor" placeholder="根据楼层过滤" @change="filterData($event, 'floor')">
+          <t-option v-for="item in floors" :key="item" :label="item+' 楼'" :value="item"></t-option>
+        </t-select>
+      </t-col>
+      <t-col :span="4">
+        <t-select size="small" v-model="dept" placeholder="根据科室过滤" @change="filterData($event, 'dept')">
+          <t-option v-for="item in dictStore.dict.cyt_artical_resp_dept" :key="item.id" :label="item.codeval" :value="item.code"></t-option>
+        </t-select>
+      </t-col>
+      <t-col :span="4"></t-col>
+    </t-row> -->
+    <t-alert
       title="点击表头中的箭头可对“楼层”、“科室”进行筛选及排序！支付复核筛选！"
-      type="info"
+      theme="info"
       style="margin-top: -10px"
       show-icon
     >
-    </el-alert>
-    <el-table
+    </t-alert>
+    <CustomTable rowKey="id"
       :data="ohtStore.userList.filter((item) => item.user.jobLevel === '101')"
       stripe
       height="300px"
       size="small"
       style="width: 100%"
     >
-      <el-table-column
+      <TableColumn
         prop="station.floorNum"
         label="楼层"
         width="100"
@@ -50,49 +50,45 @@
           { text: '10楼', value: '10' },
           { text: '11楼', value: '11' }
         ]"
-        :filter-method="filterFloor"
-      ></el-table-column>
-      <el-table-column
+        :filter-method="filterFloor"></TableColumn>
+      <TableColumn
         prop="user.deptName"
         label="科室"
         width="120"
         sortable
         :filters="getDeptFilter"
-        :filter-method="filterDept"
-      ></el-table-column>
-      <el-table-column
+        :filter-method="filterDept"></TableColumn>
+      <TableColumn
         prop="user.ploName"
         label="业务主任"
-        width="100"
-      ></el-table-column>
-      <el-table-column
+        width="100"></TableColumn>
+      <TableColumn
         prop="station.extnNum"
         label="分机"
-        width="100"
-      ></el-table-column>
-      <el-table-column prop="identity" label="工作安排"></el-table-column>
-      <el-table-column prop="statusName" label="当前状态"></el-table-column>
-      <el-table-column prop="statusTime" sortable label="持续时间" width="100">
+        width="100"></TableColumn>
+      <TableColumn colKey="identity" label="工作安排"></TableColumn>
+      <TableColumn colKey="statusName" label="当前状态"></TableColumn>
+      <TableColumn colKey="statusTime" sortable label="持续时间" width="100">
         <template #default="scope">
           {{ durationFormatter(timestamp(scope.row.statusTime) + count) }}
         </template>
-      </el-table-column>
-      <el-table-column prop="ohtStatus" sortable label="接单状态" width="120">
+      </TableColumn>
+      <TableColumn colKey="ohtStatus" sortable label="接单状态" width="120">
         <template #default="scope">
-          <el-tag
-            :type="scope.row.ohtStatus === 1 ? 'success' : 'danger'"
+          <t-tag
+            :theme="scope.row.ohtStatus === 1 ? 'success' : 'danger'"
             effect="plain"
-            >{{ scope.row.ohtStatus === 1 ? '可接单' : '不可接单' }}</el-tag
+            >{{ scope.row.ohtStatus === 1 ? '可接单' : '不可接单' }}</t-tag
           >
         </template>
-      </el-table-column>
-    </el-table>
+      </TableColumn>
+    </CustomTable>
     <template #footer="scope">
-      <el-button size="small" @click="statusVisible = !visiable"
-        >关闭</el-button
+      <t-button size="small" @click="statusVisible = !visiable"
+        >关闭</t-button
       >
     </template>
-  </el-dialog>
+  </t-dialog>
 </template>
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue'

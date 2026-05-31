@@ -1,9 +1,9 @@
 <template>
-  <el-card class="tool-card">
+  <t-card class="tool-card">
     <!-- 筛选条件区域 -->
-    <el-row :gutter="15" class="filter-row">
-      <el-col :span="8">
-        <el-input
+    <t-row :gutter="15" class="filter-row">
+      <t-col :span="4">
+        <t-input
           placeholder="请输入工具名称"
           size="small"
           v-model="queryInfo.query"
@@ -11,212 +11,201 @@
           @clear="getList"
         >
           <template #prepend>
-            <el-select
+            <t-select
               v-model="queryInfo.queryType"
               size="small"
               style="width: 100px"
               placeholder="查询类型"
               clearable
             >
-              <el-option label="工具名称" value="name" />
-              <el-option label="工具ID" value="id" />
-            </el-select>
+              <t-option label="工具名称" value="name" />
+              <t-option label="工具ID" value="id" />
+            </t-select>
           </template>
           <template #append>
-            <el-button size="small" icon="Search" @click="getList" />
+            <t-button size="small" @click="getList"><template #icon><DynamicIcon name="search" /></template></t-button>
           </template>
-        </el-input>
-      </el-col>
-      <el-col :span="5">
-        <el-select
+        </t-input>
+      </t-col>
+      <t-col :span="3">
+        <t-select
           v-model="queryInfo.category"
           size="small"
           placeholder="请选择工具类别,默认全部"
           @change="getList"
           clearable
         >
-          <el-option label="全部类别" value="" />
-          <el-option
+          <t-option label="全部类别" value="" />
+          <t-option
             v-for="item in dictStore.dictList.rpa_tool_list_category"
             :key="item.code"
             :label="item.codeval"
             :value="item.code"
           />
-        </el-select>
-      </el-col>
-      <el-col :span="5">
-        <el-select
+        </t-select>
+      </t-col>
+      <t-col :span="3">
+        <t-select
           v-model="queryInfo.status"
           size="small"
           placeholder="请选择工具状态,默认全部"
           @change="getList"
           clearable
         >
-          <el-option label="全部" value="" />
-          <el-option label="有效" :value="1" />
-          <el-option label="无效" :value="0" />
-        </el-select>
-      </el-col>
-      <el-col :span="6" class="text-right">
-        <el-button type="primary" size="small" @click="openToolDialog('add')">
+          <t-option label="全部" value="" />
+          <t-option label="有效" :value="1" />
+          <t-option label="无效" :value="0" />
+        </t-select>
+      </t-col>
+      <t-col :span="3" class="text-right">
+        <t-button theme="primary" size="small" @click="openToolDialog('add')">
           新建工具
-        </el-button>
-      </el-col>
-    </el-row>
+        </t-button>
+      </t-col>
+    </t-row>
 
     <!-- 操作说明 -->
-    <el-alert
+    <t-alert
       title="操作说明"
-      type="info"
+      theme="info"
       :closable="false"
-      description="请正确使用RPA工具配置：1.新建服务时务必完整填写相关信息。2.无需参数的可不配置参数模版，如有请务必准确配置。3.权限，如不配置则全员可查看"
+      message="请正确使用RPA工具配置：1.新建服务时务必完整填写相关信息。2.无需参数的可不配置参数模版，如有请务必准确配置。3.权限，如不配置则全员可查看"
       class="alert-message"
     />
 
     <!-- 数据表格 -->
-    <el-table
+    <CustomTable rowKey="id"
       :data="list"
       size="small"
       height="calc(100vh - 460px)"
       stripe
       @sort-change="tableSort"
       class="tool-table"
-      v-loading="loading"
-    >
-      <el-table-column
+      :loading="loading">
+      <TableColumn
         prop="name"
         label="服务名称"
         sortable="custom"
-        show-overflow-tooltip
+        ellipsis
         min-width="150"
       />
-      <el-table-column
+      <TableColumn
         prop="category"
         label="服务分类"
         sortable="custom"
         width="120px"
-        show-overflow-tooltip
-      >
+        ellipsis>
         <template #default="{ row }">
           {{ dictStore.getDictLabel('rpa_tool_list_category', row.category) }}
         </template>
-      </el-table-column>
-      <el-table-column
+      </TableColumn>
+      <TableColumn
         prop="runTimes"
         label="运行时长(秒)"
         sortable="custom"
         width="140px"
         align="right"
       />
-      <el-table-column
+      <TableColumn
         prop="templeteId"
         label="模版"
         sortable="custom"
         width="90px"
-        show-overflow-tooltip
-      >
+        ellipsis>
         <template #default="{ row }">
-          <el-link
+          <t-link
             size="small"
             :type="row.templeteId ? 'success' : 'danger'"
             @click="openTemplateDialog(row)"
           >
             {{ row.templeteId ? '已配置' : '未配置' }}
-          </el-link>
+          </t-link>
         </template>
-      </el-table-column>
-      <el-table-column
+      </TableColumn>
+      <TableColumn
         prop="roles"
         label="权限"
         width="90px"
         sortable="custom"
-        show-overflow-tooltip
-      >
+        ellipsis>
         <template #default="{ row }">
-          <el-link
+          <t-link
             size="small"
             :type="row.roles ? 'danger' : 'success'"
             @click="openRoleDialog(row)"
           >
             {{ row.roles ? '限制' : '不设限' }}
-          </el-link>
+          </t-link>
         </template>
-      </el-table-column>
-      <el-table-column
+      </TableColumn>
+      <TableColumn
         prop="sortId"
         label="排序"
         sortable="custom"
         width="80px"
         align="right"
       />
-      <el-table-column
+      <TableColumn
         prop="contacts"
         label="联系人"
         sortable="custom"
         width="120px"
-        show-overflow-tooltip
+        ellipsis
       />
-      <el-table-column
+      <TableColumn
         prop="status"
         label="状态"
         sortable="custom"
-        width="90px"
-      >
+        width="90px">
         <template #default="{ row }">
-          <el-tag
-            :type="row.status ? 'success' : 'danger'"
+          <t-tag
+            :theme="row.status ? 'success' : 'danger'"
             size="small"
             @click="changeStatus(row)"
             class="status-tag"
           >
             {{ row.status ? '有效' : '无效' }}
-          </el-tag>
+          </t-tag>
         </template>
-      </el-table-column>
-      <el-table-column
+      </TableColumn>
+      <TableColumn
         prop="createTime"
         label="创建时间"
         sortable="custom"
         width="160px"
       />
-      <el-table-column
+      <TableColumn
         prop="createUser"
         label="创建人"
         sortable="custom"
         width="120px"
       />
-      <el-table-column label="操作" width="120px" fixed="right">
+      <TableColumn label="操作" width="120px" fixed="right">
         <template #default="{ row }">
-          <el-button
-            type="warning"
-            size="small"
-            icon="Edit"
-            @click="openToolDialog('update', row)"
-            circle
-          />
-          <el-button
-            type="danger"
-            size="small"
-            icon="Delete"
-            @click="removeTool(row)"
-            circle
-          />
+          <t-button
+            theme="warning"
+            size="small" @click="openToolDialog('update', row)"
+            shape="circle"><template #icon><DynamicIcon name="edit" /></template></t-button>
+          <t-button
+            theme="danger"
+            size="small" @click="removeTool(row)"
+            shape="circle"><template #icon><DynamicIcon name="delete" /></template></t-button>
         </template>
-      </el-table-column>
-    </el-table>
+      </TableColumn>
+    </CustomTable>
 
     <!-- 分页组件 -->
-    <el-pagination
-      @size-change="handleSizeChange"
+    <t-pagination
+      @page-size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-      :current-page="queryInfo.pageNum"
-      :page-sizes="[20, 40, 100, 200]"
+      :current="queryInfo.pageNum"
+      :page-size-options="[20, 40, 100, 200]"
       :page-size="queryInfo.pageSize"
-      layout="total, sizes, prev, pager, next, jumper"
+
       :total="total"
       class="pagination"
     />
-  </el-card>
+  </t-card>
 
   <!-- 工具对话框 -->
   <ToolDialog ref="toolDialogRef" @refresh="getList" />
@@ -230,7 +219,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { MessagePlugin, DialogPlugin } from 'tdesign-vue-next'
 import { useDictStore } from '@/stores'
 import ToolDialog from './components/ToolDialog.vue'
 import TemplateDialog from './components/TemplateDialog.vue'
@@ -271,7 +260,7 @@ const getList = async () => {
     list.value = res.data.list
     total.value = res.data.total
   } catch (error) {
-    ElMessage.error(error.message || '获取工具列表失败')
+    MessagePlugin.error(error.message || '获取工具列表失败')
   } finally {
     loading.value = false
   }
@@ -290,9 +279,9 @@ const handleCurrentChange = (page) => {
 }
 
 // 表格排序
-const tableSort = ({ prop, order }) => {
-  queryInfo.value.order = prop
-  queryInfo.value.orderType = order === 'ascending' ? 'asc' : 'desc'
+const tableSort = ({ sortBy, descending }) => {
+  queryInfo.value.order = sortBy
+  queryInfo.value.orderType = !descending ? 'asc' : 'desc'
   getList()
 }
 
@@ -314,7 +303,7 @@ const openRoleDialog = (row) => {
 // 更改工具状态
 const changeStatus = async (row) => {
   try {
-    await ElMessageBox.confirm(
+    await DialogPlugin.confirm(
       `此操作将${row.status ? '禁用' : '启用'}该工具, 是否继续?`,
       '提示',
       {
@@ -325,11 +314,11 @@ const changeStatus = async (row) => {
     )
 
     await updateRpaToolStatus({ id: row.id, status: row.status === 1 ? 0 : 1 })
-    ElMessage.success('状态更新成功')
+    MessagePlugin.success('状态更新成功')
     getList()
   } catch (error) {
     if (error !== 'cancel') {
-      ElMessage.error(error.message || '状态更新失败')
+      MessagePlugin.error(error.message || '状态更新失败')
     }
   }
 }
@@ -337,18 +326,18 @@ const changeStatus = async (row) => {
 // 删除工具
 const removeTool = async (row) => {
   try {
-    await ElMessageBox.alert('此操作将永久删除该工具, 是否继续?', '提示', {
+    await DialogPlugin.alert('此操作将永久删除该工具, 是否继续?', '提示', {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
       type: 'warning'
     })
 
     await deleteRpaTool(row.id)
-    ElMessage.success('删除成功')
+    MessagePlugin.success('删除成功')
     getList()
   } catch (error) {
     if (error !== 'cancel') {
-      ElMessage.error(error.message || '删除失败')
+      MessagePlugin.error(error.message || '删除失败')
     }
   }
 }

@@ -66,7 +66,7 @@ export const getItemProgress = (id) => {
 // 评论相关API
 // 获取项目评论
 export const getComments = (id, params) => {
-  return httpInstance.get(`/cyt/comment/list/${id}/`, { params })
+  return httpInstance.get(`/cyt/comment/list/${id}`, { params })
 }
 
 // 删除评论

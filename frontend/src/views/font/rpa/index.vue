@@ -1,8 +1,8 @@
 <template>
-  <el-card class="box-card" style="height: calc(100vh - 130px)">
-    <el-row :gutter="20">
-      <el-col :span="16">
-        <el-card class="box-card">
+  <t-card class="box-card" style="height: calc(100vh - 130px)">
+    <t-row :gutter="20">
+      <t-col :span="8">
+        <t-card class="box-card">
           <template #header>
             <div class="clearfix">
               <span>RPA轻工具列表</span>
@@ -20,47 +20,47 @@
               v-for="item in dictStore.dictList.rpa_tool_list_category"
               :key="item.code"
             >
-              <el-divider content-position="left">{{
+              <t-divider content-position="left">{{
                 item.codeval
-              }}</el-divider>
-              <el-row :gutter="10">
-                <el-col
+              }}</t-divider>
+              <t-row :gutter="10">
+                <t-col
                   v-for="tool in filteredList(item.code)"
                   :key="tool.id"
-                  :span="8"
+                  :span="4"
                 >
-                  <el-card style="margin-bottom: 10px">
+                  <t-card style="margin-bottom: 10px">
                     <div
                       style="cursor: pointer"
                       @click="toolDetailRef.initData(tool)"
                     >
-                      <el-tooltip placement="bottom" effect="light">
+                      <t-tooltip placement="bottom">
                         <template #content>
                           <div v-html="tool.memo"></div>
                         </template>
                         <span>{{ tool.name }}</span>
-                      </el-tooltip>
+                      </t-tooltip>
                       <div class="bottom clearfix">
                         <time class="time">联系人：{{ tool.contacts }}</time>
                       </div>
                     </div>
-                  </el-card>
-                </el-col>
-              </el-row>
+                  </t-card>
+                </t-col>
+              </t-row>
             </div>
           </div>
-        </el-card>
-      </el-col>
-      <el-col :span="8">
+        </t-card>
+      </t-col>
+      <t-col :span="4">
         <ToolDetailVue ref="toolDetailRef"></ToolDetailVue>
-      </el-col>
-    </el-row>
-  </el-card>
+      </t-col>
+    </t-row>
+  </t-card>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { ElMessage } from 'element-plus'
+import { MessagePlugin } from 'tdesign-vue-next'
 import ToolDetailVue from '@/views/font/rpa/components/toolDetail.vue'
 import { getRpaToolList } from '@/api/rpa/rpa.js'
 import { useDictStore } from '@/stores'
@@ -98,11 +98,11 @@ const getList = async () => {
     if (res.code === 200) {
       list.value = res.data
     } else {
-      ElMessage.error(res.msg)
+      MessagePlugin.error(res.msg)
     }
   } catch (error) {
     console.error('获取RPA工具列表失败:', error)
-    ElMessage.error('获取RPA工具列表失败')
+    MessagePlugin.error('获取RPA工具列表失败')
   }
 }
 
@@ -119,7 +119,7 @@ onMounted(() => {
 <style lang="less" scoped>
 .time {
   font-size: 13px;
-  color: var(--el-text-color-secondary);
+  color: var(--td-text-color-secondary);
 }
 
 .bottom {
@@ -142,7 +142,7 @@ onMounted(() => {
   text-indent: 2em;
   height: 33px;
   font-size: 12px;
-  color: var(--el-text-color-secondary);
+  color: var(--td-text-color-secondary);
   overflow: hidden;
   word-break: normal;
   text-overflow: ellipsis;

@@ -1,59 +1,53 @@
 <template>
   <div>
-    <el-dialog
-      title="任务名单管理"
-      v-model="dialogVisible"
-      :close-on-click-modal="false"
+    <t-dialog
+      header="任务名单管理"
+      v-model:visible="dialogVisible"
+      :close-on-overlay-click="false"
       width="70%"
     >
-      <el-row :gutter="10">
-        <el-col :span="10">
-          <el-input
+      <t-row :gutter="10">
+        <t-col :span="5">
+          <t-input
             placeholder="请输入对应的搜索内容"
             v-model="queryInfo.query"
             size="small"
           >
             <template #prepend>
-              <el-select
+              <t-select
                 v-model="queryInfo.queryType"
                 style="width: 80px"
                 placeholder="请选择"
                 size="small"
               >
-                <el-option label="姓名" value="ploName"></el-option>
-                <el-option label="工号" value="ploNum"></el-option>
-                <el-option label="科室" value="deptNum"></el-option>
-                <el-option label="组别" value="deptGroup"></el-option>
-              </el-select>
+                <t-option label="姓名" value="ploName"></t-option>
+                <t-option label="工号" value="ploNum"></t-option>
+                <t-option label="科室" value="deptNum"></t-option>
+                <t-option label="组别" value="deptGroup"></t-option>
+              </t-select>
             </template>
             <template #append>
-              <el-button
-                icon="Search"
-                size="small"
-                @click="getCourseTaskList"
-              ></el-button>
+              <t-button size="small"
+                @click="getCourseTaskList"><template #icon><DynamicIcon name="search" /></template></t-button>
             </template>
-          </el-input>
-        </el-col>
-        <el-col :span="10">
+          </t-input>
+        </t-col>
+        <t-col :span="5">
           <EmployeeSelect
             placeholder="输入工号添加"
             v-model="examScoreForm.ploNum"
             size="small"
           ></EmployeeSelect>
-          <el-button
-            type="primary"
-            icon="Plus"
-            size="small"
-            @click="addNewUser"
-          >
+          <t-button
+            theme="primary" size="small"
+            @click="addNewUser"><template #icon><DynamicIcon name="add" /></template>
             增加
-          </el-button>
-        </el-col>
-        <el-col :span="4">
-          <el-button
+          </t-button>
+        </t-col>
+        <t-col :span="2">
+          <t-button
             size="small"
-            type="primary"
+            theme="primary"
             @click="
               uploadExcelRef.show({
                 url: 'edu/excel/in/ques/score',
@@ -62,81 +56,76 @@
             "
           >
             批量
-          </el-button>
-        </el-col>
-      </el-row>
+          </t-button>
+        </t-col>
+      </t-row>
 
-      <el-table
+      <CustomTable rowKey="id"
         :data="examScoreeList"
         size="small"
         height="400px"
         stripe
         @sort-change="tableSort"
-        style="width: 100%"
-      >
-        <el-table-column
+        style="width: 100%">
+        <TableColumn
           prop="deptNum"
           label="科室"
           width="110px"
-          sortable="custom"
-        >
+          sortable="custom">
           <template #default="scope">{{ scope.row.user.deptName }}</template>
-        </el-table-column>
-        <el-table-column
+        </TableColumn>
+        <TableColumn
           prop="deptGroup"
           label="组别"
           width="110px"
-          sortable="custom"
-        >
+          sortable="custom">
           <template #default="scope">{{ scope.row.user.groupName }}</template>
-        </el-table-column>
-        <el-table-column
+        </TableColumn>
+        <TableColumn
           prop="ploNum"
           label="员编"
-          sortable="custom"
-        ></el-table-column>
-        <el-table-column prop="ploName" label="姓名" width="100px">
+          sortable="custom"></TableColumn>
+        <TableColumn colKey="ploName" label="姓名" width="100px">
           <template #default="scope">{{ scope.row.user.ploName }}</template>
-        </el-table-column>
-        <el-table-column
+        </TableColumn>
+        <TableColumn
           label="报名情况"
           prop="compStat"
           width="100px"
-          sortable="custom"
-        >
+          sortable="custom">
           <template #default="scope">
             {{
               scope.row.compStat === 2 ? '任务' : `其他[${scope.row.compStat}]`
             }}
           </template>
-        </el-table-column>
-      </el-table>
-      <el-pagination
-        @size-change="handleSizeChange"
+        </TableColumn>
+      </CustomTable>
+      <t-pagination
+        @page-size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        v-model:current-page="currentPage"
-        :page-sizes="pageSizes"
+        v-model:current="currentPage"
+        :page-size-options="pageSizes"
         v-model:page-size="queryInfo.pageSize"
-        layout="total, sizes, prev, pager, next, jumper"
+
         :total="total"
       />
       <template #footer>
         <div class="dialog-footer">
-          <el-button size="small" @click="dialogVisible = false"
-            >取 消</el-button
+          <t-button size="small" @click="dialogVisible = false"
+            >取 消</t-button
           >
-          <el-button size="small" type="primary" @click="dialogVisible = false">
+          <t-button size="small" theme="primary" @click="dialogVisible = false">
             确 定
-          </el-button>
+          </t-button>
         </div>
       </template>
-    </el-dialog>
+    </t-dialog>
     <UploadExcel ref="uploadExcelRef"></UploadExcel>
   </div>
 </template>
 <script setup>
 import { ref, reactive } from 'vue'
-import { ElMessage } from 'element-plus'
+import { MessagePlugin } from 'tdesign-vue-next'
 import UploadExcel from '@/components/UploadExcel.vue'
 import { examConfigApi } from '@/api/edu/examConfig'
 import EmployeeSelect from '@/components/EmployeeSelect.vue'
@@ -186,13 +175,13 @@ const getCourseTaskList = async () => {
   try {
     const res = await examConfigApi.getExamScoreList(queryInfo)
     if (res.code !== 200) {
-      ElMessage.error(res.msg)
+      MessagePlugin.error(res.msg)
       return
     }
     examScoreeList.value = res.data.list
     total.value = res.data.total
   } catch (error) {
-    ElMessage.error('获取任务名单失败')
+    MessagePlugin.error('获取任务名单失败')
   }
 }
 
@@ -202,14 +191,14 @@ const addNewUser = async () => {
     examScoreForm.courseId = queryInfo.courseId
     const res = await examConfigApi.addExamUser(examScoreForm)
     if (res.code !== 200) {
-      ElMessage.error(res.msg)
+      MessagePlugin.error(res.msg)
       return
     }
-    ElMessage.success(res.msg)
+    MessagePlugin.success(res.msg)
     examScoreForm.ploNum = ''
     getCourseTaskList()
   } catch (error) {
-    ElMessage.error('添加用户失败')
+    MessagePlugin.error('添加用户失败')
   }
 }
 
@@ -229,12 +218,12 @@ const handleCurrentChange = (page) => {
 
 // 处理表格排序
 const tableSort = (data) => {
-  if (data.order === 'ascending') {
+  if (!data.descending) {
     queryInfo.orderType = ' asc '
-  } else if (data.order === 'descending') {
+  } else if (data.descending) {
     queryInfo.orderType = ' desc '
   }
-  queryInfo.order = data.prop
+  queryInfo.order = data.sortBy
   getCourseTaskList()
 }
 

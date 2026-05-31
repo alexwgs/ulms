@@ -1,30 +1,20 @@
 <template>
   <div class="container">
-    <el-row :gutter="10">
-      <el-col :span="7">
+    <t-row :gutter="10">
+      <t-col :span="4">
         <div class="my-rank-area">
           <h4 style="color: #fff; margin: 10px">团队榜单</h4>
           <div class="my-rank-info">
-            <el-date-picker
-              v-model="dateRange"
-              size="small"
-              type="daterange"
-              value-format="YYYY-MM-DD"
-              @change="dateChange"
-              style="background-color: transparent; width: 100%"
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-            ></el-date-picker>
+            <t-date-range-picker v-model="dateRange" size="small" @change="dateChange" style="background-color: transparent; width: 100%" :placeholder="['开始日期', '结束日期']" ></t-date-range-picker>
           </div>
           <div
             class="my-rank-info"
             style="text-align: center"
             v-if="global?.user?.jobLevel?.indexOf('100,102,103,104,105') === -1"
           >
-            <el-button-group>
-              <el-button
-                type="primary"
+            <t-button-group>
+              <t-button
+                theme="primary"
                 size="small"
                 @click="
                   downloadExcel(
@@ -33,10 +23,10 @@
                     '小组刷题情况.xlsx'
                   )
                 "
-                >小组报表</el-button
+                >小组报表</t-button
               >
-              <el-button
-                type="primary"
+              <t-button
+                theme="primary"
                 size="small"
                 @click="
                   downloadExcel(
@@ -45,10 +35,10 @@
                     '科室刷题情况.xlsx'
                   )
                 "
-                >科室报表</el-button
+                >科室报表</t-button
               >
-              <el-button
-                type="primary"
+              <t-button
+                theme="primary"
                 size="small"
                 @click="
                   downloadExcel(
@@ -57,96 +47,86 @@
                     '各业务类型答题情况.xlsx'
                   )
                 "
-                >业务统计</el-button
+                >业务统计</t-button
               >
-            </el-button-group>
+            </t-button-group>
           </div>
         </div>
-        <el-table
+        <CustomTable rowKey="id"
           :data="leftTable"
-          v-loading="loading"
+          :loading="loading"
           size="small"
           style="width: 100%"
-          height="calc(100vh - 350px)"
-        >
-          <el-table-column
+          height="calc(100vh - 350px)">
+          <TableColumn
             prop="deptNum"
             label="科室"
             width="100"
-            sortable
-          ></el-table-column>
-          <el-table-column
+            sortable></TableColumn>
+          <TableColumn
             prop="total"
             label="答题量"
             sortable
-            width="80"
-          ></el-table-column>
-          <el-table-column prop="rightRate" label="正确率" sortable>
+            width="80"></TableColumn>
+          <TableColumn colKey="rightRate" label="正确率" sortable>
             <template #default="scope"
               >{{ (scope.row.rightRate * 100).toFixed(2) }}%</template
             >
-          </el-table-column>
-        </el-table>
-      </el-col>
-      <el-col :span="17">
-        <el-table
+          </TableColumn>
+        </CustomTable>
+      </t-col>
+      <t-col :span="9">
+        <CustomTable rowKey="id"
           :data="mainTable"
-          v-loading="loading"
+          :loading="loading"
           size="small"
           style="width: 100%"
-          height="calc(100vh - 500px)"
-        >
-          <el-table-column
+          height="calc(100vh - 500px)">
+          <TableColumn
             prop="deptNum"
             label="科室"
             width="120"
-            sortable
-          ></el-table-column>
-          <el-table-column
+            sortable></TableColumn>
+          <TableColumn
             prop="deptGroup"
             label="组别"
             width="100"
-            sortable
-          ></el-table-column>
-          <el-table-column
+            sortable></TableColumn>
+          <TableColumn
             prop="total"
             label="答题量"
             sortable
-            width="80"
-          ></el-table-column>
-          <el-table-column prop="rightRate" label="正确率" sortable width="100">
+            width="80"></TableColumn>
+          <TableColumn colKey="rightRate" label="正确率" sortable width="100">
             <template #default="scope"
               >{{ (scope.row.rightRate * 100).toFixed(2) }}%</template
             >
-          </el-table-column>
-          <el-table-column
+          </TableColumn>
+          <TableColumn
             prop="weakPoint1"
             label="薄弱业务1"
-            sortable
-          ></el-table-column>
-          <el-table-column
+            sortable></TableColumn>
+          <TableColumn
             prop="weakPoint2"
             label="薄弱业务2"
-            sortable
-          ></el-table-column>
-          <el-table-column
+            sortable></TableColumn>
+          <TableColumn
             prop="weakPoint3"
             label="薄弱业务3"
-            sortable
-          ></el-table-column>
-        </el-table>
+            sortable></TableColumn>
+        </CustomTable>
         <div
           id="myChart"
           style="
             width: 100%;
             height: 300px;
-            background-color: rgba(252, 252, 252, 0.26);
+-color: rgba(252, 252, 252, 0.26);
             border-radius: 15px;
             margin-top: 10px;
           "
         ></div>
-      </el-col>
-    </el-row>
+      </t-col>
+    </t-row>
     <div></div>
   </div>
 </template>
@@ -155,7 +135,7 @@
 import { ref, reactive, onMounted, nextTick } from 'vue'
 import { brushReportApi } from '@/api/edu/brushReport'
 import { downloadExcel } from '@/utils/request'
-import { ElMessage } from 'element-plus'
+import { MessagePlugin } from 'tdesign-vue-next'
 import * as echarts from 'echarts'
 
 const global = window.__POWERED_BY_QIANKUN__ ? window.$global : null
@@ -258,7 +238,7 @@ const listBrushData = async () => {
 
   const res = await brushReportApi.getGroupBrushList(queryInfo)
   if (res.code !== 200) {
-    ElMessage.error(res.msg)
+    MessagePlugin.error(res.msg)
     loading.value = false
     return
   }
@@ -266,7 +246,7 @@ const listBrushData = async () => {
 
   const res2 = await brushReportApi.getDeptBrushList(queryInfo)
   if (res2.code !== 200) {
-    ElMessage.error(res2.msg)
+    MessagePlugin.error(res2.msg)
     loading.value = false
     return
   }
@@ -277,7 +257,7 @@ const listBrushData = async () => {
 const drawPie = async (id) => {
   const res = await brushReportApi.getCategoryBrushList(queryInfo)
   if (res.code !== 200) {
-    ElMessage.error(res.msg)
+    MessagePlugin.error(res.msg)
     return
   }
   const categorys = res.data
@@ -297,7 +277,7 @@ const dateChange = () => {
   const diffDays = Math.floor((endDate - begDate) / (1000 * 60 * 60 * 24))
 
   if (diffDays > 90) {
-    ElMessage.error('最长不可间隔超过90天！')
+    MessagePlugin.error('最长不可间隔超过90天！')
     return
   }
   listBrushData()
@@ -312,30 +292,30 @@ onMounted(() => {
 </script>
 
 <style lang="less" scoped>
-.el-table {
+.t-table {
   border-radius: 10px;
 }
 /*最外层透明*/
-:deep(.el-table),
-.el-table__expanded-cell {
-  background-color: rgba(224, 224, 224, 0.25);
+:deep(.t-table),
+.t-table__expanded-cell {
+-color: rgba(224, 224, 224, 0.25);
 }
 /* 表格内背景颜色 */
-:deep(.el-table th),
-:deep(.el-table tr),
-:deep(.el-table td) {
-  background-color: rgba(224, 224, 224, 0.25);
+:deep(.t-table th),
+:deep(.t-table tr),
+:deep(.t-table td) {
+-color: rgba(224, 224, 224, 0.25);
   color: #000;
 }
-.el-range-editor--mini :deep(.el-range-input) {
-  background-color: transparent;
+.t-range-editor--mini :deep(.t-range-input) {
+-color: transparent;
   color: #ffffff;
 }
 .my-rank-area {
   height: 130px;
   margin-bottom: 10px;
   border-radius: 10px;
-  background-color: rgba(233, 233, 233, 0.24);
+-color: rgba(233, 233, 233, 0.24);
   padding: 10px;
   overflow-y: auto;
   .my-rank-info {

@@ -1,77 +1,77 @@
 <template>
   <div>
-    <el-card class="box-card">
-      <el-row>
-        <el-col :span="24">
-          <el-button type="primary" size="small" @click="addQuickMemo">添加快捷消息</el-button>
-        </el-col>
-      </el-row>
-      <el-table :data="quickMemoTableList" size="small" @sort-change="tableSort" height="calc(100vh - 325px)" stripe>
-        <el-table-column prop="journo" sortable="custom" label="JOURNO" width="180"></el-table-column>
-        <el-table-column prop="roleType" sortable="custom" label="快捷消息类型">
+    <t-card class="box-card">
+      <t-row>
+        <t-col :span="12">
+          <t-button theme="primary" size="small" @click="addQuickMemo">添加快捷消息</t-button>
+        </t-col>
+      </t-row>
+      <CustomTable rowKey="id" :data="quickMemoTableList" size="small" @sort-change="tableSort" height="calc(100vh - 325px)" stripe>
+        <TableColumn colKey="journo" sortable="custom" label="JOURNO" width="180"></TableColumn>
+        <TableColumn colKey="roleType" sortable="custom" label="快捷消息类型">
           <template #default="scope">
             {{ dictStore.getDictLabel('oht_role_type', scope.row.roleType) }}
           </template>
-        </el-table-column>
-        <el-table-column prop="memo" sortable="custom" label="快捷消息"></el-table-column>
-        <el-table-column prop="status" sortable="custom" label="消息状态">
+        </TableColumn>
+        <TableColumn colKey="memo" sortable="custom" label="快捷消息"></TableColumn>
+        <TableColumn colKey="status" sortable="custom" label="消息状态">
           <template #default="scope">
-            <el-tag size="small" :type="scope.row.status == 0 ? 'danger' : 'success'" effect="dark">
+            <t-tag size="small" :theme="scope.row.status == 0 ? 'danger' : 'success'" effect="dark">
               {{ dictStore.getDictLabel('oht_role_status', scope.row.status) }}
-            </el-tag>
+            </t-tag>
           </template>
-        </el-table-column>
-        <el-table-column label="操作" fixed="right" width="120px">
+        </TableColumn>
+        <TableColumn label="操作" fixed="right" width="120px">
           <template #default="scope">
-            <el-button type="warning" size="small" icon="Edit" @click="quickMemoEdit(scope.row)" circle></el-button>
-            <el-button type="danger" size="small" icon="Delete" @click="removeQuickMemo(scope.row)" circle></el-button>
+            <t-button theme="warning" size="small" @click="quickMemoEdit(scope.row)" shape="circle"><template #icon><DynamicIcon name="edit" /></template></t-button>
+            <t-button theme="danger" size="small" @click="removeQuickMemo(scope.row)" shape="circle"><template #icon><DynamicIcon name="delete" /></template></t-button>
           </template>
-        </el-table-column>
-      </el-table>
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage"
-        :page-sizes="pageSizes" :page-size="queryInfo.pageSize" layout="total, sizes, prev, pager, next, jumper"
+        </TableColumn>
+      </CustomTable>
+      <t-pagination @page-size-change="handleSizeChange" @current-change="handleCurrentChange" :current="currentPage"
+        :page-size-options="pageSizes" :page-size="queryInfo.pageSize"
         :total="total">
-      </el-pagination>
-    </el-card>
+      </t-pagination>
+    </t-card>
 
-    <el-dialog :title="dialogTitle" :close-on-click-modal="false" v-model="quickMemoAddVisible"
+    <t-dialog :header="dialogTitle" :close-on-overlay-click="false" v-model:visible="quickMemoAddVisible"
       @close="closeQuickMemoAddDialog">
-      <el-form :model="quickMemoForm" ref="addQuickMemoFormRef" :rules="quickMemoFormRules">
-        <el-form-item label="流水号" :label-width="formLabelWidth" prop="journo">
-          <el-input size="small" v-model="quickMemoForm.journo" autocomplete="off" placeholder="快捷消息ID自动生成"
-            disabled></el-input>
-        </el-form-item>
-        <el-form-item label="快捷消息类型" :label-width="formLabelWidth" prop="roleType">
-          <el-select size="small" v-model="quickMemoForm.roleType" placeholder="请选择">
-            <el-option v-for="item in dictStore.dictList.oht_role_type" :key="item.code" :label="item.codeval"
+      <t-form :data="quickMemoForm" ref="addQuickMemoFormRef" :rules="quickMemoFormRules">
+        <t-form-item label="流水号" :label-width="formLabelWidth" name="journo">
+          <t-input size="small" v-model="quickMemoForm.journo" autocomplete="off" placeholder="快捷消息ID自动生成"
+            disabled></t-input>
+        </t-form-item>
+        <t-form-item label="快捷消息类型" :label-width="formLabelWidth" name="roleType">
+          <t-select size="small" v-model="quickMemoForm.roleType" placeholder="请选择">
+            <t-option v-for="item in dictStore.dictList.oht_role_type" :key="item.code" :label="item.codeval"
               :value="item.code">
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="快捷消息" :label-width="formLabelWidth" prop="memo">
-          <el-input size="small" v-model="quickMemoForm.memo" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="快捷消息状态" :label-width="formLabelWidth" prop="status">
-          <el-select size="small" v-model="quickMemoForm.status" placeholder="请选择">
-            <el-option v-for="item in dictStore.dictList.oht_role_status" :key="item.code" :label="item.codeval"
+            </t-option>
+          </t-select>
+        </t-form-item>
+        <t-form-item label="快捷消息" :label-width="formLabelWidth" name="memo">
+          <t-input size="small" v-model="quickMemoForm.memo" autocomplete="off"></t-input>
+        </t-form-item>
+        <t-form-item label="快捷消息状态" :label-width="formLabelWidth" name="status">
+          <t-select size="small" v-model="quickMemoForm.status" placeholder="请选择">
+            <t-option v-for="item in dictStore.dictList.oht_role_status" :key="item.code" :label="item.codeval"
               :value="parseInt(item.code)">
-            </el-option>
-          </el-select>
-        </el-form-item>
-      </el-form>
+            </t-option>
+          </t-select>
+        </t-form-item>
+      </t-form>
       <template #footer>
         <div class="dialog-footer">
-          <el-button size="small" @click="quickMemoAddVisible = false">取 消</el-button>
-          <el-button size="small" type="primary" @click="submitQuickMemo">确 定</el-button>
+          <t-button size="small" @click="quickMemoAddVisible = false">取 消</t-button>
+          <t-button size="small" theme="primary" @click="submitQuickMemo">确 定</t-button>
         </div>
       </template>
-    </el-dialog>
+    </t-dialog>
   </div>
 </template>
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { MessagePlugin, DialogPlugin } from 'tdesign-vue-next'
 import {
   quickMemoApi
 } from '@/api/oht/quickMemo.js'
@@ -123,13 +123,13 @@ const getquickMemoList = async () => {
   try {
     const res = await quickMemoApi.getQuickMemoList(queryInfo)
     if (res.code !== 200) {
-      ElMessage.error(res.msg)
+      MessagePlugin.error(res.msg)
       return
     }
     quickMemoTableList.value = res.data.list
     total.value = res.data.total
   } catch (error) {
-    ElMessage.error('获取快捷消息列表失败')
+    MessagePlugin.error('获取快捷消息列表失败')
   }
 }
 
@@ -145,7 +145,7 @@ const handleCurrentChange = (page) => {
 }
 
 const removeQuickMemo = (row) => {
-  ElMessageBox.confirm('此操作将永久删除该记录, 是否继续?', '提示', {
+  DialogPlugin.confirm('此操作将永久删除该记录, 是否继续?', '提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
@@ -154,17 +154,17 @@ const removeQuickMemo = (row) => {
       try {
         const res = await quickMemoApi.deleteQuickMemo(row.journo)
         if (res.code !== 200) {
-          ElMessage.error(res.msg)
+          MessagePlugin.error(res.msg)
           return
         }
-        ElMessage.success(res.msg)
+        MessagePlugin.success(res.msg)
         getquickMemoList()
       } catch (error) {
-        ElMessage.error('删除快捷消息失败')
+        MessagePlugin.error('删除快捷消息失败')
       }
     })
     .catch(() => {
-      ElMessage.error('取消删除')
+      MessagePlugin.error('取消删除')
     })
 }
 
@@ -185,31 +185,30 @@ const quickMemoEdit = (row) => {
 const submitQuickMemo = async () => {
   if (!addQuickMemoFormRef.value) return
 
-  await addQuickMemoFormRef.value.validate(async (valid) => {
-    if (valid) {
-      try {
-        let res
-        if (dialogTitle.value === '新增快捷消息信息') {
-          res = await quickMemoApi.addQuickMemo(quickMemoForm)
-        } else if (dialogTitle.value === '修改快捷消息信息') {
-          res = await quickMemoApi.updateQuickMemo(quickMemoForm)
-        }
-
-        if (res.code !== 200) {
-          ElMessage.error(res.msg)
-          return
-        }
-
-        ElMessage.success(res.msg)
-        getquickMemoList()
-        quickMemoAddVisible.value = false
-      } catch (error) {
-        ElMessage.error('操作失败')
+  const valid = await addQuickMemoFormRef.value.validate()
+  if (valid === true) {
+    try {
+      let res
+      if (dialogTitle.value === '新增快捷消息信息') {
+        res = await quickMemoApi.addQuickMemo(quickMemoForm)
+      } else if (dialogTitle.value === '修改快捷消息信息') {
+        res = await quickMemoApi.updateQuickMemo(quickMemoForm)
       }
-    } else {
-      ElMessage.error('表单校验失败！请检查表单！')
+
+      if (res.code !== 200) {
+        MessagePlugin.error(res.msg)
+        return
+      }
+
+      MessagePlugin.success(res.msg)
+      getquickMemoList()
+      quickMemoAddVisible.value = false
+    } catch (error) {
+      MessagePlugin.error('操作失败')
     }
-  })
+  } else {
+    MessagePlugin.error('表单校验失败！请检查表单！')
+  }
 }
 
 const closeQuickMemoAddDialog = () => {
@@ -223,9 +222,9 @@ const closeQuickMemoAddDialog = () => {
 }
 
 const tableSort = (data) => {
-  if (data.order === 'ascending') queryInfo.orderType = ' asc '
-  else if (data.order === 'descending') queryInfo.orderType = ' desc '
-  queryInfo.order = data.prop
+  if (!data.descending) queryInfo.orderType = ' asc '
+  else if (data.descending) queryInfo.orderType = ' desc '
+  queryInfo.order = data.sortBy
   getquickMemoList()
 }
 
