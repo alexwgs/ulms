@@ -5,6 +5,7 @@ import com.cmbccd.ulms.sys.domain.OperLogExample;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 public interface OperLogMapper {
     long countByExample(OperLogExample example);
@@ -28,4 +29,13 @@ public interface OperLogMapper {
     int updateByPrimaryKeySelective(OperLog record);
 
     int updateByPrimaryKey(OperLog record);
+
+    // ==================== Dashboard 自定义查询 ====================
+    Map<String, Object> statsToday(@Param("today") String today);
+
+    List<Map<String, Object>> uvPvTrend(@Param("begDate") String begDate, @Param("endDate") String endDate);
+
+    List<Map<String, Object>> methodStatsTrend(@Param("begDate") String begDate, @Param("endDate") String endDate);
+
+    List<OperLog> errorListToday(@Param("today") String today);
 }

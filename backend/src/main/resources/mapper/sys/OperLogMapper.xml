@@ -350,4 +350,57 @@
       TAKE_TIME = #{takeTime,jdbcType=VARCHAR}
     where ID = #{id,jdbcType=CHAR}
   </update>
+
+  <!-- ==================== Dashboard 自定义查询 ==================== -->
+
+  <!-- 今日统计数据：UV、PV、异常数 -->
+  <select id="statsToday" resultType="java.util.HashMap">
+    SELECT
+      COUNT(DISTINCT PLO_NUM) AS "uv",
+      COUNT(1) AS "pv",
+      SUM(CASE WHEN STATUS = 1 THEN 1 ELSE 0 END) AS "exceptionCount"
+    FROM SYS_OPER_LOG
+    WHERE OPER_TIME &gt;= #{today,jdbcType=VARCHAR} || ' 00:00:00'
+      AND OPER_TIME &lt;= #{today,jdbcType=VARCHAR} || ' 23:59:59'
+  </select>
+
+  <!-- 近N天 UV/PV 趋势 -->
+  <select id="uvPvTrend" resultType="java.util.HashMap">
+    SELECT
+      SUBSTR(OPER_TIME, 1, 10) AS "dateStr",
+      COUNT(DISTINCT PLO_NUM) AS "uv",
+      COUNT(1) AS "pv"
+    FROM SYS_OPER_LOG
+    WHERE OPER_TIME &gt;= #{begDate,jdbcType=VARCHAR} || ' 00:00:00'
+      AND OPER_TIME &lt;= #{endDate,jdbcType=VARCHAR} || ' 23:59:59'
+    GROUP BY SUBSTR(OPER_TIME, 1, 10)
+    ORDER BY "dateStr"
+  </select>
+
+  <!-- 近N天请求方法统计：POST/PUT/DELETE 次数、异常数、平均响应时间 -->
+  <select id="methodStatsTrend" resultType="java.util.HashMap">
+    SELECT
+      SUBSTR(OPER_TIME, 1, 10) AS "dateStr",
+      SUM(CASE WHEN REQUEST_METHOD = 'POST' THEN 1 ELSE 0 END) AS "postCount",
+      SUM(CASE WHEN REQUEST_METHOD = 'PUT' THEN 1 ELSE 0 END) AS "putCount",
+      SUM(CASE WHEN REQUEST_METHOD = 'DELETE' THEN 1 ELSE 0 END) AS "deleteCount",
+      SUM(CASE WHEN STATUS = 1 THEN 1 ELSE 0 END) AS "exceptionCount",
+      ROUND(AVG(TO_NUMBER(TAKE_TIME)), 2) AS "avgTakeTime"
+    FROM SYS_OPER_LOG
+    WHERE OPER_TIME &gt;= #{begDate,jdbcType=VARCHAR} || ' 00:00:00'
+      AND OPER_TIME &lt;= #{endDate,jdbcType=VARCHAR} || ' 23:59:59'
+    GROUP BY SUBSTR(OPER_TIME, 1, 10)
+    ORDER BY "dateStr"
+  </select>
+
+  <!-- 今日异常列表 -->
+  <select id="errorListToday" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM SYS_OPER_LOG
+    WHERE STATUS = 1
+      AND OPER_TIME &gt;= #{today,jdbcType=VARCHAR} || ' 00:00:00'
+      AND OPER_TIME &lt;= #{today,jdbcType=VARCHAR} || ' 23:59:59'
+    ORDER BY OPER_TIME DESC
+  </select>
 </mapper>

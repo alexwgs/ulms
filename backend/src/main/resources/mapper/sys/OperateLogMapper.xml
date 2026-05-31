@@ -172,4 +172,21 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
+
+  <!-- ==================== Dashboard 自定义查询 ==================== -->
+
+  <!-- 近N天 子系统访问趋势（排除 LOGIN 记录） -->
+  <select id="subsysVisitTrend" resultType="java.util.HashMap">
+    SELECT
+      DATA_DATE AS "dateStr",
+      MODULE AS "module",
+      COUNT(DISTINCT PLO_NUM) AS "uv",
+      COUNT(1) AS "pv"
+    FROM SYS_OPERATE_LOG
+    WHERE MODULE != 'LOGIN'
+      AND DATA_DATE &gt;= #{begDate,jdbcType=VARCHAR}
+      AND DATA_DATE &lt;= #{endDate,jdbcType=VARCHAR}
+    GROUP BY DATA_DATE, MODULE
+    ORDER BY "dateStr", "module"
+  </select>
 </mapper>

@@ -1,6 +1,6 @@
 <template>
   <div class="content">
-    <el-result
+    <t-result
       class="result"
       icon="error"
       title="404"
@@ -8,12 +8,12 @@
     >
       <template #extra>
         <div class="operation-row">
-          <el-button type="primary" @click="back">
+          <t-button theme="primary" @click="back">
             没有查找到该页面,返回首页
-          </el-button>
+          </t-button>
         </div>
       </template>
-    </el-result>
+    </t-result>
   </div>
 </template>
 
