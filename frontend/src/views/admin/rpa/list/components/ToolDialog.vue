@@ -13,8 +13,9 @@
       size="small"
       label-width="120px"
     >
-      <t-col :span="12">
-        <t-form-item label="服务名称" name="name">
+      <t-row :gutter="[16, 16]">
+        <t-col :span="12">
+          <t-form-item label="服务名称" name="name">
           <t-input
             v-model="formData.name"
             placeholder="请输入前端显示的RPA名称，建议保持与海螺API借调名称一致"
@@ -143,6 +144,7 @@
           />
         </t-form-item>
       </t-col>
+      </t-row>
     </t-form>
 
     <template #footer>

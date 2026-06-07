@@ -243,10 +243,12 @@ public class ArticalController {
 		if (artical.getStatus() != 1 && !artical.getPubUser().equals(userId)) {
 			return Msg.error("没有获取到文章信息！您无权查看该帖子！");
 		}
-		// 是否点赞
-		artical.setIsLike(likeService.isUserLikeByArticalId(id, userId));
-		// 是否收藏
-		artical.setIsCollect(collectService.isUserCollectByArticalId(id, userId));
+			// 是否点赞
+			if (!Util.isNullorEmpty(userId)) {
+				artical.setIsLike(likeService.isUserLikeByArticalId(id, userId));
+				// 是否收藏
+				artical.setIsCollect(collectService.isUserCollectByArticalId(id, userId));
+			}
 		if(artical.getAnonFlag() == 1) {
 			artical.setPubUser("匿名");
 		} else {

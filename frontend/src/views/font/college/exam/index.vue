@@ -109,9 +109,12 @@
     </t-row>
     <t-dialog v-if="examResult" header="考试成绩" v-model:visible="dialogVisible" width="50%" :close-btn="false"
       :close-on-overlay-click="false">
-      <t-result :icon="examResult.passFlag == 1 ? 'success' : 'error'"
-        :title="examResult.passFlag == 1 ? '恭喜！考试通过！' : '很遗憾！考试未通过！'"
-        :sub-title="'您一共答对了' + examResult.rightNum + '题！'"></t-result>
+      <div v-if="examResult" class="result-container">
+        <t-icon :name="examResult.passFlag == 1 ? 'check-circle' : 'error-circle'"
+          :style="{ color: examResult.passFlag == 1 ? 'var(--td-success-color)' : 'var(--td-error-color)', fontSize: '72px' }" />
+        <div class="result-title">{{ examResult.passFlag == 1 ? '恭喜！考试通过！' : '很遗憾！考试未通过！' }}</div>
+        <div class="result-subtitle">您一共答对了{{ examResult.rightNum }}题！</div>
+      </div>
       <template #footer>
         <span class="dialog-footer">
           <t-button @click="router.go(0)">再考一次</t-button>
@@ -125,7 +128,7 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { MessagePlugin, Result } from 'tdesign-vue-next'
+import { MessagePlugin } from 'tdesign-vue-next'
 import { httpInstance } from '@/utils/request'
 import Question from '@/views/font/edu/component/Question.vue'
 
@@ -293,6 +296,26 @@ onUnmounted(() => {
 
 .answer-controller {
   margin-bottom: 20px;
+}
+
+.result-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 40px 0;
+  text-align: center;
+}
+
+.result-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--td-text-color-primary);
+}
+
+.result-subtitle {
+  font-size: 14px;
+  color: var(--td-text-color-secondary);
 }
 
 .currentBtn {

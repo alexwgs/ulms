@@ -42,7 +42,6 @@ const props = defineProps({
 })
 
 const fsURL = import.meta.env.VITE_FILE_MANAGE_BASE || ''
-const token = ref('')
 const quickUrlList = ref([])
 
 onMounted(() => {
@@ -65,7 +64,8 @@ const getQuickUrlListData = async () => {
 const goto = (url, userFlag, tokenFlag, sysType) => {
   url = url + '?type=' + sysType
   if (userFlag === 'Y') url += '&czy_code=' + localStorage.getItem('userId')
-  if (tokenFlag === 'Y') url += '&token=' + token.value
+  // token 不再通过 URL 参数传递，避免泄露到浏览器历史和服务端日志
+  // 目标系统如需认证 token，应从 localStorage 或 cookie 自行读取
   addLog({ module: sysType, operate: 'quickLink' })
   window.open(url, '_blank')
 }

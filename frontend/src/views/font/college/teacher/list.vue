@@ -13,7 +13,7 @@
             >
               <template #append>
                 <t-button @click="getTeacherList">
-                  <t-icon><Search /></t-icon>
+                  <t-icon><SearchIcon /></t-icon>
                 </t-button>
               </template>
             </t-input>

@@ -63,19 +63,17 @@
                   v-model="fromData[item.fieldName]"
                   :mode="getOptionValue(item.options, 'type')"
                   placeholder="选择日期"
-                  :format="getOptionValue(item.options, 'format').toUpperCase()"
-                  :value-type="getOptionValue(item.options, 'valueFormat').toUpperCase()"
+                  :format="getOptionValue(item.options, 'format')"
+                  :value-type="getOptionValue(item.options, 'valueFormat')"
                 ></t-date-picker>
-                <t-date-picker
+                <t-date-range-picker
                   v-else-if="item.type === 'dateRange'"
                   style="width: 100%"
                   size="small"
                   v-model="fromData[item.fieldName]"
-                  :mode="getOptionValue(item.options, 'type')"
                   placeholder="选择日期"
-                  :format="getOptionValue(item.options, 'format').toUpperCase()"
-                  :value-type="getOptionValue(item.options, 'valueFormat').toUpperCase()"
-                ></t-date-picker>
+                  :format="getOptionValue(item.options, 'format') || 'YYYY-MM-DD'"
+                ></t-date-range-picker>
                 <UserSelect
                   v-else-if="item.type === 'userSelect'"
                   style="width: 100%"
@@ -221,7 +219,13 @@ const getTemplete = async () => {
     const res = await getRpaToolTemplete(record.value.id)
     if (res.code === 200) {
       list.value = res.data
-      getColdDown()
+        // 为 dateRange 类型字段初始化空数组，避免 DateRangePicker 报错
+        list.value.forEach(item => {
+          if (item.type === 'dateRange' && fromData.value[item.fieldName] === undefined) {
+            fromData.value[item.fieldName] = []
+          }
+        })
+        getColdDown()
     } else {
       MessagePlugin.error(res.msg)
     }

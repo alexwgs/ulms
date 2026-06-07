@@ -27,7 +27,7 @@
         >{{ userStatus }}</b
       >
     </div>
-    <t-collapse-transition>
+    <Transition name="collapse">
       <div
         v-show="userStatusPopFlag"
         class="user-status-popup"
@@ -50,7 +50,7 @@
           <t-button size="small" theme="danger" @click="logout">登出</t-button>
         </div>
       </div>
-    </t-collapse-transition>
+    </Transition>
     <Identity :updateFlag="identityUpdateFlag"></Identity>
     <Notification ref="notificationRef" style="z-index: 999"></Notification>
   </div>

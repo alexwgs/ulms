@@ -2,7 +2,7 @@
   <t-card class="box-card" style="height: calc(100vh - 130px)">
     <t-row :gutter="15">
       <t-col :span="3">
-        <t-card shadow="hover">
+        <t-card shadow>
           <template #header>
             <span>知识路径</span>
           </template>
@@ -76,7 +76,7 @@
             <template #default="scope">
               <t-link
                 style="font-size: 12px"
-                underline="hover"
+                :underline="true"
                 @click="currentView(scope.row.journo)"
                 >{{ scope.row.title }}</t-link
               >

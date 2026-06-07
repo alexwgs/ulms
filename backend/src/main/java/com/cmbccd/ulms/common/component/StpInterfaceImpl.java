@@ -35,6 +35,9 @@ public class StpInterfaceImpl implements StpInterface {
     @Override
     public List<String> getPermissionList(Object loginId, String loginType) {
         UserRole userRole = userRoleService.getUserRolesByPrimaryKey(loginId.toString());
+        if (userRole == null || Util.isNullorEmpty(userRole.getRoles())) {
+            return new ArrayList<>();
+        }
         String[] userRoleIds = userRole.getRoles().split(",");
         List<Menu> menus = menuService.getPermissionByRoleIds(userRoleIds);
         return menus.stream().map(Menu::getResourse).collect(Collectors.toList());

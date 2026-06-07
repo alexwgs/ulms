@@ -55,7 +55,7 @@
 
             <div v-if="articalType === 'item'" class="item-members">
               <div v-for="member in members" :key="member.id" class="member-card">
-                <t-avatar :src="fsURL + member.user.avatar" :size="50"></t-avatar>
+                <t-avatar :src="fsURL + member.user.avatar" size="50px"></t-avatar>
                 <div class="member-info">
                   <span class="name">{{ member.user.ploName }}</span>
                   <span class="role">{{ member.roleName }}</span>

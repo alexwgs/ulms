@@ -3,7 +3,7 @@
     <div class="notify-card">
       <div class="notify-header">
         <div class="notify-icon">
-          <t-icon :size="28"><ErrorCircleFilledIcon /></t-icon>
+          <t-icon size="28px"><ErrorCircleFilledIcon /></t-icon>
         </div>
         <div class="notify-title-wrap">
           <h2 class="notify-title">{{ notifyData.title || '系统通知' }}</h2>

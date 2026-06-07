@@ -61,6 +61,9 @@ public class LoginController {
 	@GetMapping("/user/info")
 	public Msg getUserInfo() {
 		String userId = Util.userIdByShiro();
+		if (Util.isNullorEmpty(userId)) {
+			return new Msg(401, "Token已过期或没有登录！");
+		}
 		return Msg.success().put("user", DataCache.EMPLOYEE.get(userId));
 	}
 

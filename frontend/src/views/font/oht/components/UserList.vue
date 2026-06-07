@@ -26,8 +26,8 @@
         >
           <div class="card-left">
             <t-avatar
-              shape="square"
-              :size="42"
+              shape="round"
+              size="42px"
               :src="(user.user?.avatar ? fsURL + user.user.avatar : defaultAvatar)"
               @error="e => e.target.src = defaultAvatar"
             />
@@ -75,8 +75,8 @@
         >
           <div class="card-left">
             <t-avatar
-              shape="square"
-              :size="42"
+              shape="round"
+              size="42px"
               :src="(user.user?.avatar ? fsURL + user.user.avatar : defaultAvatar)"
               @error="e => e.target.src = defaultAvatar"
             />
@@ -201,7 +201,7 @@ function responderStatusText(user) {
 
 function responderStatusType(user) {
   if (user.unfinishCase) return 'danger'
-  return user.ohtStatus === 1 ? 'success' : 'info'
+  return user.ohtStatus === 1 ? 'success' : 'default'
 }
 
 function responderCardClass(user) {

@@ -2,7 +2,7 @@
   <div class="rpa-chart-container">
     <!-- 筛选条件 -->
     <div class="filter-section">
-      <t-card shadow="hover" class="filter-card">
+      <t-card shadow class="filter-card">
         <t-row :gutter="20">
           <t-col :span="4">
             <t-select
@@ -42,7 +42,7 @@
       <t-col :span="9">
         <div class="left-section">
           <!-- 按日统计使用情况 -->
-          <t-card shadow="hover" class="chart-card mb-20">
+          <t-card shadow class="chart-card mb-20">
             <template #header>
               <div class="card-header">
                 <span>按日统计使用情况</span>
@@ -61,7 +61,7 @@
           </t-card>
 
           <!-- 按产品统计使用情况 -->
-          <t-card shadow="hover" class="chart-card">
+          <t-card shadow class="chart-card">
             <template #header>
               <div class="card-header">
                 <span>按产品统计使用情况</span>
@@ -85,11 +85,11 @@
       <t-col :span="4">
         <div class="right-section">
           <!-- 总使用情况 -->
-          <t-card shadow="hover" class="stats-card mb-20">
+          <t-card shadow class="stats-card mb-20">
             <template #header>
               <div class="card-header">
                 <span class="card-title">总使用情况</span>
-                <t-tag size="small" theme="info" effect="light"
+                <t-tag size="small" theme="default" effect="light"
                   >统计概览</t-tag
                 >
               </div>
@@ -117,7 +117,7 @@
           </t-card>
 
           <!-- 按使用人排序TOP 20 -->
-          <t-card shadow="hover" class="chart-card">
+          <t-card shadow class="chart-card">
             <template #header>
               <div class="card-header">
                 <span class="card-title">按使用人排序TOP 20</span>

@@ -34,7 +34,7 @@
                         theme="primary"
                         ><template #icon><DynamicIcon name="add" /></template>
                         size="small"
-                        underline="hover"
+                        :underline="true"
                         @click="() => addChildTreeNode(node.data)"
                       ></t-link
                       >&ensp;
@@ -42,7 +42,7 @@
                         theme="primary"
                         ><template #icon><DynamicIcon name="edit" /></template>
                         size="small"
-                        underline="hover"
+                        :underline="true"
                         @click="() => editTreeNode(node.data)"
                       ></t-link
                       >&ensp;
@@ -50,7 +50,7 @@
                         theme="danger"
                         ><template #icon><DynamicIcon name="delete" /></template>
                         size="small"
-                        underline="hover"
+                        :underline="true"
                         @click="() => deleteTree(node.data)"
                       ></t-link>
                     </div>

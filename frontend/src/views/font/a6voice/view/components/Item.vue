@@ -39,7 +39,7 @@
           <t-divider></t-divider>
           <div v-if="artical.compType !== 6">
             <div class="author" v-for="member in members" :key="member.id">
-              <t-avatar shape="square" size="large" :src="fsURL + member.user.avatar"></t-avatar>
+              <t-avatar shape="round" size="large" :src="fsURL + member.user.avatar"></t-avatar>
               <div class="author-info">
                 <span>{{ getMemberRole(member.role) }}：{{
                   member.user.ploName

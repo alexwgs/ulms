@@ -1,5 +1,5 @@
 <template>
-  <t-card shadow="hover" :body-style="{ padding: '10px' }">
+  <t-card shadow :body-style="{ padding: '10px' }">
     <t-row>
       <t-col :span="9">
         <div class="artical-title">

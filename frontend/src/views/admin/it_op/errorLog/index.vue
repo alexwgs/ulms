@@ -129,7 +129,7 @@ const getPriorityTagType = (priority) => {
     case 'warning':
       return 'warning'
     case 'info':
-      return 'info'
+      return 'default'
     default:
       return ''
   }

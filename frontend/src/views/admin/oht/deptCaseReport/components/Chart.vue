@@ -131,7 +131,7 @@ const chartOption = computed(() => {
       right: '4%',
       bottom: '15%',
       top: '15%',
-      containLabel: true
+      
     },
     xAxis: [
       {

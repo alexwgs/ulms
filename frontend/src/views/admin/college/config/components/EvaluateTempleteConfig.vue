@@ -34,10 +34,10 @@
             :style="{ width: '100%' }"></t-input>
         </t-form-item>
         <t-form-item label="操作" name="sort">
-          <t-button-group>
+          <t-space>
             <t-button theme="primary" @click="addQuestion(1)"><template #icon><DynamicIcon name="arrow-left" /></template>添加评分</t-button>
             <t-button theme="primary" @click="addQuestion(2)">添加问答<template #suffix><DynamicIcon name="arrow-right" /></template></t-button>
-          </t-button-group>
+          </t-space>
         </t-form-item>
         <t-form-item :label="'题目' + (index + 1)" v-for="(item, index) in tempInfo.record" :key="index">
           <t-input placeholder="题干内容" v-model="item.quesCont">

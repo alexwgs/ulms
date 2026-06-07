@@ -109,9 +109,9 @@ const getStatusType = (status) => {
     1: 'success',
     2: 'warning',
     3: 'danger',
-    4: 'info'
+    4: 'default'
   }
-  return typeMap[status] || 'info'
+  return typeMap[status] || 'default'
 }
 
 const getStatusText = (status) => {

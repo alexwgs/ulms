@@ -2,6 +2,7 @@ package com.cmbccd.ulms.common.exception;
 
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import cn.dev33.satoken.exception.*;
 
@@ -90,9 +91,11 @@ public class BdExceptionHandler {
     }
     // 拦截：未登录异常
     @ExceptionHandler(NotLoginException.class)
-    public Msg handlerException(NotLoginException e) {
+    public Msg handlerException(NotLoginException e, HttpServletResponse response) {
         // 打印堆栈，以供调试
         logger.warn(e.getMessage(), e);
+        // 设置 HTTP 状态码为 401，以便前端拦截器正确识别
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         // 返回给前端
         return new Msg(401, "Token已过期或没有登录！");
     }

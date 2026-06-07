@@ -3,7 +3,7 @@
     <t-card class="box-card">
       <t-row :gutter="15">
         <t-col :span="2">
-          <t-tag theme="info">学习累计时长: {{ currentHour }}（H）</t-tag>
+          <t-tag theme="default">学习累计时长: {{ currentHour }}（H）</t-tag>
         </t-col>
         <t-col :span="10">
           <t-date-range-picker v-model="dateRange" :placeholder="['开始日期', '结束日期']" @change="getStudyLog" size="small" />

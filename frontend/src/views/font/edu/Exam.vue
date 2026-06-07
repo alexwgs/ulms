@@ -203,20 +203,16 @@
       :close-btn="false"
       :close-on-overlay-click="false"
     >
-      <t-result
-        :icon="
-          examResult.userScore == null || examResult.userScore == undefined
-            ? 'error'
-            : 'success'
-        "
-        :title="
-          examResult.userScore == null || examResult.userScore == undefined
-            ? '交卷失败！'
-            : '交卷成功！'
-        "
-        :subTitle="'您得了【' + examResult.userScore + '】分！'"
-      >
-      </t-result>
+      <div v-if="examResult" class="result-container">
+        <t-icon
+          :name="examResult.userScore == null || examResult.userScore == undefined ? 'error-circle' : 'check-circle'"
+          :style="{ color: examResult.userScore == null || examResult.userScore == undefined ? 'var(--td-error-color)' : 'var(--td-success-color)', fontSize: '72px' }"
+        />
+        <div class="result-title">
+          {{ examResult.userScore == null || examResult.userScore == undefined ? '交卷失败！' : '交卷成功！' }}
+        </div>
+        <div class="result-subtitle">您得了【{{ examResult.userScore }}】分！</div>
+      </div>
       <template #footer>
         <span class="dialog-footer">
           <t-button theme="primary" @click="closeWindow">关 闭</t-button>
@@ -229,7 +225,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
 import { examTestApi } from '@/api/edu/examTest'
-import { MessagePlugin, Result } from 'tdesign-vue-next'
+import { MessagePlugin } from 'tdesign-vue-next'
 import Question from './component/Question.vue'
 
 // 日期处理辅助函数
@@ -529,5 +525,25 @@ onUnmounted(() => {
 .currentBtn {
   color: red;
   font-weight: 700;
+}
+
+.result-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 40px 0;
+  text-align: center;
+}
+
+.result-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--td-text-color-primary);
+}
+
+.result-subtitle {
+  font-size: 14px;
+  color: var(--td-text-color-secondary);
 }
 </style>

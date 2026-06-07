@@ -1,0 +1,1 @@
+import{_ as e}from"./_plugin-vue_export-helper-DlAUqK2U.js";import{U as o,a0 as n}from"./vendor-B5gPZV6t.js";const r={};function t(c,a){return o(),n("h3",null,"gongzuotai")}const f=e(r,[["render",t]]);export{f as default};

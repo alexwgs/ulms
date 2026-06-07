@@ -91,8 +91,9 @@ const init = async (journo, searchWordParam) => {
   }
 }
 
-const handleClose = (done) => {
-  done()
+const handleClose = () => {
+  // TDesign 的 @before-close 不提供 done 回调，直接修改 v-model:visible
+  articalDialogVisible.value = false
 }
 
 const downloadFile = (path) => {

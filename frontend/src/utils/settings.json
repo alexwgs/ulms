@@ -14,6 +14,6 @@
   "tabBar": false,
   "menuFromServer": true,
   "serverMenu": [],
-  "tableSize": "default",
-  "moduleSize": "default"
+  "tableSize": "medium",
+  "moduleSize": "medium"
 }

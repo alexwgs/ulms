@@ -149,7 +149,7 @@
         </TableColumn>
         <TableColumn colKey="title" label="标题">
           <template #default="scope">
-            <t-link theme="info" size="small" @click="viewArtical(scope.row)">{{
+            <t-link theme="primary" size="small" @click="viewArtical(scope.row)">{{
               scope.row.title
             }}</t-link>
           </template>

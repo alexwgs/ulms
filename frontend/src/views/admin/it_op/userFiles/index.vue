@@ -76,7 +76,7 @@
         ellipsis></TableColumn>
       <TableColumn sortable="custom" label="操作" width="120">
         <template #default="scope">
-          <t-button-group>
+          <t-space>
             <t-button
               theme="primary"
               size="small":disabled="
@@ -108,7 +108,7 @@
                 )
               "
             ><template #icon><DynamicIcon name="download" /></template></t-button>
-          </t-button-group>
+          </t-space>
         </template>
       </TableColumn>
     </CustomTable>

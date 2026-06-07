@@ -3,7 +3,7 @@
     <t-card class="box-card" style="height: 200px">
       <div style="float: left">
         <t-avatar
-          shape="square"
+          shape="round"
           size="160px"
           fit="fill"
           :src="fsURL + userStore.avatar"
@@ -31,17 +31,17 @@
           style="font-size: 12px; padding-top: 5px"
         >
           <t-col :span="3"
-            >金币：<t-tag theme="info">{{ myPoint.coin }}</t-tag></t-col
+            >金币：<t-tag theme="default">{{ myPoint.coin }}</t-tag></t-col
           >
           <t-col :span="3"
             >培训课程:
-            <t-tag theme="info">{{ myPoint.signNum }}</t-tag></t-col
+            <t-tag theme="default">{{ myPoint.signNum }}</t-tag></t-col
           >
           <t-col :span="3"
-            >授课课时: <t-tag theme="info">{{ myPoint.hours }}</t-tag></t-col
+            >授课课时: <t-tag theme="default">{{ myPoint.hours }}</t-tag></t-col
           >
           <t-col :span="3"
-            >积分: <t-tag theme="info">{{ myPoint.point }}</t-tag></t-col
+            >积分: <t-tag theme="default">{{ myPoint.point }}</t-tag></t-col
           >
         </t-row>
       </div>

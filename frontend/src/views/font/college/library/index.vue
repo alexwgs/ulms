@@ -27,7 +27,7 @@
                   <template #append>
                     <t-button @click="getCourse">
                       <t-icon>
-                        <Search />
+                        <SearchIcon />
                       </t-icon>
                     </t-button>
                   </template>

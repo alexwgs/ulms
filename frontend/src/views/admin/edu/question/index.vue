@@ -27,7 +27,7 @@
           }}</t-tag>
         </t-col>
         <t-col :span="3">
-          <t-button-group>
+          <t-space>
             <t-button
               theme="primary"
               size="small"
@@ -50,7 +50,7 @@
               size="small" @click="questionBankApi.downloadQuestionReport(queryInfo)"
               ><template #icon><DynamicIcon name="download" /></template>下载</t-button
             >
-          </t-button-group>
+          </t-space>
         </t-col>
         <t-col :span="2">
           <t-select

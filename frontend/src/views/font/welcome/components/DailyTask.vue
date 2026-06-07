@@ -6,14 +6,14 @@
       simple
       finish-status="success"
     >
-      <t-step title="心情打卡" v-if="tabFlag.mood"><template #icon><DynamicIcon name="star" /></template></t-step>
-      <t-step title="今日身份" v-if="tabFlag.identity"><template #icon><DynamicIcon name="user" /></template></t-step>
-      <t-step
+      <t-step-item title="心情打卡" v-if="tabFlag.mood"><template #icon><DynamicIcon name="star" /></template></t-step-item>
+      <t-step-item title="今日身份" v-if="tabFlag.identity"><template #icon><DynamicIcon name="user" /></template></t-step-item>
+      <t-step-item
         title="公布栏学习"v-if="tabFlag.artical"
-      ><template #icon><DynamicIcon name="book-open" /></template></t-step>
-      <t-step
+      ><template #icon><DynamicIcon name="book-open" /></template></t-step-item>
+      <t-step-item
         title="每日一招"v-if="tabFlag.question"
-      ><template #icon><DynamicIcon name="calendar" /></template></t-step>
+      ><template #icon><DynamicIcon name="calendar" /></template></t-step-item>
     </t-steps>
     <div class="main-content">
       <div v-if="moodPic" v-show="currentItem === '心情打卡'">
@@ -556,7 +556,7 @@ defineExpose({
   border-radius: 20px;
   width: unset;
 }
-.is-simple.t-step {
+.is-simple.t-step-item {
   min-width: 250px;
 }
 .submit-container {

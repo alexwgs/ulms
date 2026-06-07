@@ -133,7 +133,7 @@
                 <t-link
                   size="small"
                   theme="primary"
-                  underline="hover"
+                  :underline="true"
                   slot="reference"
                   >阅卷</t-link
                 >

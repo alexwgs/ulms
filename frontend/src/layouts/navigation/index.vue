@@ -180,8 +180,8 @@ onMounted(() => {
   display: flex;
   align-items: center;
   padding: 0 24px;
-background: #001529;
-  color: white;
+  background-color: var(--td-bg-color-container);
+  color: var(--td-text-color-primary);
   height: 60px;
 }
 
@@ -203,7 +203,7 @@ background: #001529;
 }
 
 .user-info {
-  color: white;
+  color: var(--td-text-color-primary);
   display: flex;
   align-items: center;
   cursor: pointer;
@@ -214,17 +214,17 @@ background: #001529;
 }
 
 .breadcrumb-header {
-background: #fff;
+  background-color: var(--td-bg-color-container);
   padding: 0 24px;
   height: 48px;
   display: flex;
   align-items: center;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--td-border-level-1-color);
 }
 
 .content {
   padding: 24px;
-background: #fff;
+  background-color: var(--td-bg-color-page);
   min-height: calc(100vh - 60px - 48px - 60px);
 }
 
@@ -233,6 +233,6 @@ background: #fff;
   padding: 16px 24px;
   height: 60px;
   line-height: 28px;
-background: #f0f2f5;
+  background-color: var(--td-bg-color-page);
 }
 </style>

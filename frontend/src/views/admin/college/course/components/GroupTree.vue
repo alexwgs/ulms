@@ -2,11 +2,11 @@
     <t-dialog header="授课对象分组配置" :visible="visiable" :close-on-overlay-click="false" :close-on-esc-keydown="false" :close-btn="false" @close="emit('update:visiable', false)">
     <t-input v-model="groupName" size="small" placeholder="授课对象分组名称"></t-input>
 
-    <t-button-group size="small">
+    <t-space size="small">
       <t-button size="small" theme="primary" @click="openEmpTree('101')">一线员工</t-button>
       <t-button size="small" theme="primary" @click="openEmpTree('100')">业务主任</t-button>
       <t-button size="small" theme="primary" @click="openEmpTree('199')">主管</t-button>
-    </t-button-group>
+    </t-space>
 
     <t-dialog header="选择员工" :visible="treeDialogVisiable" width="500px" @close="treeDialogVisiable = false">
       <EmployeeSelect

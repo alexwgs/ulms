@@ -1,0 +1,1 @@
+import{h as t}from"./index-CVSZrBBC.js";const l={collectQuestion:e=>t({url:`edu/ques/collect/${e}`,method:"post"}),getMyCollect:()=>t({url:"edu/ques/collect/my",method:"get"}),uncollectQuestion:e=>t({url:`edu/ques/collect/${e}`,method:"put"})};export{l as q};

@@ -116,10 +116,10 @@
         <t-button round :disabled="submitAndNextFlag" @click="nextQuestion()"
           v-if="brushConfig.dayCount !== brushConfig.dayLimit">下一题</t-button>
         <div style="display: inline-block; float: right">
-          <t-button-group>
+          <t-space>
             <t-button @click="collect(question.quesCode)"><template #icon><DynamicIcon name="star" /></template></t-button>
             <t-button theme="danger" style="float: right" @click="disputeBtn()"><template #icon><DynamicIcon name="error-circle" /></template></t-button>
-          </t-button-group>
+          </t-space>
         </div>
       </div>
     </div>

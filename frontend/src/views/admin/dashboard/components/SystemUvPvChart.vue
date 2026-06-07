@@ -95,7 +95,7 @@ const buildOption = (data) => {
       right: '5%',
       bottom: '3%',
       top: '40px',
-      containLabel: true
+      
     },
     xAxis: {
       type: 'category',

@@ -141,7 +141,7 @@ const login = async () => {
     if (valid !== true) return
 
     await userStore.login(loginForm.value)
-    router.push('/home')
+    router.push('/')
   } catch (error) {
     // API 错误消息已在 request.js 响应拦截器中统一展示，此处仅需清空密码
     loginForm.value.password = ''

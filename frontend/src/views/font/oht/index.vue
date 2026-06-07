@@ -65,7 +65,7 @@
                     </div>
                     <!-- 系统消息 -->
                     <div v-if="item.direction === 3" class="message-content system">
-                      <t-tag theme="info" effect="dark" size="small">
+                      <t-tag theme="default" effect="dark" size="small">
                         {{ item.content }}
                       </t-tag>
                     </div>
@@ -150,7 +150,7 @@
       <t-col :span="4">
         <div class="right-panel">
           <!-- 基本信息卡片 -->
-          <t-card class="info-card" shadow="hover">
+          <t-card class="info-card" shadow>
             <template #header>
               <div class="card-header">
                 <t-icon>

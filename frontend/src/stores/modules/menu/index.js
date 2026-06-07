@@ -8,8 +8,13 @@ const modules = import.meta.glob('@/views/**/*.vue')
 
 // 辅助函数：检查组件是否存在
 function getComponent(componentPath) {
+  // componentPath 为 null/undefined/空字符串时，直接返回 not-found 组件
+  if (!componentPath) {
+    console.warn('菜单组件路径为空，跳转至404页面')
+    return () => import('@/views/exception/not-found/index.vue')
+  }
   // componentPath不为空则判断是否以/开头，若不是则添加/
-  if (!componentPath || !componentPath.startsWith('/')) {
+  if (!componentPath.startsWith('/')) {
     componentPath = '/' + componentPath
   }
   const component = modules[`/src/views${componentPath}/index.vue`]
@@ -47,7 +52,7 @@ export function mapMenusToRoutes(menuList, basePath = '') {
           // 对于有子菜单的项，不设置component，或者使用具体的页面组件
           // 绝对不使用Layout组件，避免嵌套
           component:
-            menu.component !== 'LAYOUT' ? getComponent(menu.component) : null,
+            menu.component && menu.component !== 'LAYOUT' ? getComponent(menu.component) : null,
           children: childrenRoutes
         }
         routes.push(route)

@@ -1,1 +1,0 @@
-import{h as t}from"./index-BspsdquE.js";const i={getQuestionLibTree:e=>t({url:`edu/quesLib/${e}`,method:"get"}),getTreeData:(e=1)=>t({url:`edu/quesLib/${e}`,method:"get"}),addQuestionLib:e=>t({url:"edu/quesLib",method:"post",data:e}),updateQuestionLib:e=>t({url:"edu/quesLib",method:"put",data:e}),deleteQuestionLib:e=>t({url:`edu/quesLib/${e}`,method:"delete"})};export{i as q};

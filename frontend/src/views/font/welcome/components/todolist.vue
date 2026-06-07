@@ -91,7 +91,7 @@
               <t-popup placement="top-start" :title="scope.row.title" width="300" trigger="hover"
                 :content="scope.row.content">
                 <template #reference>
-                  <t-link underline="never">{{ scope.row.title }}</t-link>
+                  <t-link :underline="false">{{ scope.row.title }}</t-link>
                 </template>
               </t-popup>
             </template>

@@ -12,7 +12,7 @@
             style="text-align: center"
             v-if="global?.user?.jobLevel?.indexOf('100,102,103,104,105') === -1"
           >
-            <t-button-group>
+            <t-space>
               <t-button
                 theme="primary"
                 size="small"
@@ -49,7 +49,7 @@
                 "
                 >业务统计</t-button
               >
-            </t-button-group>
+            </t-space>
           </div>
         </div>
         <CustomTable rowKey="id"

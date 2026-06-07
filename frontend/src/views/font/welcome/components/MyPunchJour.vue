@@ -38,7 +38,7 @@
             >迟到</t-tag
           >
           <t-tag v-else-if="scope.row.status === 3" theme="danger">早退</t-tag>
-          <t-tag v-else theme="info">缺卡</t-tag>
+          <t-tag v-else theme="default">缺卡</t-tag>
         </template>
       </TableColumn>
       <TableColumn colKey="remark" label="备注"></TableColumn>

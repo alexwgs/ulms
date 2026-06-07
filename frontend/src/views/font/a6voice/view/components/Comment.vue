@@ -27,11 +27,11 @@
       </template>
 
       <template #actions>
-        <t-space key="thumbUp" :size="6" class="action-item" @click="handleLike(2, comment.id, index)">
+        <t-space key="thumbUp" size="6px" class="action-item" @click="handleLike(2, comment.id, index)">
           <t-icon name="thumb-up" :color="isLikedComment(comment) ? 'red' : 'default'" />
           <span>{{ comment.likeNum }}</span>
         </t-space>
-        <t-space key="chat" :size="6" class="action-item" @click="handleReply(comment.id)">
+        <t-space key="chat" size="6px" class="action-item" @click="handleReply(comment.id)">
           <t-icon name="chat" />
           <span>回复TA</span>
         </t-space>
@@ -54,11 +54,11 @@
               <div v-html="reply.content"></div>
             </template>
             <template #actions>
-              <t-space key="thumbUp" :size="6" class="action-item" @click="handleLike(3, reply.id, index)">
+              <t-space key="thumbUp" size="6px" class="action-item" @click="handleLike(3, reply.id, index)">
                 <t-icon name="thumb-up" :color="isLikedComment(reply) ? 'blue' : 'default'" />
                 <span>{{ reply.likeNum }}</span>
               </t-space>
-              <t-space key="chat" :size="6" class="action-item" @click="handleReply(reply.id)">
+              <t-space key="chat" size="6px" class="action-item" @click="handleReply(reply.id)">
                 <t-icon name="chat" />
                 <span>回复TA</span>
               </t-space>

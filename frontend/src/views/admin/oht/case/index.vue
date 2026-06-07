@@ -25,11 +25,11 @@
       height="calc(100vh - 325px)" :loading="loading">
       <TableColumn label="推送明细" width="120">
         <template #default="{ row }">
-          <t-button-group>
+          <t-space>
             <t-button theme="primary" size="small" @click="pushDetail(row.caseId)"><template #icon><DynamicIcon name="notification" /></template></t-button>
             <t-button theme="primary" size="small" @click="viewChatRecord(row)"
               :disabled="row.caseStatus <= 1"><template #icon><DynamicIcon name="chat-bubble" /></template></t-button>
-          </t-button-group>
+          </t-space>
         </template>
       </TableColumn>
       <TableColumn colKey="dataTime" sortable="custom" label="建案日期" width="150"></TableColumn>

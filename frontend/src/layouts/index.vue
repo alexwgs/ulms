@@ -9,11 +9,16 @@
         v-if="shouldShowSidebar"
         v-show="!hideMenu"
         class="layout-sider"
+        :class="{ 'is-collapsed': appStore.menuCollapse }"
         :width="menuWidth"
         :style="{ paddingTop: navbar ? '' : '60px' }"
       >
         <div class="menu-wrapper">
           <AppSider @collapse="setCollapsed" />
+        </div>
+        <!-- 侧边栏折叠按钮 -->
+        <div class="sidebar-collapse-btn" @click="toggleCollapse">
+          <t-icon :name="appStore.menuCollapse ? 'chevron-right' : 'chevron-left'" size="16px" />
         </div>
       </t-aside>
       <t-layout class="layout-content" :style="paddingStyle">
@@ -65,6 +70,10 @@ const setCollapsed = (val) => {
   appStore.updateSettings({ menuCollapse: val });
 };
 
+const toggleCollapse = () => {
+  appStore.updateSettings({ menuCollapse: !appStore.menuCollapse });
+};
+
 onMounted(() => {
   isInit.value = true;
 });
@@ -83,6 +92,8 @@ onMounted(() => {
   z-index: 100;
   width: 100%;
   height: 59px;
+  background-color: var(--td-bg-color-container);
+  border-bottom: 1px solid var(--td-border-level-1-color);
 }
 
 .layout-sider {
@@ -93,25 +104,37 @@ onMounted(() => {
   height: calc(100vh - 59px);
   transition: all 0.2s cubic-bezier(0.34, 0.69, 0.1, 1);
   border-right: 1px solid var(--td-border-level-1-color);
+  // 收起状态：宽度由 t-aside 的 :width 属性控制
+}
+
+// 收起按钮
+.sidebar-collapse-btn {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-top: 1px solid var(--td-border-level-1-color);
+  transition: all 0.2s cubic-bezier(0.34, 0.69, 0.1, 1);
+  color: var(--td-text-color-secondary);
+  z-index: 10;
+
+  &:hover {
+    color: var(--td-brand-color);
+  }
+
+  .layout-sider.is-collapsed & {
+    // 收起时按钮内容自动居中
+  }
 }
 
 .menu-wrapper {
-  height: 100%;
-  overflow: auto;
-  overflow-x: hidden;
-
-  &::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    border-radius: 3px;
--color: var(--td-text-color-placeholder);
-  }
-
-  &::-webkit-scrollbar-thumb:hover {
--color: var(--td-text-color-secondary);
-  }
+  height: calc(100% - 40px); // 为底部折叠按钮留出空间
+  overflow: hidden;
 }
 
 .layout-content {

@@ -37,11 +37,11 @@
                   </t-dropdown-menu>
                 </template>
               </t-dropdown>
-              <t-button-group>
+              <t-space>
                 <t-button class="release-button" theme="primary" size="small" @click="preview">预览</t-button>
                 <t-button class="release-button" theme="primary" size="small" :disabled="releaseBtnFlag"
                   @click="release">发布</t-button>
-              </t-button-group>
+              </t-space>
             </t-form-item>
           </t-col>
         </t-row>

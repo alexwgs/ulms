@@ -96,7 +96,7 @@ const chartOption = computed(() => {
       right: '4%',
       bottom: '10%',
       top: '10%',
-      containLabel: true
+      
     },
     xAxis: {
       type: 'category',

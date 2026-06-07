@@ -1,0 +1,1 @@
+import{h as t}from"./index-CVSZrBBC.js";const h={getTree:()=>t({url:"helper/tree/tree",method:"get"}),addTree:e=>t({url:"helper/tree",method:"post",data:e}),updateTree:e=>t({url:"helper/tree",method:"put",data:e}),deleteTreeWithChildren:e=>t({url:`helper/tree/withchildren/${e}`,method:"delete"})};export{h as t};

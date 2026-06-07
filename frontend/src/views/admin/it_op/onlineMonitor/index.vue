@@ -10,7 +10,7 @@
           style="width: 260px"
           @input="handleSearch"
         >
-          <template #prefix><t-icon><Search /></t-icon></template>
+          <template #prefix><t-icon><SearchIcon /></t-icon></template>
         </t-input>
         <t-select v-model="roleFilter" placeholder="角色筛选" style="width: 130px" @change="handleSearch">
           <t-option label="全部角色" value="" />
@@ -51,7 +51,7 @@
       <TableColumn label="用户" min-width="180" sortable colKey="user.ploName">
         <template #default="{ row }">
           <div class="user-cell">
-            <t-avatar shape="square" :size="36" :src="row.user?.avatar ? fsURL + row.user.avatar : defaultAvatar" />
+            <t-avatar shape="round" size="36px" :src="row.user?.avatar ? fsURL + row.user.avatar : defaultAvatar" />
             <div class="user-info">
               <span class="uname">{{ row.user?.ploName || '--' }}</span>
               <span class="unum">{{ row.user?.ploNum || row.userId }}</span>
@@ -68,7 +68,7 @@
         <template #default="{ row }">
           <t-tag v-if="row.ohtRole?.roleType === 1" theme="success" size="small" effect="dark" round>接单组</t-tag>
           <t-tag v-else-if="row.ohtRole?.roleType === 0" theme="warning" size="small" effect="dark" round>求助组</t-tag>
-          <t-tag v-else theme="info" size="small" effect="plain" round>未知</t-tag>
+          <t-tag v-else theme="default" size="small" effect="plain" round>未知</t-tag>
         </template>
       </TableColumn>
       <TableColumn label="状态" width="130" align="center">

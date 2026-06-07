@@ -91,7 +91,7 @@ export const useAuthStore = defineStore('auth', () => {
       // 提交客户端信息
       await setClientInfo(GetClientInfo())
 
-      router.push('/home')
+      router.push('/')
       return res.msg
     } catch (error) {
       throw error

@@ -182,8 +182,7 @@ const logout = async () => {
   justify-content: space-between;
   align-items: center;
   height: 100%;
--color: var(--td-bg-color-container);
-  border-bottom: 1px solid var(--td-border-level-1-color);
+  background-color: var(--td-bg-color-container);
 }
 
 .mr-2 {

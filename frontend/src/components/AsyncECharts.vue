@@ -250,7 +250,9 @@ const updateChart = () => {
 const resizeChart = () => {
   if (chartInstance) {
     try {
-      chartInstance.resize()
+      requestAnimationFrame(() => {
+        chartInstance?.resize()
+      })
     } catch (error) {
       console.error('调整图表大小失败:', error)
     }
@@ -262,7 +264,10 @@ const setupResizeObserver = () => {
   if (chartRef.value && window.ResizeObserver) {
     resizeObserver.value = new ResizeObserver(() => {
       if (chartInstance) {
-        chartInstance.resize()
+        // 使用 requestAnimationFrame 延迟 resize 调用，避免 ECharts 6 报错
+        requestAnimationFrame(() => {
+          chartInstance?.resize()
+        })
       }
     })
     resizeObserver.value.observe(chartRef.value)
