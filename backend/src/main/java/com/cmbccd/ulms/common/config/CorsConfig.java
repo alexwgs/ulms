@@ -36,11 +36,19 @@ public class CorsConfig {
         corsConfiguration.setAllowCredentials(true);
         corsConfiguration.setAllowedOriginPatterns(Arrays.asList(
             "http://localhost:*",
+            "https://localhost:*",
             "http://127.0.0.1:*",
+            "https://127.0.0.1:*",
             "http://10.47.81.*",
+            "https://10.47.81.*",
             "http://192.168.*",
+            "https://192.168.*",
             "http://101.35.25.22",
-            "http://wei6130.site"
+            "https://101.35.25.22",
+            "http://wei6130.site",
+            "https://wei6130.site",
+            "http://wei6130.top",
+            "https://wei6130.top"
         ));
         corsConfiguration.addAllowedHeader("*");
         corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));

@@ -110,7 +110,14 @@ export const useWsStore = defineStore('websocket', {
     // 建立WebSocket连接
     connect() {
       try {
-        const wsUrl = import.meta.env.VITE_WS_BASE_URL + 'ws/' + this.userId
+        // 自动适配 HTTP/HTTPS：根据当前页面协议选择 ws:// 或 wss://
+        const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://'
+        // 开发模式：直连后端（使用 env 中配置的 host）；生产模式：与页面同源
+        const host = import.meta.env.DEV
+          ? new URL(import.meta.env.VITE_WS_BASE_URL).host
+          : window.location.host
+        const pathPart = import.meta.env.BASE_URL
+        const wsUrl = protocol + host + pathPart + 'ws/' + this.userId
 
         // 创建WebSocket实例
         this.ws = new ReconnectingWebSocket(wsUrl, null, {

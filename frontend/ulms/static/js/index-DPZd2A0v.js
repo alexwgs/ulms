@@ -1,1 +1,0 @@
-import{_ as t}from"./index-D5IZgDHP.js";import{U as e,V as s,r as o}from"./vendor-B5gPZV6t.js";import"./tdesign-vue-next-B71aoWmv.js";const u={__name:"index",setup(a){const r=o("http://wei6130.top:6130/ulms/druid");return(c,_)=>(e(),s(t,{src:r.value},null,8,["src"]))}};export{u as default};

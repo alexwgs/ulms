@@ -1,9 +1,12 @@
-#server:
-#  ssl:
-#    key-store: classpath:server.p12
-#    key-store-password: wqqlxr6130
-#    keyStoreType: PKCS12
-#    key-alias: selfsigned
+server:
+  ssl:
+    key-store: classpath:server.p12
+    key-store-password: wqqlxr6130
+    keyStoreType: PKCS12
+    key-alias: selfsigned
+  http:
+    port: 8080
+  port: 8443
 ulms:
   uploadPath: d:/var/uploaded_files/
   username: admin

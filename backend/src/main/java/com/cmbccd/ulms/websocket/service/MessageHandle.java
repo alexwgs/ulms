@@ -129,8 +129,8 @@ public class MessageHandle {
 		JSONObject jsonMsg = JSONObject.parseObject(msg, Feature.DisableFieldSmartMatch);
 		log.info("jsonMsg:" + jsonMsg);
 		InitUser iUser = WebSocketServer.state.getUser(userId);
-		if (jsonMsg.getString("modal").equals("oht")) {
-			if (jsonMsg.getString("type").equals("message")) {
+		if ("oht".equals(jsonMsg.getString("modal"))) {
+			if ("message".equals(jsonMsg.getString("type"))) {
 				OhtMsgTemplate ohtMsg = new OhtMsgTemplate();
 				String roomName = WebSocketServer.state.getUserRoom(userId);
 				// 获取room中的其他用户
@@ -159,7 +159,7 @@ public class MessageHandle {
 				fileRecord.writeChatRecordFile(roomName,
 						JSON.toJSONString(MsgTemplate.success(modal, type).add("data", ohtMsg)));
 
-			} else if (jsonMsg.getString("type").equals("identity")) {
+			} else if ("identity".equals(jsonMsg.getString("type"))) {
 				int ohtFlag = 0;
 				if (!Util.isNullorEmpty(jsonMsg.getString("content"))) {
 					String[] identitys = jsonMsg.getString("content").split(",");
@@ -184,7 +184,7 @@ public class MessageHandle {
 				record.setIdentity(jsonMsg.getString("content"));
 				record.setOhtFlag(isTakeOrder);
 				handle.statusJourService.insertNewStatusJour(record);
-			} else if (jsonMsg.getString("type").equals("userStatus")) {
+			} else if ("userStatus".equals(jsonMsg.getString("type"))) {
 				JSONObject userStatus = jsonMsg.getJSONObject("content");
 				int status = 0;
 				String memo = "";
@@ -219,7 +219,7 @@ public class MessageHandle {
 				record.setMemo(memo);
 				record.setOhtFlag(isTakeOrder);
 				handle.statusJourService.insertNewStatusJour(record);
-			} else if (jsonMsg.getString("type").equals("command")) {
+			} else if ("command".equals(jsonMsg.getString("type"))) {
 				JSONObject command = jsonMsg.getJSONObject("content");
 				// 当前端用户操作新的求助，则需要告知选择求助类型
 				String action = command.getString("action");
@@ -428,16 +428,16 @@ public class MessageHandle {
 					}
 				}
 			}
-		} else if (jsonMsg.getString("modal").equals("admin")) {
+		} else if ("admin".equals(jsonMsg.getString("modal"))) {
 			// 管理员websocket推送管理
-			if (jsonMsg.getString("type").equals("kickOut")) {
+			if ("kickOut".equals(jsonMsg.getString("type"))) {
 				if (Util.isNullorEmpty(jsonMsg.getString("content"))) {
 					WebSocketServer.boardcastAsync(MsgTemplate.success("admin", "kickOut", ""), userId);
 				} else {
 					WebSocketServer.sendMessage(MsgTemplate.success("admin", "kickOut", ""),
 							jsonMsg.getString("content"));
 				}
-			} else if (jsonMsg.getString("type").equals("message")) {
+			} else if ("message".equals(jsonMsg.getString("type"))) {
 				JSONObject command = jsonMsg.getJSONObject("content");
 				String toUserId = command.getString("toUserId");
 				if (Util.isNullorEmpty(toUserId)) {

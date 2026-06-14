@@ -28,8 +28,13 @@ httpInstance.interceptors.request.use(
   //响应拦截
   async (config) => {
     if (config.method === 'post') {
-      config.data = JSON.stringify(config.data)
-      config.headers['Content-Type'] = 'application/json'
+      // FormData 用于文件上传，不需要 JSON 序列化
+      if (config.data instanceof FormData) {
+        delete config.headers['Content-Type']
+      } else {
+        config.data = JSON.stringify(config.data)
+        config.headers['Content-Type'] = 'application/json'
+      }
     }
     // 每次发送请求之前判断vuex中是否存在token
     // 如果存在，则统一在http请求的header都加上token，这样后台根据token判断你的登录情况

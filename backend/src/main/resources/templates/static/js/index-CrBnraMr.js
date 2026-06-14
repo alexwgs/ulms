@@ -1,0 +1,1 @@
+import{_ as e}from"./index-B-YY3ll5.js";import{U as s,V as t,r as a}from"./vendor-B5gPZV6t.js";import"./tdesign-vue-next-C0xlZ8-U.js";const i={__name:"index",setup(o){const r=a("https://wei6130.top:8443/ulms/swagger-ui/index.html");return(c,n)=>(s(),t(e,{src:r.value},null,8,["src"]))}};export{i as default};

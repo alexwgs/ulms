@@ -1,1 +1,0 @@
-import{_ as e}from"./index-D5IZgDHP.js";import{U as s,V as a,r as c}from"./vendor-B5gPZV6t.js";import"./tdesign-vue-next-B71aoWmv.js";const m={__name:"index",setup(t){const r=c("http://10.47.24.45/auxs/kf_helper/search/search1.jsp");return(o,_)=>(s(),a(e,{src:r.value},null,8,["src"]))}};export{m as default};

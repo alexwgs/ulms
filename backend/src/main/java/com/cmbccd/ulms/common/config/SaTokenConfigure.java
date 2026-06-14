@@ -19,6 +19,16 @@ public class SaTokenConfigure implements WebMvcConfigurer  {
         // 注册 Sa-Token 拦截器，打开注解式鉴权功能
         log.info("注册 Sa-Token 拦截器，打开注解式鉴权功能");
         registry.addInterceptor(new SaInterceptor())
-                .addPathPatterns("/**");
+                .addPathPatterns("/**")
+                // 排除静态资源和公开端点（避免拦截器对 JS/CSS/图片 返回 JSON 导致 MIME 错误）
+                .excludePathPatterns(
+                        "/static/**",       // 前端构建产物 (JS/CSS/字体/图片)
+                        "/index.html",      // SPA 入口
+                        "/favicon.ico",     // 浏览器图标
+                        "/upload/**",       // 上传文件（头像等）
+                        "/error",           // 错误处理端点
+                        "/login",           // 登录接口
+                        "/getPw"            // 获取加密密钥
+                );
     }
 }

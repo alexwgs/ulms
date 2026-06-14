@@ -45,11 +45,18 @@ public class MainsiteErrorController implements ErrorController {
     }
 
     @RequestMapping(value = ERROR_PATH)
-    public Msg handleError(HttpServletRequest request, HttpServletResponse response) {
+    public Object handleError(HttpServletRequest request, HttpServletResponse response) {
         Integer code = (Integer) request.getAttribute("jakarta.servlet.error.status_code");
         if (code == null) {
             code = 500;
         }
+        // 静态资源请求（JS/CSS/图片等）不返回 JSON，避免浏览器 MIME 类型校验报错
+        String requestUri = (String) request.getAttribute("jakarta.servlet.error.request_uri");
+        if (requestUri != null && requestUri.matches(".*\\.(js|css|png|jpg|jpeg|gif|svg|ico|woff2?|ttf|map)$")) {
+            response.setContentType("text/plain;charset=UTF-8");
+            return "Resource not found: " + code;
+        }
+        // API 请求返回标准 Msg JSON
         if (404 == code) {
             return new Msg(404, "未找到资源");
         } else if (403 == code) {

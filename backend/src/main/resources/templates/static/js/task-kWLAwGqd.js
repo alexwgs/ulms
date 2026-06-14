@@ -1,0 +1,1 @@
+import{j as s,h as a}from"./index-1-c64luH.js";const e={getTaskByCaseId:t=>a({url:`oht/task/${t}`,method:"get"}),getTaskSummary:t=>a({url:"oht/task/summary",method:"get",params:t}),downloadTaskSummaryReport:t=>s("oht/task/summary/report",t,"案件推送操作总览.xlsx")};export{e as t};

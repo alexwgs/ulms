@@ -63,6 +63,22 @@ export const constantRoutes = [
         path: 'font/a6voice/survey/:id',
         name: '新建调研',
         component: () => import('@/views/font/a6voice/new/survey/index.vue')
+      },
+      {
+        path: 'user/center',
+        name: 'info',
+        component: () => import('@/views/user/center/index.vue'),
+        meta: {
+          title: '用户中心'
+        }
+      },
+      {
+        path: 'user/setting',
+        name: 'setting',
+        component: () => import('@/views/user/setting/index.vue'),
+        meta: {
+          title: '用户设置'
+        }
       }
     ]
   },
