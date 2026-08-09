@@ -27,13 +27,13 @@
       <div class="ques-options" v-if="question.quesType === 2">
         <t-checkbox-group v-model="answer.checkbox" @change="submitAnswer">
           <t-checkbox v-for="(item, index) of options" :key="index" class="ques-option"
-            :value="item" border>{{ item }}</t-checkbox>
+            :value="item">{{ item }}</t-checkbox>
         </t-checkbox-group>
       </div>
       <div class="ques-options" v-else>
         <t-radio-group v-model="answer.radio" @change="submitAnswer">
           <t-radio v-for="(item, index) of options" :key="index" class="ques-option"
-            :value="item" border>{{ item }}</t-radio>
+            :value="item">{{ item }}</t-radio>
         </t-radio-group>
       </div>
     </div>
@@ -43,7 +43,7 @@
 <script setup>
 import { ref, reactive, computed } from 'vue'
 
-const fsURL = import.meta.env.VITE_FILE_MANAGE_BASE
+const fsURL = import.meta.env.VITE_FILE_BASE_URL
 
 const loading = ref(false)
 const showFlag = ref(false)
@@ -162,32 +162,40 @@ defineExpose({
   }
 
   .ques-options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 18px;
+    padding-bottom: 12px;
+
     .ques-option {
-      margin: 10px 0 0 0;
-      text-overflow: ellipsis;
-      white-space: normal;
-      line-height: 1.6;
-      display: block;
-      // font-size: 15px;
-    }
-
-    .t-radio,
-    .t-checkbox {
-      color: #000;
-    }
-
-    :deep(.t-checkbox__label),
-    :deep(.t-radio__label) {
-      display: inline;
-      // font-size: 15px;
-    }
-
-    .t-radio.is-bordered,
-    .t-checkbox.is-bordered {
-      padding: 8px 20px 8px 10px;
-      border-radius: 4px;
+      display: flex !important;
+      align-items: flex-start;
+      width: 100%;
+      margin: 0;
+      padding: 12px 16px;
+      border: 1px solid var(--academy-line);
+      border-radius: 10px;
+      background: var(--academy-bg);
+      color: var(--academy-ink);
       box-sizing: border-box;
-      height: 100%;
+      transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+      cursor: pointer;
+
+      &:hover {
+        border-color: var(--academy-navy-2);
+        background: #fff;
+        box-shadow: var(--academy-shadow-sm);
+      }
+    }
+
+    :deep(.t-radio__label),
+    :deep(.t-checkbox__label) {
+      font-size: 15px;
+      line-height: 1.7;
+      white-space: normal;
+      padding-left: 6px;
+      color: var(--academy-ink);
     }
   }
 }

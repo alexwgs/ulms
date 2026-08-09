@@ -1,26 +1,32 @@
 <template>
   <div>
-    <t-card class="box-card">
-      <div class="table-filter">
-        <t-row :gutter="15">
+    <t-card class="management-card">
+      <t-form :data="params" label-width="80px" colon class="filter-form">
+        <t-row :gutter="[24, 24]">
           <t-col :span="3">
-            <t-input size="small" v-model="params.userId" placeholder="请输入查询工号"></t-input>
+            <t-form-item label="工号" name="userId">
+              <t-input size="small" v-model="params.userId" placeholder="请输入查询工号"></t-input>
+            </t-form-item>
           </t-col>
           <t-col :span="4">
-            <t-date-range-picker size="small" style="width:100%" v-model="dateRange" format="YYYY-MM-DD" @change="datePick" :placeholder="['开始日期', '结束日期']"></t-date-range-picker>
+            <t-form-item label="日期范围" name="dateRange">
+              <t-date-range-picker size="small" v-model="dateRange" format="YYYY-MM-DD" @change="datePick" :placeholder="['开始日期', '结束日期']"></t-date-range-picker>
+            </t-form-item>
           </t-col>
           <t-col :span="3">
-            <t-select size="small" v-model="params.status" @change="getTodolist" placeholder="状态选择">
-              <t-option label="待办" :value="0"></t-option>
-              <t-option label="已完成" :value="1"></t-option>
-            </t-select>
+            <t-form-item label="状态" name="status">
+              <t-select size="small" v-model="params.status" @change="getTodolist" placeholder="请选择">
+                <t-option label="待办" :value="0"></t-option>
+                <t-option label="已完成" :value="1"></t-option>
+              </t-select>
+            </t-form-item>
           </t-col>
-          <t-col :span="3">
-            <t-button size="small" theme="primary" @click="getTodolist">查询</t-button>
-            <t-button size="small" theme="primary" @click="openTodoDialog(null, 'add')">新增</t-button>
+          <t-col :span="3" class="operation-container">
+            <t-button variant="outline" size="small" theme="primary" @click="getTodolist">查询</t-button>
+            <t-button variant="outline" size="small" theme="primary" @click="openTodoDialog(null, 'add')">新增</t-button>
           </t-col>
         </t-row>
-      </div>
+      </t-form>
       <CustomTable rowKey="id" :data="tableData" size="small" stripe height="calc(100vh - 330px)">
         <TableColumn colKey="dataDate" sort label="日期"></TableColumn>
         <TableColumn colKey="userId" sort label="用户ID"></TableColumn>
@@ -29,24 +35,24 @@
         <TableColumn colKey="priority" sort label="优先级"></TableColumn>
         <TableColumn colKey="alert" sort label="提醒">
           <template #default="scope">
-            <t-tag :theme="scope.row.alertFlag === 0 ? 'danger' : 'success'" size="small" effect="plain">
+            <t-tag :theme="scope.row.alertFlag === 0 ? 'danger' : 'success'" size="small" variant="light">
               {{ scope.row.alertFlag === 0 ? '否' : scope.row.alertTime }}
             </t-tag>
           </template>
         </TableColumn>
         <TableColumn colKey="status" sort label="状态">
           <template #default="scope">
-            <t-tag :theme="scope.row.status === 0 ? 'danger' : 'success'" size="small" effect="plain">
+            <t-tag :theme="scope.row.status === 0 ? 'danger' : 'success'" size="small" variant="light">
               {{ scope.row.status === 0 ? '未完成' : '已完成' }}
             </t-tag>
           </template>
         </TableColumn>
         <TableColumn label="操作" width="120px">
           <template #default="scope">
-            <t-button theme="warning" size="small" @click="openTodoDialog(scope.row, 'edit')"
-              shape="circle"><template #icon><DynamicIcon name="edit" /></template></t-button>
-            <t-button size="small" theme="danger" @click="deleteTodo(scope.row)"
-              shape="circle"><template #icon><DynamicIcon name="delete" /></template></t-button>
+            <t-button variant="outline" theme="default" size="small" @click="openTodoDialog(scope.row, 'edit')"
+             >编辑</t-button>
+            <t-button variant="outline" size="small" theme="danger" @click="deleteTodo(scope.row)"
+             >删除</t-button>
           </template>
         </TableColumn>
       </CustomTable>
@@ -70,11 +76,12 @@
               </t-radio-group>
             </t-col>
             <t-col :span="12">
-              <t-input style="width:100%" placeholder="" size="small" v-model="todoForm.userId" :readonly="userType">
+              <t-input-adornment style="width: 100%">
                 <template #append>
-                  <t-button :disabled="userType" @click="treeDialogVisiable = !treeDialogVisiable"><template #icon><DynamicIcon name="zoom-in" /></template></t-button>
+                  <t-button variant="outline" theme="default" :disabled="userType" @click="treeDialogVisiable = !treeDialogVisiable">选择</t-button>
                 </template>
-              </t-input>
+                <t-input placeholder="" size="small" v-model="todoForm.userId" :readonly="userType"></t-input>
+              </t-input-adornment>
             </t-col>
           </t-row>
         </t-form-item>
@@ -110,9 +117,9 @@
           </t-select>
         </t-form-item>
         <t-form-item>
-          <t-button theme="primary" size="small" @click="submit()">{{ todoType === 'add' ? '立即创建' : '提交修改'
+          <t-button variant="outline" theme="primary" size="small" @click="submit()">{{ todoType === 'add' ? '立即创建' : '提交修改'
           }}</t-button>
-          <t-button size="small" @click="closeTodoDialog">取 消</t-button>
+          <t-button variant="outline" size="small" @click="closeTodoDialog">取 消</t-button>
         </t-form-item>
       </t-form>
     </t-dialog>
@@ -302,16 +309,4 @@ onMounted(() => {
 </script>
 
 <style lang="less" scoped>
-.table-filter {
-  padding: 10px;
-
-  span {
-    font-size: 12px;
-    margin-left: 20px;
-  }
-
-  .t-select {
-    width: 70%;
-  }
-}
 </style>

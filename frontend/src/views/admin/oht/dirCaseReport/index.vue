@@ -1,15 +1,19 @@
 <template>
-  <t-card class="box-card">
-    <t-row :gutter="15">
-      <t-col :span="9">
-        <t-date-range-picker v-model="dateDuration" @update:model-value="dateChangeEvent" size="small" :placeholder="['开始日期', '结束日期']"></t-date-range-picker>
-      </t-col>
-      <t-col :span="3" class="text-right">
-        <t-button theme="primary" size="small" @click="caseApi.downloadCaseDirReport(queryInfo)">
-          下载
-        </t-button>
-      </t-col>
-    </t-row>
+  <t-card class="management-card">
+    <t-form :data="queryInfo" label-width="80px" colon class="filter-form">
+      <t-row :gutter="[24, 24]">
+        <t-col :span="5">
+          <t-form-item label="日期范围" name="dateDuration">
+            <t-date-range-picker v-model="dateDuration" @update:model-value="dateChangeEvent" size="small" :placeholder="['开始日期', '结束日期']"></t-date-range-picker>
+          </t-form-item>
+        </t-col>
+        <t-col :span="3" class="operation-container">
+          <t-button theme="primary" size="small" @click="caseApi.downloadCaseDirReport(queryInfo)">
+            下载
+          </t-button>
+        </t-col>
+      </t-row>
+    </t-form>
     <CustomTable rowKey="id" :data="caseTableQuery" size="small" sortable stripe height="calc(100vh - 270px)" :loading="loading">
       <TableColumn colKey="deptName" sortable label="科室"></TableColumn>
       <TableColumn colKey="groupName" sortable label="组别"></TableColumn>
@@ -38,7 +42,7 @@ import { caseApi } from '@/api/oht/case'
 // 响应式数据
 const loading = ref(false)
 const caseTableQuery = ref([])
-const dateDuration = ref(null)
+const dateDuration = ref([])
 
 // 查询参数
 const queryInfo = reactive({
@@ -63,7 +67,7 @@ const getCaseList = async () => {
       MessagePlugin.error(res.msg)
       return
     }
-    caseTableQuery.value = res.data
+    caseTableQuery.value = res.data || []
   } catch (error) {
     console.error('获取业务主任接单报表失败:', error)
     MessagePlugin.error('获取业务主任接单报表失败')
@@ -84,7 +88,7 @@ const dateChangeEvent = () => {
 </script>
 
 <style lang="less" scoped>
-.box-card {
+.management-card {
   height: calc(100vh - 190px);
   overflow: auto;
 }

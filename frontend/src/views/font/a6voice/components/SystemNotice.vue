@@ -12,12 +12,12 @@
           <div>
             标签：
             <span v-for="item in labelItems" :key="item.label">
-              <t-tag v-if="artical[item.field] == item.val" :theme="item.type" effect="dark" size="small">
+              <t-tag v-if="artical[item.field] == item.val" :theme="item.type" variant="light" size="small">
                 {{ item.label }}
               </t-tag>
             </span>
             <div class="artical-icon">
-              <span v-if="artical.user" style="color: #909399; font-size: 14px; padding-right: 10px">发布人：{{
+              <span v-if="artical.user" style="color: var(--td-text-color-placeholder); font-size: 14px; padding-right: 10px">发布人：{{
                 artical.user.ploName }} &emsp;|&emsp;发布时间：{{
                   artical.pubDate
                 }}</span>
@@ -40,21 +40,26 @@
           <t-divider></t-divider>
           <p v-if="artical.hasOwnProperty('files') && artical.files != null">
             附件下载：<t-button v-for="(file, index) in parseFiles(artical.files)" :key="index" size="medium"
-              @click="downloadFile(file.path)" theme="primary" plain>{{ file.name }}</t-button>
+              @click="downloadFile(file.path)" theme="primary" variant="outline">{{ file.name }}</t-button>
           </p>
           <div class="artical-operations">
-            <t-button :type="isLike == 0 ? '' : 'primary'" :disabled="isLike == 1 ? true : false"
-              icon="iconfont iconzan1" @click="setLike(1, artical.id)" round>&emsp;点 赞&emsp;{{ artical.likeNum
-              }}</t-button>
-            <t-button :type="isCollect == 0 ? '' : 'primary'" icon="iconfont iconshoucang1" @click="setCollect"
-              round>&emsp;{{ artical.isCollect == 0 ? '' : '已' }} 收 藏&emsp;{{
+            <t-button :theme="isLike == 0 ? 'default' : 'primary'" :disabled="isLike == 1 ? true : false"
+              @click="setLike(1, artical.id)" shape="round">
+              <template #icon><i class="iconfont iconzan1"></i></template>
+              &emsp;点 赞&emsp;{{ artical.likeNum }}
+            </t-button>
+            <t-button :theme="isCollect == 0 ? 'default' : 'primary'" @click="setCollect"
+              shape="round">
+              <template #icon><i class="iconfont iconshoucang1"></i></template>
+              &emsp;{{ artical.isCollect == 0 ? '' : '已' }} 收 藏&emsp;{{
                 artical.collectNum
-              }}</t-button>
+              }}
+            </t-button>
           </div>
         </div>
         <t-card class="comment">
           <t-divider>
-            <t-pagination v-model:current="currentPage" @current-change="handleCurrentChange"
+            <t-pagination v-model="currentPage" @current-change="handleCurrentChange"
               :page-size="commnetQueryInfo.pageSize" :total="commentTotal">
             </t-pagination>
           </t-divider>
@@ -81,15 +86,21 @@
               </div>
               <div class="comment-content" v-html="comment.content"></div>
               <div class="comment-operations">
-                <t-button v-if="flags.commentFlag" size="small" icon="iconfont iconxiaoxi" @click="reply(comment.id)">
-                  回复</t-button>
+                <t-button v-if="flags.commentFlag" size="small" @click="reply(comment.id)">
+                  <template #icon><i class="iconfont iconxiaoxi"></i></template>
+                  回复
+                </t-button>
                 <t-button v-if="
                   comment.likes.filter((item) => item.userId == user.ploNum)
                     .length == 0
-                " size="small" icon="iconfont iconzan1" @click="setLike(2, comment.id, index)">
-                  * {{ comment.likeNum }}</t-button>
-                <t-button v-else theme="danger" disabled size="small" icon="iconfont iconzan1">* {{ comment.likeNum
-                  }}</t-button>
+                " size="small" @click="setLike(2, comment.id, index)">
+                  <template #icon><i class="iconfont iconzan1"></i></template>
+                  * {{ comment.likeNum }}
+                </t-button>
+                <t-button v-else theme="danger" disabled size="small">
+                  <template #icon><i class="iconfont iconzan1"></i></template>
+                  * {{ comment.likeNum }}
+                </t-button>
               </div>
               <div v-if="replyId == comment.id">
                 <WangEditor v-model="replyForm.content" height="300"></WangEditor>
@@ -144,7 +155,7 @@ import { httpInstance } from '@/utils/request'
 import useDictStore from '@/stores/modules/dict'
 
 const route = useRoute()
-const fsURL = import.meta.env.VITE_FILE_MANAGE_BASE || import.meta.env.VITE_FILE_BASE_URL
+const fsURL = import.meta.env.VITE_FILE_BASE_URL
 const dictStore = useDictStore()
 
 const user = ref({})
@@ -396,7 +407,7 @@ onMounted(() => {
 .view-container {
   height: 100%;
   width: 100%;
--color: #eaedf1;
+background-color: var(--td-bg-color-page);
 }
 
 .artical-header {
@@ -406,7 +417,7 @@ onMounted(() => {
 
 .artical-content {
   padding: 20px;
--color: #fff;
+background-color: #fff;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
 
@@ -418,7 +429,7 @@ onMounted(() => {
     font-size: 16px;
 
     font {
-      color: #797979;
+      color: var(--td-text-color-secondary);
     }
   }
 }
@@ -450,14 +461,14 @@ onMounted(() => {
   box-sizing: border-box;
   border-radius: 4px;
   position: relative;
--color: #fff;
+background-color: #fff;
   overflow: hidden;
   opacity: 1;
   display: flex;
   align-items: center;
   transition: opacity 0.2s;
--color: #f4f4f5;
-  color: #909399;
+background-color: var(--td-bg-color-secondarycontainer);
+  color: var(--td-text-color-placeholder);
   margin-top: 15px;
   margin-bottom: 15px;
 
@@ -483,7 +494,7 @@ onMounted(() => {
   display: block;
   margin-top: 10px;
   padding: 20px 0 20px 34px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--td-component-stroke);
   position: relative;
 
   .comment-btn {
@@ -520,7 +531,7 @@ onMounted(() => {
       top: 0;
       font-size: 12px;
       line-height: 24px;
-      color: #999;
+      color: var(--td-text-color-secondary);
     }
   }
 
@@ -542,7 +553,7 @@ onMounted(() => {
     margin-bottom: 15px;
     position: relative;
     font-size: 14px;
-    color: #999;
+    color: var(--td-text-color-secondary);
   }
 
   .reply {
@@ -555,7 +566,7 @@ onMounted(() => {
     color: #666;
     word-break: break-word;
     margin: 10px;
--color: #fff;
+background-color: #fff;
   }
 }
 </style>

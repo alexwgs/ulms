@@ -1,30 +1,40 @@
 <template>
-  <t-card class="box-card">
-    <div @back="() => router.back()" content="我的发布">
+  <t-card class="management-card">
+    <div class="sub-page-header">
+      <t-button theme="default" variant="text" @click="router.back()">
+        
+      返回</t-button>
+      <span class="sub-page-title">我的发布</span>
     </div>
     <t-divider></t-divider>
     <div class="text item">
-      <div class="table-filter">
-        <span>状态
-          <t-select style="width: 200px;" size="small" v-model="queryInfo.status" @change="getArticalList"
-            placeholder="请选择,默认不限制">
-            <t-option label="全部" value=""></t-option>
-            <t-option v-for="item in dictStore.getDictByNames('cyt_artical_status', 1)" :key="item.id"
-              :label="item.codeval" :value="item.code">
-            </t-option>
-          </t-select>
-        </span>
-        <span class="demonstration">项目年份
-          <t-date-picker size="small" @change="getArticalList" v-model="yearPicker" mode="year" placeholder="选择年">
-          </t-date-picker>
-        </span>
-      </div>
+      <t-form :data="queryInfo" label-width="80px" colon class="filter-form">
+        <t-row :gutter="[24, 24]">
+          <t-col :span="4">
+            <t-form-item label="状态" name="status">
+              <t-select size="small" v-model="queryInfo.status" @change="getArticalList"
+                placeholder="全部">
+                <t-option label="全部" value=""></t-option>
+                <t-option v-for="item in dictStore.getDictByNames('cyt_artical_status', 1)" :key="item.id"
+                  :label="item.codeval" :value="item.code">
+                </t-option>
+              </t-select>
+            </t-form-item>
+          </t-col>
+          <t-col :span="4">
+            <t-form-item label="项目年份" name="dateYear">
+              <t-date-picker size="small" @change="getArticalList" v-model="yearPicker" mode="year" placeholder="选择年">
+              </t-date-picker>
+            </t-form-item>
+          </t-col>
+        </t-row>
+      </t-form>
       <CustomTable rowKey="id" :data="articals" size="small" stripe style="width: 100%" height="calc(100vh - 350px)">
         <TableColumn colKey="articalType" label="类型" width="100">
           <template #default="scope">
             <t-tag size="small" v-for="item in dictStore.getDictByNames('cyt_artical_type', 1)" :key="item.code"
-              :theme="scope.row.articalType == 1 ? 'danger' : 'info'"
-              :style="scope.row.articalType == item.code ? '' : 'display:none'" effect="plain">{{ item.codeval
+              :theme="scope.row.articalType == 1 ? 'danger' : 'default'"
+              :style="scope.row.articalType == item.code ? '' : 'display:none'" variant="light">{{ item.codeval
               }}</t-tag>
           </template>
         </TableColumn>
@@ -40,7 +50,7 @@
           <template #default="scope">
             <t-tag size="small" v-for="item in dictStore.getDictByNames('cyt_artical_status', 1)" :key="item.code"
               :theme="scope.row.status == 1 ? 'success' : 'warning'"
-              :style="scope.row.status == item.code ? '' : 'display:none'" effect="plain">{{ item.codeval }}</t-tag>
+              :style="scope.row.status == item.code ? '' : 'display:none'" variant="light">{{ item.codeval }}</t-tag>
           </template>
         </TableColumn>
         <TableColumn colKey="pubDate" label="发布日期" width="160">
@@ -54,7 +64,7 @@
           </template>
         </TableColumn>
       </CustomTable>
-      <t-pagination @current-change="handleCurrentChange" v-model:current="currentPage"
+      <t-pagination @current-change="handleCurrentChange" v-model="currentPage"
         :page-size="queryInfo.pageSize" :total="total">
       </t-pagination>
     </div>
@@ -157,12 +167,12 @@ const handleCurrentChange = (page) => {
 </script>
 
 <style lang="less" scoped>
-.box-card {
+.management-card {
   height: calc(100vh - 130px);
 }
 
 .table-filter {
-  padding: 10px;
+  padding: 0;
 
   span {
     font-size: 14px;

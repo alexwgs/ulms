@@ -1,9 +1,13 @@
 <template>
-  <t-card class="box-card">
-    <div @back="() => router.back()" content="创建新帖子">
+  <t-card class="management-card">
+    <div class="sub-page-header">
+      <t-button theme="default" variant="text" @click="router.back()">
+        
+      返回</t-button>
+      <span class="sub-page-title">创建新帖子</span>
     </div>
     <t-divider></t-divider>
-    <t-form ref="formRef" :data="form" label-width="80px" :rules="formRules">
+    <t-form ref="formRef" :data="form" label-width="80px" :rules="formRules" class="new-artical-form">
       <t-form-item label="板块" name="category">
         <t-radio-group v-model="form.category" size="small" @change="getExamin">
           <t-radio-button v-for="item in dictStore.getDictByNames('cyt_artical_category', 1).filter(
@@ -34,7 +38,7 @@
           <t-radio-button value="1">匿名</t-radio-button>
         </t-radio-group>
       </t-form-item>
-      <t-form-item>
+      <t-form-item class="form-footer">
         <t-button theme="primary" size="small" :disabled="form.content.length < 1 ? true : false && submitStat"
           @click="onSubmit()">{{ submitStat ? '正在发布' : '立即发布' }}</t-button>
         <t-button size="small" @click="onSubmit(2)">存草稿</t-button>
@@ -56,7 +60,7 @@ const route = useRoute()
 const dictStore = useDictStore()
 const formRef = ref(null)
 
-const fsURL = import.meta.env.VITE_FILE_MANAGE_BASE || import.meta.env.VITE_API_BASE_URL
+const fsURL = import.meta.env.VITE_FILE_BASE_URL
 const id = ref('')
 const examineInfo = ref('')
 const form = reactive({
@@ -199,8 +203,12 @@ onMounted(() => {
 </script>
 
 <style lang="less" scoped>
-.box-card {
+.management-card {
   display: flex;
   flex-direction: column;
+}
+
+.new-artical-form {
+  max-width: 900px;
 }
 </style>

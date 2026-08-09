@@ -75,7 +75,7 @@
                 ).length > 0
               "
             >
-              <t-tag theme="success" size="small" effect="dark"
+              <t-tag theme="success" size="small" variant="light"
                 >【当前】</t-tag
               >
             </div>
@@ -83,7 +83,7 @@
               v-else-if="myBooked.length < 2"
               theme="primary" size="small"
               @click="bookExam(scope.row)"
-              circle
+             
             ><template #icon><DynamicIcon name="star-off" /></template></t-button>
             <div v-else>【预约达上限】</div>
           </template>
@@ -98,7 +98,7 @@ import { ref, reactive } from 'vue'
 import { bookInfoApi } from '@/api/edu/bookInfo'
 import { MessagePlugin } from 'tdesign-vue-next'
 
-const fsURL = import.meta.env.VITE_BASE_API
+const fsURL = import.meta.env.VITE_FILE_BASE_URL
 const dialogFormVisible = ref(false)
 const formLabelWidth = '120px'
 const form = reactive({
@@ -206,6 +206,6 @@ defineExpose({
 
 <style lang="less" scoped>
 .bgcolor {
--color: #fdfffeb0;
+background-color: #fdfffeb0;
 }
 </style>

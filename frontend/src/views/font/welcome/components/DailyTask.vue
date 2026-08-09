@@ -17,15 +17,15 @@
     </t-steps>
     <div class="main-content">
       <div v-if="moodPic" v-show="currentItem === '心情打卡'">
+        <div>
+          <t-alert
+            title="点击选择你今天的心情哦，点击直接提交！"
+            theme="success"
+            center
+            :closable="false"
+          ></t-alert>
+        </div>
         <t-row align="middle">
-          <div>
-            <t-alert
-              title="点击选择你今天的心情哦，点击直接提交！"
-              theme="success"
-              center
-              :closable="false"
-            ></t-alert>
-          </div>
           <t-col
             v-for="mood in moodPic"
             :span="4"
@@ -165,7 +165,7 @@ import {
   submitQuestion as apiSubmitQuestion
 } from '@/api/welcome/index.js'
 
-const fsURL = import.meta.env.VITE_FILE_MANAGE_BASE || ''
+const fsURL = import.meta.env.VITE_FILE_BASE_URL || ''
 
 const taskStepsRef = ref(null)
 const loadingFlag = ref(false)

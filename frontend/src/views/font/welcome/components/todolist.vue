@@ -11,7 +11,7 @@
                   scope.row.priority.indexOf('紧急') > -1
                   ? 'danger'
                   : 'primary'
-                " variant="outline">
+                " variant="light">
                 {{
                   scope.row.priority != null &&
                     scope.row.priority.indexOf('紧急') > -1
@@ -23,7 +23,7 @@
                   scope.row.priority.indexOf('重要') > -1
                   ? 'warning'
                   : 'primary'
-                " variant="outline">
+                " variant="light">
                 {{
                   scope.row.priority != null &&
                     scope.row.priority.indexOf('重要') > -1
@@ -48,12 +48,12 @@
           </TableColumn>
           <TableColumn label="操作" width="140">
             <template #default="scope">
-              <t-button size="small" theme="primary" :disabled="scope.row.userId === 'admin'"
-                @click="updateTodo(scope.row)" shape="circle"><template #icon><DynamicIcon name="edit" /></template></t-button>
-              <t-button size="small" theme="danger" :disabled="scope.row.userId === 'admin'"
-                @click="deleteTodo(scope.row)" shape="circle"><template #icon><DynamicIcon name="delete" /></template></t-button>
-              <t-button size="small" theme="success" :disabled="scope.row.userId === 'admin'"
-                @click="completeTodo(scope.row)" shape="circle"><template #icon><DynamicIcon name="check" /></template></t-button>
+              <t-button variant="outline" size="small" theme="default" :disabled="scope.row.userId === 'admin'"
+                @click="updateTodo(scope.row)">编辑</t-button>
+              <t-button variant="outline" size="small" theme="danger" :disabled="scope.row.userId === 'admin'"
+                @click="deleteTodo(scope.row)">删除</t-button>
+              <t-button variant="outline" size="small" theme="success" :disabled="scope.row.userId === 'admin'"
+                @click="completeTodo(scope.row)">完成</t-button>
             </template>
           </TableColumn>
         </CustomTable>
@@ -63,8 +63,8 @@
               <t-tag size="small" :theme="scope.row.priority != null &&
                   scope.row.priority.indexOf('紧急') > -1
                   ? 'danger'
-                  : 'info'
-                " effect="dark">
+                  : 'default'
+                " variant="light">
                 {{
                   scope.row.priority != null &&
                     scope.row.priority.indexOf('紧急') > -1
@@ -75,8 +75,8 @@
               <t-tag size="small" style="margin-left: 5px" :theme="scope.row.priority != null &&
                   scope.row.priority.indexOf('重要') > -1
                   ? 'warning'
-                  : 'info'
-                " effect="dark">
+                  : 'default'
+                " variant="light">
                 {{
                   scope.row.priority != null &&
                     scope.row.priority.indexOf('重要') > -1
@@ -90,9 +90,7 @@
             <template #default="scope">
               <t-popup placement="top-start" :title="scope.row.title" width="300" trigger="hover"
                 :content="scope.row.content">
-                <template #reference>
-                  <t-link :underline="false">{{ scope.row.title }}</t-link>
-                </template>
+                <t-link :underline="false">{{ scope.row.title }}</t-link>
               </t-popup>
             </template>
           </TableColumn>
@@ -103,12 +101,12 @@
           </TableColumn>
           <TableColumn label="操作" width="140">
             <template #default="scope">
-              <t-button size="small" theme="primary" :disabled="scope.row.userId === 'admin'"
-                @click="updateTodo(scope.row)" shape="circle"><template #icon><DynamicIcon name="edit" /></template></t-button>
-              <t-button size="small" theme="danger" :disabled="scope.row.userId === 'admin'"
-                @click="deleteTodo(scope.row)" shape="circle"><template #icon><DynamicIcon name="delete" /></template></t-button>
-              <t-button size="small" theme="success" :disabled="scope.row.userId === 'admin'"
-                @click="completeTodo(scope.row)" shape="circle"><template #icon><DynamicIcon name="refresh" /></template></t-button>
+              <t-button variant="outline" size="small" theme="default" :disabled="scope.row.userId === 'admin'"
+                @click="updateTodo(scope.row)">编辑</t-button>
+              <t-button variant="outline" size="small" theme="danger" :disabled="scope.row.userId === 'admin'"
+                @click="deleteTodo(scope.row)">删除</t-button>
+              <t-button variant="outline" size="small" theme="default" :disabled="scope.row.userId === 'admin'"
+                @click="completeTodo(scope.row)">刷新</t-button>
             </template>
           </TableColumn>
         </CustomTable>
@@ -160,7 +158,7 @@
             <t-checkbox value="重要"></t-checkbox>
             <t-checkbox value="紧急"></t-checkbox>
           </t-checkbox-group>
-          <t-tag v-for="(tag, index) in priorityList" :key="index" :theme="tag === '重要' ? 'warning' : 'danger'">
+          <t-tag v-for="(tag, index) in priorityList" :key="index" :theme="tag === '重要' ? 'warning' : 'danger'" variant="light">
             {{ tag }}
           </t-tag>
         </t-form-item>

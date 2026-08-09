@@ -1,8 +1,8 @@
 <template>
   <div>
-    <t-card class="box-card">
-      <t-row style="padding-bottom: 10px">
-        <t-col :span="5">
+    <t-card class="management-card">
+      <div class="table-toolbar">
+        <div class="toolbar-left">
           <t-radio-group v-model="status" size="small">
             <t-radio :value="-1" border
             >数据库管理</t-radio
@@ -11,9 +11,8 @@
             >数据库列表</t-radio
           >
           </t-radio-group>
-        </t-col>
-        <t-col :span="7"> </t-col>
-      </t-row>
+        </div>
+      </div>
       <t-row :gutter="20">
         <t-col :span="3">
           <t-input
@@ -115,7 +114,7 @@ onMounted(() => {
 })
 </script>
 <style lang="less" scoped>
-.box-card {
+.management-card {
   height: calc(100vh - 190px);
   overflow: auto;
 }

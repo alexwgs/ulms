@@ -1,33 +1,40 @@
 <template>
-  <t-card class="box-card">
-    <t-row :gutter="15">
-      <t-col :span="4">
-        <t-date-range-picker @change="getCaseList" size="small" format="YYYY-MM-DD" v-model="dateDuration" :placeholder="['开始日期', '结束日期']"></t-date-range-picker>
-      </t-col>
-      <t-col :span="5">
-        <t-input placeholder="请输入内容" size="small" v-model="queryInfo.query" @change="getCaseList">
-          <template #prepend>
-            <t-select v-model="queryInfo.queryType" size="small" style="width: 130px" placeholder="请选择">
-              <t-option label="案件ID" value="caseId"></t-option>
-              <t-option label="发起人" value="buildId"></t-option>
-              <t-option label="接起人" value="pickId"></t-option>
-            </t-select>
-          </template>
-        </t-input>
-      </t-col>
-      <t-col :span="3" class="text-right">
-        <t-button theme="primary" size="small" @click="caseApi.downloadCaseReport(queryInfo)">
-          下载
-        </t-button>
-      </t-col>
-    </t-row>
+  <t-card class="management-card">
+    <t-form :data="queryInfo" label-width="80px" colon class="filter-form">
+      <t-row :gutter="[24, 24]">
+        <t-col :span="5">
+          <t-form-item label="日期范围" name="dateDuration">
+            <t-date-range-picker @change="getCaseList" size="small" format="YYYY-MM-DD" v-model="dateDuration" :placeholder="['开始日期', '结束日期']"></t-date-range-picker>
+          </t-form-item>
+        </t-col>
+        <t-col :span="6">
+          <t-form-item label="关键字" name="query">
+            <t-input-adornment>
+              <template #prepend>
+                <t-select v-model="queryInfo.queryType" size="small" placeholder="请选择">
+                  <t-option label="案件ID" value="caseId"></t-option>
+                  <t-option label="发起人" value="buildId"></t-option>
+                  <t-option label="接起人" value="pickId"></t-option>
+                </t-select>
+              </template>
+              <t-input placeholder="请输入内容" size="small" v-model="queryInfo.query" @change="getCaseList"></t-input>
+            </t-input-adornment>
+          </t-form-item>
+        </t-col>
+        <t-col :span="3" class="operation-container">
+          <t-button variant="outline" theme="primary" size="small" @click="caseApi.downloadCaseReport(queryInfo)">
+            下载
+          </t-button>
+        </t-col>
+      </t-row>
+    </t-form>
     <CustomTable rowKey="id" :data="caseTableQuery" size="small" sortable="custom" @sort-change="tableSort" stripe
       height="calc(100vh - 325px)" :loading="loading">
       <TableColumn label="推送明细" width="120">
         <template #default="{ row }">
           <t-space>
-            <t-button theme="primary" size="small" @click="pushDetail(row.caseId)"><template #icon><DynamicIcon name="notification" /></template></t-button>
-            <t-button theme="primary" size="small" @click="viewChatRecord(row)"
+            <t-button variant="outline" theme="default" size="small" @click="pushDetail(row.caseId)">通知</t-button>
+            <t-button variant="outline" theme="primary" size="small" @click="viewChatRecord(row)"
               :disabled="row.caseStatus <= 1"><template #icon><DynamicIcon name="chat-bubble" /></template></t-button>
           </t-space>
         </template>
@@ -228,7 +235,7 @@ const getDictLabel = (dictType, dictValue) => {
 </script>
 
 <style lang="less" scoped>
-.box-card {
+.management-card {
   height: calc(100vh - 190px);
   overflow: auto;
 }

@@ -353,7 +353,7 @@ onUnmounted(() => {
     flex-direction: column;
     justify-content: center;
     align-items: center;
--color: rgba(255, 255, 255, 0.8);
+background-color: rgba(255, 255, 255, 0.8);
     border-radius: 4px;
     z-index: 10;
   }

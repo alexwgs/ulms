@@ -1,35 +1,17 @@
 <template>
   <div>
     <t-card class="main-container">
-      <t-row style="padding-bottom: 10px" :gutter="15">
-        <t-col :span="2">
-          <!-- <t-select v-model="queryInfo.groupId" size="small" placeholder="请选择过滤规则" @change="listDailyConfig">
-            <t-option label="生效" value="1"></t-option>
-            <t-option label="失效" value="0"></t-option>
-          </t-select> -->
-        </t-col>
-        <t-col :span="5">
-          <!-- <t-input placeholder="输入要搜索的内容" size="small" v-model="queryInfo.query">
-            <t-select v-model="queryInfo.querytype" slot="prepend" style="width:100px" placeholder="请选择">
-            <t-option label="题目" value="quesStem"></t-option>
-            <t-option label="业务类型" value="category"></t-option>
-            <t-option label="题目编号" value="quesCode"></t-option>
-            </t-select>
-            <t-button slot="append" ><template #icon><DynamicIcon name="search" /></template>></t-button>
-          </t-input> -->
-        </t-col>
-        <t-col :span="2">
+      <div class="table-toolbar">
+        <div class="toolbar-left">
           <t-button
+            variant="outline"
             theme="primary"
             size="small"
             @click="manageDailyConfig(null)"
             >新增配置</t-button
           >
-        </t-col>
-        <t-col :span="2">
-          <!-- <t-button theme="primary" size="small" @click="userListBatchBtn()">名单批量管理</t-button> -->
-        </t-col>
-      </t-row>
+        </div>
+      </div>
       <CustomTable rowKey="id"
         :data="tableData"
         size="small"
@@ -83,7 +65,7 @@
         <TableColumn colKey="articalId" label="公布栏配置">
           <template #default="scope">
             <t-button
-              :type="scope.row.articalId ? 'success' : 'danger'"
+              :theme="scope.row.articalId ? 'success' : 'danger'"
               size="small"
               @click="manageArticalBtn(scope.row)"
               link
@@ -96,11 +78,12 @@
         <TableColumn colKey="handleDate" label="操作" width="100">
           <template #default="scope">
             <t-button
+              variant="outline"
               theme="primary" size="small"
               @click="manageDailyConfig(scope.row)"><template #icon><DynamicIcon name="edit" /></template></t-button>
-            <t-button
+            <t-button variant="outline"
               theme="danger" size="small"
-              @click="handleDeleteDailyConfig(scope.row.id)"><template #icon><DynamicIcon name="delete" /></template></t-button>
+              @click="handleDeleteDailyConfig(scope.row.id)">删除</t-button>
           </template>
         </TableColumn>
       </CustomTable>
@@ -157,17 +140,18 @@
           ></t-date-picker>
         </t-form-item>
         <t-form-item label="试题" name="quesCode">
-          <t-input v-model="form.quesCode" readonly>
+          <t-input-adornment>
             <template #append>
-              <t-button @click="openQuesSelectDialog"
-              ><template #icon><DynamicIcon name="search" /></template></t-button>
+              <t-button variant="outline" theme="primary" @click="openQuesSelectDialog"
+              >搜索</t-button>
             </template>
-          </t-input>
+            <t-input v-model="form.quesCode" readonly></t-input>
+          </t-input-adornment>
         </t-form-item>
         <t-form-item label="选项随机" name="optionRand">
           <t-select v-model="form.optionRand" placeholder="请选择">
             <t-option
-              v-for="item in dictStore.dictList.yes_or_not"
+              v-for="item in (dictStore.dictList?.yes_or_not || [])"
               :key="item.code"
               :label="item.codeval"
               :value="parseInt(item.code)"
@@ -175,20 +159,23 @@
           </t-select>
         </t-form-item>
         <t-form-item label="公布栏配置" name="quesCode" v-if="form.articalId">
-          <t-input v-model="form.articalId" readonly>
-            <t-button slot="append" @click="() => (form.articalId = null)"><template #icon><DynamicIcon name="delete" /></template></t-button>
-          </t-input>
+          <t-input-adornment>
+            <template #append>
+              <t-button variant="outline" theme="danger" @click="() => (form.articalId = null)">清除</t-button>
+            </template>
+            <t-input v-model="form.articalId" readonly></t-input>
+          </t-input-adornment>
         </t-form-item>
       </t-form>
       <template #footer>
-        <span class="dialog-footer">
-          <t-button size="small" @click="dailyConfigVisible = false"
+        <t-space>
+          <t-button variant="outline" size="small" @click="dailyConfigVisible = false"
             >关 闭</t-button
           >
-          <t-button theme="primary" size="small" @click="submit"
+          <t-button variant="outline" theme="primary" size="small" @click="submit"
             >提 交</t-button
           >
-        </span>
+        </t-space>
       </template>
     </t-dialog>
 
@@ -244,8 +231,8 @@ const form = reactive({
 })
 
 const rules = reactive({
-  quesDate: { required: true, message: '答题日期不可为空！', trigger: 'blur' },
-  optionRand: { required: true, message: '选项是否随机！', trigger: 'blur' }
+  quesDate: [{ required: true, message: '答题日期不可为空！', trigger: 'blur' }],
+  optionRand: [{ required: true, message: '选项是否随机！', trigger: 'blur' }]
 })
 
 const curentOperateType = ref('')

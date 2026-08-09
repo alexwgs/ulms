@@ -54,7 +54,7 @@
             <t-tag
               size="small"
               :theme="scope.row.bookType == 0 ? 'success' : 'danger'"
-              effect="plain"
+              variant="light"
             >
               {{ scope.row.bookType == 0 ? '常规' : '补考' }}</t-tag
             >
@@ -63,10 +63,10 @@
         <TableColumn label="操作" width="80">
           <template #default="scope">
             <t-button
-              theme="danger" size="small"
+              theme="primary" size="small"
               @click="deleteBookInfo(scope.row.infoCode)"
-              circle
-            ><template #icon><DynamicIcon name="delete" /></template></t-button>
+             
+            >删除</t-button>
           </template>
         </TableColumn>
       </CustomTable>

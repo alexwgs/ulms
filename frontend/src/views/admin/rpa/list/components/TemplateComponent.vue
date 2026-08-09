@@ -415,7 +415,7 @@ defineExpose({
 
 .t-form-item__tip {
   font-size: 12px;
-  color: #909399;
+  color: var(--td-text-color-placeholder);
   margin-top: 4px;
 }
 </style>

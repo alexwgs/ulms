@@ -38,7 +38,7 @@
       <t-form-item label="状态" name="jobStatus">
         <t-select v-model="form.jobStatus" placeholder="请选择表单状态">
           <t-option
-            v-for="item in dictStore.dictList.sys_dict_status"
+            v-for="item in (dictStore.dictList?.sys_dict_status || [])"
             :key="item.id"
             :label="item.codeval"
             :value="item.code"
@@ -47,14 +47,14 @@
       </t-form-item>
     </t-form>
     <template #footer>
-      <span class="dialog-footer">
-        <t-button size="small" @click="dialogFormVisible = false"
+      <t-space>
+        <t-button variant="outline" size="small" @click="dialogFormVisible = false"
           >取 消</t-button
         >
-        <t-button size="small" theme="primary" @click="handleSubmit"
+        <t-button variant="outline" size="small" theme="primary" @click="handleSubmit"
           >确 定</t-button
         >
-      </span>
+      </t-space>
     </template>
   </t-dialog>
 </template>

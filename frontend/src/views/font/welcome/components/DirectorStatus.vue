@@ -1,5 +1,5 @@
 <template>
-  <t-tabs type="border-card">
+  <t-tabs theme="card">
     <div class="identity-font">
       <b>当前身份:{{ getIdentity }}</b>
       <t-button
@@ -8,7 +8,7 @@
         style="margin-left: 10px"
         theme="warning"
         @click="editIdentity()"
-        plain
+        variant="outline"
         >修改</t-button
       >
     </div>
@@ -169,7 +169,7 @@ const userStatusTimer = () => {
 }
 .online-info {
   font-size: 14px;
-  color: #f56c6c;
+  color: var(--td-error-color);
   line-height: 28px;
 }
 .status-divider {

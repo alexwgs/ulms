@@ -3,7 +3,7 @@
     <t-dialog
       v-model:visible="articalDialogVisible"
       width="80%"
-      @before-close="handleClose"
+      :before-close="handleClose"
       top="8vh"
       :close-on-overlay-click="false"
     >
@@ -12,12 +12,12 @@
         <div style="padding-top: 10px">
           标签：
           <span v-for="item in keyword" :key="item" style="padding-left: 5px">
-            <t-tag effect="dark" size="small">
+            <t-tag variant="light" size="small">
               {{ item }}
             </t-tag>
           </span>
           <div class="artical-icon">
-            <span style="color: #909399; font-size: 14px; padding-right: 10px"
+            <span style="color: var(--td-text-color-placeholder); font-size: 14px; padding-right: 10px"
               >发布人：{{ artical.insertPlo }} &emsp;|&emsp;发布时间：{{
                 artical.insertDate
               }}</span
@@ -35,22 +35,17 @@
             :key="index"
             @click="downloadFile(file.path)"
             theme="primary"
-            plain
+            variant="outline"
             >{{ file.name }}</t-button
           >
         </p>
       </div>
       <template #footer>
         <div class="dialog-footer">
-          <t-input
-            v-model.trim="searchWord"
-            size="small"
-            style="width: 50%; float: left"
-            placeholder="快速搜索"
-            :clearable="true"
-          >
+          <t-input-adornment style="width: 50%; float: left">
             <template #prepend>关键词高亮</template>
-          </t-input>
+            <t-input v-model.trim="searchWord" size="small" placeholder="快速搜索" :clearable="true"></t-input>
+          </t-input-adornment>
           <t-button size="small" @click="articalDialogVisible = false"
             >关闭</t-button
           >
@@ -65,7 +60,7 @@ import { ref, watch } from 'vue'
 import { MessagePlugin } from 'tdesign-vue-next'
 import { articalApi } from '@/api/helper/artical'
 
-const fsURL = import.meta.env.VITE_FILE_MANAGE_BASE || 'http://localhost:8080'
+const fsURL = import.meta.env.VITE_FILE_BASE_URL || 'http://localhost:8080'
 const global = window.__POWERED_BY_QIANKUN__ ? window.$global : null
 
 const articalDialogVisible = ref(false)
@@ -164,7 +159,7 @@ defineExpose({
     margin-right: 20px;
     font-size: 16px;
     font {
-      color: #797979;
+      color: var(--td-text-color-secondary);
     }
   }
 }

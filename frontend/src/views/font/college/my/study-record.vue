@@ -1,6 +1,7 @@
 <template>
   <div>
-    <t-card class="box-card">
+    <t-card class="academy-card">
+      <h3 class="academy-section-title">学习记录</h3>
       <t-row :gutter="15">
         <t-col :span="12">
           <t-radio-group v-model="queryInfo.coursePass" size="small" @change="getStudyLog">
@@ -31,7 +32,7 @@
         <TableColumn colKey="studyDate" label="学习日期" sortable="custom" width="100px" ellipsis />
         <TableColumn colKey="studyComp" label="课程进度" sortable="custom" width="100px" ellipsis>
           <template #default="scope">
-            <t-tag effect="plain" size="small" :theme="scope.row.studyComp == 1 ? 'success' : 'danger'">
+            <t-tag variant="light" size="small" :theme="scope.row.studyComp == 1 ? 'success' : 'danger'">
               {{ scope.row.studyComp == 1 ? '已完成' : '未学完' }}
             </t-tag>
           </template>
@@ -39,7 +40,7 @@
         <TableColumn colKey="evalDate" label="评价" sortable="custom" width="100px" ellipsis>
           <template #default="scope">
             <t-tag
-              effect="plain"
+              variant="light"
               size="small"
               :theme="scope.row.ifEval == 0 ? 'success' : scope.row.evalComp == 1 ? 'success' : 'danger'"
             >
@@ -50,7 +51,7 @@
         <TableColumn colKey="examComp" label="考试" sortable="custom" width="100px" ellipsis>
           <template #default="scope">
             <t-tag
-              effect="plain"
+              variant="light"
               size="small"
               :theme="scope.row.ifExam == 0 ? 'success' : scope.row.examComp == 1 ? 'success' : 'danger'"
             >
@@ -61,7 +62,7 @@
         <TableColumn colKey="coursePass" label="是否通过" sortable="custom" width="100px">
           <template #default="scope">
             <t-tag
-              effect="plain"
+              variant="light"
               size="small"
               :theme="scope.row.coursePass == 2 ? 'warning' : scope.row.coursePass == 1 ? 'success' : 'danger'"
             >
@@ -76,7 +77,7 @@
         </TableColumn>
       </CustomTable>
       <t-pagination
-        v-model:current="queryInfo.pageNum"
+        v-model="queryInfo.pageNum"
         v-model:page-size="queryInfo.pageSize"
         :page-size-options="[20, 40, 100, 200]"
 
@@ -118,7 +119,7 @@ const getStudyLog = async () => {
 }
 
 const gotoCourseView = (courseId) => {
-  const routeData = router.resolve({ path: '/college/course/view', query: { courseId: courseId } })
+  const routeData = router.resolve({ name: 'college-course-view', params: { courseId: courseId } })
   window.open(routeData.href, '_blank')
 }
 

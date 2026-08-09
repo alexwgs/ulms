@@ -46,7 +46,7 @@
             <template #header>
               <div class="card-header">
                 <span>按日统计使用情况</span>
-                <t-tag size="small" theme="primary" effect="light"
+                <t-tag size="small" theme="primary" variant="light"
                   >趋势分析</t-tag
                 >
               </div>
@@ -65,7 +65,7 @@
             <template #header>
               <div class="card-header">
                 <span>按产品统计使用情况</span>
-                <t-tag size="small" theme="success" effect="light"
+                <t-tag size="small" theme="success" variant="light"
                   >产品分析</t-tag
                 >
               </div>
@@ -89,7 +89,7 @@
             <template #header>
               <div class="card-header">
                 <span class="card-title">总使用情况</span>
-                <t-tag size="small" theme="default" effect="light"
+                <t-tag size="small" theme="default" variant="light"
                   >统计概览</t-tag
                 >
               </div>
@@ -121,7 +121,7 @@
             <template #header>
               <div class="card-header">
                 <span class="card-title">按使用人排序TOP 20</span>
-                <t-tag size="small" theme="warning" effect="light"
+                <t-tag size="small" theme="warning" variant="light"
                   >用户分析</t-tag
                 >
               </div>
@@ -534,7 +534,7 @@ watch(
 
           .icon {
             font-size: 24px;
-            color: #409eff;
+            color: var(--td-brand-color);
           }
         }
 

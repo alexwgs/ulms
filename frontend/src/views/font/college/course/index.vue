@@ -1,26 +1,24 @@
 <template>
-  <t-card :body-style="{ padding: '0px' }" :shadow="true" class="course-panel">
+  <div class="academy-course-card">
     <div @click="gotoCourseView(item.courseId)" :title="item.courseName">
-      <img :src="fsURL + 'upload/getFile/college-cover/' + item.coverImg" width="100%" />
+      <div class="cover-wrap">
+        <img
+          :src="fsURL + 'upload/getFile/college-cover/' + item.coverImg"
+          width="100%"
+          @error="hideBrokenImage"
+        />
+        <t-tag :theme="teachMethod == 2 ? 'danger' : 'primary'" size="small" variant="light" class="cover-tag">{{
+          teachMethod == 2 ? '任务课程' : '常规课程' }}</t-tag>
+      </div>
       <div class="info">
-        <div style="position: absolute; margin-top: -181px; margin-left: -20px">
-          <t-tag :theme="teachMethod == 2 ? 'danger' : 'primary'" size="small" effect="dark">{{ teachMethod == 2 ?
-            '任务课程' : '常规课程' }}</t-tag>
-        </div>
-        <div class="text-trim">
-          {{ item.courseName }}
-        </div>
-        <div class="course-info">
-          <div class="line">
-            <div class="line-info left">
-              {{ item.lecturer }}
-            </div>
-            <div class="right line-info">{{ item.studyNum }}人学习</div>
-          </div>
+        <div class="course-name" :title="item.courseName">{{ item.courseName }}</div>
+        <div class="course-line">
+          <span>{{ item.lecturer }}</span>
+          <span>{{ item.studyNum }}人学习</span>
         </div>
       </div>
     </div>
-  </t-card>
+  </div>
 </template>
 
 <script setup>
@@ -35,6 +33,7 @@ const props = defineProps({
 })
 
 const router = useRouter()
+// 展示类文件统一走 HTTPS 文件管理地址，避免混合内容被浏览器拦截
 const fsURL = import.meta.env.VITE_FILE_BASE_URL
 
 const teachMethod = computed(() => props.item.teachMethod)
@@ -48,45 +47,9 @@ const gotoCourseView = (courseId) => {
   // 在新窗口打开
   window.open(routeData.href, '_blank')
 }
+
+// 封面缺失时隐藏破图图标
+const hideBrokenImage = (e) => {
+  e.target.style.display = 'none'
+}
 </script>
-
-<style lang="less" scoped>
-.text-trim {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-:deep(.t-card__body) {
-  padding: 0;
-}
-
-.course-panel {
-  cursor: pointer;
-  margin-bottom: 5px;
-
-  img {
-    height: 150px;
-    width: 100%;
-  }
-
-  .info {
-    padding: 14px;
-
-    .course-info {
-      overflow: hidden;
-
-      .line {
-        height: 18px;
-
-        .line-info {
-          display: inline-block;
-          font-size: 14px;
-          width: 50%;
-          color: #999;
-        }
-      }
-    }
-  }
-}
-</style>

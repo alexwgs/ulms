@@ -10,7 +10,7 @@
           <template #default="props">
             <t-descriptions title="订单详情" size="small" :column="3" colon>
               <t-descriptions-item label="订单状态">
-                <t-tag :theme="props.row.caseStatus === 3 ? 'success' : 'danger'">
+                <t-tag :theme="props.row.caseStatus === 3 ? 'success' : 'danger'" variant="light">
                   {{ dictStore.getDictName('oht_case_status', props.row.caseStatus) }}
                 </t-tag>
               </t-descriptions-item>
@@ -68,6 +68,7 @@ import { ref, reactive } from 'vue'
 import { MessagePlugin } from 'tdesign-vue-next'
 import { httpInstance } from '@/utils/request'
 import { useDictStore } from '@/stores'
+import { usePagination } from '@/hooks/usePagination'
 // 导入 store
 const dictStore = useDictStore()
 
@@ -75,8 +76,6 @@ const dictStore = useDictStore()
 const historyCaseDialogVisible = ref(false)
 const historyCaseDateDuration = ref([])
 const historyCaseTable = ref([])
-const currentPage = ref(1)
-const pageSizes = ref([20, 100, 500])
 const total = ref(0)
 
 // 查询参数
@@ -121,16 +120,10 @@ const historyCaseDateChangeEvent = () => {
 }
 
 // 处理页码大小变更
-const handleSizeChange = (pageSize) => {
-  historyCaseQueryInfo.pageSize = pageSize
-  getHistoryCase()
-}
+
 
 // 处理页码变更
-const handleCurrentChange = (page) => {
-  historyCaseQueryInfo.pageNum = page
-  getHistoryCase()
-}
+
 
 // 时间戳转换为日期时间
 const unixTimeToDateTime = (UnixTime) => {
@@ -141,4 +134,5 @@ const unixTimeToDateTime = (UnixTime) => {
 defineExpose({
   viewHistoryCase
 });
+const { currentPage, pageSizes, handleCurrentChange, handleSizeChange } = usePagination({ query: historyCaseQueryInfo, fetch: getHistoryCase, pageSizes: [20, 100, 500] })
 </script>

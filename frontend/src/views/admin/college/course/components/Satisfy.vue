@@ -4,9 +4,9 @@
     v-model:visible="dialogVisible"
     :close-on-overlay-click="false"
     width="50%"
-    @before-close="handleClose"
+    :before-close="handleClose"
   >
-    <t-alert
+    <PageTips
       title="操作说明"
       theme="info"
       :closable="false"

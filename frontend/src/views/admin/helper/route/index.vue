@@ -1,12 +1,12 @@
 <template>
   <div style="height: 100%">
-    <t-card class="box-card">
+    <t-card class="management-card">
       <t-row :gutter="15">
         <t-col :span="4">
-          <t-button
+          <t-button variant="outline"
             theme="primary"
             size="small" @click="addTreeNode"
-          ><template #icon><DynamicIcon name="plus" /></template></t-button>
+          >新增</t-button>
           <!-- <t-input placeholder="输入关键字进行过滤" size="small" v-model="filterText"></t-input> -->
         </t-col>
         <t-col :span="8"> </t-col>
@@ -20,11 +20,11 @@
               :keys="{ value: 'id', label: 'name', children: 'children' }"
               :filter="filterNode"
               @drag-start="handleDragStart"
-              @drag-end="handleDragEnd"
+              @drop="handleDrop"
               draggable
               ref="treeRef"
             >
-              <template #default="{ node }">
+              <template #label="{ node }">
                 <span class="custom-tree-node">
                   <span>{{ node.label }}</span>
                   <span>
@@ -32,27 +32,24 @@
                       <span size="small">序号：{{ node.data.sort }}</span>
                       <t-link
                         theme="primary"
-                        ><template #icon><DynamicIcon name="add" /></template>
                         size="small"
-                        :underline="true"
+                        :underline="false"
                         @click="() => addChildTreeNode(node.data)"
-                      ></t-link
+                        ><template #prefixIcon><DynamicIcon name="add" /></template></t-link
                       >&ensp;
                       <t-link
                         theme="primary"
-                        ><template #icon><DynamicIcon name="edit" /></template>
                         size="small"
-                        :underline="true"
+                        :underline="false"
                         @click="() => editTreeNode(node.data)"
-                      ></t-link
+                        ><template #prefixIcon><DynamicIcon name="edit" /></template></t-link
                       >&ensp;
                       <t-link
                         theme="danger"
-                        ><template #icon><DynamicIcon name="delete" /></template>
                         size="small"
-                        :underline="true"
+                        :underline="false"
                         @click="() => deleteTree(node.data)"
-                      ></t-link>
+                        ><template #prefixIcon><DynamicIcon name="delete" /></template></t-link>
                     </div>
                   </span>
                 </span>
@@ -67,7 +64,7 @@
       header="知识路径设置"
       v-model:visible="treeDialogVisible"
       width="50%"
-      @before-close="handleClose"
+      :before-close="handleClose"
     >
       <t-form
         ref="courseFormRef"
@@ -76,6 +73,7 @@
         size="small"
         label-width="100px"
       >
+        <t-row :gutter="15">
         <t-col :span="12">
           <t-form-item label="名称" name="name">
             <t-input
@@ -100,13 +98,12 @@
           <t-form-item label="状态" name="status">
             <t-switch
               v-model="treeFormData.status"
-              active-color="#13ce66"
-              :active-value="1"
-              :inactive-value="0"
+              :custom-value="[1, 0]"
             >
             </t-switch>
           </t-form-item>
         </t-col>
+        </t-row>
       </t-form>
       <template #footer>
         <t-button size="small" @click="treeDialogVisible = false"
@@ -220,13 +217,15 @@ const filterNode = (node) => {
 
 // 拖拽开始
 const handleDragStart = (context) => {
-      handleNode.value = context.dragNode.data
+  handleNode.value = context.node.data
 }
 
-// 拖拽结束
-const handleDragEnd = (context) => {
-      const { dragNode, dropNode, dropPosition } = context;
-      const dropType = dropPosition === 0 ? 'inner' : dropPosition === -1 ? 'before' : 'after';
+// 拖拽放置（TDesign 在 drop 事件才提供 dropNode/dragNode/dropPosition）
+const handleDrop = (context) => {
+  const { dragNode, dropNode, dropPosition } = context
+  if (!dragNode || !dropNode) return
+  const dropType =
+    dropPosition === 0 ? 'inner' : dropPosition === -1 ? 'before' : 'after'
   if (!handleNode.value) return
 
   if (dropType === 'inner') {

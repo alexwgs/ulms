@@ -13,7 +13,7 @@
         <t-form-item
           label="题目类型"
           :label-width="formLabelWidth"
-          prop="quesType"
+          name="quesType"
         >
           <t-select
             v-model="form.quesType"
@@ -28,7 +28,7 @@
         <t-form-item
           label="题干"
           :label-width="formLabelWidth"
-          prop="quesStem"
+          name="quesStem"
         >
           <t-textarea v-model="form.quesStem"
             :autosize="{ minRows: 2, maxRows: 4 }"
@@ -88,16 +88,17 @@
                 :value="item"
                 class="option-class"
               >
-                <t-input
-                  v-model="options[index]"
-                  autocomplete="off"
-                  @keyup="inputKeyUp"
-                  maxlength="500"
-                >
+                <t-input-adornment>
                   <template #append>
-                    <t-button @click="deleteOption(index)"><template #icon><DynamicIcon name="close" /></template></t-button>
+                    <t-button variant="outline" theme="default" @click="deleteOption(index)">关闭</t-button>
                   </template>
-                </t-input>
+                  <t-input
+                    v-model="options[index]"
+                    autocomplete="off"
+                    @keyup="inputKeyUp"
+                    maxlength="500"
+                  ></t-input>
+                </t-input-adornment>
               </t-radio>
             </t-radio-group>
             <t-checkbox-group
@@ -111,16 +112,17 @@
                 :value="options[index]"
                 class="option-class"
               >
-                <t-input
-                  v-model="options[index]"
-                  autocomplete="off"
-                  @keyup="inputKeyUp"
-                  maxlength="500"
-                >
+                <t-input-adornment>
                   <template #append>
-                    <t-button @click="deleteOption(index)"><template #icon><DynamicIcon name="close" /></template></t-button>
+                    <t-button variant="outline" theme="default" @click="deleteOption(index)">关闭</t-button>
                   </template>
-                </t-input>
+                  <t-input
+                    v-model="options[index]"
+                    autocomplete="off"
+                    @keyup="inputKeyUp"
+                    maxlength="500"
+                  ></t-input>
+                </t-input-adornment>
               </t-checkbox>
             </t-checkbox-group>
             <t-radio-group
@@ -152,7 +154,7 @@
         <t-form-item
           label="题目状态"
           :label-width="formLabelWidth"
-          prop="quesStat"
+          name="quesStat"
         >
           <t-select v-model="form.quesStat" placeholder="选择题目状态">
             <t-option label="生效" :value="1" />
@@ -185,6 +187,8 @@ const dialogFormVisible = ref(false)
 const questionFormRef = ref(null)
 const managerType = ref('new')
 const fsURL = import.meta.env.VITE_FILE_BASE_URL
+// 展示类文件统一走 HTTPS 文件管理地址，避免混合内容被浏览器拦截
+const displayURL = import.meta.env.VITE_FILE_BASE_URL || fsURL
 const formLabelWidth = ref('120px')
 const dialogTitle = ref('题目修改')
 const form = reactive({
@@ -240,7 +244,7 @@ const show = (obj) => {
         {
           name: obj.fileCode + '.' + obj.fileType,
           url:
-            fsURL + '/upload/getFile/edu/' + obj.fileCode + '.' + obj.fileType
+            displayURL + '/upload/getFile/edu/' + obj.fileCode + '.' + obj.fileType
         }
       ]
     }

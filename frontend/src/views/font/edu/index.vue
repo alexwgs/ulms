@@ -5,21 +5,17 @@
         <img src="@/assets/img/edu/studyLogo.png" />
       </div>
       <div class="nav">
-        <t-head-menu style="width: 800px" mode="horizontal"-color="#0c717d"
-          active-text-color="#fff" text-color="#fff" router>
-          <!-- 为 el-sub-menu 添加唯一的 index -->
-          <t-submenu index="1" style="font-size: 18px">
+        <t-head-menu style="width: 800px" class="edu-nav-menu">
+          <t-submenu value="1" style="font-size: 18px">
             <template #title>学霸榜 ></template>
-            <!-- 移除 router 属性，使用 index 指定路由路径 -->
-            <t-menu-item index="/edu/rankBoard">个人榜</t-menu-item>
-            <t-menu-item index="/edu/RankBoard2">团队榜</t-menu-item>
+            <t-menu-item to="/edu/rankBoard">个人榜</t-menu-item>
+            <t-menu-item to="/edu/RankBoard2">团队榜</t-menu-item>
           </t-submenu>
 
-          <!-- 其他菜单项同理 -->
-          <t-menu-item index="/edu/brush">刷题入口 ></t-menu-item>
-          <t-menu-item index="/edu/myexam">我的考试 ></t-menu-item>
-          <t-menu-item index="/edu/myquestion">我的题库 ></t-menu-item>
-          <t-menu-item index="/edu/competition">知识竞赛 ></t-menu-item>
+          <t-menu-item to="/edu/brush">刷题入口 ></t-menu-item>
+          <t-menu-item to="/edu/myexam">我的考试 ></t-menu-item>
+          <t-menu-item to="/edu/myquestion">我的题库 ></t-menu-item>
+          <t-menu-item to="/edu/competition">知识竞赛 ></t-menu-item>
         </t-head-menu>
       </div>
       <div class="left-sticks"></div>
@@ -36,7 +32,7 @@
 
 <style lang="less" scoped>
 .home-container {
--color: #0c717d;
+background-color: #0c717d;
   color: rgb(255, 255, 255);
   height: 100vh;
   min-height: 600px;
@@ -56,6 +52,22 @@
   display: inline-block;
   position: fixed;
   right: 100px;
+
+  :deep(.t-head-menu),
+  :deep(.t-head-menu__inner) {
+    background: transparent;
+  }
+
+  :deep(.t-menu__item),
+  :deep(.t-submenu__title) {
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  :deep(.t-menu__item.t-is-active),
+  :deep(.t-submenu__title.t-is-active) {
+    color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.15);
+  }
 }
 
 .left-sticks {

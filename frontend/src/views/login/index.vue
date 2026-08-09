@@ -1,7 +1,7 @@
 <template>
   <div class="login_container">
     <t-alert v-if="!authStore.serverStatus" :message="authStore.disableLoginTitle" theme="error"
-      :close="false" />
+      :closable="false" />
 
     <t-swiper class="carousel-custom" :height="500" :interval="5000" :navigation="{ showSlideBtn: 'never' }">
       <t-swiper-item v-for="item in authStore.indexImgs" :key="item.id">
@@ -83,7 +83,7 @@ const router = useRouter()
 const authStore = useAuthStore()
 const userStore = useUserStore()
 
-const fsURL = import.meta.env.VITE_FILE_MANAGE_BASE
+const fsURL = import.meta.env.VITE_FILE_BASE_URL
 
 const loginForm = ref({
   czyCode: '',
@@ -189,7 +189,7 @@ onMounted(() => {
 
 <style lang="less" scoped>
 .login_container {
--color: #fff;
+background-color: #fff;
   height: 100vh;
   position: relative;
   overflow: hidden;
@@ -199,8 +199,9 @@ onMounted(() => {
   width: 400px;
   height: 300px;
   z-index: 999;
--color: rgba(255, 255, 255, 0.4);
-  border-radius: 3px;
+  background-color: rgba(255, 255, 255, 0.4);
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
   position: absolute;
   left: 78%;
   top: 50%;
@@ -209,20 +210,20 @@ onMounted(() => {
   .avatar_box {
     height: 130px;
     width: 130px;
-    border: 1px solid #eee;
+    border: 1px solid var(--td-component-stroke);
     border-radius: 50%;
     padding: 10px;
     box-shadow: 0 0 10px #ddd;
     position: absolute;
     left: 50%;
     transform: translate(-50%, -50%);
--color: #fff;
+background-color: #fff;
 
     img {
       height: 100%;
       width: 100%;
       border-radius: 50%;
--color: #eee;
+background-color: var(--td-component-stroke);
     }
   }
 }
@@ -237,7 +238,12 @@ onMounted(() => {
 
 .btns {
   display: flex;
+  gap: 12px;
   justify-content: flex-end;
+}
+
+.btns .t-button {
+  flex: 1;
 }
 
 .t-alert {

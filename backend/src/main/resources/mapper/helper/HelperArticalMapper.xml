@@ -405,4 +405,30 @@
     from PDA_HELPER_ARTICAL
     where JOURNO = #{journo,jdbcType=VARCHAR}
   </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Object">
+    delete from PDA_HELPER_ARTICAL
+    where JOURNO = #{journo,jdbcType=VARCHAR}
+  </delete>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cmbccd.ulms.helper.domain.HelperArtical">
+    update PDA_HELPER_ARTICAL
+    <set>
+      <if test="area != null">AREA = #{area,jdbcType=NUMERIC},</if>
+      <if test="owner != null">OWNER = #{owner,jdbcType=NUMERIC},</if>
+      <if test="title != null">TITLE = #{title,jdbcType=VARCHAR},</if>
+      <if test="keyWord != null">KEY_WORD = #{keyWord,jdbcType=VARCHAR},</if>
+      <if test="insertDate != null">INSERT_DATE = #{insertDate,jdbcType=VARCHAR},</if>
+      <if test="insertPlo != null">INSERT_PLO = #{insertPlo,jdbcType=VARCHAR},</if>
+      <if test="status != null">STATUS = #{status,jdbcType=NUMERIC},</if>
+      <if test="updateDate != null">UPDATE_DATE = #{updateDate,jdbcType=VARCHAR},</if>
+      <if test="updatePlo != null">UPDATE_PLO = #{updatePlo,jdbcType=VARCHAR},</if>
+      <if test="ralateCode != null">RALATE_CODE = #{ralateCode,jdbcType=VARCHAR},</if>
+      <if test="sorting != null">SORTING = #{sorting,jdbcType=NUMERIC},</if>
+      <if test="search != null">SEARCH = #{search,jdbcType=NUMERIC},</if>
+      <if test="clicks != null">CLICKS = #{clicks,jdbcType=NUMERIC},</if>
+      <if test="routeId != null">ROUTE_ID = #{routeId,jdbcType=NUMERIC},</if>
+      <if test="files != null">FILES = #{files,jdbcType=VARCHAR},</if>
+      <if test="content != null">CONTENT = #{content,jdbcType=CLOB},</if>
+    </set>
+    where JOURNO = #{journo,jdbcType=VARCHAR}
+  </update>
 </mapper>

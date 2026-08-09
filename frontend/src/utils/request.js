@@ -46,7 +46,7 @@ httpInstance.interceptors.request.use(
     return config
   },
   (error) => {
-    return Promise.error(error)
+    return Promise.reject(error)
   }
 )
 // 响应拦截器
@@ -74,7 +74,7 @@ httpInstance.interceptors.response.use(
   // 服务器状态码不是200的情况
   (error) => {
     console.error(error)
-    if (error.response.status) {
+    if (error.response) {
       switch (error.response.status) {
         // 401: 未登录
         // 未登录则跳转登录页面，并携带当前页面的路径
@@ -101,6 +101,8 @@ httpInstance.interceptors.response.use(
       }
       return Promise.reject(error.response)
     }
+    // 网络错误/请求超时（无响应对象）
+    return Promise.reject(error)
   }
 )
 /**
@@ -145,7 +147,7 @@ downloadAxios.interceptors.request.use(
     return config
   },
   (error) => {
-    return Promise.error(error)
+    return Promise.reject(error)
   }
 )
 const downloadExcel = (url, params, fileName) => {

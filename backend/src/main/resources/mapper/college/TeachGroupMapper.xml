@@ -109,6 +109,16 @@
       </if>
     </trim>
   </insert>
+  <insert id="batchInsert" parameterType="java.util.List">
+    insert into TRM_COURSE_TEACH_GROUP (PLO_NUM, GROUP_NAME)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.ploNum,jdbcType=VARCHAR}, #{item.groupName,jdbcType=VARCHAR})
+    </foreach>
+  </insert>
+  <delete id="deleteAll">
+    delete from TRM_COURSE_TEACH_GROUP
+  </delete>
   <select id="countByExample" parameterType="com.cmbccd.ulms.college.domain.TeachGroupExample" resultType="java.lang.Long">
     select count(*) from TRM_COURSE_TEACH_GROUP
     <if test="_parameter != null">

@@ -1,50 +1,55 @@
 <template>
   <t-card class="report-card">
     <!-- 筛选条件区域 -->
-    <t-row :gutter="15" class="filter-row">
-      <t-col :span="4">
-        <t-date-range-picker size="small" v-model="dataRange" @change="daterangeChange" :placeholder="['开始日期', '结束日期']" class="date-picker" />
-      </t-col>
-      <t-col :span="3">
-        <t-select
-          v-model="queryInfo.query"
-          filterable
-          placeholder="请输入工具名称(可搜索)"
-          @search="remoteMethod"
-          :loading="loading"
-          size="small"
-          @change="getList"
-        >
-          <t-option
-            v-for="(item, index) in rpaToolNameList"
-            :key="index"
-            :label="item"
-            :value="item"
-          />
-        </t-select>
-      </t-col>
-      <t-col :span="3">
-        <EmployeeSelect
-          v-model="queryInfo.runUser"
-          placeholder="选择运行人筛选"
-          size="small"
-          @update:modelValue="getList"
-        />
-      </t-col>
-      <t-col :span="2">
-        <t-button
-          theme="primary"
-          size="small"
-          @click="downloadExcelReport"
-          :loading="downloadLoading"
-        >
-          下载报表
-        </t-button>
-      </t-col>
-    </t-row>
+    <t-form :data="queryInfo" label-width="80px" colon class="filter-form">
+      <t-row :gutter="[24, 24]">
+        <t-col :span="4">
+          <t-form-item label="日期范围" name="dataRange">
+            <t-date-range-picker size="small" v-model="dataRange" @change="daterangeChange" :placeholder="['开始日期', '结束日期']" />
+          </t-form-item>
+        </t-col>
+        <t-col :span="3">
+          <t-form-item label="工具名称" name="query">
+            <t-select
+              v-model="queryInfo.query"
+              filterable
+              placeholder="请输入工具名称(可搜索)"
+              @search="remoteMethod"
+              :loading="loading"
+              size="small"
+              @change="getList"
+            >
+              <t-option
+                v-for="(item, index) in rpaToolNameList"
+                :key="index"
+                :label="item"
+                :value="item"
+              />
+            </t-select>
+          </t-form-item>
+        </t-col>
+        <t-col :span="3">
+          <t-form-item label="运行人" name="runUser">
+            <EmployeeSelect
+              v-model="queryInfo.runUser"
+              placeholder="选择运行人筛选"
+              size="small"
+              @update:modelValue="getList"
+            />
+          </t-form-item>
+        </t-col>
+        <t-col :span="2" class="operation-container">
+          <t-button variant="outline" theme="primary" size="small" @click="downloadExcelReport"
+            :loading="downloadLoading"
+          >
+            下载报表
+          </t-button>
+        </t-col>
+      </t-row>
+    </t-form>
 
     <!-- 操作说明 -->
-    <t-alert
+    <PageTips
       title="操作说明"
       theme="info"
       :closable="false"
@@ -247,7 +252,7 @@ onMounted(() => {
 }
 
 .filter-row {
-  margin-bottom: 16px;
+  margin-bottom: var(--td-comp-margin-xxl);
 
   .date-picker {
     width: 100%;
@@ -263,7 +268,7 @@ onMounted(() => {
 }
 
 .pagination {
-  margin-top: 16px;
+  margin-top: var(--td-comp-margin-xxl);
   justify-content: flex-end;
 }
 </style>

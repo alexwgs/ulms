@@ -1,24 +1,24 @@
 <template>
-  <t-card class="box-card">
-    <t-row :gutter="20">
-      <t-col :span="12">
-        <t-button
+  <t-card class="management-card">
+    <div class="table-toolbar">
+      <div class="toolbar-left">
+        <t-button variant="outline"
           theme="primary"
           size="small"
           @click="roleAddVisible = !roleAddVisible"
           >添加角色</t-button
         >
-      </t-col>
-    </t-row>
-    <t-alert
+      </div>
+    </div>
+    <PageTips
       style="margin: 10px 0"
       title="操作说明"
       size=""
-      theme="info"
+      theme="primary"
       message="请正确使用角色配置：1.建议角色名称简介且清晰。2.请注意各个角色的菜单操作权限配置！"
       :closable="false"
     >
-    </t-alert>
+    </PageTips>
     <CustomTable rowKey="id"
       :data="roleList"
       size="small"
@@ -32,7 +32,7 @@
             :key="item1.id"
           >
             <t-col :span="3">
-              <t-tag :key="item1.id">{{ item1.name }}</t-tag>
+              <t-tag :key="item1.id" variant="light">{{ item1.name }}</t-tag>
             </t-col>
             <t-col :span="10">
               <t-row
@@ -41,7 +41,7 @@
                 :key="item2.id"
               >
                 <t-col :span="3">
-                  <t-tag :key="item2.id" theme="success">{{
+                  <t-tag :key="item2.id" theme="primary" variant="light">{{
                     item2.name
                   }}</t-tag>
                 </t-col>
@@ -49,9 +49,9 @@
                   <t-tag
                     v-for="item3 in item2.children"
                     :key="item3.id"
-                    theme="warning"
+                    theme="primary"
                     closable
-                    >{{ item3.name }}</t-tag
+                     variant="light">{{ item3.name }}</t-tag
                   >
                 </t-col>
               </t-row>
@@ -69,19 +69,21 @@
         sortable="custom"></TableColumn>
       <TableColumn label="操作" fixed="right" width="300px">
         <template #default="{ row: scope }">
-          <t-button
-            theme="warning"
+          <t-space>
+          <t-button variant="outline"
+            theme="primary"
             size="small" @click="updateRole(scope)"
-            circle
-          ><template #icon><DynamicIcon name="edit" /></template></t-button>
-          <t-button
+           
+          >编辑</t-button>
+          <t-button variant="outline"
             theme="danger"
             size="small" @click="removeRoleById(scope)"
-            circle
-          ><template #icon><DynamicIcon name="delete" /></template></t-button>
-          <t-button size="small" @click="dispatchPermission(scope)"
+           
+          >删除</t-button>
+          <t-button variant="outline" size="small" @click="dispatchPermission(scope)"
             >分配权限</t-button
           >
+          </t-space>
         </template>
       </TableColumn>
     </CustomTable>
@@ -116,10 +118,10 @@
             >绩效平台</t-radio
           >
           </t-radio-group>
-          <t-button size="small" @click="setAllExpand(true)"
+          <t-button variant="outline" size="small" @click="setAllExpand(true)"
             >展开所有节点</t-button
           >
-          <t-button size="small" @click="setAllExpand(false)"
+          <t-button variant="outline" size="small" @click="setAllExpand(false)"
             >收起所有节点</t-button
           >
         </div>
@@ -133,14 +135,14 @@
           @change="onPermissionTreeChange"
           ref="permissionTreeRef"
         >
-          <template #default="{ node }">
+          <template #label="{ node }">
             <span v-if="node.data.menuType == 0">
               <i :class="node.data.icon"></i>
               [{{ node.data.useage === 0 ? '后台' : '前端' }}]{{ node.data.name }}
             </span>
             <span v-else>
               <i :class="node.data.icon"></i>
-              <t-tag :key="node.data.id" theme="warning" size="small" effect="dark">
+              <t-tag :key="node.data.id" theme="warning" size="small" variant="light">
                 {{ node.data.name }} [{{ node.data.resourse }}]
               </t-tag>
             </span>
@@ -148,10 +150,10 @@
         </t-tree>
       </div>
       <template #footer>
-        <t-button size="small" @click="permissionTreeVisible = false"
+        <t-button variant="outline" size="small" @click="permissionTreeVisible = false"
           >取 消</t-button
         >
-        <t-button size="small" theme="primary" @click="submitPermission"
+        <t-button variant="outline" size="small" theme="primary" @click="submitPermission"
           >确 定</t-button
         >
       </template>
@@ -173,16 +175,16 @@
         <t-form-item
           label="角色名称"
           :label-width="formLabelWidth"
-          prop="roleName"
+          name="roleName"
         >
           <t-input v-model="roleForm.roleName" autocomplete="off"></t-input>
         </t-form-item>
       </t-form>
       <template #footer>
-        <t-button size="small" @click="roleUpdateVisible = false"
+        <t-button variant="outline" size="small" @click="roleUpdateVisible = false"
           >取 消</t-button
         >
-        <t-button size="small" theme="primary" @click="submitUpdateRole"
+        <t-button variant="outline" size="small" theme="primary" @click="submitUpdateRole"
           >确 定</t-button
         >
       </template>
@@ -198,7 +200,7 @@
         <t-form-item
           label="角色名称"
           :label-width="formLabelWidth"
-          prop="roleName"
+          name="roleName"
         >
           <t-input
             size="small"
@@ -208,10 +210,10 @@
         </t-form-item>
       </t-form>
       <template #footer>
-        <t-button size="small" @click="roleAddVisible = false"
+        <t-button variant="outline" size="small" @click="roleAddVisible = false"
           >取 消</t-button
         >
-        <t-button size="small" theme="primary" @click="submitAddRole"
+        <t-button variant="outline" size="small" theme="primary" @click="submitAddRole"
           >确 定</t-button
         >
       </template>
@@ -223,6 +225,7 @@
 import { ref, onMounted, nextTick } from 'vue'
 import { roleApi } from '@/api/system/role'
 import { menuApi } from '@/api/system/menu'
+import { usePagination } from '@/hooks/usePagination'
 
 // 数据
 const roleList = ref([])
@@ -257,8 +260,6 @@ const roleFormRules = ref({
     { max: 10, min: 2, message: '请输入2-10个字符的角色名称' }
   ]
 })
-
-const pageSizes = [20, 100, 500]
 
 // 查询参数
 const queryInfo = ref({
@@ -379,15 +380,12 @@ const closePermissionTreeDialog = () => {
   // 清理逻辑
 }
 
-const handleSizeChange = (pageSize) => {
-  queryInfo.value.pageSize = pageSize
-  getRoleList()
-}
-
-const handleCurrentChange = (page) => {
-  queryInfo.value.pageNum = page
-  getRoleList()
-}
+const { pageSizes, handleCurrentChange, handleSizeChange } = usePagination({
+  query: queryInfo,
+  fetch: getRoleList,
+  pageSizes: [20, 100, 500],
+  resetToFirstOnSizeChange: false
+})
 
 const tableSort = (data) => {
   queryInfo.value.orderType = data.descending ? ' desc ' : ' asc '
@@ -423,10 +421,10 @@ const onPermissionTreeChange = (value, context) => {
   margin: 7px;
 }
 .bdtop {
-  border-top: 1px solid #eee;
+  border-top: 1px solid var(--td-component-stroke);
 }
 .bdbottom {
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--td-component-stroke);
 }
 .vcenter {
   display: flex;
@@ -436,7 +434,7 @@ const onPermissionTreeChange = (value, context) => {
   height: 450px;
   overflow: auto;
 }
-.box-card {
+.management-card {
   height: calc(100vh - 240px);
   overflow: auto;
 }

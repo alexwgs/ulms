@@ -49,7 +49,7 @@
         <t-col :span="5">
           <div class="slogan">
             <div>
-              <t-button round style="margin: 40px 30px 50px 30px" class="mybutton" @click="startBrushBtn()" :disabled="(brushConfig.monthLimit !== 0 &&
+              <t-button shape="round" style="margin: 40px 30px 50px 30px" class="mybutton" @click="startBrushBtn()" :disabled="(brushConfig.monthLimit !== 0 &&
                   brushConfig.monthCount >= brushConfig.monthLimit) ||
                   (brushConfig.dayLimit !== 0 &&
                     brushConfig.dayCount >= brushConfig.dayLimit)
@@ -112,8 +112,8 @@
         </div>
       </div>
       <div class="ques-footer">
-        <t-button round :disabled="!submitAndNextFlag" @click="validateSubmit()">提交答案</t-button>
-        <t-button round :disabled="submitAndNextFlag" @click="nextQuestion()"
+        <t-button shape="round" :disabled="!submitAndNextFlag" @click="validateSubmit()">提交答案</t-button>
+        <t-button shape="round" :disabled="submitAndNextFlag" @click="nextQuestion()"
           v-if="brushConfig.dayCount !== brushConfig.dayLimit">下一题</t-button>
         <div style="display: inline-block; float: right">
           <t-space>
@@ -136,7 +136,7 @@ import { questionDisputeApi } from '@/api/edu/questionDispute'
 import { MessagePlugin, DialogPlugin } from 'tdesign-vue-next'
 import { NotificationIcon, StarIcon, ErrorCircleIcon } from 'tdesign-icons-vue-next'
 
-const fsURL = import.meta.env.VITE_FILE_MANAGE_BASE
+const fsURL = import.meta.env.VITE_FILE_BASE_URL
 
 const brushConfig = reactive({
   monthLimit: 0,
@@ -387,7 +387,7 @@ onMounted(() => {
 
     .t-radio.is-bordered.is-checked,
     .t-checkbox.is-bordered.is-checked {
-      border: 1px solid #409eff;
+      border: 1px solid var(--td-brand-color);
 
       :deep(.t-radio__label) {
         color: #fff;
@@ -481,8 +481,8 @@ onMounted(() => {
 
 .mybutton {
   color: #31b97f;
--color: #ffffff;
-  border-color: #ffffff;
+background-color: var(--td-bg-color-container);
+  border-color: var(--td-bg-color-container);
   font-size: 20px;
 }
 </style>

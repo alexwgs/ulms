@@ -1,6 +1,7 @@
 <template>
   <div>
-    <t-card class="box-card">
+    <t-card class="academy-card">
+      <h3 class="academy-section-title">学习报表</h3>
       <t-row :gutter="15">
         <t-col :span="5">
           <t-select
@@ -21,9 +22,14 @@
           </t-select>
         </t-col>
         <t-col :span="5">
-          <t-input placeholder="请选择科室组别" size="small" v-model="queryInfo.deptName" @focus="treeDialogVisiable = !treeDialogVisiable" readonly="true">
-            <!-- <t-button slot="append" icon="el-icon-search" @click="getStudyInfo"></t-button> -->
-          </t-input>
+          <t-popup v-model:visible="deptPopupVisible" trigger="click" placement="bottom-start"
+            :overlay-style="{ width: '300px' }">
+            <t-input placeholder="请选择科室组别" size="small" v-model="queryInfo.deptName" readonly>
+            </t-input>
+            <template #content>
+              <DepartmentSelect v-model="deptValue" :multiple="false" @select="onDeptSelect" />
+            </template>
+          </t-popup>
         </t-col>
         <t-col :span="2">
           <t-button theme="primary" size="small" :disabled="queryInfo.courseId=='' || queryInfo.deptNum==''" @click="$global.downloadExcel('college/report/course/dowmload/infomation',  queryInfo, '课程学习记录明细BY人员.xlsx')">学习报表</t-button>
@@ -47,31 +53,33 @@
           <TableColumn colKey="studyComp" label="在线学习"></TableColumn>
         <TableColumn colKey="evalDate" label="评价" sortable="custom" width="120px" ellipsis>
           <template #default="{ row }">
-            <t-tag v-if="row.studyComp !== '未开始'" effect="plain" size="small" :theme="row.ifEval=='需要'?row.evalComp =='完成'?'success':'danger':'success'"> {{ row.ifEval=='需要'?row.evalComp:'无需评价' }}</t-tag>
+            <t-tag v-if="row.studyComp !== '未开始'" variant="light" size="small" :theme="row.ifEval=='需要'?row.evalComp =='完成'?'success':'danger':'success'"> {{ row.ifEval=='需要'?row.evalComp:'无需评价' }}</t-tag>
           </template>
         </TableColumn>
         <TableColumn colKey="examComp" label="考试" sortable="custom" width="120px" ellipsis>
           <template #default="{ row }">
-            <t-tag v-if="row.studyComp !== '未开始'" effect="plain" size="small" :theme="row.ifExam=='需要'?row.examComp =='完成'?'success':'danger':'success'"> {{ row.ifExam=='需要'?row.examComp :'无需考试' }}</t-tag>
+            <t-tag v-if="row.studyComp !== '未开始'" variant="light" size="small" :theme="row.ifExam=='需要'?row.examComp =='完成'?'success':'danger':'success'"> {{ row.ifExam=='需要'?row.examComp :'无需考试' }}</t-tag>
           </template>
         </TableColumn>
         <TableColumn colKey="coursePass" label="完成情况" sortable="custom" width="120px" ellipsis>
           <template #default="{ row }">
-            <t-tag v-if="row.studyComp !== '未开始'" effect="plain" size="small" :theme="row.coursePass=='进行中'?'danger':'success'"> {{ row.coursePass }}</t-tag>
+            <t-tag v-if="row.studyComp !== '未开始'" variant="light" size="small" :theme="row.coursePass=='进行中'?'danger':'success'"> {{ row.coursePass }}</t-tag>
           </template>
         </TableColumn>
         </CustomTable>
-        <!-- <t-pagination @page-size-change="handleSizeChange" @current-change="handleCurrentChange" :current="queryInfo.pageNum" :page-size-options="[20, 40, 100, 200]" :page-size="20" :total="total"></t-pagination> -->
     </t-card>
-    <DepartmentSelect v-model="treeDialogVisiable" :multiple="false" @select="getTreeChecked" />
   </div>
 </template>
 
 <script setup>
 import { ref, reactive, getCurrentInstance } from 'vue'
 import DepartmentSelect from '@/components/DepartmentSelect.vue'
+import { httpInstance } from '@/utils/request'
+import { MessagePlugin } from 'tdesign-vue-next'
 
 const { proxy } = getCurrentInstance()
+// 科室选择弹层可见性
+const deptPopupVisible = ref(false)
 
 // 课程查询参数
 const courseQuery = reactive({
@@ -91,7 +99,7 @@ const searchLoading = ref(false)
 const courses = ref([])
 
 // 树形对话框可见性
-const treeDialogVisiable = ref(false)
+const deptValue = ref('')
 
 // 学习记录列表
 const records = ref([])
@@ -106,20 +114,31 @@ const queryInfo = reactive({
 // 远程搜索课程
 const remoteCourses = (query) => {
   if (query !== '') {
+    searchLoading.value = true
     courseQuery.query = query
-    proxy.$http.get('college/course', { params: courseQuery }).then(res => {
-      if (res.code !== 200) return proxy.$message.error(res.msg)
+    httpInstance.get('college/course', { params: courseQuery }).then(res => {
+      if (res.code !== 200) return MessagePlugin.error(res.msg)
       courses.value = res.data.list
-    }).then(() => {
+    }).catch(() => {
+      MessagePlugin.error('课程查询失败')
+    }).finally(() => {
+      searchLoading.value = false
     })
   }
 }
 
 // 获取树形选择回调
 const getTreeChecked = (data) => {
-  queryInfo.deptName = data.label
-  queryInfo.deptNum = data.id
+  if (!data) return
+  queryInfo.deptName = data.label || ''
+  queryInfo.deptNum = String(data.id != null ? data.id : '')
   getStudyInfo()
+}
+
+// 弹层内选择科室：回填并关闭弹层
+const onDeptSelect = (data) => {
+  getTreeChecked(data)
+  deptPopupVisible.value = false
 }
 
 // 获取学习信息

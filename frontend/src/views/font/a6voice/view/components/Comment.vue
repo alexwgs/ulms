@@ -2,7 +2,7 @@
   <div class="comment-container">
     <t-pagination
       v-if="commentTotal > 0"
-      v-model:current="currentPage"
+      v-model="currentPage"
       @current-change="handlePageChange"
       :page-size="queryInfo.pageSize"
       :total="commentTotal"
@@ -151,7 +151,7 @@ const props = defineProps({
 
 const emit = defineEmits(['comment-submitted'])
 
-const fsURL = import.meta.env.VITE_FILE_MANAGE_BASE || ''
+const fsURL = import.meta.env.VITE_FILE_BASE_URL || ''
 
 const currentPage = ref(1)
 const comments = ref([])
@@ -406,8 +406,8 @@ defineExpose({
       gap: 8px;
       padding: 12px 20px;
       cursor: pointer;
-      color: #999;
-      border-bottom: 1px solid #eee;
+      color: var(--td-text-color-secondary);
+      border-bottom: 1px solid var(--td-component-stroke);
       font-size: 14px;
 
       &:hover {

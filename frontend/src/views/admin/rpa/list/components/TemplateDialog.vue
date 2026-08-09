@@ -5,7 +5,7 @@
     width="60%"
     style="height: 60%"
     :close-on-overlay-click="false"
-    @before-close="handleClose"
+    :before-close="handleClose"
   >
     <t-alert
       title="重要！！当控件序号设置为小于0时，前端将不显示该字段!"
@@ -46,14 +46,14 @@
       </TableColumn>
       <TableColumn label="操作" width="120" fixed="right">
         <template #default="{ row }">
-          <t-button
-            theme="warning"
+          <t-button variant="outline"
+            theme="default"
             size="small" @click="openFieldDialog('update', row)"
-            shape="circle"><template #icon><DynamicIcon name="edit" /></template></t-button>
-          <t-button
+           >编辑</t-button>
+          <t-button variant="outline"
             theme="danger"
             size="small" @click="deleteField(row.id)"
-            shape="circle"><template #icon><DynamicIcon name="delete" /></template></t-button>
+           >删除</t-button>
         </template>
       </TableColumn>
     </CustomTable>

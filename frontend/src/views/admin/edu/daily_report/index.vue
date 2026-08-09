@@ -1,63 +1,69 @@
 <template>
   <div style="height: 100%">
-    <t-card class="box-card">
-      <t-row :gutter="20">
-        <t-col :span="3">
-          <t-radio-group
-            v-model="queryInfo.groupBy"
-            size="small"
-            @change="getDailyScoreListData"
-          >
-            <t-radio-button value="hum" label="个人"></t-radio-button>
+    <t-card class="management-card">
+      <t-form :data="queryInfo" label-width="80px" colon class="filter-form">
+        <t-row :gutter="[24, 24]">
+        <t-col :span="4">
+          <t-form-item label="统计方式" name="groupBy">
+            <t-radio-group
+              v-model="queryInfo.groupBy"
+              size="small"
+              @change="getDailyScoreListData"
+            >
+              <t-radio-button value="hum" label="个人"></t-radio-button>
             <t-radio-button value="group" label="小组"></t-radio-button>
             <t-radio-button value="dept" label="科室"></t-radio-button>
           </t-radio-group>
+          </t-form-item>
         </t-col>
         <t-col :span="4">
-          <t-date-range-picker v-model="daterange" size="small" :placeholder="['开始日期', '结束日期']" @change="getDailyScoreListData" style="width: 100%" ></t-date-range-picker>
+          <t-form-item label="日期范围" name="daterange">
+            <t-date-range-picker v-model="daterange" size="small" :placeholder="['开始日期', '结束日期']" @change="getDailyScoreListData"></t-date-range-picker>
+          </t-form-item>
         </t-col>
-        <t-col :span="4">
-          <t-input
-            placeholder="模糊搜索"
-            size="small"
-            v-model="queryInfo.query"
-          >
-            <t-select
-              v-model="queryInfo.queryType"
-              slot="prepend"
-              placeholder="请选择"
-              style="width: 80px"
-            >
-              <t-option
-                v-if="queryInfo.groupBy === 'hum'"
-                label="姓名"
-                value="ploName"
-              ></t-option>
-              <t-option
-                v-if="queryInfo.groupBy === 'hum'"
-                label="工号"
-                value="ploNum"
-              ></t-option>
-              <t-option label="组别" value="group"></t-option>
-              <t-option label="科室" value="dept"></t-option>
-            </t-select>
-            <t-button
-              slot="append" @click="getDailyScoreListData"><template #icon><DynamicIcon name="search" /></template></t-button>
-          </t-input>
+        <t-col :span="5">
+          <t-form-item label="关键字" name="query">
+            <t-input-adornment>
+              <template #prepend>
+                <t-select
+                  v-model="queryInfo.queryType"
+                  placeholder="请选择"
+                >
+                  <t-option
+                    v-if="queryInfo.groupBy === 'hum'"
+                    label="姓名"
+                    value="ploName"
+                  ></t-option>
+                  <t-option
+                    v-if="queryInfo.groupBy === 'hum'"
+                    label="工号"
+                    value="ploNum"
+                  ></t-option>
+                  <t-option label="组别" value="group"></t-option>
+                  <t-option label="科室" value="dept"></t-option>
+                </t-select>
+              </template>
+              <template #append>
+                <t-button variant="outline" theme="primary" @click="getDailyScoreListData">搜索</t-button>
+              </template>
+              <t-input placeholder="模糊搜索" size="small" v-model="queryInfo.query"></t-input>
+            </t-input-adornment>
+          </t-form-item>
         </t-col>
-        <t-col :span="1">
-          <t-button theme="primary" size="small" @click="downloadReport">
+        <t-col :span="2" class="operation-container">
+          <t-button variant="outline" theme="primary" size="small" @click="downloadReport">
             下载
           </t-button>
         </t-col>
-      </t-row>
-      <t-alert
+        </t-row>
+      </t-form>
+      <PageTips
         title="操作说明"
         theme="info"
         message="请正确使用字典配置：1.默认显示7天数据。2.统计天数：配置每日一学的天数；打卡天数：完成每日一学的天数；签到天数：当天完成每日一学天数；"
         :closable="false"
       >
-      </t-alert>
+      </PageTips>
       <CustomTable rowKey="id"
         :data="dailyScore"
         size="small"

@@ -1,6 +1,6 @@
 <template>
   <!--文章管理对话框-->
-  <t-dialog header="文章管理" v-model:visible="articalDialogVisible" width="80%" @before-close="close" mode="full-screen">
+  <t-dialog header="文章管理" v-model:visible="articalDialogVisible" width="80%" :before-close="close" mode="full-screen">
     <t-row :gutter="15">
       <t-form ref="courseForm" :data="articalFormData" :rules="rules" size="small" label-width="100px">
         <t-col :span="6">
@@ -23,7 +23,7 @@
         <t-col :span="6">
           <t-form-item label="文章路径" name="routeId">
             <t-cascader v-model="articalFormData.routeId" @change="routerChange" :options="tree"
-              :props="{ value: 'id', label: 'name' }" :style="{ width: '100%' }"></t-cascader>
+              :keys="{ value: 'id', label: 'name' }" :style="{ width: '100%' }"></t-cascader>
           </t-form-item>
         </t-col>
         <t-col :span="6">
@@ -43,7 +43,7 @@
         <t-col :span="12">
           <t-form-item label="关键词" name="keyWord">
             <t-tag :key="tag" v-for="tag in keywords" closable :disable-transitions="false"
-              @close="keywordClose(tag)">{{ tag }}</t-tag>
+              @close="keywordClose(tag)" variant="light">{{ tag }}</t-tag>
             <t-input class="input-new-tag" v-if="inputVisible" v-model="inputValue" ref="saveTagInput" size="small"
               @keyup.enter="handleInputConfirm" @blur="handleInputConfirm">
             </t-input>

@@ -41,7 +41,7 @@ const props = defineProps({
   }
 })
 
-const fsURL = import.meta.env.VITE_FILE_MANAGE_BASE || ''
+const fsURL = import.meta.env.VITE_FILE_BASE_URL || ''
 const quickUrlList = ref([])
 
 onMounted(() => {
@@ -79,20 +79,20 @@ const goto = (url, userFlag, tokenFlag, sysType) => {
 
 .quick-menu-font {
   font-size: 14px;
-  color: var(--td-menu-font-color);
+  color: var(--td-text-color-primary);
   padding-top: 5px;
 
   &:hover {
-    color: #67c23a;
+    color: var(--td-success-color);
   }
 }
 
 .quick-login-btn {
--color: #f0f9eb;
+background-color: #f0f9eb;
   cursor: pointer;
 
   &:hover {
--color: #67c23a;
+background-color: var(--td-success-color);
   }
 }
 </style>

@@ -120,7 +120,7 @@
           style="
             width: 100%;
             height: 300px;
--color: rgba(252, 252, 252, 0.26);
+background-color: rgba(252, 252, 252, 0.26);
             border-radius: 15px;
             margin-top: 10px;
           "
@@ -298,24 +298,24 @@ onMounted(() => {
 /*最外层透明*/
 :deep(.t-table),
 .t-table__expanded-cell {
--color: rgba(224, 224, 224, 0.25);
+background-color: rgba(224, 224, 224, 0.25);
 }
 /* 表格内背景颜色 */
 :deep(.t-table th),
 :deep(.t-table tr),
 :deep(.t-table td) {
--color: rgba(224, 224, 224, 0.25);
+background-color: rgba(224, 224, 224, 0.25);
   color: #000;
 }
 .t-range-editor--mini :deep(.t-range-input) {
--color: transparent;
-  color: #ffffff;
+background-color: transparent;
+  color: var(--td-bg-color-container);
 }
 .my-rank-area {
   height: 130px;
   margin-bottom: 10px;
   border-radius: 10px;
--color: rgba(233, 233, 233, 0.24);
+background-color: rgba(233, 233, 233, 0.24);
   padding: 10px;
   overflow-y: auto;
   .my-rank-info {

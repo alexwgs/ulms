@@ -1,38 +1,26 @@
 <template>
-  <t-row style="margin-top: 15px; box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)">
+  <t-row style="margin-top: 10px">
     <t-col :span="12">
-      <div class="page-list">
-        <div class="list-fl">
-          <div class="page-tit">排行榜</div>
-          <ul class="list-tit">
-            <li class="active"><i></i>月度学霸排行榜</li>
-          </ul>
-        </div>
-        <ul class="list-sty">
-          <div v-for="item in userList" :key="item.ploNum">
-            <li>
-              <i class="sty-icon1"></i>
-              <span title="占位符" class="db fl"
-                ><img :src="fsURL + item.user.avatar" title="占位符"
-              /></span>
-              <div class="sty-tit" style="padding-left: 10px">
-                <span
-                  target="_blank"
-                  :title="item.user.ploName"
-                  class="text-trim text-name"
-                  >{{ item.user.ploName }}</span
-                >
-                <div class="text-trim" :title="item.user.deptName">
-                  部门：{{ item.user.deptName }}
-                </div>
-                <div class="text-trim">
-                  学分：<span class="f-color">{{ item.point }}</span>
-                </div>
-              </div>
-            </li>
+      <t-card class="academy-card">
+        <h3 class="academy-section-title">月度学霸排行榜</h3>
+        <div class="rank-list">
+          <div class="rank-item" v-for="(item, index) in userList" :key="item.ploNum">
+            <span class="rank-no" :class="{ top: index < 3 }">{{ index + 1 }}</span>
+            <t-avatar
+              size="36px"
+              shape="round"
+              :image="item.user.avatar ? fsURL + item.user.avatar : ''"
+            >
+              {{ item.user.ploName ? item.user.ploName[0] : '' }}
+            </t-avatar>
+            <div class="rank-info">
+              <span class="rank-name">{{ item.user.ploName }}</span>
+              <span class="rank-dept">部门：{{ item.user.deptName }}</span>
+            </div>
+            <span class="rank-point">学分 {{ item.point }}</span>
           </div>
-        </ul>
-      </div>
+        </div>
+      </t-card>
     </t-col>
   </t-row>
 </template>
@@ -45,101 +33,76 @@ const props = defineProps({
   }
 })
 
+// 展示类文件统一走文件服务地址
 const fsURL = import.meta.env.VITE_FILE_BASE_URL
 </script>
 
 <style lang="less" scoped>
-.text-trim {
+.rank-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 24px;
+}
+
+.rank-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border: 1px solid var(--academy-line);
+  border-radius: 10px;
+  transition: box-shadow 0.2s ease;
+
+  &:hover {
+    box-shadow: var(--academy-shadow-sm);
+  }
+}
+
+.rank-no {
+  flex: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--academy-muted);
+  background: var(--academy-bg);
+
+  &.top {
+    color: #fff;
+    background: linear-gradient(135deg, var(--academy-gold-2), var(--academy-gold));
+  }
+}
+
+.rank-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.rank-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--academy-ink);
+}
+
+.rank-dept {
+  font-size: 12px;
+  color: var(--academy-muted);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.page-list {
-  width: 100%;
-background-color: #fff;
-  .list-fl {
-    width: 12%;
-    height: 264px;
-background: url(@/assets/img/edu/list-bg-2.png);
-    float: left;
-    .page-tit {
-      line-height: 24px;
-      color: #fff;
-      text-align: center;
-      margin-top: 20px;
-      font-weight: bold;
-    }
-    .list-tit {
-      margin-top: 99px;
-      list-style: none;
-      padding: 0;
-    }
-    .list-tit li {
-      cursor: pointer;
-      font-size: 12px;
-      color: #9b2b23;
-      text-align: center;
-      position: relative;
-      margin: 0 auto;
-      height: 20px;
-      margin-bottom: 25px;
-      line-height: 12px;
-      list-style: none;
-    }
-  }
-}
 
-.db {
-  display: block;
-}
-.fl {
-  float: left;
-}
-.list-sty {
-  width: 87%;
-  display: inline-block;
-background: #fbfbfb;
-  padding-top: 3px;
-  box-sizing: border-box;
-  padding-left: 27px;
-  height: 240px;
-  overflow: hidden;
-  img {
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
-  }
-  li {
-    position: relative;
-    width: 170px;
-    margin-top: 30px;
-    height: 75px;
-    float: left;
-    margin-right: 20px;
-    list-style: none;
-    a {
-      margin-right: 15px;
-    }
-  }
-  i {
-    display: block;
-    position: absolute;
-    width: 33px;
-    height: 25px;
-    top: -13px;
-    left: -3px;
-  }
-  .sty-tit {
-    width: 84px;
-    float: left;
-    font-size: 12px;
-    line-height: 25px;
-    .text-name {
-      font-size: 14px;
-      text-decoration: none;
-      color: #000;
-      font-weight: bold;
-    }
-  }
+.rank-point {
+  flex: none;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--academy-gold);
 }
 </style>

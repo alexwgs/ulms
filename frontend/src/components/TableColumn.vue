@@ -18,7 +18,12 @@ defineProps({
   sortable: [Boolean, String, Object],
   sortType: String,
   sorter: [Boolean, Function],
+  sortMethod: Function,
   filter: [Object, Array],
+  filters: Array,
+  filterMethod: Function,
+  selectable: Function,
+  disabled: Function,
   resizable: Boolean,
   order: Number
 })

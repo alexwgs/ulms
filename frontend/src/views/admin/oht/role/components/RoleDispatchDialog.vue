@@ -28,7 +28,7 @@
           <template #default="{ row }">
             <t-select size="small" v-model="row.stepFloor" placeholder="请选择">
               <t-option
-                v-for="item in dictStore.dictList.oht_step_floor"
+                v-for="item in (dictStore.dictList?.oht_step_floor || [])"
                 :key="item.code"
                 :label="item.codeval"
                 :value="item.code"

@@ -1,17 +1,20 @@
 <template>
   <div class="container">
+    <div class="exam-timer" :class="{ urgent: examTime >= 0 && examTime < 120 }">
+      <DynamicIcon name="time" />
+      <span class="timer-label">考试剩余时间</span>
+      <b class="timer-value">{{ examTime < 0 ? 'N/A' : formattedExamTime }}</b>
+    </div>
     <t-row :gutter="20">
       <t-col :span="8">
         <div class="examInfo">
           {{ course?.courseName }}
         </div>
         <t-divider></t-divider>
-        <t-card class="box-card">
+        <t-card class="academy-card">
           <template #header>
             <div class="clearfix">
               <span>答题区</span>
-              <span style="float: right; padding: 3px 0">
-                考试剩余时间：{{ examTime < 0 ? 'N/A' : formattedExamTime }} </span>
             </div>
           </template>
           <div class="answer-main" v-show="mustReadFlag">
@@ -32,7 +35,7 @@
               </TableColumn>
               <TableColumn colKey="passFlag" label="是否通过" width="180">
                 <template #default="scope">
-                  <t-tag :theme="scope.row.passFlag == 1 ? 'success' : 'danger'">
+                  <t-tag :theme="scope.row.passFlag == 1 ? 'success' : 'danger'" variant="light">
                     {{ scope.row.passFlag == 1 ? '通过' : '不通过' }}
                   </t-tag>
                 </template>
@@ -58,23 +61,23 @@
           </template>
           <t-row :gutter="20" style="text-align: center">
             <t-col :span="4">
-              <t-tag effect="plain">题目数量：{{ setting.quesNum }}</t-tag>
+              <t-tag variant="light">题目数量：{{ setting.quesNum }}</t-tag>
             </t-col>
             <t-col :span="4">
-              <t-tag effect="plain">
+              <t-tag variant="light">
                 考试时长：{{ setting.examTime === 0 ? '不限' : setting.examTime }}(分)
               </t-tag>
             </t-col>
             <t-col :span="4">
-              <t-tag effect="plain">考试通过：{{ setting.passNum }}/{{ setting.quesNum }}</t-tag>
+              <t-tag variant="light">考试通过：{{ setting.passNum }}/{{ setting.quesNum }}</t-tag>
             </t-col>
           </t-row>
           <t-row :gutter="20" style="text-align: center; margin-top: 10px">
             <t-col v-if="setting.optionRandom" :span="4">
-              <t-tag theme="danger" effect="plain">选项随机</t-tag>
+              <t-tag theme="danger" variant="light">选项随机</t-tag>
             </t-col>
             <t-col v-if="setting.repeatFlag" :span="4">
-              <t-tag theme="danger" effect="plain">可重复考试</t-tag>
+              <t-tag theme="danger" variant="light">可重复考试</t-tag>
             </t-col>
           </t-row>
         </t-card>
@@ -87,7 +90,7 @@
           <t-row v-if="quesTest.length > 0">
             <t-col v-for="(item, index) of quesTest" :key="index" :span="3"
               style="padding-top: 5px; text-align: center">
-              <t-button :type="item.userAnswer === null ? '' : 'success'" style="width: 70px"
+              <t-button :theme="item.userAnswer === null ? 'default' : 'success'" style="width: 70px"
                 @click="changeQues(index)" size="small">
                 <span :class="curentQuesNum == index ? 'currentBtn' : ''">第{{ index + 1 }}题</span>
               </t-button>
@@ -96,11 +99,9 @@
           <t-row style="padding-top: 20px">
             <t-col :span="12">
               <t-popconfirm width="300" content="注意！！！点击确认将提交本场考试！" confirm-button-text="确认交卷" @confirm="handOverTest()">
-                <template #reference>
-                  <t-button theme="primary" style="width: 100%" size="small" :disabled="mustReadFlag">
-                    交 卷
-                  </t-button>
-                </template>
+                <t-button theme="primary" style="width: 100%" size="small" :disabled="mustReadFlag">
+                  交 卷
+                </t-button>
               </t-popconfirm>
             </t-col>
           </t-row>
@@ -268,7 +269,12 @@ const timerFunc = (time) => {
 
 // Lifecycle hooks
 onMounted(() => {
-  course.value = JSON.parse(localStorage.getItem('course'))
+  const cached = localStorage.getItem('course')
+  course.value = cached ? JSON.parse(cached) : null
+  if (!course.value || !course.value.courseId) {
+    MessagePlugin.warning('请从课程详情进入考试')
+    return
+  }
   precheck()
 })
 
@@ -282,9 +288,9 @@ onUnmounted(() => {
 
 <style lang="less" scoped>
 .container {
-  padding: 20px;
+  padding: 0;
 
-  .box-card {
+  .management-card {
     height: calc(100vh - 120px);
 
     :deep(.t-card__body) {
@@ -321,5 +327,59 @@ onUnmounted(() => {
 .currentBtn {
   color: red;
   font-weight: 700;
+}
+
+/* 显著倒计时横幅 */
+.exam-timer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding: 12px 20px;
+  border-radius: var(--academy-radius);
+  background: linear-gradient(120deg, #10273e, var(--academy-navy) 70%);
+  color: #fff;
+  box-shadow: var(--academy-shadow);
+
+  .t-icon {
+    font-size: 22px;
+    color: var(--academy-gold-2);
+  }
+
+  .timer-label {
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.85);
+    letter-spacing: 2px;
+  }
+
+  .timer-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--academy-gold-2);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 1px;
+  }
+
+  &.urgent {
+    background: linear-gradient(120deg, #7a1f1f, #b23a3a 70%);
+    animation: exam-timer-pulse 1.2s ease-in-out infinite;
+
+    .timer-value,
+    .t-icon {
+      color: #fff;
+    }
+  }
+}
+
+@keyframes exam-timer-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.78; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .exam-timer.urgent {
+    animation: none;
+  }
 }
 </style>

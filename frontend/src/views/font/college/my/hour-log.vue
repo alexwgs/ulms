@@ -1,9 +1,10 @@
 <template>
   <div>
-    <t-card class="box-card">
+    <t-card class="academy-card">
+      <h3 class="academy-section-title">学时日志</h3>
       <t-row :gutter="15">
         <t-col :span="2">
-          <t-tag theme="default">学习累计时长: {{ currentHour }}（H）</t-tag>
+          <t-tag theme="default" variant="light">学习累计时长: {{ currentHour }}（H）</t-tag>
         </t-col>
         <t-col :span="10">
           <t-date-range-picker v-model="dateRange" :placeholder="['开始日期', '结束日期']" @change="getStudyLog" size="small" />
@@ -32,7 +33,7 @@
         </TableColumn>
       </CustomTable>
       <t-pagination
-        v-model:current="queryInfo.pageNum"
+        v-model="queryInfo.pageNum"
         v-model:page-size="queryInfo.pageSize"
         :page-size-options="[20, 40, 100, 200]"
 

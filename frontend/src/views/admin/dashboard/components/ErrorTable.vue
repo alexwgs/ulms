@@ -43,9 +43,4 @@ defineProps({
 .error-table-card {
   height: 440px;
 }
-
-.card-title {
-  font-size: 16px;
-  font-weight: 600;
-}
 </style>

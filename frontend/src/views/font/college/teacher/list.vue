@@ -1,30 +1,28 @@
 <template>
-  <div style="padding-left: calc((100vw - 1240px) / 2); max-width: 1200px">
-    <t-card class="box-card">
-      <template #header>
-        <div class="clearfix">
-          <span>讲师风采</span>
-          <div style="float: right; width: 400px">
-            <t-input
-              placeholder="输入讲师姓名或工号查找"
-              size="small"
-              v-model="queryInfo.query"
-              class="input-with-select"
-            >
+  <div>
+    <t-card class="academy-card">
+      <div class="teacher-head">
+        <h3 class="academy-section-title">讲师风采</h3>
+        <div class="teacher-search">
+            <t-input-adornment class="input-with-select">
               <template #append>
                 <t-button @click="getTeacherList">
                   <t-icon><SearchIcon /></t-icon>
                 </t-button>
               </template>
-            </t-input>
-          </div>
+              <t-input
+                placeholder="输入讲师姓名或工号查找"
+                size="small"
+                v-model="queryInfo.query"
+              ></t-input>
+            </t-input-adornment>
         </div>
-      </template>
+      </div>
       <t-form
         ref="queryInfoForm"
         :data="queryInfo"
-        label-align="left"
-        label-width="100px"
+        layout="inline"
+        class="teacher-filter"
       >
         <t-form-item label="讲师类型">
           <t-radio-group
@@ -61,13 +59,13 @@
         <t-form-item label="排序">
           <t-link style="" :underline="false" @click="sortTeacher('dataDate')"
             >身份时间<t-icon>
-              <ArrowDown
+              <ArrowDownIcon
                 v-if="
                   queryInfo.order === 'dataDate' &&
                   queryInfo.orderType === 'desc'
                 "
               />
-              <ArrowUp
+              <ArrowUpIcon
                 v-else-if="
                   queryInfo.order === 'dataDate' &&
                   queryInfo.orderType === 'asc'
@@ -81,12 +79,12 @@
             :underline="false"
             @click="sortTeacher('score')"
             >讲师评分<t-icon>
-              <ArrowDown
+              <ArrowDownIcon
                 v-if="
                   queryInfo.order === 'score' && queryInfo.orderType === 'desc'
                 "
               />
-              <ArrowUp
+              <ArrowUpIcon
                 v-else-if="
                   queryInfo.order === 'score' && queryInfo.orderType === 'asc'
                 "
@@ -99,13 +97,13 @@
             :underline="false"
             @click="sortTeacher('courseNum')"
             >授课数量<t-icon>
-              <ArrowDown
+              <ArrowDownIcon
                 v-if="
                   queryInfo.order === 'courseNum' &&
                   queryInfo.orderType === 'desc'
                 "
               />
-              <ArrowUp
+              <ArrowUpIcon
                 v-else-if="
                   queryInfo.order === 'courseNum' &&
                   queryInfo.orderType === 'asc'
@@ -119,13 +117,13 @@
             :underline="false"
             @click="sortTeacher('courseHour')"
             >授课时数<t-icon>
-              <ArrowDown
+              <ArrowDownIcon
                 v-if="
                   queryInfo.order === 'courseHour' &&
                   queryInfo.orderType === 'desc'
                 "
               />
-              <ArrowUp
+              <ArrowUpIcon
                 v-else-if="
                   queryInfo.order === 'courseHour' &&
                   queryInfo.orderType === 'asc'
@@ -138,87 +136,50 @@
       </t-form>
     </t-card>
     <t-row :gutter="20">
-      <div v-for="item in teachers" :key="item">
-        <t-col :span="6">
-          <t-card class="box-card">
-            <div style="float: left">
-              <div
-                v-if="item.avatar == null"
-                style="
-                  height: 120px;
-                  width: 120px;
-                  text-align: center;
-                  line-height: 120px;
-                  border-radius: 5px;
-                "
-              >
-                暂无照片
-              </div>
+      <t-col :span="6" v-for="item in teachers" :key="item">
+        <div class="teacher-card" @click="teacherView(item)">
+            <div class="teacher-photo">
+              <div v-if="item.avatar == null" class="teacher-photo-empty">暂无照片</div>
               <img
                 v-else
-                width="120px"
-                style="min-height: 120px; max-height: 120px; border-radius: 5px"
                 :src="fsURL + 'upload/getFile/college-avatar/' + item.avatar"
+                alt=""
               />
             </div>
-            <div
-              style="
-                float: left;
-                margin-left: 10px;
-                width: 390px;
-                cursor: pointer;
-              "
-              @click="teacherView(item)"
-            >
-              <t-tag effect="plain">{{ item.ploName }}</t-tag>
-              <div style="margin-left: 10px; display: inline" v-if="item.honor">
+            <div class="teacher-body">
+              <div class="teacher-name-line">
+                <span class="teacher-name">{{ item.ploName }}</span>
+                <div class="teacher-honors" v-if="item.honor">
                 <t-tag
                   style="margin-right: 5px"
                   v-for="(honor, index) in item.honor.split('、')"
                   :key="index"
                   size="small"
                   theme="danger"
-                  >{{ honor }}</t-tag
-                >
+                  variant="light">{{ honor }}</t-tag>
+                </div>
               </div>
-              <div
-                style="
-                  font-size: 12px;
-                  color: #999;
-                  height: 50px;
-                  margin-top: 5px;
-                  overflow: hidden;
-                "
-              >
-                简介：{{ item.introduce }}
-              </div>
-              <t-row :gutter="10" style="font-size: 12px; margin-top: 5px">
-                <t-col :span="4">培训课程:{{ item.courseNum }}</t-col>
-                <t-col :span="4">授课课时:{{ item.courseHour }}</t-col>
-                <t-col :span="4"
+              <div class="teacher-intro">简介：{{ cleanDisplayText(item.introduce) || '暂无简介' }}</div>
+              <div class="teacher-stats">
+                <span>培训课程 {{ item.courseNum }}</span>
+                <span>授课课时 {{ item.courseHour }}</span>
+                <span
                   ><t-rate
                     v-if="item.score > 0"
-                    style="display: inline-block"
                     v-model="item.score"
                     disabled
                     text-color="#ff9900"
                     score-template="{value}"
                   ></t-rate
-                  ><span v-else>暂无评分</span></t-col
+                  ><span v-else>暂无评分</span></span
                 >
-              </t-row>
+              </div>
             </div>
-            <div style="width: 100%; margin-top: 130px; height: 130px">
-              <t-empty
-                :image-size="50"
-                description="暂时无任何知识"
-              ></t-empty>
-            </div>
-          </t-card>
-        </t-col>
-      </div>
+        </div>
+      </t-col>
     </t-row>
     <t-pagination
+      class="academy-pagination"
       @page-size-change="handleSizeChange"
       @current-change="handleCurrentChange"
       :current="queryInfo.pageNum"
@@ -236,10 +197,11 @@ import { useRouter } from 'vue-router'
 import { MessagePlugin } from 'tdesign-vue-next'
 import { httpInstance } from '@/utils/request'
 import { SearchIcon, ArrowDownIcon, ArrowUpIcon, CaretDownIcon } from 'tdesign-icons-vue-next'
+import { cleanDisplayText } from '@/utils/sanitize'
 
 const router = useRouter()
 
-const fsURL = import.meta.env.VITE_FILE_MANAGE_BASE
+const fsURL = import.meta.env.VITE_FILE_BASE_URL
 
 const queryInfo = reactive({
   orderType: 'desc',
@@ -301,7 +263,7 @@ const handleCurrentChange = (page) => {
 
 const teacherView = (teacher) => {
   window.localStorage.setItem('teacher', JSON.stringify(teacher))
-  router.push({ name: 'college-teacher-detail', params: { id: teacher.id } })
+  router.push({ name: 'college-teacher-detail', params: { id: teacher.ploNum } })
 }
 
 onMounted(() => {
@@ -310,12 +272,119 @@ onMounted(() => {
 </script>
 
 <style lang="less" scoped>
-.text-trim {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.teacher-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 8px;
 }
-.box-card {
-  margin-bottom: 10px;
+
+.teacher-search {
+  width: 380px;
+}
+
+.teacher-filter {
+  padding: 12px 14px;
+  background: var(--academy-bg);
+  border-radius: 8px;
+  margin-bottom: 18px;
+
+  :deep(.t-form__item) {
+    margin-right: 24px;
+  }
+}
+
+.teacher-card {
+  display: flex;
+  gap: 14px;
+  padding: 16px;
+  margin-bottom: 16px;
+  border: 1px solid var(--academy-line);
+  border-radius: var(--academy-radius);
+  background: var(--academy-surface);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--academy-shadow);
+  }
+}
+
+.teacher-photo {
+  flex: none;
+  width: 120px;
+  height: 120px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--academy-bg);
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+}
+
+.teacher-photo-empty {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--academy-muted);
+  font-size: 13px;
+}
+
+.teacher-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.teacher-name-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.teacher-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--academy-ink);
+}
+
+.teacher-honors {
+  display: inline-flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.teacher-intro {
+  font-size: 12px;
+  color: var(--academy-muted);
+  line-height: 1.6;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.teacher-stats {
+  display: flex;
+  gap: 18px;
+  margin-top: auto;
+  font-size: 12px;
+  color: var(--academy-muted);
+
+  span {
+    display: inline-flex;
+    align-items: center;
+  }
 }
 </style>

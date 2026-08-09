@@ -8,16 +8,16 @@
       <template #cellAppend="cell" >
         <t-tag
             v-if="getDutyForDate(cell.formattedDate).length > 0"
-            :theme="getDutyForDate(cell.formattedDate)[0]?.priority || 'info'"
+            :theme="getDutyForDate(cell.formattedDate)[0]?.priority || 'default'"
             size="small"
-        >{{ getDutyForDate(cell.formattedDate)[0]?.event }}</t-tag
+         variant="light">{{ getDutyForDate(cell.formattedDate)[0]?.event }}</t-tag
         >
         <div class="todo-list">
           <div v-for="item in getTodolistForDate(cell.formattedDate)" :key="item.id">
             <t-tag
                 :theme="item.priority || 'default'"
                 size="small"
-                variant="dark"
+                variant="light"
             >
               {{ item.event }}
             </t-tag>
@@ -140,7 +140,7 @@ const checkPermission = (permission) => {
 
 .todo-font {
   font-size: 10px;
--color: #909399;
+background-color: var(--td-text-color-placeholder);
   color: #fff;
   margin-top: 1px;
   width: 100%;
@@ -155,7 +155,7 @@ const checkPermission = (permission) => {
   margin-top: 2px;
 }
 :deep(.t-calendar__cell--selected) {
--color: #fbb7b7 !important;
+background-color: #fbb7b7 !important;
 }
 :deep(.t-calendar__table-body-cell) {
   height: 100px;

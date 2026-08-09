@@ -3,12 +3,12 @@
     <t-loading :loading="loadingFlag">
       <t-row :gutter="15">
       <t-col :span="mainSpan ? 9 : 12">
-        <div>
+        <div class="study-title">
           {{ course.courseName
-          }}<t-tag v-if="course.ifEval" theme="success">需评价</t-tag>
-          <t-tag v-if="course.ifExam" theme="danger">需考试</t-tag>
+          }}<t-tag v-if="course.ifEval" theme="success" variant="light">需评价</t-tag>
+          <t-tag v-if="course.ifExam" theme="danger" variant="light">需考试</t-tag>
           <div style="float: right">
-            <t-switch v-model="mainSpan" active-text="显示学习列表" inactive-text="隐藏学习列表"></t-switch>
+<t-switch v-model="mainSpan" :label="['显示学习列表', '隐藏学习列表']"></t-switch>
           </div>
         </div>
         <t-divider></t-divider>
@@ -44,12 +44,12 @@
         </t-row>
       </t-col>
       <t-col :span="mainSpan ? 3 : 0">
-        <t-card class="card">
+        <t-card class="card academy-card">
           <template #header>
             <div class="clearfix">
               <span>在线学习列表</span>
               <t-tooltip class="item" content="进度条显示为视频进度，全部为绿色则为学习完成！" placement="left">
-                <t-link size="small" shape="circle"><template #icon><DynamicIcon name="help-circle-filled" /></template></t-link>
+                <t-link size="small"><template #icon><DynamicIcon name="help-circle-filled" /></template></t-link>
               </t-tooltip>
             </div>
           </template>
@@ -123,6 +123,7 @@ import { VuePDF, usePDF } from '@tato30/vue-pdf'
 import '@tato30/vue-pdf/style.css'
 
 const router = useRouter()
+// 展示类文件统一走 HTTPS 文件管理地址，避免混合内容被浏览器拦截
 const fsURL = import.meta.env.VITE_FILE_BASE_URL
 
 const mainSpan = ref(true)
@@ -301,6 +302,11 @@ const setTimer = () => {
 }
 
 onMounted(() => {
+  if (!course.value || !course.value.courseId) {
+    MessagePlugin.warning('请从课程详情进入学习')
+    loadingFlag.value = false
+    return
+  }
   let updateCont = 0
 
   if (videoRef.value) {
@@ -384,7 +390,7 @@ onBeforeUnmount(() => {
       .file-info {
         width: 20%;
         display: inline-block;
-        color: #999;
+        color: var(--td-text-color-secondary);
         font-size: 12px;
       }
     }
@@ -393,5 +399,24 @@ onBeforeUnmount(() => {
       box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.2);
     }
   }
+}
+
+.study-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--academy-ink);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.card {
+  border-radius: var(--academy-radius);
+}
+
+.card :deep(.t-card__header) {
+  font-weight: 600;
+  color: var(--academy-ink);
 }
 </style>

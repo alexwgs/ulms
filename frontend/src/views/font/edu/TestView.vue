@@ -1,6 +1,6 @@
 <template>
   <div class="main-container">
-    <t-card class="box-card">
+    <t-card class="management-card">
       <template #header>
         <div class="clearfix">
           <span>{{ exam.examInfo.examName || '暂无考试名称' }}</span>
@@ -189,7 +189,7 @@ import { MessagePlugin, DialogPlugin } from 'tdesign-vue-next'
 import { examTestApi } from '@/api/edu/examTest'
 import { questionDisputeApi } from '@/api/edu/questionDispute'
 
-const fsURL = import.meta.env.VITE_FILE_MANAGE_BASE
+const fsURL = import.meta.env.VITE_FILE_BASE_URL
 const route = useRoute()
 
 const examCode = ref('')
@@ -259,7 +259,14 @@ const disputeBtn = (item) => {
 onMounted(() => {
   examCode.value = route.params.examCode
 
-  exam.value = JSON.parse(sessionStorage.getItem('examInfo'))
+  // sessionStorage 无考试信息时 JSON.parse 返回 null，这里兜底为空对象避免白屏
+  let storedExam = null
+  try {
+    storedExam = JSON.parse(sessionStorage.getItem('examInfo'))
+  } catch (e) {
+    storedExam = null
+  }
+  exam.value = storedExam || { examInfo: {} }
   getTest()
 })
 </script>
@@ -307,9 +314,8 @@ onMounted(() => {
     }
   }
 }
-.wrong-answer {
--color: #fde2e2;
-  border: 1px #f56c6c dotted;
+.wrong-answer {;
+  border: 1px var(--td-error-color) dotted;
   padding: 8px;
   margin-top: 5px;
   font-size: 14px;

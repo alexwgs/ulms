@@ -4,7 +4,7 @@
       <t-row :gutter="15">
         <t-col :span="3">
           <t-select v-model="queryInfo.disputeResult" size="small" placeholder="复议状态" @change="listDisputeList">
-            <t-option v-for="item in dictStore.dictList.trm_exam_dispute_result" :key="item.code" :label="item.codeval" :value="parseInt(item.code)" />
+            <t-option v-for="item in (dictStore.dictList?.trm_exam_dispute_result || [])" :key="item.code" :label="item.codeval" :value="parseInt(item.code)" />
           </t-select>
         </t-col>
       </t-row>
@@ -24,15 +24,15 @@
         <TableColumn label="复议明细" width="120px">
           <template #default="scope">
             <t-popup placement="right" width="500" trigger="click">
-              <template #reference>
-                <t-button size="small">复议{{scope.row.dispNum}}人次</t-button>
+              <t-button size="small">复议{{scope.row.dispNum}}人次</t-button>
+              <template #content>
+                <CustomTable rowKey="id" :data="scope.row.quesDisputes" size="small">
+                  <TableColumn width="150" property="userAnswer" label="用户答案" />
+                  <TableColumn property="disputeMemo" label="复议理由" />
+                  <TableColumn width="80" property="ploNum" label="复议工号" />
+                  <TableColumn width="100" property="dataDate" label="复议时间" />
+                </CustomTable>
               </template>
-              <CustomTable rowKey="id" :data="scope.row.quesDisputes" size="small">
-                <TableColumn width="150" property="userAnswer" label="用户答案" />
-                <TableColumn property="disputeMemo" label="复议理由" />
-                <TableColumn width="80" property="ploNum" label="复议工号" />
-                <TableColumn width="100" property="dataDate" label="复议时间" />
-              </CustomTable>
             </t-popup>
           </template>
         </TableColumn>
@@ -43,8 +43,8 @@
         </TableColumn>
         <TableColumn property="disputeResult" label="操作">
           <template #default="scope">
-            <t-button theme="success" size="small" @click="disputeSubmit(scope.row, 1)" plain>复议通过</t-button>
-            <t-button theme="danger" size="small" @click="disputeSubmit(scope.row, 0)" plain>复议不过</t-button>
+            <t-button theme="success" size="small" @click="disputeSubmit(scope.row, 1)" variant="outline">复议通过</t-button>
+            <t-button theme="danger" size="small" @click="disputeSubmit(scope.row, 0)" variant="outline">复议不过</t-button>
           </template>
         </TableColumn>
       </CustomTable>
@@ -65,10 +65,9 @@ import { ref, reactive } from 'vue'
 import { MessagePlugin } from 'tdesign-vue-next'
 import { useDictStore } from '@/stores'
 import { questionDisputeApi } from '@/api/edu/questionDispute'
+import { usePagination } from '@/hooks/usePagination'
 
 const dialogTableVisible = ref(false)
-const currentPage = ref(1)
-const pageSizes = ref([20, 100, 500])
 const total = ref(0)
 const disputeList = ref([])
 const dictStore = useDictStore()
@@ -102,15 +101,9 @@ const listDisputeList = async () => {
   }
 }
 
-const handleSizeChange = (pageSize) => {
-  queryInfo.pageSize = pageSize
-  listDisputeList()
-}
 
-const handleCurrentChange = (page) => {
-  queryInfo.pageNum = page
-  listDisputeList()
-}
+
+
 
 const disputeSubmit = async (row, disputeResult) => {
   row.disputeResult = disputeResult
@@ -127,6 +120,7 @@ const disputeSubmit = async (row, disputeResult) => {
 defineExpose({
   show
 })
+const { currentPage, pageSizes, handleCurrentChange, handleSizeChange } = usePagination({ query: queryInfo, fetch: listDisputeList, pageSizes: [20, 100, 500] })
 </script>
 <style lang="less" scoped>
 

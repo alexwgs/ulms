@@ -4,12 +4,14 @@
     v-model:visible="dialogVisible"
     :close-on-overlay-click="false"
     width="50%"
-    @before-close="handleClose"
+    :before-close="handleClose"
   >
     <div class="block">
       <t-image
-        :src="fsURL + 'upload/getFile/college-cover/' + courseFrom.coverImg"
+        v-if="courseFrom.coverImg"
+        :src="displayURL + 'upload/getFile/college-cover/' + courseFrom.coverImg"
       ></t-image>
+      <t-empty v-else description="暂未配置封面"></t-empty>
     </div>
     <t-upload
       ref="fileUploadRef"
@@ -42,6 +44,8 @@ import { MessagePlugin } from 'tdesign-vue-next'
 import { courseApi } from '@/api/college/course.js'
 
 const fsURL = import.meta.env.VITE_FILE_BASE_URL
+// 展示类图片统一走 HTTPS 文件管理地址，避免混合内容被浏览器拦截
+const displayURL = import.meta.env.VITE_FILE_BASE_URL || fsURL
 const dialogVisible = ref(false)
 const fileUploadRef = ref(null)
 const fileList = ref([])
@@ -57,7 +61,7 @@ const show = (coverImg, courseId) => {
   dialogVisible.value = true
 }
 
-const handleSuccess = async (response) => {
+const handleSuccess = async ({ response }) => {
   if (response.code !== 200) {
     return MessagePlugin.error(response.msg)
   }
@@ -66,10 +70,6 @@ const handleSuccess = async (response) => {
     response.data.file.fileId + '.' + response.data.file.fileSuffix
   courseFrom.coverImg = fileName
   fileList.value = []
-
-  if (fileUploadRef.value) {
-    fileUploadRef.value.clearFiles()
-  }
 
   await handelConfirm()
 }

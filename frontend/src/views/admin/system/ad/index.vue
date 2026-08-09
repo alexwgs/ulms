@@ -1,49 +1,55 @@
 <template>
-  <t-alert
+  <PageTips
     title="操作说明"
     theme="info"
     :closable="false"
     message="请正确使用首页轮播图：1.可设置图片按年度循环播放，但选择日期不要跨年。2.图片数量建议不超过5张。3.图片尺寸建议为1920*500。"
   />
-  <t-card class="box-card">
-    <t-row :gutter="20">
-      <t-col :span="5">
-        <t-input
-          placeholder="请输入内容"
-          size="small"
-          v-model="queryInfo.query"
-          clearable
-          class="input-with-select"
-          @clear="getAdList"
-        >
-          <template #append>
-            <t-button
-              size="small" @click="getAdList"><template #icon><DynamicIcon name="search" /></template></t-button>
-          </template>
-        </t-input>
-      </t-col>
-      <t-col :span="2">
-        <t-select
-          v-model="queryInfo.status"
-          size="small"
-          placeholder="全部状态"
-          @change="getAdList"
-        >
-          <t-option label="全部状态" value="-1"></t-option>
-          <t-option
-            v-for="item in dictStore.dictList.sys_dict_status"
-            :key="item.id"
-            :label="item.codeval"
-            :value="item.code"
-          ></t-option>
-        </t-select>
-      </t-col>
-      <t-col :span="5">
-        <t-button theme="primary" size="small" @click="addAd"
-          >添加图片</t-button
-        >
-      </t-col>
-    </t-row>
+  <t-card class="management-card">
+    <t-form :data="queryInfo" label-width="80px" colon class="filter-form">
+      <t-row :gutter="[24, 24]">
+        <t-col :span="5">
+          <t-form-item label="关键字" name="query">
+            <t-input-adornment class="input-with-select">
+              <template #append>
+                <t-button variant="outline" theme="primary"
+                  size="small" @click="getAdList">搜索</t-button>
+              </template>
+              <t-input
+                placeholder="请输入内容"
+                size="small"
+                v-model="queryInfo.query"
+                clearable
+                @clear="getAdList"
+              ></t-input>
+            </t-input-adornment>
+          </t-form-item>
+        </t-col>
+        <t-col :span="3">
+          <t-form-item label="状态" name="status">
+            <t-select
+              v-model="queryInfo.status"
+              size="small"
+              placeholder="全部状态"
+              @change="getAdList"
+            >
+              <t-option label="全部状态" value="-1"></t-option>
+              <t-option
+                v-for="item in (dictStore.dictList?.sys_dict_status || [])"
+                :key="item.id"
+                :label="item.codeval"
+                :value="item.code"
+              ></t-option>
+            </t-select>
+          </t-form-item>
+        </t-col>
+        <t-col :span="3" class="operation-container">
+          <t-button variant="outline" theme="primary" size="small" @click="addAd"
+            >添加图片</t-button
+          >
+        </t-col>
+      </t-row>
+    </t-form>
     <CustomTable rowKey="id"
       :data="adList"
       size="small"
@@ -67,8 +73,8 @@
         <template #default="scope">
           <t-image
             style="width: 100px; height: 60px"
-            :src="fsURL + scope.row.url"
-            :preview-src-list="[fsURL + scope.row.url]"
+            :src="displayURL + scope.row.url"
+            :preview-src-list="[displayURL + scope.row.url]"
             fit="cover"
           ></t-image>
         </template>
@@ -96,10 +102,10 @@
           <t-tag
             size="small"
             :theme="scope.row.status === 0 ? 'danger' : 'success'"
-            effect="dark"
+            variant="light"
           >
             {{
-              dictStore.dictList.sys_dict_status.find(
+              (dictStore.dictList?.sys_dict_status || []).find(
                 (item) => item.code === scope.row.status.toString()
               )?.codeval
             }}</t-tag
@@ -108,14 +114,14 @@
       </TableColumn>
       <TableColumn label="操作" fixed="right" width="120">
         <template #default="scope">
-          <t-button
-            size="small" theme="warning"
+          <t-button variant="outline"
+            size="small" theme="primary"
             @click="handleEdit(scope.row)"
-            shape="circle"><template #icon><DynamicIcon name="edit" /></template></t-button>
-          <t-button
+           >编辑</t-button>
+          <t-button variant="outline"
             size="small" theme="danger"
             @click="handleDelete(scope.row)"
-            shape="circle"><template #icon><DynamicIcon name="delete" /></template></t-button>
+           >删除</t-button>
         </template>
       </TableColumn>
     </CustomTable>
@@ -164,7 +170,7 @@
           :multiple="false"
           list-type="picture"
         >
-          <t-button size="small" theme="primary">点击上传</t-button>
+          <t-button variant="outline" size="small" theme="primary">点击上传</t-button>
           <template #tip>
             <div>只能上传jpg/png文件，且不超过50kb</div>
           </template>
@@ -176,10 +182,8 @@
       <t-form-item label="是否循环" name="loopFlag">
         <t-switch
           v-model="adForm.loopFlag"
-          active-text="按年循环"
-          inactive-text="不循环"
-          active-value="Y"
-          inactive-value="N"
+          :label="['按年循环', '不循环']"
+          :custom-value="['Y', 'N']"
         ></t-switch>
       </t-form-item>
       <t-form-item label="序号">
@@ -203,14 +207,14 @@
       </t-form-item>
     </t-form>
     <template #footer>
-      <span class="dialog-footer">
-        <t-button size="small" @click="dialogFormVisible = false"
+      <t-space>
+        <t-button variant="outline" size="small" @click="dialogFormVisible = false"
           >取 消</t-button
         >
-        <t-button size="small" theme="primary" @click="dialogFormSubmit"
+        <t-button variant="outline" size="small" theme="primary" @click="dialogFormSubmit"
           >确 定</t-button
         >
-      </span>
+      </t-space>
     </template>
   </t-dialog>
 </template>
@@ -219,8 +223,11 @@
 import { ref, reactive, onMounted, computed } from 'vue'
 import { adApi } from '@/api/system/ad'
 import { useDictStore } from '@/stores'
+import { usePagination } from '@/hooks/usePagination'
 
 const fsURL = import.meta.env.VITE_FILE_BASE_URL
+// 展示类文件统一走 HTTPS 文件管理地址，避免混合内容被浏览器拦截
+const displayURL = import.meta.env.VITE_FILE_BASE_URL || fsURL
 
 // 数据
 const dictStore = useDictStore()
@@ -234,8 +241,6 @@ const queryInfo = reactive({
   pageSize: 20,
   pageNum: 1
 })
-const pageSizes = [20, 100, 500]
-const currentPage = ref(1)
 const total = ref(0)
 const cycleDate = ref([])
 const adForm = ref({
@@ -246,7 +251,8 @@ const adForm = ref({
   endDate: '',
   loopFlag: 'N',
   sort: 0,
-  status: ''
+  status: '',
+  cycleDate: []
 })
 const dialogFormVisible = ref(false)
 const dialogTitle = ref('')
@@ -291,7 +297,7 @@ const handleEdit = (row) => {
   adForm.value = { ...row }
   adForm.value.cycleDate = [row.begDate, row.endDate]
   // cycleDate.value = [row.begDate, row.endDate]
-  urlList.value = row.url ? [{ name: 'image.png', url: fsURL + row.url }] : []
+  urlList.value = row.url ? [{ name: 'image.png', url: displayURL + row.url }] : []
 }
 
 const handleDelete = async (row) => {
@@ -329,15 +335,9 @@ const addAd = () => {
   urlList.value = []
 }
 
-const handleSizeChange = (pageSize) => {
-  queryInfo.pageSize = pageSize
-  getAdList()
-}
 
-const handleCurrentChange = (page) => {
-  queryInfo.pageNum = page
-  getAdList()
-}
+
+
 
 const handleSuccess = (response) => {
   if (response && response.file && response.file.path) {
@@ -394,15 +394,16 @@ const tableSort = ({ sortBy, descending }) => {
 
 const handleDateChange = () => {
 }
+const { currentPage, pageSizes, handleCurrentChange, handleSizeChange } = usePagination({ query: queryInfo, fetch: getAdList, pageSizes: [20, 100, 500] })
 </script>
 
 <style lang="less" scoped>
-.box-card {
+.management-card {
   height: calc(100vh - 240px);
 
   .t-image {
     border-radius: 4px;
-    border: 1px solid #eee;
+    border: 1px solid var(--td-component-stroke);
   }
 }
 

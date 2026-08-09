@@ -1,12 +1,12 @@
 <template>
-  <t-card class="box-card" style="height: calc(100vh - 180px); overflow: auto">
+  <t-card class="management-card" style="height: calc(100vh - 180px); overflow: auto">
     <div>
       <t-descriptions direction="vertical" size="small" :column="2" border>
         <t-descriptions-item label="工具名称" :span="1">{{
           record.name
         }}</t-descriptions-item>
         <t-descriptions-item label="联系人">
-          <t-tag size="small">{{ record.contacts }}</t-tag>
+          <t-tag size="small" variant="light">{{ record.contacts }}</t-tag>
         </t-descriptions-item>
         <t-descriptions-item label="运行时长">{{
           record.runTimes
@@ -191,7 +191,7 @@ const ruleFormRef = ref(null)
 const runUser = ref({})
 
 // 文件服务URL
-const fsURL = import.meta.env.VITE_FILE_MANAGE_BASE
+const fsURL = import.meta.env.VITE_FILE_BASE_URL
 
 // 工具报告数据
 const toolReport = reactive({

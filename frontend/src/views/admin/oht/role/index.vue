@@ -1,24 +1,24 @@
 <template>
-  <t-card class="box-card">
-    <t-row>
-      <t-col :span="12" class="text-right">
-        <t-button theme="primary" size="small" @click="addRole">添加角色</t-button>
-      </t-col>
-    </t-row>
+  <t-card class="management-card">
+    <div class="table-toolbar">
+      <div class="toolbar-right">
+        <t-button variant="outline" theme="primary" size="small" @click="addRole">添加角色</t-button>
+      </div>
+    </div>
     <CustomTable rowKey="id" :data="ohtRoleTableList" size="small" @sort-change="tableSort" height="calc(100vh - 325px)" stripe
       :loading="loading">
       <TableColumn colKey="roleCode" label="CODE" sortable="custom" width="180"></TableColumn>
       <TableColumn colKey="roleName" label="角色名称" sortable="custom"></TableColumn>
       <TableColumn colKey="roleType" label="角色类型" sortable="custom">
         <template #default="{ row }">
-          <span v-for="item in dictStore.dictList.oht_role_type" :key="item.code" v-show="row.roleType == item.code">{{
+          <span v-for="item in (dictStore.dictList?.oht_role_type || [])" :key="item.code" v-show="row.roleType == item.code">{{
             item.codeval }}</span>
         </template>
       </TableColumn>
       <TableColumn colKey="roleStat" label="角色状态" sortable="custom">
         <template #default="{ row }">
-          <t-tag v-for="item in dictStore.dictList.oht_role_status" :key="item.code" :label="item.codeval" size="small"
-            :theme="item.code == 0 ? 'danger' : 'success'" v-show="row.roleStat == item.code" effect="dark">
+          <t-tag v-for="item in (dictStore.dictList?.oht_role_status || [])" :key="item.code" :label="item.codeval" size="small"
+            :theme="item.code == 0 ? 'danger' : 'success'" v-show="row.roleStat == item.code" variant="light">
             {{ item.codeval }}
           </t-tag>
         </template>
@@ -26,9 +26,9 @@
       <TableColumn colKey="roleRelat" label="转接关系"></TableColumn>
       <TableColumn label="操作" fixed="right" width="180px">
         <template #default="{ row }">
-          <t-button theme="warning" size="small" @click="ohtRoleEdit(row)" shape="circle"><template #icon><DynamicIcon name="edit" /></template></t-button>
-          <t-button theme="danger" size="small" @click="removeRoleByRoleCode(row)" shape="circle"><template #icon><DynamicIcon name="delete" /></template></t-button>
-          <t-button size="small" @click="dispatchRule">分配规则</t-button>
+          <t-button variant="outline" theme="default" size="small" @click="ohtRoleEdit(row)">编辑</t-button>
+          <t-button variant="outline" theme="danger" size="small" @click="removeRoleByRoleCode(row)">删除</t-button>
+          <t-button variant="outline" size="small" @click="dispatchRule">分配规则</t-button>
         </template>
       </TableColumn>
     </CustomTable>
@@ -168,7 +168,7 @@ onMounted(() => {
 </script>
 
 <style lang="less" scoped>
-.box-card {
+.management-card {
   height: calc(100vh - 190px);
   overflow: auto;
 }

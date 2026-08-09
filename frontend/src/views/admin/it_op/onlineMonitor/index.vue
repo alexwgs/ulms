@@ -2,39 +2,52 @@
   <t-card class="monitor-card">
     <!-- ==================== 工具栏 ==================== -->
     <div class="toolbar">
-      <div class="toolbar-left">
-        <t-input
-          v-model="searchKey"
-          placeholder="搜索姓名 / 工号 / 部门"
-          clearable
-          style="width: 260px"
-          @input="handleSearch"
-        >
-          <template #prefix><t-icon><SearchIcon /></t-icon></template>
-        </t-input>
-        <t-select v-model="roleFilter" placeholder="角色筛选" style="width: 130px" @change="handleSearch">
-          <t-option label="全部角色" value="" />
-          <t-option label="接单组" value="1" />
-          <t-option label="求助组" value="0" />
-        </t-select>
-        <t-select v-model="statusFilter" placeholder="状态筛选" style="width: 130px" @change="handleSearch">
-          <t-option label="全部状态" value="" />
-          <t-option label="有案件处理中" value="busy" />
-          <t-option label="在线空闲" value="idle" />
-        </t-select>
-      </div>
+      <t-form :data="{ searchKey, roleFilter, statusFilter }" label-width="80px" colon class="filter-form toolbar-filter-form">
+        <t-row :gutter="[24, 24]">
+          <t-col :span="6">
+            <t-form-item label="关键字" name="searchKey">
+              <t-input
+                v-model="searchKey"
+                placeholder="搜索姓名 / 工号 / 部门"
+                clearable
+                @input="handleSearch"
+              >
+                <template #prefix><t-icon><SearchIcon /></t-icon></template>
+              </t-input>
+            </t-form-item>
+          </t-col>
+          <t-col :span="3">
+            <t-form-item label="角色" name="roleFilter">
+              <t-select v-model="roleFilter" placeholder="全部角色" @change="handleSearch">
+                <t-option label="全部角色" value="" />
+                <t-option label="接单组" value="1" />
+                <t-option label="求助组" value="0" />
+              </t-select>
+            </t-form-item>
+          </t-col>
+          <t-col :span="3">
+            <t-form-item label="状态" name="statusFilter">
+              <t-select v-model="statusFilter" placeholder="全部状态" @change="handleSearch">
+                <t-option label="全部状态" value="" />
+                <t-option label="有案件处理中" value="busy" />
+                <t-option label="在线空闲" value="idle" />
+              </t-select>
+            </t-form-item>
+          </t-col>
+        </t-row>
+      </t-form>
       <div class="toolbar-right">
         <span class="selected-info" v-if="selectedUsers.length">
           已选 <strong>{{ selectedUsers.length }}</strong> 人
         </span>
-        <t-button @click="toggleSelectAll">
+        <t-button variant="outline" @click="toggleSelectAll">
           {{ isAllSelected ? '取消全选' : '全选当前页' }}
         </t-button>
-        <t-button theme="primary" @click="dialogVisible = true" :disabled="!filteredUsers.length">
+        <t-button variant="outline" theme="primary" @click="dialogVisible = true" :disabled="!filteredUsers.length">
           <NotificationIcon />
           推送消息
         </t-button>
-        <t-button shape="circle" @click="fetchOnlineUsers" :loading="loading"><template #icon><DynamicIcon name="refresh" /></template></t-button>
+        <t-button variant="outline" theme="default" @click="fetchOnlineUsers" :loading="loading">刷新</t-button>
       </div>
     </div>
 
@@ -45,7 +58,7 @@
       :loading="loading"
       stripe
       @select-change="handleSelectionChange"
-      :default-sort="{ prop: 'statusTime', order: 'descending' }"
+      :default-sort="{ sortBy: 'statusTime', descending: true }"
       height="calc(100vh - 290px)">
       <TableColumn type="multiple" width="45" :selectable="() => true" />
       <TableColumn label="用户" min-width="180" sortable colKey="user.ploName">
@@ -66,15 +79,15 @@
       </TableColumn>
       <TableColumn label="角色" width="100" align="center">
         <template #default="{ row }">
-          <t-tag v-if="row.ohtRole?.roleType === 1" theme="success" size="small" effect="dark" round>接单组</t-tag>
-          <t-tag v-else-if="row.ohtRole?.roleType === 0" theme="warning" size="small" effect="dark" round>求助组</t-tag>
-          <t-tag v-else theme="default" size="small" effect="plain" round>未知</t-tag>
+          <t-tag v-if="row.ohtRole?.roleType === 1" theme="success" size="small" variant="light" round>接单组</t-tag>
+          <t-tag v-else-if="row.ohtRole?.roleType === 0" theme="warning" size="small" variant="light" round>求助组</t-tag>
+          <t-tag v-else theme="default" size="small" variant="light" round>未知</t-tag>
         </template>
       </TableColumn>
       <TableColumn label="状态" width="130" align="center">
         <template #default="{ row }">
           <template v-if="row.unfinishCase">
-            <t-tag :theme="row.unfinishCase.caseStatus === 0 ? 'warning' : 'danger'" size="small" effect="dark" round>
+            <t-tag :theme="row.unfinishCase.caseStatus === 0 ? 'warning' : 'danger'" size="small" variant="light" round>
               {{ row.unfinishCase.caseStatus === 0 ? '求助中' : '处理中' }}
             </t-tag>
           </template>
@@ -152,8 +165,8 @@
       </t-form-item>
     </t-form>
     <template #footer>
-      <t-button @click="dialogVisible = false">取消</t-button>
-      <t-button theme="primary" @click="submitPush" :loading="pushing">
+      <t-button variant="outline" @click="dialogVisible = false">取消</t-button>
+      <t-button variant="outline" theme="primary" @click="submitPush" :loading="pushing">
         <NotificationIcon />
         发送推送
       </t-button>
@@ -181,7 +194,7 @@ const lastUpdateTime = ref('')
 const tableRef = ref(null)
 const pushFormRef = ref(null)
 
-const fsURL = import.meta.env.VITE_FILE_MANAGE_BASE
+const fsURL = import.meta.env.VITE_FILE_BASE_URL
 const defaultAvatar = new URL('@/assets/img/default_avatar.png', import.meta.url).href
 
 const pushForm = ref({
@@ -385,7 +398,7 @@ onUnmounted(() => {
   justify-content: space-between;
   margin-top: 12px;
   padding-top: 10px;
-  border-top: 1px solid var(--td-border-color-lighter);
+  border-top: 1px solid var(--td-component-stroke);
   font-size: 13px;
   color: var(--td-text-color-secondary);
 }

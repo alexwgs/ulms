@@ -6,7 +6,7 @@
       </t-form-item>
       <t-form-item label="角色类型" :label-width="formLabelWidth" name="roleType">
         <t-select size="small" v-model="userRoleForm.roleType" placeholder="角色类型">
-          <t-option v-for="item in dictStore.dictList.oht_role_type" :key="item.code" :label="item.codeval" :value="parseInt(item.code)"></t-option>
+          <t-option v-for="item in (dictStore.dictList?.oht_role_type || [])" :key="item.code" :label="item.codeval" :value="parseInt(item.code)"></t-option>
         </t-select>
       </t-form-item>
       <t-form-item label="角色编号" :label-width="formLabelWidth" name="roleCode">
@@ -16,7 +16,7 @@
       </t-form-item>
       <t-form-item label="角色状态" :label-width="formLabelWidth" name="roleStat">
         <t-select size="small" v-model="userRoleForm.roleStat" placeholder="请选择">
-          <t-option v-for="item in dictStore.dictList.oht_role_status" :key="item.code" :label="item.codeval" :value="parseInt(item.code)"></t-option>
+          <t-option v-for="item in (dictStore.dictList?.oht_role_status || [])" :key="item.code" :label="item.codeval" :value="parseInt(item.code)"></t-option>
         </t-select>
       </t-form-item>
     </t-form>

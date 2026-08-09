@@ -8,7 +8,7 @@
     >
       <t-row :gutter="10">
         <t-col :span="4">
-          <t-card class="box-card">
+          <t-card class="management-card">
             <t-input
               size="small"
               placeholder="输入关键字进行过滤"
@@ -22,11 +22,11 @@
               @click="nodeclick"
               :filter="filterNode"
             >
-              <template #default="{ node }">
+              <template #label="{ node }">
                 <span class="custom-tree-node">
                   <span
                     >{{ node.data.libName }}
-                    <t-tag v-if="node.data.libLevel === 2" size="small">{{
+                    <t-tag v-if="node.data.libLevel === 2" size="small" variant="light">{{
                       node.data.quesNum
                     }}</t-tag></span
                   >
@@ -38,7 +38,7 @@
         <t-col :span="8">
           <t-row style="margin-bottom: 5px">
             <t-col :span="8"
-              ><t-tag>选择：{{ libForm.libName }}</t-tag></t-col
+              ><t-tag variant="light">选择：{{ libForm.libName }}</t-tag></t-col
             >
             <t-col :span="3"
               ><t-input-number
@@ -47,13 +47,13 @@
                 size="small"
                 :min="1"
                 :max="100"
-                label="题目数"
+                placeholder="题目数"
             /></t-col>
             <t-col :span="1"
-              ><t-button
+              ><t-button variant="outline"
                 theme="primary"
                 size="small" @click="addLib()"
-            ><template #icon><DynamicIcon name="plus" /></template></t-button></t-col>
+            >新增</t-button></t-col>
           </t-row>
           <CustomTable rowKey="id"
             ref="tableRef"
@@ -71,10 +71,10 @@
             </TableColumn>
             <TableColumn label="操作" width="80">
               <template #default="scope">
-                <t-button
+                <t-button variant="outline"
                   theme="danger"
                   size="small" @click="deleteLib(scope.row)"
-                ><template #icon><DynamicIcon name="delete" /></template></t-button>
+                >删除</t-button>
               </template>
             </TableColumn>
           </CustomTable>
@@ -147,7 +147,7 @@ const getTableData = async () => {
     const datas = res.data
     for (const item of datas) {
       await nextTick(() => {
-        const record = treeRef.value.getItem(item.libCode)
+        const record = treeRef.value?.getItem(item.libCode)
         if (!record) {
           item.quesLimit = 0
           item.libName = '题库取路径错误或已被移除,请重新选择试题抽取路径！'
@@ -155,13 +155,14 @@ const getTableData = async () => {
             '获取配置的试题抽取路径错误或已被移除！请重新选择试题抽取路径。'
           )
         } else {
-          item.libName =
-            record.parent.parent.data.libName +
-            '->' +
-            record.parent.data.libName +
-            '->' +
-            record.data.libName
-          item.quesLimit = record.data.quesNum
+          const pathName = getLibPathName(record)
+          if (!pathName) {
+            item.quesLimit = 0
+            item.libName = '题库取路径错误或已被移除,请重新选择试题抽取路径！'
+          } else {
+            item.libName = pathName
+            item.quesLimit = record.data.quesNum
+          }
         }
       })
     }
@@ -172,21 +173,24 @@ const getTableData = async () => {
   }
 }
 
+// TDesign 节点 model 没有 parent 属性，只有 getParent() 方法（Element Plus 迁移兼容）
+const getLibPathName = (record) => {
+  const level1 = record && record.getParent ? record.getParent() : null
+  const level0 = level1 && level1.getParent ? level1.getParent() : null
+  if (!level0 || !level1) return ''
+  return level0.data.libName + '->' + level1.data.libName + '->' + record.data.libName
+}
+
 const filterNode = (node) => {
   if (!filterText.value) return true
   return node.data.libName.indexOf(filterText.value) !== -1
 }
 
 const nodeclick = (context) => {
-      const { node: treeNode } = context;
-      const obj = treeNode.data;
+  const { node: treeNode } = context
+  const obj = treeNode.data
   if (obj.libLevel === 2) {
-    libForm.libName =
-      treeNode.parent.parent.data.libName +
-      '->' +
-      treeNode.parent.data.libName +
-      '->' +
-      obj.libName
+    libForm.libName = getLibPathName(treeNode) || obj.libName
     libForm.libCode = obj.libCode
     libForm.quesLimit = obj.quesNum
     libForm.examCode = examCode.value
@@ -246,7 +250,7 @@ defineExpose({
 })
 </script>
 <style lang="less" scoped>
-.box-card {
+.management-card {
   height: 450px;
   overflow: auto;
 }

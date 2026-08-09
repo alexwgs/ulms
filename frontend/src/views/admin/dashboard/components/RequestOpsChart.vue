@@ -195,12 +195,4 @@ onMounted(() => { fetchData() })
 </script>
 
 <style lang="less" scoped>
-.chart-card {
-  height: 100%;
-}
-
-.card-title {
-  font-size: 16px;
-  font-weight: 600;
-}
 </style>

@@ -71,7 +71,7 @@ onMounted(() => {
   padding: 20px;
 
   &-row {
-    margin-bottom: 16px;
+    margin-bottom: var(--td-comp-margin-xxl);
 
     &:last-child {
       margin-bottom: 0;

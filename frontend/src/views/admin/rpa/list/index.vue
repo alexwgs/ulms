@@ -1,77 +1,79 @@
 <template>
   <t-card class="tool-card">
     <!-- 筛选条件区域 -->
-    <t-row :gutter="15" class="filter-row">
-      <t-col :span="4">
-        <t-input
-          placeholder="请输入工具名称"
-          size="small"
-          v-model="queryInfo.query"
-          clearable
-          @clear="getList"
-        >
-          <template #prepend>
-            <t-select
-              v-model="queryInfo.queryType"
-              size="small"
-              style="width: 100px"
-              placeholder="查询类型"
-              clearable
-            >
-              <t-option label="工具名称" value="name" />
-              <t-option label="工具ID" value="id" />
-            </t-select>
-          </template>
-          <template #append>
-            <t-button size="small" @click="getList"><template #icon><DynamicIcon name="search" /></template></t-button>
-          </template>
-        </t-input>
-      </t-col>
-      <t-col :span="3">
-        <t-select
-          v-model="queryInfo.category"
-          size="small"
-          placeholder="请选择工具类别,默认全部"
-          @change="getList"
-          clearable
-        >
-          <t-option label="全部类别" value="" />
-          <t-option
-            v-for="item in dictStore.dictList.rpa_tool_list_category"
-            :key="item.code"
-            :label="item.codeval"
-            :value="item.code"
-          />
-        </t-select>
-      </t-col>
-      <t-col :span="3">
-        <t-select
-          v-model="queryInfo.status"
-          size="small"
-          placeholder="请选择工具状态,默认全部"
-          @change="getList"
-          clearable
-        >
-          <t-option label="全部" value="" />
-          <t-option label="有效" :value="1" />
-          <t-option label="无效" :value="0" />
-        </t-select>
-      </t-col>
-      <t-col :span="3" class="text-right">
-        <t-button theme="primary" size="small" @click="openToolDialog('add')">
-          新建工具
-        </t-button>
-      </t-col>
-    </t-row>
-
     <!-- 操作说明 -->
-    <t-alert
+    <PageTips
       title="操作说明"
       theme="info"
       :closable="false"
       message="请正确使用RPA工具配置：1.新建服务时务必完整填写相关信息。2.无需参数的可不配置参数模版，如有请务必准确配置。3.权限，如不配置则全员可查看"
       class="alert-message"
     />
+    <div class="filter-bar">
+      <t-form
+        :data="queryInfo"
+        label-width="80px"
+        colon
+        layout="inline"
+        class="filter-form"
+      >
+        <t-form-item label="关键字" name="query">
+          <t-input-adornment style="width: 320px">
+            <template #prepend>
+              <t-select
+                v-model="queryInfo.queryType"
+                size="small"
+                placeholder="查询类型"
+                style="width: 90px"
+                clearable
+              >
+                <t-option label="工具名称" value="name" />
+                <t-option label="工具ID" value="id" />
+              </t-select>
+            </template>
+            <template #append>
+              <t-button variant="outline" theme="primary" size="small" @click="getList">搜索</t-button>
+            </template>
+            <t-input placeholder="请输入工具名称" size="small" v-model="queryInfo.query" clearable @clear="getList"></t-input>
+          </t-input-adornment>
+        </t-form-item>
+        <t-form-item label="类别" name="category">
+          <t-select
+            v-model="queryInfo.category"
+            size="small"
+            placeholder="全部"
+            style="width: 150px"
+            @change="getList"
+            clearable
+          >
+            <t-option label="全部类别" value="" />
+            <t-option
+              v-for="item in (dictStore.dictList?.rpa_tool_list_category || [])"
+              :key="item.code"
+              :label="item.codeval"
+              :value="item.code"
+            />
+          </t-select>
+        </t-form-item>
+        <t-form-item label="状态" name="status">
+          <t-select
+            v-model="queryInfo.status"
+            size="small"
+            placeholder="全部"
+            style="width: 140px"
+            @change="getList"
+            clearable
+          >
+            <t-option label="全部" value="" />
+            <t-option label="有效" :value="1" />
+            <t-option label="无效" :value="0" />
+          </t-select>
+        </t-form-item>
+      </t-form>
+      <div class="operation-container">
+        <t-button variant="outline" theme="primary" size="small" @click="openToolDialog('add')">新建工具</t-button>
+      </div>
+    </div>
 
     <!-- 数据表格 -->
     <CustomTable rowKey="id"
@@ -163,7 +165,7 @@
             size="small"
             @click="changeStatus(row)"
             class="status-tag"
-          >
+           variant="light">
             {{ row.status ? '有效' : '无效' }}
           </t-tag>
         </template>
@@ -182,14 +184,14 @@
       />
       <TableColumn label="操作" width="120px" fixed="right">
         <template #default="{ row }">
-          <t-button
-            theme="warning"
+          <t-button variant="outline"
+            theme="default"
             size="small" @click="openToolDialog('update', row)"
-            shape="circle"><template #icon><DynamicIcon name="edit" /></template></t-button>
-          <t-button
+           >编辑</t-button>
+          <t-button variant="outline"
             theme="danger"
             size="small" @click="removeTool(row)"
-            shape="circle"><template #icon><DynamicIcon name="delete" /></template></t-button>
+           >删除</t-button>
         </template>
       </TableColumn>
     </CustomTable>
@@ -301,45 +303,44 @@ const openRoleDialog = (row) => {
 }
 
 // 更改工具状态
-const changeStatus = async (row) => {
-  try {
-    await DialogPlugin.confirm(
-      `此操作将${row.status ? '禁用' : '启用'}该工具, 是否继续?`,
-      '提示',
-      {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
+const changeStatus = (row) => {
+  const nextStatus = row.status === 1 ? 0 : 1
+  DialogPlugin.confirm({
+    header: '提示',
+    body: `此操作将${row.status ? '禁用' : '启用'}该工具, 是否继续?`,
+    theme: 'warning',
+    confirmBtn: '确定',
+    cancelBtn: '取消',
+    onConfirm: async () => {
+      try {
+        await updateRpaToolStatus({ id: row.id, status: nextStatus })
+        MessagePlugin.success('状态更新成功')
+        getList()
+      } catch (error) {
+        MessagePlugin.error(error.message || '状态更新失败')
       }
-    )
-
-    await updateRpaToolStatus({ id: row.id, status: row.status === 1 ? 0 : 1 })
-    MessagePlugin.success('状态更新成功')
-    getList()
-  } catch (error) {
-    if (error !== 'cancel') {
-      MessagePlugin.error(error.message || '状态更新失败')
     }
-  }
+  })
 }
 
 // 删除工具
-const removeTool = async (row) => {
-  try {
-    await DialogPlugin.alert('此操作将永久删除该工具, 是否继续?', '提示', {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning'
-    })
-
-    await deleteRpaTool(row.id)
-    MessagePlugin.success('删除成功')
-    getList()
-  } catch (error) {
-    if (error !== 'cancel') {
-      MessagePlugin.error(error.message || '删除失败')
+const removeTool = (row) => {
+  DialogPlugin.confirm({
+    header: '提示',
+    body: '此操作将永久删除该工具, 是否继续?',
+    theme: 'warning',
+    confirmBtn: '确定',
+    cancelBtn: '取消',
+    onConfirm: async () => {
+      try {
+        await deleteRpaTool(row.id)
+        MessagePlugin.success('删除成功')
+        getList()
+      } catch (error) {
+        MessagePlugin.error(error.message || '删除失败')
+      }
     }
-  }
+  })
 }
 
 // 初始化
@@ -360,12 +361,36 @@ onMounted(() => {
 }
 
 .filter-row {
-  margin-bottom: 16px;
+  margin-bottom: var(--td-comp-margin-xxl);
 
   .text-right {
     display: flex;
     justify-content: flex-end;
   }
+}
+
+.filter-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.filter-bar .filter-form {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+  margin-bottom: 0;
+}
+
+.filter-bar .operation-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
 }
 
 .alert-message {
@@ -381,7 +406,7 @@ onMounted(() => {
 }
 
 .pagination {
-  margin-top: 16px;
+  margin-top: var(--td-comp-margin-xxl);
   justify-content: flex-end;
 }
 </style>

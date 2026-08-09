@@ -45,7 +45,8 @@ router.beforeEach(async (to, from, next) => {
           setDefaultFirstMenu(menuStore, appStore)
 
           // 重要：确保当前路由存在，如果不存在则重定向到默认页面
-          if (to.matched.length === 0) {
+          const resolvedTarget = router.resolve(to.fullPath || to.path)
+          if (resolvedTarget.matched.length === 0) {
             const defaultPath =
               menuStore.firstLevelMenus[0]?.path || '/admin/dashboard'
             next({ path: defaultPath, replace: true })

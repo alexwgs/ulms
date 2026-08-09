@@ -5,6 +5,7 @@ import useMenuStore from './modules/menu'
 import useDictStore from './modules/dict'
 import useOhtStore from './modules/oht'
 import useWsStore from './modules/ws'
+import useUiStore from './modules/ui'
 
 const pinia = createPinia()
 
@@ -14,6 +15,7 @@ export {
   useMenuStore,
   useDictStore,
   useOhtStore,
-  useWsStore
+  useWsStore,
+  useUiStore
 }
 export default pinia

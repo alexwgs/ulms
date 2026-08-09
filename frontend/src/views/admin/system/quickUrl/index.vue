@@ -1,39 +1,48 @@
 <template>
-  <t-alert title="操作说明" theme="info" :closable="false"
+  <PageTips title="操作说明" theme="info" :closable="false"
     message="请正确使用快链配置：1.快链名称为前端快捷菜单显示名称。2.排序越大，显示越靠前。3.默认区域为集中快链组件，主页区域为单独快链组件。" />
-  <t-card class="box-card">
-    <t-row :gutter="20">
-      <t-col :span="5">
-        <t-input placeholder="请输入内容" size="small" v-model="queryInfo.query" clearable class="input-with-select"
-          @clear="getQuickUrlList">
-          <template #append>
-            <t-button size="small" @click="getQuickUrlList"><template #icon><DynamicIcon name="search" /></template></t-button>
-          </template>
-        </t-input>
-      </t-col>
-      <t-col :span="2">
-        <t-select v-model="queryInfo.status" size="small" placeholder="全部状态" @change="getQuickUrlList">
-          <t-option label="全部状态" value="-1"></t-option>
-          <t-option v-for="item in dictStore.dictList.sys_dict_status" :key="item.id" :label="item.codeval"
-            :value="item.code"></t-option>
-        </t-select>
-      </t-col>
-      <t-col :span="2">
-        <t-select v-model="queryInfo.area" size="small" placeholder="区域" @change="getQuickUrlList">
-          <t-option label="全部" value=""></t-option>
-          <t-option label="默认区域" value="default"></t-option>
-          <t-option label="主页区域" value="main"></t-option>
-        </t-select>
-      </t-col>
-      <t-col :span="3">
-        <t-button theme="primary" size="small" @click="addStation">添加快链</t-button>
-      </t-col>
-    </t-row>
+  <t-card class="management-card">
+    <t-form :data="queryInfo" label-width="80px" colon class="filter-form">
+      <t-row :gutter="[24, 24]">
+        <t-col :span="5">
+          <t-form-item label="关键字" name="query">
+            <t-input-adornment class="input-with-select">
+              <template #append>
+                <t-button variant="outline" theme="primary" size="small" @click="getQuickUrlList">搜索</t-button>
+              </template>
+              <t-input placeholder="请输入内容" size="small" v-model="queryInfo.query" clearable
+                @clear="getQuickUrlList"></t-input>
+            </t-input-adornment>
+          </t-form-item>
+        </t-col>
+        <t-col :span="3">
+          <t-form-item label="状态" name="status">
+            <t-select v-model="queryInfo.status" size="small" placeholder="全部状态" @change="getQuickUrlList">
+              <t-option label="全部状态" value="-1"></t-option>
+              <t-option v-for="item in (dictStore.dictList?.sys_dict_status || [])" :key="item.id" :label="item.codeval"
+                :value="item.code"></t-option>
+            </t-select>
+          </t-form-item>
+        </t-col>
+        <t-col :span="3">
+          <t-form-item label="区域" name="area">
+            <t-select v-model="queryInfo.area" size="small" placeholder="区域" @change="getQuickUrlList">
+              <t-option label="全部" value=""></t-option>
+              <t-option label="默认区域" value="default"></t-option>
+              <t-option label="主页区域" value="main"></t-option>
+            </t-select>
+          </t-form-item>
+        </t-col>
+        <t-col :span="3" class="operation-container">
+          <t-button variant="outline" theme="primary" size="small" @click="addStation">添加快链</t-button>
+        </t-col>
+      </t-row>
+    </t-form>
     <CustomTable rowKey="id" :data="list" size="small" @sort-change="tableSort" height="calc(100vh - 400px)" stripe>
       <TableColumn label="ID" colKey="id" sortable="custom" width="80"></TableColumn>
       <TableColumn label="区域" colKey="area" sortable="custom">
         <template #default="scope">
-          <t-tag size="small" effect="plain">{{
+          <t-tag size="small" variant="light">{{
             scope.row.area === 'main'
               ? '主页'
               : scope.row.area === 'default'
@@ -51,9 +60,9 @@
       <TableColumn label="排序" colKey="sort" sortable="custom" width="80"></TableColumn>
       <TableColumn label="状态" colKey="status" sortable="custom" width="120">
         <template #default="scope">
-          <t-tag size="small" :theme="scope.row.status === 0 ? 'danger' : 'success'" effect="dark">
+          <t-tag size="small" :theme="scope.row.status === 0 ? 'danger' : 'success'" variant="light">
             {{
-              dictStore.dictList.sys_dict_status.find(
+              (dictStore.dictList?.sys_dict_status || []).find(
                 (item) => item.code === scope.row.status.toString()
               )?.codeval
             }}</t-tag>
@@ -61,10 +70,10 @@
       </TableColumn>
       <TableColumn label="操作" fixed="right" width="120">
         <template #default="scope">
-          <t-button size="small" theme="warning" @click="handleEdit(scope.$index, scope.row)"
-            shape="circle"><template #icon><DynamicIcon name="edit" /></template></t-button>
-          <t-button size="small" theme="danger" @click="handleDelete(scope.$index, scope.row)"
-            shape="circle"><template #icon><DynamicIcon name="delete" /></template></t-button>
+          <t-button variant="outline" size="small" theme="default" @click="handleEdit(scope.$index, scope.row)"
+           >编辑</t-button>
+          <t-button variant="outline" size="small" theme="danger" @click="handleDelete(scope.$index, scope.row)"
+           >删除</t-button>
         </template>
       </TableColumn>
     </CustomTable>
@@ -86,7 +95,7 @@
         <t-input size="small" v-model="quickUrlForm.iconUrl" autocomplete="off"></t-input>
         <t-upload class="upload-demo" :action="fsURL + 'upload/file/icon'" @success="handleSuccess"
           :file-list="iconUrlList" :multiple="false" list-type="picture">
-          <t-button size="small" theme="primary">点击上传</t-button>
+          <t-button variant="outline" size="small" theme="primary">点击上传</t-button>
           <template #tip>
             <div>只能上传jpg/png文件，且不超过50kb</div>
           </template>
@@ -103,13 +112,11 @@
         </t-select>
       </t-form-item>
       <t-form-item label="用户标志" :label-width="formLabelWidth" name="userFlag">
-        <t-switch v-model="quickUrlForm.userFlag" active-text="带用户信息" inactive-text="不带用户信息" active-value="Y"
-          inactive-value="N">
+        <t-switch v-model="quickUrlForm.userFlag" :label="['带用户信息', '不带用户信息']" :custom-value="['Y', 'N']">
         </t-switch>
       </t-form-item>
       <t-form-item label="Token标志" :label-width="formLabelWidth" name="tokenFlag">
-        <t-switch v-model="quickUrlForm.tokenFlag" active-text="带Token信息" inactive-text="不带Token信息" active-value="Y"
-          inactive-value="N">
+        <t-switch v-model="quickUrlForm.tokenFlag" :label="['带Token信息', '不带Token信息']" :custom-value="['Y', 'N']">
         </t-switch>
       </t-form-item>
       <t-form-item label="序号" :label-width="formLabelWidth" name="sort">
@@ -118,16 +125,16 @@
       </t-form-item>
       <t-form-item label="状态" :label-width="formLabelWidth" name="status">
         <t-select size="small" v-model="quickUrlForm.status" placeholder="免登陆菜单状态">
-          <t-option v-for="item in dictStore.dictList.sys_dict_status" :key="item.id" :label="item.codeval"
+          <t-option v-for="item in (dictStore.dictList?.sys_dict_status || [])" :key="item.id" :label="item.codeval"
             :value="item.code"></t-option>
         </t-select>
       </t-form-item>
     </t-form>
     <template #footer>
-      <span class="dialog-footer">
-        <t-button size="small" @click="dialogFormVisible = false">取 消</t-button>
-        <t-button size="small" theme="primary" @click="dialogFormSubmit">确 定</t-button>
-      </span>
+      <t-space>
+        <t-button variant="outline" size="small" @click="dialogFormVisible = false">取 消</t-button>
+        <t-button variant="outline" size="small" theme="primary" @click="dialogFormSubmit">确 定</t-button>
+      </t-space>
     </template>
   </t-dialog>
 </template>
@@ -136,10 +143,14 @@
 import { ref, reactive, onMounted } from 'vue'
 import { quickUrlApi } from '@/api/system/quickUrl'
 import { useDictStore } from '@/stores'
+import { usePagination } from '@/hooks/usePagination'
+import { useConfirm } from '@/hooks/useConfirm'
 
 const dictStore = useDictStore()
 const list = ref([])
 const fsURL = import.meta.env.VITE_FILE_BASE_URL
+// 展示类文件统一走 HTTPS 文件管理地址，避免混合内容被浏览器拦截
+const displayURL = import.meta.env.VITE_FILE_BASE_URL || fsURL
 const queryInfo = reactive({
   orderType: ' desc',
   order: ' sort ',
@@ -150,8 +161,6 @@ const queryInfo = reactive({
   pageSize: 20,
   pageNum: 1
 })
-const pageSizes = [20, 100, 500]
-const currentPage = ref(1)
 const total = ref(0)
 const quickUrlForm = reactive({
   id: '',
@@ -218,24 +227,16 @@ const handleEdit = (index, row) => {
     status: row.status,
     area: row.area
   })
-  iconUrlList.value = [{ name: 'icon.png', url: fsURL + row.iconUrl }]
+  iconUrlList.value = [{ name: 'icon.png', url: displayURL + row.iconUrl }]
 }
 
 const handleDelete = async (index, row) => {
-  try {
-    await DialogPlugin.confirm('此操作将永久删除该记录, 是否继续?', '提示', {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning'
-    }).then(async () => {
-      const res = await quickUrlApi.deleteQuickUrl(row)
-      if (res.code !== 200) return MessagePlugin.error(res.msg)
-      MessagePlugin.success(res.msg)
-      getQuickUrlList()
-    })
-  } catch (error) {
-    MessagePlugin.error('取消删除')
-  }
+  const ok = await confirm('此操作将永久删除该记录, 是否继续?')
+  if (!ok) return
+  const res = await quickUrlApi.deleteQuickUrl(row)
+  if (res.code !== 200) return MessagePlugin.error(res.msg)
+  MessagePlugin.success(res.msg)
+  getQuickUrlList()
 }
 
 const addStation = () => {
@@ -256,15 +257,9 @@ const addStation = () => {
   })
 }
 
-const handleSizeChange = (pageSize) => {
-  queryInfo.pageSize = pageSize
-  getQuickUrlList()
-}
 
-const handleCurrentChange = (page) => {
-  queryInfo.pageNum = page
-  getQuickUrlList()
-}
+
+
 
 const handleSuccess = (response) => {
   quickUrlForm.iconUrl = response.file.path
@@ -293,10 +288,12 @@ const tableSort = ({ sortBy, descending }) => {
   queryInfo.order = sortBy
   getQuickUrlList()
 }
+const { currentPage, pageSizes, handleCurrentChange, handleSizeChange } = usePagination({ query: queryInfo, fetch: getQuickUrlList, pageSizes: [20, 100, 500] })
+const { confirm } = useConfirm()
 </script>
 
 <style lang="less" scoped>
-.box-card {
+.management-card {
   height: calc(100vh - 240px);
   overflow: auto;
 }

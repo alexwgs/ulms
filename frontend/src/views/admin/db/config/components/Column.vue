@@ -5,16 +5,18 @@
         <t-form ref="elForm" :data="tableFormData" :rules="rules" size="small" label-width="0">
           <t-col :span="12">
             <t-form-item name="tableName">
-              <t-input v-model="tableFormData.tableName" placeholder="输入中文表名" :maxlength="30" show-limit-number clearable>
+              <t-input-adornment>
                 <template #prepend>表名</template>
-              </t-input>
+                <t-input v-model="tableFormData.tableName" placeholder="输入中文表名" :maxlength="30" show-limit-number clearable></t-input>
+              </t-input-adornment>
             </t-form-item>
           </t-col>
           <t-col :span="10">
             <t-form-item name="memo">
-              <t-input v-model="tableFormData.memo" placeholder="说明" :maxlength="500" show-limit-number clearable>
+              <t-input-adornment>
                 <template #prepend>说明</template>
-              </t-input>
+                <t-input v-model="tableFormData.memo" placeholder="说明" :maxlength="500" show-limit-number clearable></t-input>
+              </t-input-adornment>
             </t-form-item>
           </t-col>
           <t-col :span="2">

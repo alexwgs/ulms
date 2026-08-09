@@ -1,29 +1,39 @@
 <template>
-  <t-card class="box-card">
+  <t-card class="management-card">
     <template #header>
       <div class="clearfix">
-        <div @back="() => router.back()" content="我参与的项目">
+        <div class="my-item-page-header">
+          <t-button theme="default" variant="text" @click="router.back()">
+            
+          返回</t-button>
+          <span class="my-item-page-title">我参与的项目</span>
         </div>
       </div>
     </template>
     <div class="text item">
-      <div class="table-filter">
-        <span>项目状态
-          <t-select style="width: 200px;" v-model="status" @change="getItemList" size="small" placeholder="请选择">
-            <t-option v-for="item in dictStore.getDictByNames('cyt_artical_status', 1)" :key="item.id"
-              :label="item.codeval" :value="item.code"></t-option>
-          </t-select>
-        </span>
-        <span class="demonstration">项目年份
-          <t-date-picker v-model="itemYear" size="small" @change="getItemList" mode="year"
-            placeholder="选择年"></t-date-picker>
-        </span>
-      </div>
+      <t-form :data="{ status, itemYear }" label-width="80px" colon class="filter-form">
+        <t-row :gutter="[24, 24]">
+          <t-col :span="4">
+            <t-form-item label="项目状态" name="status">
+              <t-select v-model="status" @change="getItemList" size="small" placeholder="请选择">
+                <t-option v-for="item in dictStore.getDictByNames('cyt_artical_status', 1)" :key="item.id"
+                  :label="item.codeval" :value="item.code"></t-option>
+              </t-select>
+            </t-form-item>
+          </t-col>
+          <t-col :span="4">
+            <t-form-item label="项目年份" name="itemYear">
+              <t-date-picker v-model="itemYear" size="small" @change="getItemList" mode="year"
+                placeholder="选择年"></t-date-picker>
+            </t-form-item>
+          </t-col>
+        </t-row>
+      </t-form>
       <CustomTable rowKey="id" :data="items" size="small" stripe style="width: 100%" height="calc(100vh - 280px)">
-        <TableColumn colKey="title" label="分类" width="130">
+        <TableColumn colKey="category" label="分类" width="130">
           <template #default="scope">
             <t-tag v-for="item in dictStore.getDictByNames('cyt_item_category', 1)" size="small" :key="item.code"
-              :style="scope.row.category == item.code ? '' : 'display:none'" effect="plain">{{ item.codeval }}</t-tag>
+              :style="scope.row.category == item.code ? '' : 'display:none'" variant="light">{{ item.codeval }}</t-tag>
           </template>
         </TableColumn>
         <TableColumn colKey="title" label="项目名称"></TableColumn>
@@ -32,7 +42,7 @@
           <template #default="scope">
             <t-tag v-for="item in dictStore.getDictByNames('cyt_artical_status', 1)" :key="item.code"
               :theme="scope.row.status == 1 ? 'success' : 'warning'" size="small"
-              :style="scope.row.status == item.code ? '' : 'display:none'" effect="plain">{{ item.codeval
+              :style="scope.row.status == item.code ? '' : 'display:none'" variant="light">{{ item.codeval
               }}</t-tag>
           </template>
         </TableColumn>
@@ -44,7 +54,7 @@
           </template>
         </TableColumn>
       </CustomTable>
-      <t-pagination @current-change="handleCurrentChange" v-model:current="currentPage"
+      <t-pagination @current-change="handleCurrentChange" v-model="currentPage"
         :page-size="queryInfo.pageSize" :total="total">
       </t-pagination>
     </div>
@@ -83,7 +93,7 @@
         </TableColumn>
         <TableColumn align="center" width="180">
           <template #header>
-            <t-button theme="primary" size="small" @click="addMember"><template #icon><DynamicIcon name="plus" /></template></t-button>
+            <t-button variant="outline" theme="primary" size="small" @click="addMember">新增</t-button>
           </template>
           <template #default="scope">
             <t-button theme="danger" :disabled="editFlag" size="small"
@@ -162,7 +172,7 @@ import { useDictStore } from '@/stores'
 const router = useRouter()
 const dictStore = useDictStore()
 
-const fsURL = import.meta.env.VITE_FILE_MANAGE_BASE || import.meta.env.VITE_API_BASE_URL
+const fsURL = import.meta.env.VITE_FILE_BASE_URL
 
 const editFlag = ref(true)
 const items = ref([])
@@ -430,12 +440,24 @@ const beforeRemove = (file, fileList) => {
 </script>
 
 <style lang="less" scoped>
-.box-card {
+.management-card {
   height: calc(100vh - 130px);
 }
 
+.my-item-page-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.my-item-page-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--td-text-color-primary);
+}
+
 .table-filter {
-  padding: 10px;
+  padding: 0;
 
   span {
     font-size: 14px;

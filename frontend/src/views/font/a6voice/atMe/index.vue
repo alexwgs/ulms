@@ -1,37 +1,47 @@
 <template>
-  <t-card class="box-card">
-    <div @back="() => router.back()" content="回复我的消息">
+  <t-card class="management-card">
+    <div class="sub-page-header">
+      <t-button theme="default" variant="text" @click="router.back()">
+        
+      返回</t-button>
+      <span class="sub-page-title">回复我的消息</span>
     </div>
     <t-divider></t-divider>
     <div class="text item">
-      <div class="table-filter">
-        <span>回复类型
-          <t-select style="width: 200px;" size="small" v-model="queryInfo.messageType" @change="getMessageList"
-            placeholder="请选择,默认不限制">
-            <t-option label="全部" value=""></t-option>
-            <t-option v-for="item in dictStore.getDictByNames('cyt_message_type', 1)" :key="item.id"
-              :label="item.codeval" :value="parseInt(item.code)">
-            </t-option>
-          </t-select>
-        </span>
-        <span>已读状态
-          <t-select style="width: 200px;" size="small" v-model="queryInfo.isRead" @change="getMessageList"
-            placeholder="请选择,默认未读">
-            <t-option v-for="item in dictStore.getDictByNames('cyt_message_is_read', 1)" :key="item.id"
-              :label="item.codeval" :value="parseInt(item.code)">
-            </t-option>
-          </t-select>
-        </span>
-        <span>
-          <t-button theme="primary" size="small" @click="readAll()">一键已读</t-button>
-        </span>
-      </div>
+      <t-form :data="queryInfo" label-width="80px" colon class="filter-form">
+        <t-row :gutter="[24, 24]">
+          <t-col :span="4">
+            <t-form-item label="回复类型" name="messageType">
+              <t-select size="small" v-model="queryInfo.messageType" @change="getMessageList"
+                placeholder="全部">
+                <t-option label="全部" value=""></t-option>
+                <t-option v-for="item in dictStore.getDictByNames('cyt_message_type', 1)" :key="item.id"
+                  :label="item.codeval" :value="parseInt(item.code)">
+                </t-option>
+              </t-select>
+            </t-form-item>
+          </t-col>
+          <t-col :span="4">
+            <t-form-item label="已读状态" name="isRead">
+              <t-select size="small" v-model="queryInfo.isRead" @change="getMessageList"
+                placeholder="全部">
+                <t-option v-for="item in dictStore.getDictByNames('cyt_message_is_read', 1)" :key="item.id"
+                  :label="item.codeval" :value="parseInt(item.code)">
+                </t-option>
+              </t-select>
+            </t-form-item>
+          </t-col>
+          <t-col :span="3" class="operation-container">
+            <t-button theme="primary" size="small" @click="readAll()">一键已读</t-button>
+          </t-col>
+        </t-row>
+      </t-form>
       <CustomTable rowKey="id" :data="messages" stripe style="width: 100%" size="small" height="calc(100vh - 340px)">
         <TableColumn colKey="messageType" label="类型" width="100">
           <template #default="scope">
             <t-tag size="small" v-for="item in dictStore.getDictByNames('cyt_message_type', 1)" :key="item.code"
-              :theme="scope.row.messageType == 1 ? 'danger' : 'info'"
-              :style="scope.row.messageType == item.code ? '' : 'display:none'" effect="plain">{{ item.codeval }}
+              :theme="scope.row.messageType == 1 ? 'danger' : 'default'"
+              :style="scope.row.messageType == item.code ? '' : 'display:none'" variant="light">{{ item.codeval }}
             </t-tag>
           </template>
         </TableColumn>
@@ -59,11 +69,11 @@
           </template>
         </TableColumn>
       </CustomTable>
-      <t-pagination @current-change="handleCurrentChange" v-model:current="currentPage"
+      <t-pagination @current-change="handleCurrentChange" v-model="currentPage"
         :page-size="queryInfo.pageSize" :total="total">
       </t-pagination>
     </div>
-    <t-dialog header="评论及回复" v-model:visible="answerDialogVisible" width="40%" @before-close="answerHandleClose">
+    <t-dialog header="评论及回复" v-model:visible="answerDialogVisible" width="40%" :before-close="answerHandleClose">
       <section class="comment">
         <div class="comment-avatar">
           <div class="avartar-box-mini">
@@ -101,7 +111,7 @@ import { sanitizeHtml } from '@/utils/tools'
 const router = useRouter()
 const dictStore = useDictStore()
 
-const fsURL = import.meta.env.VITE_FILE_MANAGE_BASE || import.meta.env.VITE_API_BASE_URL
+const fsURL = import.meta.env.VITE_FILE_BASE_URL
 
 const messages = ref([])
 const currentPage = ref(1)
@@ -264,12 +274,12 @@ const replay = async () => {
 </script>
 
 <style lang="less" scoped>
-.box-card {
+.management-card {
   height: calc(100vh - 130px);
 }
 
 .table-filter {
-  padding: 10px;
+  padding: 0;
 
   span {
     font-size: 14px;
@@ -281,7 +291,7 @@ const replay = async () => {
   display: block;
   margin-top: 10px;
   padding: 20px 0 20px 34px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--td-component-stroke);
   position: relative;
 
   .comment-avatar {
@@ -312,7 +322,7 @@ const replay = async () => {
       top: 0;
       font-size: 12px;
       line-height: 24px;
-      color: #999;
+      color: var(--td-text-color-secondary);
     }
   }
 

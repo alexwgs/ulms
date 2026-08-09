@@ -3,7 +3,7 @@
     class="content-container"
     :style="{
       backgroundColor: 'var(--td-bg-color-page)',
-      padding: '0 10px 0 10px'
+      padding: 'var(--td-comp-paddingTB-xl) var(--td-comp-paddingLR-xl)'
     }"
   >
     <t-card class="box-card" :bordered="false">

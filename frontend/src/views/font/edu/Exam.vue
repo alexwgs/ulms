@@ -6,7 +6,7 @@
           {{ examInfo.examName }}
         </div>
         <t-divider></t-divider>
-        <t-card class="box-card">
+        <t-card class="management-card">
           <template #header>
             <div class="clearfix">
               <span>答题区</span>
@@ -81,9 +81,8 @@
             user.ploNum +
             '】'
           "
-          :type="userId == user.ploNum ? 'success' : 'error'"
+          :theme="userId == user.ploNum ? 'success' : 'error'"
           :closable="false"
-          effect="dark"
         >
         </t-alert>
         <t-card class="answer-controller">
@@ -94,19 +93,19 @@
           </template>
           <t-row :gutter="20" style="text-align: center">
             <t-col :span="4"
-              ><t-tag effect="plain"
+              ><t-tag variant="light"
                 >题目数量：{{ examInfo.quesNum }}</t-tag
               ></t-col
             >
             <t-col :span="4"
-              ><t-tag effect="plain"
+              ><t-tag variant="light"
                 >考试时长：{{
                   examInfo.examTime === 0 ? '不限' : examInfo.examTime
                 }}(分)</t-tag
               ></t-col
             >
             <t-col :span="4"
-              ><t-tag effect="plain"
+              ><t-tag variant="light"
                 >考试总分：{{
                   examInfo.scoreMethod === 0
                     ? '100'
@@ -117,7 +116,7 @@
           </t-row>
           <t-row :gutter="20" style="text-align: center; margin-top: 10px">
             <t-col :span="4"
-              ><t-tag effect="plain"
+              ><t-tag variant="light"
                 >单题时长：{{
                   examInfo.quesTime == null ? '不限' : examInfo.quesTime
                 }}(秒)</t-tag
@@ -126,24 +125,24 @@
             <t-col :span="4"
               ><t-tag
                 :type="examInfo.skipQues === 0 ? 'danger' : ''"
-                effect="plain"
+                variant="light"
                 >{{
                   examInfo.skipQues === 0 ? '题目不可跳转' : '题目可跳转'
                 }}</t-tag
               ></t-col
             >
             <t-col v-if="examInfo.ifBreak === 0" :span="4"
-              ><t-tag theme="danger" effect="plain"
+              ><t-tag theme="danger" variant="light"
                 >考试不可中断</t-tag
               ></t-col
             >
             <t-col v-if="examInfo.wrongBreak === 0" :span="4"
-              ><t-tag theme="danger" effect="plain"
+              ><t-tag theme="danger" variant="light"
                 >答错自动交卷</t-tag
               ></t-col
             >
             <t-col v-if="examInfo.optionRandom === 1" :span="4"
-              ><t-tag theme="danger" effect="plain">选项随机</t-tag></t-col
+              ><t-tag theme="danger" variant="light">选项随机</t-tag></t-col
             >
           </t-row>
         </t-card>
@@ -160,7 +159,7 @@
               :span="3"
               style="padding-top: 5px; text-align: center"
               ><t-button
-                :type="item.userAnswer === null ? '' : 'success'"
+                :theme="item.userAnswer === null ? 'default' : 'success'"
                 style="width: 70px"
                 @click="changeQues(index)"
                 size="small"
@@ -179,16 +178,14 @@
                 confirm-button-text="确认交卷"
                 @confirm="handOverTest()"
               >
-                <template #reference>
-                  <t-button
-                    theme="primary"
-                    style="width: 100%"
-                    size="small"
-                    :disabled="mustReadFlag"
-                  >
-                    交 卷
-                  </t-button>
-                </template>
+                <t-button
+                  theme="primary"
+                  style="width: 100%"
+                  size="small"
+                  :disabled="mustReadFlag"
+                >
+                  交 卷
+                </t-button>
               </t-popconfirm>
             </t-col>
           </t-row>
@@ -494,7 +491,19 @@ const handleUnload = () => {
 // 生命周期钩子
 onMounted(() => {
   userId.value = JSON.parse(window.localStorage.getItem('user')).ploNum
-  examInfo.value = JSON.parse(sessionStorage.getItem('examInfo'))
+  // sessionStorage 无考试信息时 JSON.parse 会返回 null，这里兜底为空对象，
+  // 避免模板渲染 examInfo.examName 等字段时直接白屏崩溃
+  let storedExam = null
+  try {
+    storedExam = JSON.parse(sessionStorage.getItem('examInfo'))
+  } catch (e) {
+    storedExam = null
+  }
+  examInfo.value = storedExam || {}
+  if (!storedExam) {
+    MessagePlugin.warning('考试信息已失效，请从考试列表重新进入')
+    return
+  }
   precheck()
   window.addEventListener('unload', handleUnload)
 })
@@ -511,7 +520,7 @@ onUnmounted(() => {
 <style lang="less" scoped>
 .container {
   padding: 20px;
-  .box-card {
+  .management-card {
     height: calc(100vh - 120px);
     :deep(.t-card__body) {
       height: calc(100vh - 220px);

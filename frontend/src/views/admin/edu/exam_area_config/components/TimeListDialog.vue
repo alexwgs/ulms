@@ -51,7 +51,7 @@
             <t-tag 
               size="small" 
               :theme="scope.row.bookStat ? 'success' : 'danger'" 
-              effect="plain"
+              variant="light"
             >
               {{ scope.row.bookStat ? '生效' : '失效' }}
             </t-tag>
@@ -59,12 +59,12 @@
         </TableColumn>
         <TableColumn label="操作" width="110">
           <template #default="scope">
-            <t-button 
-              theme="warning" size="small" 
-              @click="editTimeListBtn(scope.row)"><template #icon><DynamicIcon name="edit" /></template></t-button>
-            <t-button 
+            <t-button variant="outline" 
+              theme="default" size="small" 
+              @click="editTimeListBtn(scope.row)">编辑</t-button>
+            <t-button variant="outline" 
               theme="danger" size="small" 
-              @click="deleteTimeList(scope.row.journo)"><template #icon><DynamicIcon name="delete" /></template></t-button>
+              @click="deleteTimeList(scope.row.journo)">删除</t-button>
           </template>
         </TableColumn>
       </CustomTable>

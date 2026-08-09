@@ -6,41 +6,39 @@
     width="400px"
     trigger="click"
   >
-    <template #reference>
-      <t-input
-        :model-value="modelValue"
-        placeholder="点击选择图标"
-        class="icon-select-input"
-        readonly
-      >
-        <template #prefix>
-          <t-icon v-if="modelValue">
-            <component :is="modelValue" />
-          </t-icon>
-        </template>
-      </t-input>
-    </template>
+    <t-input
+      :model-value="modelValue"
+      placeholder="点击选择图标"
+      class="icon-select-input"
+      readonly
+    >
+      <template #prefix>
+        <DynamicIcon v-if="modelValue" :name="modelValue" />
+      </template>
+    </t-input>
 
     <!-- 新增图标列表容器 -->
-    <div class="icon-grid">
-      <div
-        v-for="(icon, index) in icons"
-        :key="index"
-        class="icon-item"
-        @click="selectIcon(icon)"
-      >
-        <t-icon class="icon">
+    <template #content>
+      <div class="icon-grid">
+        <div
+          v-for="(icon, index) in icons"
+          :key="index"
+          class="icon-item"
+          @click="selectIcon(icon)"
+        >
+          <t-icon class="icon">
           <component :is="icon.component" />
         </t-icon>
         <span class="icon-name">{{ icon.name }}</span>
       </div>
     </div>
+    </template>
   </t-popup>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
-import * as ElementPlusIconsVue from 'tdesign-icons-vue-next'
+import { ref } from 'vue'
+import * as TDesignIcons from 'tdesign-icons-vue-next'
 
 const props = defineProps({
   modelValue: {
@@ -56,21 +54,13 @@ const toKebabCase = (str) => {
 }
 
 // 图标列表数据生成
-const icons = Object.entries(ElementPlusIconsVue).map(([name, component]) => ({
+const icons = Object.entries(TDesignIcons).map(([name, component]) => ({
   name: toKebabCase(name),
   component
 }))
 
 // 状态控制
 const popoverVisible = ref(false)
-
-// 当前选中图标
-const selectedIconComponent = computed(() => {
-  const iconName = props.modelValue?.replace(/(-\w)/g, (m) =>
-    m[1].toUpperCase()
-  )
-  return ElementPlusIconsVue[iconName]
-})
 
 // 图标选择处理
 const selectIcon = (icon) => {
@@ -99,7 +89,7 @@ const selectIcon = (icon) => {
 }
 
 .icon-item:hover {
--color: var(--td-color-primary-light-9);
+  background-color: var(--td-brand-color-light);
   transform: scale(1.05);
 }
 

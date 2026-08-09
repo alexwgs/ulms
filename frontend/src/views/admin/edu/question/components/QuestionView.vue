@@ -67,6 +67,7 @@
 import { ref, reactive } from 'vue'
 
 const dialogVisible = ref(false)
+// 展示类文件统一走 HTTPS 文件管理地址，避免混合内容被浏览器拦截
 const fsURL = import.meta.env.VITE_FILE_BASE_URL
 const question = ref(null)
 const fileUrl = ref('')

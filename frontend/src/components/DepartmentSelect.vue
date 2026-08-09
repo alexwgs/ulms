@@ -9,17 +9,21 @@
     :check-strictly="false"
     :multiple="mutiple"
     :filterable="allowSearch"
-    :filter-method="filterTreeNode"
+    :filter="filterTreeNode"
     v-model="selectedValue"
-    :props="{
+    :keys="{
       value: 'id',
       label: 'label',
       children: 'children'
     }"
+    :tree-props="{
+      checkable: mutiple,
+      checkStrictly: false,
+      expandOnClickNode: true,
+      renderAfterExpand: false
+    }"
+    @change="handleChange"
     style="width: 300px"
-    :expand-on-click-node="true"
-    :render-after-expand="false"
-    :value-key="'id'"
   />
 </template>
 
@@ -83,12 +87,18 @@ import { useUserStore, useAppStore } from '@/stores'
 const { moduleSize } = useAppStore()
 const props = defineProps()
 
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue', 'select'])
 const sourceData = ref([])
 const treeData = ref([])
 const selectedValue = ref(
   props.mutiple ? props.modelValue || [] : props.modelValue || null
 )
+
+// TDesign TreeSelect 通过 change 事件返回选中节点，组件层转译为 select 事件
+const handleChange = (value, context) => {
+  const node = context && context.node
+  emit('select', node ? { id: node.value, label: node.label } : null)
+}
 
 // 处理外部传入的 modelValue 变化
 watch(

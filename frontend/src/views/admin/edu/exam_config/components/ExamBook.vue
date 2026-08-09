@@ -69,7 +69,7 @@
                 ).length > 0
               "
             >
-              <t-tag theme="success" size="small" effect="dark"
+              <t-tag theme="success" size="small" variant="light"
                 >【当前】</t-tag
               >
             </div>
@@ -77,7 +77,7 @@
               v-else
               theme="primary" size="small"
               @click="bookExam(scope.row)"
-              circle
+             
             ><template #icon><DynamicIcon name="star-off" /></template></t-button>
           </template>
         </TableColumn>
@@ -98,6 +98,7 @@ const data = ref([])
 const bookInfo = ref([])
 const myBooked = ref([])
 const refreshLoading = ref(false)
+// 展示类文件统一走 HTTPS 文件管理地址，避免混合内容被浏览器拦截
 const fsURL = ref(import.meta.env.VITE_FILE_BASE_URL)
 
 const form = reactive({
@@ -187,7 +188,7 @@ defineExpose({
 </script>
 <style lang="less" scoped>
 .bgcolor {
--color: #fdfffeb0;
+background-color: #fdfffeb0;
 }
 .inline-form .t-input {
   --td-input-width: 150px;

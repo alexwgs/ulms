@@ -1,29 +1,25 @@
 <template>
-  <div style="padding-left: calc((100vw - 1240px) / 2); max-width: 1200px">
+  <div>
     <t-row :gutter="20">
       <t-col :span="3">
-        <t-card class="box-card">
-          <template #header>
-            <div class="clearfix">
-              <span>全部课程分类</span>
-            </div>
-          </template>
-          <div style="margin-bottom: 10px">
-            <t-input placeholder="输入关键字进行过滤" size="small" v-model="filterText"></t-input>
+        <t-card class="academy-card lib-cat-card">
+          <h3 class="academy-section-title">全部课程分类</h3>
+          <div class="cat-filter">
+            <t-input placeholder="输入关键字进行过滤" size="small" v-model="filterText" :clearable="true"></t-input>
           </div>
-          <div style="height: calc(100vh - 255px); overflow: auto">
-            <t-tree style="margin-top: 5px" :data="tree" @click="courseType" :keys="{ value: 'id', label: 'name', children: 'children' }" expand-all activable
-              v-model:actived="activeValue" :filter="filterNode" ref="treeRef"></t-tree>
+          <div class="cat-tree">
+            <t-tree style="margin-top: 5px" :data="tree" @click="courseType" :keys="{ value: 'id', label: 'name', children: 'children' }" expand-level="1" activable
+              :filter="filterText ? filterNode : undefined"
+              v-model:actived="activeValue" ref="treeRef"></t-tree>
           </div>
         </t-card>
       </t-col>
       <t-col :span="9">
-        <t-card class="box-card">
-          <template #header>
-            <div class="clearfix">
-              <span>课程库</span>
-              <div style="float: right; width: 400px">
-                <t-input placeholder="当前目录下搜索课程" size="small" v-model="queryInfo.query">
+        <t-card class="academy-card">
+          <div class="lib-head">
+            <h3 class="academy-section-title">课程库</h3>
+            <div class="lib-search">
+                <t-input-adornment>
                   <template #append>
                     <t-button @click="getCourse">
                       <t-icon>
@@ -31,98 +27,100 @@
                       </t-icon>
                     </t-button>
                   </template>
-                </t-input>
-              </div>
+                  <t-input placeholder="当前目录下搜索课程" size="small" v-model="queryInfo.query"></t-input>
+                </t-input-adornment>
             </div>
-          </template>
+          </div>
           <div class="filter">
             <div class="left" style="line-height: 40px">
-              当前筛选：<t-tag v-if="currentNode == null">全部</t-tag><t-tag v-else closable theme="danger" effect="plain"
+              当前筛选：<t-tag v-if="currentNode == null" variant="light">全部</t-tag><t-tag v-else closable theme="danger" variant="light"
                 @close="() => courseType(null)">{{ currentNode.name }}</t-tag>
             </div>
             <div class="right">
               <t-link class="filter-link" :underline="false" @click="sortCourse('courseScore')">评分<t-icon
                   v-if="queryInfo.order === 'courseScore'">
-                  <ArrowDown v-if="queryInfo.orderType === 'desc'" />
-                  <ArrowUp v-else />
+                  <ArrowDownIcon v-if="queryInfo.orderType === 'desc'" />
+                  <ArrowUpIcon v-else />
                 </t-icon><t-icon v-else>
-                  <Sort />
+                  <MoveIcon />
                 </t-icon></t-link>
               <t-link class="filter-link" :underline="false" @click="sortCourse('handleDate')">更新时间<t-icon
                   v-if="queryInfo.order === 'handleDate'">
-                  <ArrowDown v-if="queryInfo.orderType === 'desc'" />
-                  <ArrowUp v-else />
+                  <ArrowDownIcon v-if="queryInfo.orderType === 'desc'" />
+                  <ArrowUpIcon v-else />
                 </t-icon><t-icon v-else>
-                  <Sort />
+                  <MoveIcon />
                 </t-icon></t-link>
               <t-link class="filter-link" :underline="false" @click="sortCourse('studyNum')">学习人数<t-icon
                   v-if="queryInfo.order === 'studyNum'">
-                  <ArrowDown v-if="queryInfo.orderType === 'desc'" />
-                  <ArrowUp v-else />
+                  <ArrowDownIcon v-if="queryInfo.orderType === 'desc'" />
+                  <ArrowUpIcon v-else />
                 </t-icon><t-icon v-else>
-                  <Sort />
+                  <MoveIcon />
                 </t-icon></t-link>
               <t-link class="filter-link" :underline="false" @click="sortCourse('courseName')">课程名称<t-icon
                   v-if="queryInfo.order === 'courseName'">
-                  <ArrowDown v-if="queryInfo.orderType === 'desc'" />
-                  <ArrowUp v-else />
+                  <ArrowDownIcon v-if="queryInfo.orderType === 'desc'" />
+                  <ArrowUpIcon v-else />
                 </t-icon><t-icon v-else>
-                  <Sort />
+                  <MoveIcon />
                 </t-icon></t-link>
               <t-link class="filter-link" :underline="false" @click="sortCourse('lecturer')">授课讲师<t-icon
                   v-if="queryInfo.order === 'lecturer'">
-                  <ArrowDown v-if="queryInfo.orderType === 'desc'" />
-                  <ArrowUp v-else />
+                  <ArrowDownIcon v-if="queryInfo.orderType === 'desc'" />
+                  <ArrowUpIcon v-else />
                 </t-icon><t-icon v-else>
-                  <Sort />
+                  <MoveIcon />
                 </t-icon></t-link>
             </div>
           </div>
-          <t-row :gutter="15" style="height: calc(100vh - 300px); overflow: auto">
+          <t-empty
+            v-if="courses.length === 0"
+            class="academy-empty"
+            description="当前分类下暂无课程，换个分类看看吧"
+            :image-size="120"
+          ></t-empty>
+          <t-row v-else :gutter="15" style="height: calc(100vh - 300px); overflow: auto">
             <t-col :span="4" v-for="item in courses" :key="item.courseId" style="margin-top: 10px">
-              <t-card @click="gotoCourseView(item.courseId)" :body-style="{ padding: '0px' }" :shadow="true"
-                class="course-panel" :title="item.courseName">
-                <img :src="fsURL + 'upload/getFile/college-cover/' + item.coverImg" width="100%" />
+              <div @click="gotoCourseView(item.courseId)" class="academy-course-card">
+                <div class="cover-wrap">
+                  <img
+                    :src="fsURL + 'upload/getFile/college-cover/' + item.coverImg"
+                    width="100%"
+                    @error="hideBrokenImage"
+                  />
+                  <t-tag :theme="item.studyType == 2 ? 'danger' : 'primary'" size="small" variant="light"
+                    class="cover-tag">{{ item.studyType == 2 ? '任务课程' : '常规课程' }}</t-tag>
+                </div>
                 <div class="info">
-                  <div style="
-                      position: absolute;
-                      margin-top: -181px;
-                      margin-left: -20px;
-                    ">
-                    <t-tag :theme="item.studyType == 2 ? 'danger' : 'primary'" size="small" effect="dark">{{
-                      item.studyType == 2 ? '任务课程' : '常规课程'
-                      }}</t-tag>
-                  </div>
-                  <div class="text-trim">
-                    {{ item.courseName }}
-                  </div>
-                  <div class="course-info">
+                  <div class="course-name" :title="item.courseName">{{ item.courseName }}</div>
+                  <div class="lib-course-info">
                     <div class="line">
-                      <div class="line-info left">{{ item.lecturer }}</div>
-                      <div class="right line-info">
+                      <span class="left">{{ item.lecturer }}</span>
+                      <span class="right">
                         {{ item.handleDate.substring(0, 10) }}
-                      </div>
+                      </span>
                     </div>
                     <div class="line">
-                      <div class="line-info left">
+                      <span class="left">
                         {{ item.teachMethod ? '线上授课' : '线下授课' }}
-                      </div>
-                      <div class="right line-info">
+                      </span>
+                      <span class="right">
                         授课时长：{{ item.hours }}h
-                      </div>
+                      </span>
                     </div>
                     <div class="line">
-                      <div class="line-info left">
+                      <span class="left">
                         <t-rate v-if="item.courseScore > 0" v-model="item.courseScore" disabled text-color="#ff9900"
                           score-template="{value}"></t-rate><span v-else>暂无评分</span>
-                      </div>
-                      <div class="right line-info">
+                      </span>
+                      <span class="right">
                         {{ item.studyNum }}人学习
-                      </div>
+                      </span>
                     </div>
                   </div>
                 </div>
-              </t-card>
+              </div>
             </t-col>
           </t-row>
           <t-pagination @page-size-change="handleSizeChange" @current-change="handleCurrentChange"
@@ -140,12 +138,17 @@ import { ref, reactive, watch, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { MessagePlugin } from 'tdesign-vue-next'
 import { httpInstance } from '@/utils/request'
-import { SearchIcon, ArrowDownIcon, ArrowUpIcon, SwapIcon } from 'tdesign-icons-vue-next'
+import { SearchIcon, ArrowDownIcon, ArrowUpIcon, SwapIcon, MoveIcon } from 'tdesign-icons-vue-next'
 
 const route = useRoute()
 const router = useRouter()
 
-const fsURL = import.meta.env.VITE_FILE_MANAGE_BASE
+const fsURL = import.meta.env.VITE_FILE_BASE_URL
+
+// 封面缺失时隐藏破图图标，避免影响卡片布局
+const hideBrokenImage = (e) => {
+  e.target.style.display = 'none'
+}
 
 const queryInfo = reactive({
   orderType: 'desc',
@@ -264,61 +267,89 @@ onMounted(() => {
 </script>
 
 <style lang="less" scoped>
-.text-trim {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.lib-cat-card {
+  height: 100%;
+}
+
+.cat-filter {
+  margin-bottom: 12px;
+}
+
+.cat-tree {
+  height: calc(100vh - 360px);
+  min-height: 300px;
+  overflow: auto;
+
+  :deep(.t-tree__item) {
+    padding: 5px 4px;
+  }
+
+  :deep(.t-tree__label) {
+    font-size: 13px;
+    color: var(--academy-ink);
+  }
+
+  :deep(.t-tree__item.t-is-active > .t-tree__label) {
+    color: var(--academy-navy);
+    font-weight: 600;
+  }
+}
+
+.lib-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.lib-search {
+  width: 380px;
 }
 
 .filter {
-  width: 100%;
-  height: 40px;
-background-color: #f5f5f5;
-  border: solid 1px #e4e4e4;
-  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  margin: 4px 0 12px;
+  background: var(--academy-bg);
+  border-radius: 8px;
+  font-size: 13px;
+
+  .left {
+    color: var(--academy-muted);
+  }
 
   .filter-link {
-    line-height: 40px;
-    padding-left: 20px;
-  }
-}
+    color: var(--academy-ink);
+    padding-left: 18px;
 
-.course-panel {
-  cursor: pointer;
-
-  img {
-    height: 160px;
-    width: 100%;
-  }
-
-  .info {
-    padding: 14px;
-
-    .course-info {
-      overflow: hidden;
-
-      .line {
-        margin-top: 5px;
-        height: 18px;
-        display: flex;
-
-        .line-info {
-          font-size: 14px;
-          width: 50%;
-          color: #999;
-        }
-      }
+    &:hover {
+      color: var(--academy-navy);
     }
   }
 }
 
-.left {
-  float: left;
-  text-align: left;
-}
+.lib-course-info {
+  .line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: var(--academy-muted);
+    line-height: 22px;
+    overflow: hidden;
+  }
 
-.right {
-  float: right;
-  text-align: right;
+  .left {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-right: 8px;
+  }
+
+  .right {
+    flex: none;
+  }
 }
 </style>

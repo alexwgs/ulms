@@ -11,12 +11,12 @@
           <EmployeeSelect v-model="queryInfo.query" :clearable="true" />
         </t-col>
         <t-col :span="2">
-          <t-button size="small" theme="primary" @click="getBookList()"
+          <t-button variant="outline" size="small" theme="danger" @click="getBookList()"
             >查询</t-button
           >
-          <t-button
+          <t-button variant="outline"
             size="small"
-            theme="primary"
+            theme="danger"
             @click="forceBook()"
             :disabled="queryInfo.query == ''"
             >强制预约</t-button
@@ -70,11 +70,11 @@
         />
         <TableColumn label="操作" width="80px">
           <template #default="scope">
-            <t-button
+            <t-button variant="outline"
               theme="danger" size="small"
               @click="deleteUser(scope.row)"
-              circle
-            ><template #icon><DynamicIcon name="delete" /></template></t-button>
+             
+            >删除</t-button>
           </template>
         </TableColumn>
       </CustomTable>
@@ -108,11 +108,10 @@ import { useDictStore } from '@/stores'
 import { bookInfoApi } from '@/api/edu/bookInfo'
 import EmployeeSelect from '@/components/EmployeeSelect.vue'
 import ExamBook from './ExamBook.vue'
+import { usePagination } from '@/hooks/usePagination'
 
 const examBootRef = ref(null)
 const dialogVisible = ref(false)
-const currentPage = ref(1)
-const pageSizes = ref([20, 100, 500])
 const total = ref(0)
 const bookListData = ref([])
 const dictStore = useDictStore()
@@ -156,15 +155,9 @@ const deleteUser = async (row) => {
   }
 }
 
-const handleSizeChange = (pageSize) => {
-  queryInfo.pageSize = pageSize
-  getBookList()
-}
 
-const handleCurrentChange = (page) => {
-  queryInfo.pageNum = page
-  getBookList()
-}
+
+
 
 const tableSort = (data) => {
   if (!data.descending) queryInfo.orderType = ' asc '
@@ -179,5 +172,6 @@ const forceBook = () => {
 defineExpose({
   show
 })
+const { currentPage, pageSizes, handleCurrentChange, handleSizeChange } = usePagination({ query: queryInfo, fetch: getBookList, pageSizes: [20, 100, 500] })
 </script>
 <style lang="less" scoped></style>

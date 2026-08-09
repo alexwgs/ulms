@@ -1,26 +1,26 @@
 <template>
-  <div>
-    <t-button
+  <t-space direction="vertical" style="width: 100%">
+    <t-button variant="outline"
       theme="primary"
       size="small" @click="handleAddRoot"
-    ><template #icon><DynamicIcon name="plus" /></template></t-button>
-    <div style="height: calc(100vh - 250px); overflow: auto; margin-top: 10px">
+    >新增</t-button>
+    <div style="height: calc(100vh - 280px); overflow: auto">
       <t-tree
         :data="tree"
         :keys="{ value: 'id', label: 'name', children: 'children' }"
         :filter="filterNode"
         @drag-start="handleDragStart"
-        @drag-end="handleDragEnd"
+        @drop="handleDrop"
         draggable
         ref="treeRef"
       >
-        <template #default="{ node }">
+        <template #label="{ node }">
           <span class="custom-tree-node">
             <span>{{ node.label }}</span>
-            <span>
-              <span size="small">序号：{{ node.data.sort }}</span>
+            <t-space size="small">
+              <span>序号：{{ node.data.sort }}</span>
               <t-button
-                link
+                variant="text"
                 theme="primary"
                 size="small"
                 @click="handleAddChild(node.data)"
@@ -28,14 +28,14 @@
                 新增
               </t-button>
               <t-button
-                link
-                theme="warning"
+                variant="text"
+                theme="primary"
                 size="small"
                 @click="handleEdit(node.data)"
               >
                 修改
               </t-button>
-            </span>
+            </t-space>
           </span>
         </template>
       </t-tree>
@@ -46,7 +46,7 @@
       header="课程架构配置"
       v-model:visible="dialogVisible"
       width="50%"
-      @before-close="handleClose"
+      :before-close="handleClose"
     >
       <t-form
         ref="formRef"
@@ -55,6 +55,7 @@
         size="small"
         label-width="100px"
       >
+        <t-row :gutter="15">
         <t-col :span="12">
           <t-form-item label="名称" name="name">
             <t-input
@@ -88,19 +89,16 @@
             </t-select>
           </t-form-item>
         </t-col>
+        </t-row>
       </t-form>
       <template #footer>
-        <div class="dialog-footer">
-          <t-button size="small" @click="dialogVisible = false"
-            >取 消</t-button
-          >
-          <t-button size="small" theme="primary" @click="handleSubmit"
-            >确 定</t-button
-          >
-        </div>
+        <t-space>
+          <t-button size="small" variant="outline" @click="dialogVisible = false">取消</t-button>
+          <t-button size="small" variant="outline" theme="primary" @click="handleSubmit">确定</t-button>
+        </t-space>
       </template>
     </t-dialog>
-  </div>
+  </t-space>
 </template>
 
 <script setup>
@@ -178,13 +176,15 @@ const filterNode = (node) => {
 
 // 拖拽开始
 const handleDragStart = (context) => {
-      handleNode.value = context.dragNode.data
+  handleNode.value = context.node.data
 }
 
-// 拖拽结束
-const handleDragEnd = (context) => {
-      const { dragNode, dropNode, dropPosition } = context;
-      const dropType = dropPosition === 0 ? 'inner' : dropPosition === -1 ? 'before' : 'after';
+// 拖拽放置（TDesign 在 drop 事件才提供 dropNode/dragNode/dropPosition）
+const handleDrop = (context) => {
+  const { dragNode, dropNode, dropPosition } = context
+  if (!dragNode || !dropNode || !handleNode.value) return
+  const dropType =
+    dropPosition === 0 ? 'inner' : dropPosition === -1 ? 'before' : 'after'
   if (dropType === 'inner') {
     handleNode.value.pid = dropNode.data.id
     handleNode.value.grade = dropNode.data.grade + 1

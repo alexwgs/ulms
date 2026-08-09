@@ -1,133 +1,120 @@
 <template>
-  <t-card class="box-card">
+  <t-card class="management-card">
     <div class="text item">
-      <div class="table-filter">
-        <t-row>
+      <t-form :data="queryInfo" label-width="80px" colon class="filter-form">
+        <t-row :gutter="[24, 24]">
           <t-col :span="3">
-            <span class="demonstration"
-              >年份
+            <t-form-item label="年份" name="dateYear">
               <t-date-picker
                 size="small"
-                style="width: 70%"
                 @change="getArticalList"
                 v-model="yearPicker"
                 mode="year"
                 placeholder="选择年"
               ></t-date-picker>
-            </span>
+            </t-form-item>
           </t-col>
           <t-col :span="3">
-            <span
-              >板块
+            <t-form-item label="板块" name="category">
               <t-select
                 size="small"
                 v-model="queryInfo.category"
                 @change="getArticalList"
-                placeholder="请选择,默认不限制"
+                placeholder="全部"
               >
                 <t-option :value="-1" label="全部"></t-option>
                 <t-option
-                  v-for="item in dictStore.dictList.cyt_artical_category"
+                  v-for="item in (dictStore.dictList?.cyt_artical_category || [])"
                   :key="item.code"
                   :label="item.codeval"
                   :value="parseInt(item.code)"
                 >
                 </t-option>
               </t-select>
-            </span>
+            </t-form-item>
           </t-col>
           <t-col :span="3">
-            <span
-              >状态
+            <t-form-item label="状态" name="status">
               <t-select
                 size="small"
                 v-model="queryInfo.status"
                 @change="getArticalList"
-                placeholder="请选择,默认不限制"
+                placeholder="全部"
               >
                 <t-option label="全部" value=""></t-option>
                 <t-option
-                  v-for="item in dictStore.dictList.cyt_artical_status"
+                  v-for="item in (dictStore.dictList?.cyt_artical_status || [])"
                   :key="item.code"
                   :label="item.codeval"
                   :value="item.code"
                 >
                 </t-option>
               </t-select>
-            </span>
+            </t-form-item>
           </t-col>
           <t-col :span="3">
-            <span
-              >进度
+            <t-form-item label="进度" name="compType">
               <t-select
                 size="small"
                 v-model="queryInfo.compType"
                 @change="getArticalList"
-                placeholder="请选择,默认不限制"
+                placeholder="全部"
               >
                 <t-option label="全部" value=""></t-option>
                 <t-option
-                  v-for="item in dictStore.dictList.cyt_artical_comp_type"
+                  v-for="item in (dictStore.dictList?.cyt_artical_comp_type || [])"
                   :key="item.code"
                   :label="item.codeval"
                   :value="item.code"
                 >
                 </t-option>
               </t-select>
-            </span>
+            </t-form-item>
           </t-col>
-        </t-row>
-        <t-row style="padding-top: 5px">
           <t-col :span="3">
-            <span class="demonstration"
-              >置顶
+            <t-form-item label="置顶" name="topFlag">
               <t-select
                 size="small"
                 v-model="queryInfo.topFlag"
                 @change="getArticalList"
-                placeholder="请选择,默认不限制"
+                placeholder="全部"
               >
                 <t-option label="全部" value=""></t-option>
                 <t-option label="未置顶" :value="0"></t-option>
                 <t-option label="已置顶" :value="1"></t-option>
               </t-select>
-            </span>
+            </t-form-item>
           </t-col>
           <t-col :span="3">
-            <span class="demonstration"
-              >精华
+            <t-form-item label="精华" name="eliteFlag">
               <t-select
                 size="small"
                 v-model="queryInfo.eliteFlag"
                 @change="getArticalList"
-                placeholder="请选择,默认不限制"
+                placeholder="全部"
               >
                 <t-option label="全部" value=""></t-option>
                 <t-option label="未精华" :value="0"></t-option>
                 <t-option label="已精华" :value="1"></t-option>
               </t-select>
-            </span>
+            </t-form-item>
           </t-col>
           <t-col :span="3">
-            <span class="demonstration"
-              >广场
+            <t-form-item label="广场" name="onStage">
               <t-select
                 size="small"
                 v-model="queryInfo.onStage"
                 @change="getArticalList"
-                placeholder="请选择,默认不限制"
+                placeholder="全部"
               >
                 <t-option label="全部" value=""></t-option>
                 <t-option label="未上广场" :value="0"></t-option>
                 <t-option label="上广场" :value="1"></t-option>
               </t-select>
-            </span>
-          </t-col>
-          <t-col :span="3">
-            <!-- 预留按钮位置 -->
+            </t-form-item>
           </t-col>
         </t-row>
-      </div>
+      </t-form>
       <CustomTable rowKey="id"
         :data="articals"
         size="small"
@@ -137,12 +124,12 @@
         <TableColumn colKey="category" label="板块" width="100">
           <template #default="scope">
             <t-tag
-              v-for="item in dictStore.dictList.cyt_artical_category"
+              v-for="item in (dictStore.dictList?.cyt_artical_category || [])"
               size="small"
               :key="item.code"
-              :theme="scope.row.category == 1 ? 'danger' : 'info'"
+              :theme="scope.row.category == 1 ? 'danger' : 'default'"
               :style="scope.row.category == item.code ? '' : 'display:none'"
-              effect="plain"
+              variant="light"
               >{{ item.codeval }}</t-tag
             >
           </template>
@@ -160,24 +147,24 @@
               style="cursor: pointer; margin-right: 3px"
               size="small"
               @click="setTopAndSoOn('top', scope.row.id, scope.row.topFlag)"
-              :theme="scope.row.topFlag ? 'success' : 'info'"
-              :effect="scope.row.topFlag ? 'dark' : 'plain'"
+              :theme="scope.row.topFlag ? 'success' : 'default'"
+              variant="light"
               >置顶</t-tag
             >
             <t-tag
               style="cursor: pointer; margin-right: 3px"
               size="small"
               @click="setTopAndSoOn('elite', scope.row.id, scope.row.eliteFlag)"
-              :theme="scope.row.eliteFlag ? 'danger' : 'info'"
-              :effect="scope.row.eliteFlag ? 'dark' : 'plain'"
+              :theme="scope.row.eliteFlag ? 'danger' : 'default'"
+              variant="light"
               >精华</t-tag
             >
             <t-tag
               style="cursor: pointer; margin-right: 3px"
               size="small"
               @click="setTopAndSoOn('stage', scope.row.id, scope.row.onStage)"
-              :theme="scope.row.onStage ? 'warning' : 'info'"
-              :effect="scope.row.onStage ? 'dark' : 'plain'"
+              :theme="scope.row.onStage ? 'warning' : 'default'"
+              variant="light"
               >广场</t-tag
             >
           </template>
@@ -186,12 +173,12 @@
           <template #default="scope">
             <t-tag
               @click="examineItem(scope.row)"
-              v-for="item in dictStore.dictList.cyt_artical_status"
+              v-for="item in (dictStore.dictList?.cyt_artical_status || [])"
               size="small"
               :key="item.code"
               :theme="scope.row.status == 1 ? 'success' : 'warning'"
               :style="scope.row.status == item.code ? '' : 'display:none'"
-              effect="plain"
+              variant="light"
               >{{ item.codeval }}</t-tag
             >
           </template>
@@ -202,7 +189,9 @@
         </TableColumn>
         <TableColumn label="操作" width="300">
           <template #default="scope">
+            <t-space>
             <t-button
+              variant="outline"
               theme="primary"
               size="small"
               :disabled="scope.row.compType <= 2"
@@ -210,12 +199,14 @@
               >结案</t-button
             >
             <t-button
+              variant="outline"
               theme="warning"
               size="small"
               @click="updateCategory(scope.row)"
               >移版</t-button
             >
             <t-button
+              variant="outline"
               theme="default"
               size="small"
               :disabled="
@@ -234,6 +225,7 @@
               >报表</t-button
             >
             <t-button
+              variant="outline"
               theme="success"
               size="small"
               @click="openChartView(scope.row.id)"
@@ -245,14 +237,16 @@
               "
               >可视化</t-button
             >
-          </template>
+          
+            </t-space></template>
         </TableColumn>
       </CustomTable>
       <t-pagination
         @current-change="handleCurrentChange"
-        v-model:current="currentPage"
+        @page-size-change="handleSizeChange"
+        v-model="currentPage"
         :page-size="queryInfo.pageSize"
-
+        :page-size-options="pageSizes"
         :total="total"
       >
       </t-pagination>
@@ -262,13 +256,13 @@
       header="审核"
       v-model:visible="examineDialogVisible"
       width="30%"
-      @before-close="examineHandleClose"
+      :before-close="examineHandleClose"
     >
       <div>
         审核结果：
         <t-select size="small" v-model="examineForm.status">
           <t-option
-            v-for="item in dictStore.dictList.cyt_artical_status"
+            v-for="item in (dictStore.dictList?.cyt_artical_status || [])"
             :key="item.code"
             :label="item.codeval"
             :value="parseInt(item.code)"
@@ -276,10 +270,10 @@
         </t-select>
       </div>
       <template #footer>
-        <div class="dialog-footer">
-          <t-button @click="examineDialogVisible = false">取 消</t-button>
-          <t-button theme="primary" @click="examineSubmit">确 定</t-button>
-        </div>
+        <t-space>
+          <t-button variant="outline" @click="examineDialogVisible = false">取 消</t-button>
+          <t-button variant="outline" theme="primary" @click="examineSubmit">确 定</t-button>
+        </t-space>
       </template>
     </t-dialog>
 
@@ -287,13 +281,13 @@
       header="结案"
       v-model:visible="compDialogVisible"
       width="30%"
-      @before-close="compHandleClose"
+      :before-close="compHandleClose"
     >
       <div>
         结案类型：
         <t-select size="small" v-model="compForm.compType">
           <t-option
-            v-for="item in dictStore.dictList.cyt_artical_comp_type"
+            v-for="item in (dictStore.dictList?.cyt_artical_comp_type || [])"
             :disabled="parseInt(item.code) > 2"
             :key="item.code"
             :label="item.codeval"
@@ -310,7 +304,7 @@
         >
           <t-option label="" value=""></t-option>
           <t-option
-            v-for="item in dictStore.dictList.cyt_artical_comp_grade"
+            v-for="item in (dictStore.dictList?.cyt_artical_comp_grade || [])"
             :key="item.code"
             :label="item.codeval + '[' + item.code + '分]'"
             :value="parseInt(item.code)"
@@ -318,10 +312,10 @@
         </t-select>
       </div>
       <template #footer>
-        <div class="dialog-footer">
-          <t-button @click="compDialogVisible = false">取 消</t-button>
-          <t-button theme="primary" @click="compSubmit">确 定</t-button>
-        </div>
+        <t-space>
+          <t-button variant="outline" @click="compDialogVisible = false">取 消</t-button>
+          <t-button variant="outline" theme="primary" @click="compSubmit">确 定</t-button>
+        </t-space>
       </template>
     </t-dialog>
 
@@ -330,7 +324,7 @@
         移动到分类：
         <t-select size="small" v-model="categoryForm.category">
           <t-option
-            v-for="item in dictStore.dictList.cyt_artical_category.filter(
+            v-for="item in (dictStore.dictList?.cyt_artical_category || []).filter(
               (item) => item.status === 1
             )"
             :key="item.code"
@@ -340,10 +334,10 @@
         </t-select>
       </div>
       <template #footer>
-        <div class="dialog-footer">
-          <t-button @click="categoryDialogVisible = false">取 消</t-button>
-          <t-button theme="primary" @click="categorySubmit">确 定</t-button>
-        </div>
+        <t-space>
+          <t-button variant="outline" @click="categoryDialogVisible = false">取 消</t-button>
+          <t-button variant="outline" theme="primary" @click="categorySubmit">确 定</t-button>
+        </t-space>
       </template>
     </t-dialog>
   </t-card>
@@ -364,6 +358,7 @@
 import { ref, reactive, onMounted } from 'vue'
 import { MessagePlugin, LoadingPlugin } from 'tdesign-vue-next'
 import { useDictStore } from '@/stores'
+import { usePagination } from '@/hooks/usePagination'
 import { useRouter } from 'vue-router'
 import ChartView from './components/ChartView.vue'
 import {
@@ -384,7 +379,6 @@ const currentArticalId = ref('')
 const user = ref(JSON.parse(window.localStorage.getItem('user')) || {})
 const articals = ref([])
 const loading = ref(false)
-const currentPage = ref(1)
 const total = ref(0)
 const yearPicker = ref(new Date())
 const downloadReportFlag = ref(false)
@@ -507,11 +501,11 @@ const examineHandleClose = () => {
   examineDialogVisible.value = false
 }
 
-const handleCurrentChange = (page) => {
-  queryInfo.pageNum = page
-  currentPage.value = page
-  getArticalList()
-}
+const { currentPage, pageSizes, handleCurrentChange, handleSizeChange } = usePagination({
+  query: queryInfo,
+  fetch: getArticalList,
+  pageSizes: [20, 100, 500]
+})
 
 const setTopAndSoOn = async (type, id, val) => {
   try {
@@ -572,22 +566,9 @@ onMounted(() => {
 </script>
 
 <style lang="less" scoped>
-.box-card {
+.management-card {
   height: calc(100vh - 190px);
   overflow: auto;
-}
-
-.table-filter {
-  padding: 10px;
-
-  span {
-    font-size: 12px;
-    margin-left: 20px;
-  }
-
-  .t-select {
-    width: 70%;
-  }
 }
 
 .t-link {

@@ -63,6 +63,26 @@
                 </div>
               </div>
             </div>
+            <div class="setting-item">
+              <div class="setting-item-info">
+                <div class="setting-item-title">
+                  <DynamicIcon name="system" />
+                  控件尺寸
+                </div>
+                <div class="setting-item-desc">
+                  统一管理后台按钮、输入框、选择器等控件的大小
+                </div>
+              </div>
+              <t-radio-group
+                v-model="uiStore.controlSize"
+                variant="default-filled"
+                @change="uiStore.setControlSize"
+              >
+                <t-radio-button value="small">小</t-radio-button>
+                <t-radio-button value="medium">中</t-radio-button>
+                <t-radio-button value="large">大</t-radio-button>
+              </t-radio-group>
+            </div>
           </div>
         </t-tab-panel>
 
@@ -144,12 +164,14 @@
 
 <script setup>
 import { ref, computed } from 'vue'
-import { useUserStore } from '@/stores'
+import { useUserStore, useUiStore } from '@/stores'
 import { MessagePlugin } from 'tdesign-vue-next'
 import { modifyPassword } from '@/api/auth'
 import { encryptData } from '@/utils/cryptoService'
 
 const userStore = useUserStore()
+const uiStore = useUiStore()
+uiStore.init()
 
 // 主题
 const currentTheme = computed(() => {

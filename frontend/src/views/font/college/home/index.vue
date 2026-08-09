@@ -1,12 +1,12 @@
 <template>
-  <div class="container">
+  <div class="academy-home">
     <t-row :gutter="20">
       <t-col :span="3">
-        <t-card class="top-card" style="background-color: #283138">
+        <t-card class="academy-panel cat-panel" :body-style="{ padding: '14px 12px' }">
           <div
             v-for="item in tree"
             :key="item.id"
-            style="border-top: 1px dotted #fff"
+            class="cat-item"
           >
             <div
               class="nvl"
@@ -32,7 +32,7 @@
               </div>
             </div>
           </div>
-          <div style="float: right; font-size: 10px; line-height: 20px">
+          <div class="cat-more">
             <t-link
               style="color: #fff"
               :underline="false"
@@ -48,103 +48,84 @@
             v-if="curTreeDetail != null"
           >
             <h3>
-              <div class="nvl-title-color"></div>
+              <span class="nvl-title-color"></span>
               {{ curTreeDetail.name }}
             </h3>
-            <t-row
+            <div
               class="nvl-level2"
               v-for="level2 in curTreeDetail.children"
               :key="level2.id"
             >
-              <t-col :span="2"
-                ><span
-                  class="title text-trim"
-                  @click="goCourseLib(level2.id)"
-                  >{{ level2.name }}</span
-                ></t-col
-              >
-              <t-col :span="10">
-                <div class="level3">
-                  <span
-                    style="display: inline-block"
-                    v-for="level3 in level2.children"
-                    :key="level3.id"
-                    @click="goCourseLib(level3.id)"
-                    ><t-divider direction="vertical"></t-divider
-                    >{{ level3.name }}</span
-                  >
-                </div>
-              </t-col>
-            </t-row>
+              <span class="title text-trim" @click="goCourseLib(level2.id)">{{
+                level2.name
+              }}</span>
+              <div class="level3">
+                <span
+                  v-for="level3 in level2.children"
+                  :key="level3.id"
+                  @click="goCourseLib(level3.id)"
+                  >{{ level3.name }}</span
+                >
+              </div>
+            </div>
           </div>
         </t-card>
       </t-col>
-      <t-col :span="7">
-        <t-swiper :height="340">
+      <t-col :span="6">
+        <t-swiper :height="340" class="academy-swiper">
           <t-swiper-item v-for="item in adCourse" :key="item.courseId">
-            <div style="cursor: pointer" @click="gotoCourseView(item.courseId)">
+            <div
+              style="cursor: pointer; height: 340px"
+              @click="gotoCourseView(item.courseId)"
+            >
               <img
                 :src="fsURL + 'upload/getFile/college-cover/' + item.coverImg"
-                width="100%"
+                style="width: 100%; height: 100%; object-fit: cover; display: block"
+                @error="hideBrokenImage"
               />
             </div>
           </t-swiper-item>
         </t-swiper>
       </t-col>
       <t-col :span="3">
-        <t-card class="top-card personal">
-          <div class="user">
-            <div class="user-info">
-              <t-avatar
-                size="40px"
-                fit="fill"
-                :src="fsURL + userStore.avatar"
-              ></t-avatar>
-              <div class="user-name">
-                <span>{{ userStore.ploName }} | {{ userStore.ploNum }}</span>
-                <hr />
-                <span
-                  >{{ userStore.deptName }} | {{ userStore.groupName }}</span
-                >
-              </div>
+        <t-card class="academy-card growth-card" :body-style="{ padding: '0' }">
+          <div class="growth-user">
+            <t-avatar
+              size="52px"
+              shape="round"
+              fit="fill"
+              :src="fsURL + userStore.avatar"
+            ></t-avatar>
+            <div class="growth-user-info">
+              <span class="growth-name">{{ userStore.ploName }} · {{ userStore.ploNum }}</span>
+              <span class="growth-dept">{{ userStore.deptName }} | {{ userStore.groupName }}</span>
             </div>
           </div>
-          <div class="panel-title">个人学习面板</div>
-          <div class="personal-panel">
-            <ul v-if="myPoint">
-              <li @click="router.push({ path: '/college/my' })">
-                <CalendarIcon />
-                <div class="panel-info">
-                  <span>{{ myPoint.studyNum }}</span>
-                  <hr />
-                  <span>学习计划</span>
-                </div>
-              </li>
-              <li @click="router.push({ path: '/college/my/study-record' })">
-                <ChartLineIcon />
-                <div class="panel-info">
-                  <span>{{ myPoint.signNum }}</span>
-                  <hr />
-                  <span>学习记录</span>
-                </div>
-              </li>
-              <li @click="router.push({ path: '/college/my/point-log' })">
-                <TicketIcon />
-                <div class="panel-info">
-                  <span>{{ myPoint.coin }}</span>
-                  <hr />
-                  <span>学习金币</span>
-                </div>
-              </li>
-              <li @click="router.push({ path: '/college/my/hour-log' })">
-                <TimeIcon />
-                <div class="panel-info">
-                  <span>{{ myPoint.hours }}</span>
-                  <hr />
-                  <span>学习时长</span>
-                </div>
-              </li>
-            </ul>
+          <div class="growth-title">我的成长</div>
+          <div class="growth-stats">
+            <div v-if="myPoint" class="growth-grid">
+              <div class="growth-item" @click="router.push({ path: '/college/my' })">
+                <CalendarIcon class="growth-icon" />
+                <div class="growth-num">{{ myPoint.studyNum }}</div>
+                <div class="growth-label">学习计划</div>
+              </div>
+              <div class="growth-item" @click="router.push({ path: '/college/my/study-record' })">
+                <ChartLineIcon class="growth-icon" />
+                <div class="growth-num">{{ myPoint.signNum }}</div>
+                <div class="growth-label">学习记录</div>
+              </div>
+              <div class="growth-item" @click="router.push({ path: '/college/my/point-log' })">
+                <TicketIcon class="growth-icon" />
+                <div class="growth-num">{{ myPoint.coin }}</div>
+                <div class="growth-label">学习金币</div>
+              </div>
+              <div class="growth-item" @click="router.push({ path: '/college/my/hour-log' })">
+                <TimeIcon class="growth-icon" />
+                <div class="growth-num">{{ myPoint.hours }}</div>
+                <div class="growth-label">学习时长</div>
+              </div>
+            </div>
+            <t-empty v-else description="暂无学习数据" :image-size="40" />
           </div>
         </t-card>
       </t-col>
@@ -152,20 +133,9 @@
     <CourseCommand></CourseCommand>
     <TeacherList></TeacherList>
     <UserList :userList="userList"></UserList>
-    <div
-      style="
-        display: flex;
-        justify-content: center;
-        color: #999;
-        font-size: 14px;
-        width: 100%;
-        text-align: center;
-        margin-top: 20px;
-      "
-    >
-      本网站由武汉营运中心业务管理室维护<br />CopyRight© 2020-{{
-        new Date().getFullYear()
-      }}, All Right Reserved
+    <div class="academy-footer">
+      本网站由武汉营运中心业务管理室维护
+      <br />CopyRight© 2020-{{ new Date().getFullYear() }}, All Right Reserved
     </div>
   </div>
 </template>
@@ -184,7 +154,13 @@ import CourseCommand from '../course/command.vue'
 const router = useRouter()
 const userStore = useUserStore()
 
+// 展示类文件统一走 HTTPS 文件管理地址，避免混合内容被浏览器拦截
 const fsURL = import.meta.env.VITE_FILE_BASE_URL
+
+// 封面缺失时隐藏破图图标，避免影响轮播区域
+const hideBrokenImage = (e) => {
+  e.target.style.display = 'none'
+}
 const nvlDetailShowFlag = ref(false)
 const tree = ref([])
 const curTreeDetail = ref({})
@@ -237,156 +213,254 @@ onMounted(() => {
 </script>
 
 <style lang="less" scoped>
-.container {
-  padding-left: calc((100vw - 1240px) / 2);
-  max-width: 1200px;
+.academy-home {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
-.top-card {
+
+/* 分类面板 */
+.cat-panel {
   height: 340px;
-}
-.personal {
-  .user {
-    height: 110px;
-    width: 100%;
-background-color: #283138;
-    vertical-align: top;
-    text-align: center;
-    .user-info {
-      font-size: 12px;
-      color: #fff;
-      line-height: 120px;
-      .user-name {
-        display: inline-block;
-        text-align: left;
-        margin-left: 10px;
-        line-height: 1.3;
-      }
-    }
-  }
-  .panel-title {
-    width: 150px;
-    height: 40px;
-background-color: #9b2b23;
-    border-radius: 8px 8px 0px 0px;
-    line-height: 40px;
-    color: #fff;
-    font-weight: blod;
-    margin: -20px auto;
-    text-align: center;
-  }
-  .personal-panel {
-    margin-top: 40px;
-    width: 100%;
-    text-align: center;
-    ul {
-      width: 100%;
-      list-style: none;
-      padding-left: 0;
-      li:nth-child(1) {
-background-color: #e9f8db;
-        .t-icon {
-          color: #79ce2e;
-        }
-      }
-      li:nth-child(2) {
-background-color: #d9ecff;
-        .t-icon {
-          color: #409eff;
-        }
-      }
-      li:nth-child(3) {
-background-color: #e0fff7;
-        .t-icon {
-          color: #60debc;
-        }
-      }
-      li:nth-child(4) {
-background-color: #fef2d3;
-        .t-icon {
-          color: #ff8402;
-        }
-      }
-      li {
-        cursor: pointer;
-        height: 45px;
-        width: 100px;
-        margin: 0 0 15px 10px;
-        float: left;
-        .t-icon {
-          font-size: 25px;
-          float: left;
-          margin: 8px 10px 0 5px;
-        }
-        .panel-info {
-          padding-top: 3px;
-          font-size: 10px;
-          line-height: 1;
-          float: left;
-          color: #666;
-        }
-      }
-    }
-  }
-}
-.text-trim {
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  position: relative;
 }
+
+.cat-item {
+  border-top: 1px dashed rgba(255, 255, 255, 0.18);
+  padding-top: 4px;
+}
+
+.nvl {
+  color: #fff;
+  cursor: pointer;
+  padding: 8px 6px 4px;
+  border-radius: 6px;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .nvl-title {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 1px;
+  }
+
+  .nvl-label {
+    font-size: 11px;
+    margin-top: 6px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+    span {
+      margin-right: 8px;
+      color: rgba(255, 255, 255, 0.66);
+      display: inline-block;
+      cursor: pointer;
+
+      &:hover {
+        color: var(--academy-gold-2);
+      }
+    }
+  }
+}
+
+.cat-more {
+  position: absolute;
+  right: 12px;
+  bottom: 10px;
+  font-size: 12px;
+  line-height: 20px;
+}
+
+/* 轮播 */
+.academy-swiper {
+  border-radius: var(--academy-radius);
+  overflow: hidden;
+  box-shadow: var(--academy-shadow-sm);
+}
+
+/* 成长卡片 */
+.growth-card {
+  height: 340px;
+  overflow: hidden;
+}
+
+.growth-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 16px 16px;
+  background: linear-gradient(120deg, #10273e, var(--academy-navy) 70%);
+}
+
+.growth-user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+
+  .growth-name {
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  .growth-dept {
+    color: rgba(255, 255, 255, 0.66);
+    font-size: 12px;
+  }
+}
+
+.growth-title {
+  display: inline-block;
+  margin: -12px auto 0 16px;
+  padding: 5px 18px;
+  border-radius: 0 0 10px 10px;
+  background: linear-gradient(90deg, var(--academy-gold), var(--academy-gold-2));
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 2px;
+}
+
+.growth-stats {
+  padding: 18px 16px;
+}
+
+.growth-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.growth-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 10px 4px;
+  border: 1px solid var(--academy-line);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    border-color: var(--academy-gold);
+    box-shadow: var(--academy-shadow-sm);
+  }
+}
+
+.growth-item:nth-child(1) .growth-icon {
+  color: #4caf50;
+}
+.growth-item:nth-child(2) .growth-icon {
+  color: var(--academy-navy-2);
+}
+.growth-item:nth-child(3) .growth-icon {
+  color: #2bb3a3;
+}
+.growth-item:nth-child(4) .growth-icon {
+  color: #e8923a;
+}
+
+.growth-icon {
+  font-size: 22px;
+}
+
+.growth-num {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--academy-ink);
+  line-height: 1.2;
+}
+
+.growth-label {
+  font-size: 12px;
+  color: var(--academy-muted);
+}
+
+/* 分类悬停弹层 */
 .nvl-detail {
   height: 340px;
-  width: 720px;
-background-color: #fff;
+  width: 700px;
+  background-color: #fff;
   overflow: auto;
   color: #000;
   position: absolute;
-  left: 242px;
+  left: 284px;
   top: 0;
-  z-index: 10;
+  z-index: 20;
+  box-sizing: border-box;
+  padding: 16px 20px;
+  border: 1px solid var(--td-component-stroke);
+  border-radius: 0 var(--academy-radius) var(--academy-radius) 0;
+  box-shadow: var(--academy-shadow);
+
+  h3 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0 0 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--td-component-stroke);
+  }
+
   .nvl-title-color {
-    width: 5px;
-    border: 10px solid rgb(154 27 27);
-    display: inline;
-    margin: 0 10px 0 10px;
+    width: 4px;
+    height: 16px;
+    background: linear-gradient(180deg, var(--academy-gold-2), var(--academy-gold));
+    border-radius: 2px;
+    display: inline-block;
   }
+
   .nvl-level2 {
-    text-align: left;
-    margin-left: 30px;
-    margin-top: 10px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin: 0 0 10px;
     cursor: pointer;
+
     .title {
-      width: 90px;
-      display: inline-block;
+      flex: none;
+      width: 80px;
+      font-weight: 500;
+      color: var(--td-text-color-primary);
+      &:hover {
+        color: var(--td-brand-color);
+      }
     }
+
     .level3 {
-      margin-left: 20px;
-      display: inline-block;
-      font-size: 14px;
-      color: #999;
+      flex: 1;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 14px;
+      font-size: 13px;
+      color: var(--td-text-color-secondary);
+      span {
+        cursor: pointer;
+        &:hover {
+          color: var(--td-brand-color);
+        }
+      }
     }
   }
 }
-.nvl {
-  color: #fff;
-  height: 60px;
-  margin-bottom: 10px;
-  cursor: pointer;
-  padding: 7px 10px 0 10px;
-  .nvl-title {
-    padding-top: 10px;
-  }
-  .nvl-label {
-    font-size: 10px;
-    width: 100%;
-    margin-top: 10px;
-    span {
-      margin-right: 10px;
-      color: #ccc;
-      display: inline-block;
-    }
-  }
-}
-:deep(.t-card__body) {
-  padding: 0;
+
+/* 页脚 */
+.academy-footer {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  color: var(--academy-muted);
+  font-size: 13px;
+  line-height: 1.8;
+  padding: 8px 0 4px;
 }
 </style>

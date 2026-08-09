@@ -1,0 +1,289 @@
+/* ============================================
+ * A6魔法学院 主题样式（作用于 .academy 域内）
+ * 设计方向：数字学院 —— 深学院蓝 + 学术金
+ * ============================================ */
+.academy {
+  /* 主题变量 */
+  --academy-navy: #14324e;
+  --academy-navy-2: #1d4468;
+  --academy-navy-3: #0f2a40;
+  --academy-gold: #c9a227;
+  --academy-gold-2: #e0c35c;
+  --academy-gold-light: #f6eed4;
+  --academy-ink: #1f2a37;
+  --academy-muted: #6b7a8c;
+  --academy-bg: #f4f6f9;
+  --academy-surface: #ffffff;
+  --academy-line: #e6ebf1;
+  --academy-radius: 12px;
+  --academy-radius-sm: 8px;
+  --academy-shadow: 0 6px 24px rgba(20, 50, 78, 0.08);
+  --academy-shadow-sm: 0 2px 8px rgba(20, 50, 78, 0.06);
+
+  /* 将 TDesign 品牌色映射为学院蓝，学院内按钮/链接/选中态统一 */
+  --td-brand-color: var(--academy-navy);
+  --td-brand-color-hover: var(--academy-navy-2);
+  --td-brand-color-active: var(--academy-navy-3);
+  --td-brand-color-light: rgba(20, 50, 78, 0.08);
+  --td-brand-color-focus: rgba(20, 50, 78, 0.18);
+
+  min-height: 100vh;
+  background-color: var(--academy-bg);
+  color: var(--academy-ink);
+  font-size: 14px;
+}
+
+/* 顶部导航 */
+.academy-header {
+  position: relative;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: linear-gradient(120deg, #10273e 0%, var(--academy-navy) 55%, #1c4a70 100%);
+  color: #fff;
+  box-shadow: 0 2px 12px rgba(16, 39, 62, 0.25);
+}
+
+.academy-header .academy-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: 28px;
+  height: 100%;
+}
+
+.academy-brand .academy-logo {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--academy-gold-2), var(--academy-gold));
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 700;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+
+.academy-brand .academy-title {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  color: #fff;
+}
+
+.academy-brand .academy-sub {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: 4px;
+  margin-left: 4px;
+}
+
+.academy-nav {
+  height: 100%;
+}
+
+.academy-nav .t-head-menu {
+  background: transparent;
+}
+
+.academy-nav .t-head-menu__inner {
+  background: transparent;
+}
+
+.academy-nav .t-menu__item {
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 16px;
+  position: relative;
+  transition: color 0.2s ease;
+}
+
+.academy-nav .t-menu__item:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.academy-nav .t-menu__item.t-is-active {
+  color: var(--academy-gold-2);
+  background: transparent;
+}
+
+.academy-nav .t-menu__item.t-is-active::after {
+  content: "";
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 6px;
+  height: 3px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--academy-gold), var(--academy-gold-2));
+}
+
+/* 页面容器 */
+.academy-main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 88px 16px 40px;
+}
+
+/* 通用卡片 */
+.academy-card {
+  background: var(--academy-surface);
+  border: 1px solid var(--academy-line);
+  border-radius: var(--academy-radius);
+  box-shadow: var(--academy-shadow-sm);
+}
+
+.academy-card .t-card__body {
+  padding: 20px;
+}
+
+/* 章节标题（金色竖条） */
+.academy-section-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--academy-ink);
+  margin: 0 0 16px;
+}
+
+.academy-section-title::before {
+  content: "";
+  width: 4px;
+  height: 18px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, var(--academy-gold-2), var(--academy-gold));
+}
+
+/* 深色面板（分类/个人面板等） */
+.academy-panel {
+  background: linear-gradient(160deg, #183a5a 0%, var(--academy-navy) 70%, #10273e 100%);
+  color: #fff;
+  border-radius: var(--academy-radius);
+  box-shadow: var(--academy-shadow);
+}
+
+/* 分页对齐 */
+.academy-pagination {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+/* 空态与提示 */
+.academy-empty {
+  padding: 48px 0;
+}
+
+/* 课程/讲师卡片通用 */
+.academy-course-card {
+  cursor: pointer;
+  overflow: hidden;
+  border: 1px solid var(--academy-line);
+  border-radius: var(--academy-radius);
+  background: var(--academy-surface);
+  box-shadow: var(--academy-shadow-sm);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.academy-course-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--academy-shadow);
+}
+
+.academy-course-card .cover-wrap {
+  position: relative;
+  overflow: hidden;
+}
+
+.academy-course-card .cover-wrap img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.academy-course-card:hover .cover-wrap img {
+  transform: scale(1.04);
+}
+
+.academy-course-card .cover-tag {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
+
+/* 轮播指示条：白色圆角条，激活态金色（普通 CSS，使用后代选择器） */
+.academy-swiper .t-swiper__navigation-bars .t-swiper__navigation-item span {
+  display: block;
+  width: 14px;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.72);
+  transition: width 0.2s ease, background 0.2s ease;
+}
+
+.academy-swiper .t-swiper__navigation-bars .t-swiper__navigation-item.t-is-active span {
+  width: 26px;
+  background: var(--academy-gold);
+}
+
+.academy-course-card .info {
+  padding: 14px 16px 16px;
+}
+
+.academy-course-card .course-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--academy-ink);
+  line-height: 1.4;
+  margin-bottom: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.academy-course-card .course-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: var(--academy-muted);
+  line-height: 24px;
+}
+
+/* 响应式底线 */
+@media (max-width: 768px) {
+  .academy-main {
+    padding: 16px 10px 32px;
+  }
+}
+
+/* 路由切换过渡（克制的淡入上移） */
+.academy-fade-enter-active,
+.academy-fade-leave-active {
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.academy-fade-enter-from {
+  opacity: 0;
+  transform: translateY(6px);
+}
+
+.academy-fade-leave-to {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .academy-course-card,
+  .academy-course-card .cover-wrap img,
+  .academy-fade-enter-active,
+  .academy-fade-leave-active {
+    transition: none;
+  }
+}

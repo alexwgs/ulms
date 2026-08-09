@@ -1,6 +1,10 @@
 <template>
-  <t-card class="box-card">
-    <div @back="() => router.back()" content="我的收藏">
+  <t-card class="management-card">
+    <div class="sub-page-header">
+      <t-button theme="default" variant="text" @click="router.back()">
+        
+      返回</t-button>
+      <span class="sub-page-title">我的收藏</span>
     </div>
     <t-divider></t-divider>
     <div class="text item">
@@ -8,7 +12,7 @@
         <TableColumn colKey="artical.articalType" label="类型" width="100">
           <template #default="scope">
             <t-tag v-if="scope.row.artical && 'articalType' in scope.row.artical" size="small"
-              :theme="scope.row.artical.articalType == 1 ? 'danger' : 'info'" effect="plain">{{
+              :theme="scope.row.artical.articalType == 1 ? 'danger' : 'default'" variant="light">{{
                 dictStore.getDictName('cyt_artical_type', scope.row.artical.articalType) }}</t-tag>
           </template>
         </TableColumn>
@@ -22,7 +26,7 @@
           </template>
         </TableColumn>
       </CustomTable>
-      <t-pagination @current-change="handleCurrentChange" v-model:current="currentPage"
+      <t-pagination @current-change="handleCurrentChange" v-model="currentPage"
         :page-size="queryInfo.pageSize" :total="total">
       </t-pagination>
     </div>
@@ -113,7 +117,7 @@ const handleCurrentChange = (page) => {
 </script>
 
 <style lang="less" scoped>
-.box-card {
+.management-card {
   height: calc(100vh - 130px);
 }
 </style>

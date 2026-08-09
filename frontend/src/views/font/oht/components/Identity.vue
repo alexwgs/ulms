@@ -6,7 +6,7 @@
     <t-form>
       <t-form-item label="今日身份" name="type">
         <t-checkbox-group v-model="identityArry" size="small" :max="2">
-          <t-checkbox value="" @change="noIdentity" border>无身份</t-checkbox>
+          <t-checkbox value="" @change="noIdentity">无身份</t-checkbox>
           <t-checkbox v-for="item in identityList" :key="item.id" :disabled="disabledFlag" :value="item.statusName"
             border></t-checkbox>
         </t-checkbox-group>

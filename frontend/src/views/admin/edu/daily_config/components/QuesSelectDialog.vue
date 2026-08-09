@@ -5,11 +5,7 @@
     width="50%"
     :close-on-overlay-click="false"
   >
-    <t-input
-      placeholder="输入要搜索的内容"
-      size="small"
-      v-model="quesQuerInfo.query"
-    >
+    <t-input-adornment>
       <template #prepend>
         <t-select
           v-model="quesQuerInfo.querytype"
@@ -22,9 +18,10 @@
         </t-select>
       </template>
       <template #append>
-        <t-button size="small" @click="getTableList"><template #icon><DynamicIcon name="search" /></template></t-button>
+        <t-button variant="outline" theme="primary" size="small" @click="getTableList">搜索</t-button>
       </template>
-    </t-input>
+      <t-input placeholder="输入要搜索的内容" size="small" v-model="quesQuerInfo.query"></t-input>
+    </t-input-adornment>
     <CustomTable rowKey="id" :data="questionTable" height="400px">
       <TableColumn property="quesStem" label="题干"></TableColumn>
       <TableColumn property="quesStem" label="操作" width="80">

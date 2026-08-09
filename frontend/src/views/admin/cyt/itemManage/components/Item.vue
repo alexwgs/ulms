@@ -10,14 +10,14 @@
               <t-tag
                 v-if="artical[item.field] == item.val"
                 :theme="item.type"
-                effect="dark"
+                variant="light"
                 size="small"
               >
                 {{ item.label }}
               </t-tag>
             </span>
             <div class="artical-icon" v-if="artical.user != undefined">
-              <span style="color: #909399; font-size: 14px; padding-right: 10px"
+              <span style="color: var(--td-text-color-placeholder); font-size: 14px; padding-right: 10px"
                 >发布人：{{ artical.user.ploName }} &emsp;|&emsp;发布时间：{{
                   artical.pubDate
                 }}</span
@@ -47,9 +47,9 @@
               <div class="author-info">
                 <span
                   >{{
-                    dictStore.dictList.cyt_item_member.filter(
+                    (dictStore.dictList?.cyt_item_member || []).filter(
                       (item) => item.code == member.role
-                    )[0].codeval
+                    )[0]?.codeval
                   }}：{{ member.user.ploName }}/{{ member.user.ploNum }}</span
                 >
                 <p>{{ member.describe }}</p>
@@ -57,7 +57,7 @@
             </div>
           </div>
           <div v-else>
-            <t-button theme="primary" style="width: 100%" plain
+            <t-button theme="primary" style="width: 100%" variant="outline"
               >待认领</t-button
             >
           </div>
@@ -69,19 +69,20 @@
               :key="index"
               size="medium"
               @click="downloadFile(fsURL + file.path)"
-              round
+              shape="round"
               >{{ file.name }}</t-button
             >
           </p>
           <div class="artical-operations">
-            <t-button theme="primary" disabled icon="iconfont iconzan1" round
+            <t-button theme="primary" disabled shape="round"
+              ><template #icon><i class="iconfont iconzan1"></i></template
               >&emsp;点 赞&emsp;{{ artical.likeNum }}</t-button
             >
             <t-button
               theme="primary"
               disabled
-              icon="iconfont iconshoucang1"
-              round
+              shape="round"
+              ><template #icon><i class="iconfont iconshoucang1"></i></template
               >&emsp; 收 藏&emsp;{{ artical.collectNum }}</t-button
             >
           </div>
@@ -104,9 +105,9 @@
                 <t-card>
                   <h4>
                     {{
-                      dictStore.dictList.cyt_item_type.filter(
+                      (dictStore.dictList?.cyt_item_type || []).filter(
                         (item) => item.code == progress.type
-                      )[0].codeval
+                      )[0]?.codeval
                     }}
                   </h4>
                   <p>{{ progress.content }}</p>
@@ -120,7 +121,7 @@
                       :key="index"
                       size="small"
                       @click="downloadFile(fsURL + file.path)"
-                      round
+                      shape="round"
                       >{{ file.name }}</t-button
                     >
                   </p>
@@ -133,7 +134,7 @@
           <t-divider content-position="center"> 评 论 </t-divider>
           <t-divider>
             <t-pagination
-              v-model:current="currentPage"
+              v-model="currentPage"
               @current-change="handleCurrentChange"
               :page-size="commnetQueryInfo.pageSize"
 
@@ -175,12 +176,13 @@
                 <t-button
                   size="small"
                   theme="danger"
-                  icon="iconfont iconxiaoxi"
                   @click="deleteCommentHandler(comment.id)"
                 >
+                  <template #icon><i class="iconfont iconxiaoxi"></i></template>
                   删除评论</t-button
                 >
-                <t-button disabled size="small" icon="iconfont iconzan1"
+                <t-button disabled size="small"
+                  ><template #icon><i class="iconfont iconzan1"></i></template
                   >* {{ comment.likeNum }}</t-button
                 >
               </div>
@@ -241,6 +243,7 @@ const dictStore = useDictStore()
 const route = useRoute()
 
 // 从环境变量获取文件服务URL
+// 展示类文件统一走 HTTPS 文件管理地址，避免混合内容被浏览器拦截
 const fsURL = import.meta.env.VITE_FILE_BASE_URL
 
 const id = ref(route.params.id) // 获取传递的参数
@@ -273,7 +276,7 @@ const colors = [
   { color: '#f56c6c', percentage: 20 },
   { color: '#e6a23c', percentage: 40 },
   { color: '#5cb87a', percentage: 60 },
-  { color: '#1989fa', percentage: 80 },
+  { color: '#409eff', percentage: 80 },
   { color: '#6f7ad3', percentage: 100 }
 ]
 
@@ -390,12 +393,12 @@ onMounted(() => {
 <style lang="less" scoped>
 .view-container {
   height: 100%;
--color: #eaedf1;
+background-color: var(--td-bg-color-page);
 }
 
 .artical-content {
   padding: 20px;
--color: #fff;
+background-color: #fff;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
 
@@ -407,7 +410,7 @@ onMounted(() => {
     font-size: 16px;
 
     font {
-      color: #797979;
+      color: var(--td-text-color-secondary);
     }
   }
 }
@@ -433,14 +436,14 @@ onMounted(() => {
   box-sizing: border-box;
   border-radius: 4px;
   position: relative;
--color: #fff;
+background-color: #fff;
   overflow: hidden;
   opacity: 1;
   display: flex;
   align-items: center;
   transition: opacity 0.2s;
--color: #f4f4f5;
-  color: #909399;
+background-color: var(--td-bg-color-secondarycontainer);
+  color: var(--td-text-color-placeholder);
   margin-top: 15px;
   margin-bottom: 15px;
 
@@ -466,7 +469,7 @@ onMounted(() => {
   display: block;
   margin-top: 10px;
   padding: 20px 0 20px 34px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--td-component-stroke);
   position: relative;
 
   .comment-btn {
@@ -503,7 +506,7 @@ onMounted(() => {
       top: 0;
       font-size: 12px;
       line-height: 24px;
-      color: #999;
+      color: var(--td-text-color-secondary);
     }
   }
 
@@ -520,7 +523,7 @@ onMounted(() => {
     margin-bottom: 15px;
     position: relative;
     font-size: 14px;
-    color: #999;
+    color: var(--td-text-color-secondary);
   }
 
   .reply {
@@ -533,7 +536,7 @@ onMounted(() => {
     color: #666;
     word-break: break-word;
     margin: 10px;
--color: #fff;
+background-color: #fff;
   }
 }
 </style>

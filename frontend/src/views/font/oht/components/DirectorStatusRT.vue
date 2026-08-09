@@ -77,7 +77,7 @@
         <template #default="scope">
           <t-tag
             :theme="scope.row.ohtStatus === 1 ? 'success' : 'danger'"
-            effect="plain"
+            variant="light"
             >{{ scope.row.ohtStatus === 1 ? '可接单' : '不可接单' }}</t-tag
           >
         </template>
@@ -157,12 +157,12 @@ const counted = () => {
   }, 1000)
 }
 
-const filterFloor = (value, row, column) => {
-  return row.station.floorNum === value
+const filterFloor = (value, row) => {
+  return String(row.station?.floorNum) === String(value)
 }
 
 const filterDept = (value, row) => {
-  return row.user.deptName === value
+  return String(row.user?.deptName) === String(value)
 }
 
 // 生命周期

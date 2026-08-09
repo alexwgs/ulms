@@ -2,10 +2,12 @@
   <div class="container">
     <t-row :gutter="15" style="height: 300px">
       <t-col :span="5">
-        <img :src="fsURL + 'upload/getFile/college-cover/' + course.coverImg" width="100%" height="300px" />
+        <div class="course-cover">
+        <img :src="fsURL + 'upload/getFile/college-cover/' + course.coverImg" width="100%" height="300px" @error="hideBrokenImage" />
+      </div>
       </t-col>
       <t-col :span="7">
-        <t-card style="height: 300px">
+        <t-card class="academy-card" style="height: 300px">
           <t-descriptions :title="course.courseName" :column="2" bordered>
             <t-descriptions-item label="课程类型">{{
               course.teachMethod == 2 ? '任务课程' : '常规课程'
@@ -20,7 +22,7 @@
             </t-descriptions-item>
             <t-descriptions-item label="课程积分">
               <t-icon>
-                <Ticket />
+                <TicketIcon />
               </t-icon> {{ course.coin }}
             </t-descriptions-item>
             <t-descriptions-item label="授课对象">{{
@@ -54,14 +56,14 @@
     <t-row :gutter="15" style="margin-top: 15px">
       <t-col :span="9">
         <t-card class="main-card">
-          <t-tabs v-model="tabActive" @change="tabChange">
-            <t-tab-panel label="介绍" name="intro">
+          <t-tabs v-model="tabActive" @change="tabChange" class="academy-tabs">
+            <t-tab-panel label="介绍" value="intro">
               <t-row :gutter="10">
-                <t-col :span="4"><t-tag :theme="course.ifExam === 1 ? 'danger' : 'danger'" effect="plain">{{
+                <t-col :span="4"><t-tag :theme="course.ifExam === 1 ? 'danger' : 'danger'" variant="light">{{
                   course.ifExam === 1 ? '需要考试' : '无需考试' }}</t-tag></t-col>
-                <t-col :span="4"><t-tag :theme="course.ifEval === 1 ? 'danger' : 'danger'" effect="plain">{{
+                <t-col :span="4"><t-tag :theme="course.ifEval === 1 ? 'danger' : 'danger'" variant="light">{{
                   course.ifEval === 1 ? '需要评价' : '无需评价' }}</t-tag></t-col>
-                <t-col :span="4"><t-tag v-if="course.evalDate != 0">{{ course.evalDate }}天内完成</t-tag></t-col>
+                <t-col :span="4"><t-tag v-if="course.evalDate != 0" variant="light">{{ course.evalDate }}天内完成</t-tag></t-col>
               </t-row>
               <div style="margin-top: 10px" v-html="course.courseDes"></div>
               <div class="menu">
@@ -78,10 +80,10 @@
                 </t-timeline>
               </div>
             </t-tab-panel>
-            <t-tab-panel label="学习情况" name="courseStudy">
+            <t-tab-panel label="学习情况" value="courseStudy">
               <ViewCourseStudy ref="viewCourseStudyRef" height="600px" width="700px"></ViewCourseStudy>
             </t-tab-panel>
-            <t-tab-panel label="评论" name="comment">
+            <t-tab-panel label="评论" value="comment">
               <div class="comment" v-for="(item, index) in evaluate" :key="index">
                 <div class="comment-avatar">
                   <div class="avartar-box-small">
@@ -121,8 +123,8 @@
           </div>
           <img v-else :src="fsURL + 'upload/getFile/college-avatar/' + teacher.avatar" class="image" width="100%" />
           <div style="padding: 14px">
-            <t-tag effect="plain">{{ teacher.ploName }}</t-tag>
-            <t-tag v-if="teacher.skillType">{{ skillType[teacher.skillType]?.label
+            <t-tag variant="light">{{ teacher.ploName }}</t-tag>
+            <t-tag v-if="teacher.skillType" variant="light">{{ skillType[teacher.skillType]?.label
             }}{{ skillName[teacher.skillName]?.label }}</t-tag>
             <div>
               <t-rate v-if="teacher.score > 0" style="display: inline-block; padding-top: 10px" v-model="teacher.score"
@@ -130,7 +132,7 @@
             </div>
             <div style="
                 font-size: 12px;
-                color: #999;
+                color: var(--td-text-color-secondary);
                 height: 50px;
                 margin-top: 5px;
                 overflow: hidden;
@@ -160,7 +162,13 @@ import { httpInstance } from '@/utils/request'
 const route = useRoute()
 const router = useRouter()
 const courseId = route.params.courseId // 注意是 params，不是 query
+// 展示类文件统一走 HTTPS 文件管理地址，避免混合内容被浏览器拦截
 const fsURL = import.meta.env.VITE_FILE_BASE_URL
+
+// 封面缺失时隐藏破图图标
+const hideBrokenImage = (e) => {
+  e.target.style.display = 'none'
+}
 
 const course = ref({})
 const teacher = ref({})
@@ -234,10 +242,10 @@ const getEvaluate = async () => {
   total.value = res.data.total
 }
 
-const tabChange = (tab, e) => {
-  if (tab.props.name === 'comment') {
+const tabChange = (value) => {
+  if (value === 'comment') {
     getEvaluate()
-  } else if (tab.props.name === 'courseStudy') {
+  } else if (value === 'courseStudy') {
     viewCourseStudyRef.value?.init(courseId)
   }
 }
@@ -274,8 +282,8 @@ onMounted(() => {
 
 <style lang="less" scoped>
 .container {
-  padding-left: calc((100vw - 1240px) / 2);
   max-width: 1200px;
+  margin: 0 auto;
 }
 
 .main-card {
@@ -287,9 +295,9 @@ onMounted(() => {
     .menu-title {
       margin-bottom: 15px;
       line-height: 35px;
-      padding-left: 10px;
-background-color: #f5f5f5;
-      border-left: 10px solid #9b2b23;
+      padding-left: 10px;;
+      border-left: 4px solid var(--academy-gold);
+      border-radius: 2px;
     }
   }
 }
@@ -304,7 +312,7 @@ background-color: #f5f5f5;
   display: block;
   margin-top: 10px;
   padding: 20px 0 20px 34px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--td-component-stroke);
   position: relative;
 
   .comment-btn {
@@ -342,7 +350,7 @@ background-color: #f5f5f5;
       top: 0;
       font-size: 12px;
       line-height: 24px;
-      color: #999;
+      color: var(--td-text-color-secondary);
     }
   }
 
@@ -372,5 +380,28 @@ background-color: #f5f5f5;
     margin: 10px;
 background-color: #fff;
   }
+}
+
+.course-cover {
+  border-radius: var(--academy-radius);
+  overflow: hidden;
+  box-shadow: var(--academy-shadow-sm);
+  height: 300px;
+}
+
+.course-cover img {
+  object-fit: cover;
+}
+
+.academy-tabs :deep(.t-tabs__nav-item.t-is-active) {
+  color: var(--academy-navy);
+}
+
+.academy-tabs :deep(.t-tabs__bar) {
+  background: var(--academy-gold);
+}
+
+.main-card :deep(.t-card__body) {
+  padding: 20px;
 }
 </style>

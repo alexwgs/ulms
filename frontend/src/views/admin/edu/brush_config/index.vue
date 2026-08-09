@@ -1,13 +1,27 @@
 <template>
   <div>
     <t-card class="main-container">
-      <t-row style="padding-bottom: 10px" :gutter="15">
-        <t-col :span="7">
-          <t-input
-            placeholder="输入要搜索的内容"
+      <div class="table-toolbar">
+        <div class="toolbar-left">
+          <t-button
+            variant="outline"
+            theme="primary"
             size="small"
-            v-model="queryInfo.query"
+            @click="manageBrushConfig(null)"
+            >新增配置</t-button
           >
+          <t-button
+            variant="outline"
+            theme="primary"
+            size="small"
+            @click="
+              $refs.uploadExcelRef.show({ url: 'edu/excel/in/daily/group' })
+            "
+            >名单批量管理</t-button
+          >
+        </div>
+        <div class="toolbar-right">
+          <t-input-adornment>
             <template #prepend>
               <t-select
                 v-model="queryInfo.querytype"
@@ -19,29 +33,12 @@
               </t-select>
             </template>
             <template #append>
-              <t-button size="small"><template #icon><DynamicIcon name="search" /></template></t-button>
+              <t-button variant="outline" size="small" @click="listBrushConfigData"><template #icon><DynamicIcon name="search" /></template></t-button>
             </template>
-          </t-input>
-        </t-col>
-        <t-col :span="2">
-          <t-button
-            theme="primary"
-            size="small"
-            @click="manageBrushConfig(null)"
-            >新增配置</t-button
-          >
-        </t-col>
-        <t-col :span="2">
-          <t-button
-            theme="primary"
-            size="small"
-            @click="
-              $refs.uploadExcelRef.show({ url: 'edu/excel/in/daily/group' })
-            "
-            >名单批量管理</t-button
-          >
-        </t-col>
-      </t-row>
+            <t-input placeholder="输入要搜索的内容" size="small" v-model="queryInfo.query" style="width: 280px"></t-input>
+          </t-input-adornment>
+        </div>
+      </div>
       <CustomTable rowKey="id"
         :data="tableData"
         size="small"
@@ -87,8 +84,8 @@
           width="140"></TableColumn>
         <TableColumn colKey="libCode" label="题库" sortable width="140">
           <template #default="scope"
-            ><t-button
-              theme="primary"
+            ><t-button variant="outline"
+              theme="default"
               size="small"
               @click="manageLibCode(scope.row)"
               link
@@ -112,10 +109,10 @@
         </TableColumn>
         <TableColumn colKey="handleDate" label="操作" width="50">
           <template #default="scope">
-            <t-button
-              theme="primary" size="small"
+            <t-button variant="outline"
+              theme="default" size="small"
               @click="manageBrushConfig(scope.row)"
-              shape="circle"><template #icon><DynamicIcon name="edit" /></template></t-button>
+             >编辑</t-button>
           </template>
         </TableColumn>
       </CustomTable>
@@ -144,11 +141,11 @@
           checkable
           v-model="checkedKeys"
         >
-          <template #default="{ node }">
+          <template #label="{ node }">
             <span class="custom-tree-node">
               <span
                 >{{ node.data.libName }}
-                <t-tag v-if="node.data.libLevel === 2" size="small">{{
+                <t-tag v-if="node.data.libLevel === 2" size="small" variant="light">{{
                   node.data.quesNum
                 }}</t-tag></span
               >
@@ -157,14 +154,14 @@
         </t-tree>
       </t-card>
       <template #footer>
-        <span class="dialog-footer">
-          <t-button size="small" @click="quesLibVisible = false"
+        <t-space>
+          <t-button variant="outline" size="small" @click="quesLibVisible = false"
             >关 闭</t-button
           >
-          <t-button theme="primary" size="small" @click="libCodeUpdate()"
+          <t-button variant="outline" theme="primary" size="small" @click="libCodeUpdate()"
             >提交修改</t-button
           >
-        </span>
+        </t-space>
       </template>
     </t-dialog>
     <t-dialog
@@ -230,14 +227,14 @@
         </t-form-item>
       </t-form>
       <template #footer>
-        <span class="dialog-footer">
-          <t-button size="small" @click="brushConfigVisible = false"
+        <t-space>
+          <t-button variant="outline" size="small" @click="brushConfigVisible = false"
             >关 闭</t-button
           >
-          <t-button theme="primary" size="small" @click="configUpdate()"
+          <t-button variant="outline" theme="primary" size="small" @click="configUpdate()"
             >提交修改</t-button
           >
-        </span>
+        </t-space>
       </template>
     </t-dialog>
 

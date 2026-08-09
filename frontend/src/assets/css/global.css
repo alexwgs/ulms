@@ -7,17 +7,32 @@ body,
     margin: 0;
     padding: 0;
     width: 100%;
+    background-color: var(--td-bg-color-page);
     /* min-width: 768px; */
     min-width: 1020px;
     min-height: 600px;
 }
 
 .t-card{
-    box-shadow:  0 1px 1px rgba(0,0,0,0.15) !important;
+    box-shadow: var(--td-shadow-1) !important;
+}
+
+/* 页面卡片（.box-card / .management-card）嵌套在布局卡片内时压平，避免双重阴影/边框 */
+.box-card .box-card,
+.box-card .management-card,
+.management-card .management-card {
+    box-shadow: none !important;
+    border: none !important;
 }
 
 .t-pagination {
-    margin-top: 15px;
+    margin-top: var(--td-comp-margin-xxl);
+    justify-content: flex-end;
+}
+
+/* 表格操作列相邻按钮间距（等价 t-space） */
+.t-table .t-button + .t-button {
+    margin-left: var(--td-comp-margin-s);
 }
 
 .t-alert {
@@ -66,6 +81,7 @@ body,
 
 ::-webkit-scrollbar {
     width: 5px;
+    height: 5px;
 }
 /*定义滚动条轨道 内阴影+圆角*/
 
@@ -79,4 +95,239 @@ body,
     box-shadow: inset 0 0 6px rgba(0,0,0,.3);
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
     background-color: rgba(0, 0, 0, 0.1); 
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(0, 0, 0, 0.25);
+}
+
+/* Firefox */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+}
+
+/* ===== 统一控件尺寸（设置 → 显示设置 中切换） =====
+ * TDesign 组件大小由 --td-comp-size-* 变量驱动，这里按
+ * html[data-control-size] 把各档位收敛到同一尺寸，实现全局统一控制。 */
+html[data-control-size='small'] {
+    --td-comp-size-s: var(--td-size-8);
+    --td-comp-size-m: var(--td-size-8);
+    --td-comp-size-l: var(--td-size-8);
+    --td-comp-size-xl: var(--td-size-8);
+}
+
+html[data-control-size='medium'] {
+    --td-comp-size-xs: var(--td-size-10);
+    --td-comp-size-s: var(--td-size-10);
+    --td-comp-size-m: var(--td-size-10);
+    --td-comp-size-l: var(--td-size-10);
+    --td-comp-size-xl: var(--td-size-10);
+}
+
+html[data-control-size='large'] {
+    --td-comp-size-xs: var(--td-size-11);
+    --td-comp-size-s: var(--td-size-11);
+    --td-comp-size-m: var(--td-size-11);
+    --td-comp-size-l: var(--td-size-11);
+    --td-comp-size-xl: var(--td-size-11);
+}
+
+/* 导航菜单不跟随全局控件尺寸设置，始终使用默认高度 */
+.t-menu,
+.t-head-menu,
+.t-menu__popup,
+.t-menu__sub,
+.t-submenu,
+.t-head-menu__inner {
+    --td-comp-size-s: var(--td-size-9);
+    --td-comp-size-m: var(--td-size-10);
+    --td-comp-size-l: var(--td-size-11);
+    --td-comp-size-xl: var(--td-size-12);
+    --td-comp-size-xxxl: var(--td-size-14);
+}
+
+/* ===== 管理后台过滤条件区统一（参考 TDesign Starter 筛选列表页） =====
+ * 兼容历史页面中出现的多种过滤区容器类名，统一间距与对齐。
+ * 间距节奏：过滤区与表格、表格与分页之间统一 24px（--td-comp-margin-xxl）。 */
+.table-filter,
+.filter-row,
+.filter-card,
+.filter-section,
+.search-row {
+    margin-bottom: var(--td-comp-margin-xxl);
+}
+
+.table-filter > .t-row,
+.filter-row > .t-row,
+.filter-card > .t-row,
+.filter-section > .t-row,
+.search-row.t-row {
+    align-items: center;
+}
+
+/* 未使用 filter 类名的页面：卡片内首行视为过滤区，统一与内容区间距 */
+.t-card__body > .t-row:first-child {
+    margin-bottom: var(--td-comp-margin-xxl);
+}
+
+/* 过滤区内按钮与输入框垂直对齐，避免因边框/高度差异产生错位 */
+.table-filter .t-button,
+.filter-row .t-button,
+.filter-card .t-button,
+.filter-section .t-button,
+.search-row .t-button {
+    vertical-align: middle;
+}
+
+/* 过滤区控件铺满所在列，宽度一致（Starter 中 form-item-content 的效果） */
+.table-filter .t-col > .t-input,
+.table-filter .t-col > .t-select,
+.table-filter .t-col > .t-date-picker,
+.table-filter .t-col > .t-date-range-picker,
+.table-filter .t-col > .t-input-number,
+.table-filter .t-col > .t-cascader,
+.table-filter .t-col > .t-tree-select,
+.filter-row .t-col > .t-input,
+.filter-row .t-col > .t-select,
+.filter-row .t-col > .t-date-picker,
+.filter-row .t-col > .t-date-range-picker,
+.filter-row .t-col > .t-input-number,
+.filter-card .t-col > .t-input,
+.filter-card .t-col > .t-select,
+.filter-card .t-col > .t-date-picker,
+.filter-card .t-col > .t-date-range-picker,
+.filter-card .t-col > .t-input-number,
+.filter-section .t-col > .t-input,
+.filter-section .t-col > .t-select,
+.filter-section .t-col > .t-date-picker,
+.filter-section .t-col > .t-date-range-picker,
+.filter-section .t-col > .t-input-number,
+.search-row .t-col > .t-input,
+.search-row .t-col > .t-select,
+.search-row .t-col > .t-date-picker,
+.search-row .t-col > .t-date-range-picker,
+.search-row .t-col > .t-input-number {
+    width: 100%;
+}
+
+/* 筛选项：标签 + 控件 水平对齐（参考 Starter 基础表单/筛选列表布局） */
+.filter-item {
+    display: flex;
+    align-items: center;
+    gap: var(--td-comp-margin-s);
+}
+
+.filter-label {
+    flex: none;
+    font-size: 14px;
+    color: var(--td-text-color-secondary);
+}
+
+.filter-item .t-select,
+.filter-item .t-date-picker,
+.filter-item .t-date-range-picker {
+    flex: 1;
+    min-width: 0;
+}
+
+/* ===== 筛选表单（参考 Starter common-table 的 t-form > t-row > t-col 结构） ===== */
+.filter-form {
+    margin-bottom: var(--td-comp-margin-xxl);
+}
+
+.filter-form .t-form__controls-content .t-input,
+.filter-form .t-form__controls-content .t-select,
+.filter-form .t-form__controls-content .t-date-picker,
+.filter-form .t-form__controls-content .t-date-range-picker,
+.filter-form .t-form__controls-content .t-input-number,
+.filter-form .t-form__controls-content .t-cascader {
+    width: 100%;
+}
+
+/* 筛选表单右侧操作区（查询/重置/新增等按钮右对齐） */
+.operation-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--td-comp-margin-s);
+}
+
+/* ===== 表格页工具栏（参考 Starter 的 left-operation-container + search-input 布局） =====
+ * 用法：
+ *   <div class="table-toolbar">
+ *     <div class="toolbar-left">  按钮组 </div>
+ *     <div class="toolbar-right"> 搜索/筛选快捷区 </div>
+ *   </div> */
+.table-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--td-comp-margin-m);
+    margin-bottom: var(--td-comp-margin-xxl);
+}
+
+.toolbar-left,
+.toolbar-right {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--td-comp-margin-s);
+}
+
+/* 表格与上方区域的分隔（Starter: .table-container margin-top 24px） */
+.table-container {
+    margin-top: var(--td-comp-margin-xxl);
+}
+
+/* ===== 弹窗/表单底部按钮区统一 ===== */
+.dialog-footer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: var(--td-comp-margin-s);
+}
+
+/* 整页表单底部提交栏（参考 Starter 基础表单页 form-submit-container） */
+.form-footer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: var(--td-comp-margin-s);
+    margin-top: var(--td-comp-margin-xxl);
+    padding-top: var(--td-comp-paddingTB-xl);
+    border-top: 1px solid var(--td-component-stroke);
+}
+
+/* 表单分区标题（参考 Starter 基础表单页 form-basic-container-title） */
+.form-section-title {
+    font: var(--td-font-title-large);
+    font-weight: 400;
+    color: var(--td-text-color-primary);
+    margin: var(--td-comp-margin-xxl) 0 var(--td-comp-margin-xl);
+}
+
+/* ===== 图表卡片（仪表盘等）统一 ===== */
+.chart-card {
+    height: 100%;
+}
+
+.card-title {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+/* A6 有声等子页面返回头部 */
+.sub-page-header {
+    display: flex;
+    align-items: center;
+    gap: var(--td-comp-margin-s);
+    padding: var(--td-comp-paddingTB-m) 0;
+}
+
+.sub-page-title {
+    font: var(--td-font-title-medium);
+    font-weight: 600;
+    color: var(--td-text-color-primary);
 }

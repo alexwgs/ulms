@@ -1,6 +1,11 @@
 <template>
   <t-card>
-    <div @back="() => router.back()" content="创建新调研" />
+    <div class="sub-page-header">
+      <t-button theme="default" variant="text" @click="router.back()">
+        
+      返回</t-button>
+      <span class="sub-page-title">创建新调研</span>
+    </div>
     <div class="QN-header">
       <t-form ref="formRef" :rules="rules" :data="questionnaire" label-width="80px">
         <t-form-item label="调研标题" name="title">
@@ -333,7 +338,7 @@ const reverseQuestionList = computed(() => {
 
 .header {
   padding: 0 2rem;
-  border-bottom: solid 1px #e6e6e6;
+  border-bottom: var(--td-component-stroke);
   margin-bottom: 1rem;
 }
 
@@ -377,7 +382,7 @@ const reverseQuestionList = computed(() => {
 .QN-question {
   position: relative;
   margin: 1rem 3rem;
-  border-bottom: solid 1px #e6e6e6;
+  border-bottom: var(--td-component-stroke);
 }
 
 .QN-question {

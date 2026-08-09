@@ -102,7 +102,7 @@ const handleRemove = () => {
 // 提交上传
 const submitUpload = () => {
   if (uploadRef.value) {
-    uploadRef.value.submit()
+    uploadRef.value.uploadFiles()
   }
 }
 

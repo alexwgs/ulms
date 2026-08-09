@@ -1,33 +1,39 @@
 <template>
-  <t-card class="box-card">
-    <div class="table-filter">
-      <t-row :gutter="15">
-        <t-col :span="4">
-          <t-select size="small" v-model="params.dataType" @change="getStatusType" placeholder="类型选择">
-            <t-option label="状态" value="status"></t-option>
-            <t-option label="工作安排" value="identity"></t-option>
-          </t-select>
-        </t-col>
-        <t-col :span="4">
-          <t-select size="small" v-model="params.levelGrade" @change="getStatusType" placeholder="级别选择">
-            <t-option label="全部" value=""></t-option>
-            <t-option label="一级菜单" :value="1"></t-option>
-            <t-option label="二级菜单" :value="2"></t-option>
-            <t-option label="三级菜单" :value="3"></t-option>
-          </t-select>
+  <t-card class="management-card">
+    <t-form :data="params" label-width="80px" colon class="filter-form">
+      <t-row :gutter="[24, 24]">
+        <t-col :span="3">
+          <t-form-item label="类型" name="dataType">
+            <t-select size="small" v-model="params.dataType" @change="getStatusType" placeholder="请选择">
+              <t-option label="状态" value="status"></t-option>
+              <t-option label="工作安排" value="identity"></t-option>
+            </t-select>
+          </t-form-item>
         </t-col>
         <t-col :span="3">
-          <t-select size="small" v-model="params.status" @change="getStatusType" placeholder="状态选择">
-            <t-option label="生效" :value="1"></t-option>
-            <t-option label="失效" :value="0"></t-option>
-          </t-select>
+          <t-form-item label="级别" name="levelGrade">
+            <t-select size="small" v-model="params.levelGrade" @change="getStatusType" placeholder="全部">
+              <t-option label="全部" value=""></t-option>
+              <t-option label="一级菜单" :value="1"></t-option>
+              <t-option label="二级菜单" :value="2"></t-option>
+              <t-option label="三级菜单" :value="3"></t-option>
+            </t-select>
+          </t-form-item>
         </t-col>
         <t-col :span="3">
-          <t-button size="small" theme="primary" @click="getStatusType">查询</t-button>
-          <t-button size="small" theme="primary" @click="dialog(null, 'add')">新增</t-button>
+          <t-form-item label="状态" name="status">
+            <t-select size="small" v-model="params.status" @change="getStatusType" placeholder="请选择">
+              <t-option label="生效" :value="1"></t-option>
+              <t-option label="失效" :value="0"></t-option>
+            </t-select>
+          </t-form-item>
+        </t-col>
+        <t-col :span="3" class="operation-container">
+          <t-button variant="outline" size="small" theme="primary" @click="getStatusType">查询</t-button>
+          <t-button variant="outline" size="small" theme="primary" @click="dialog(null, 'add')">新增</t-button>
         </t-col>
       </t-row>
-    </div>
+    </t-form>
     <CustomTable rowKey="id" :data="tableData" size="small" stripe height="calc(100vh - 325px)">
       <TableColumn colKey="id" label="ID"></TableColumn>
       <TableColumn colKey="pid" label="上级ID"></TableColumn>
@@ -35,7 +41,7 @@
       <TableColumn colKey="levelGrade" label="级别"></TableColumn>
       <TableColumn colKey="ohtFlag" label="接单状态">
         <template #default="scope">
-          <t-tag :theme="scope.row.ohtFlag === 0 ? 'danger' : 'success'" size="small" effect="plain">
+          <t-tag :theme="scope.row.ohtFlag === 0 ? 'danger' : 'success'" size="small" variant="light">
             {{ scope.row.ohtFlag === 0 ? '不可派单' : '可派单' }}
           </t-tag>
         </template>
@@ -43,15 +49,15 @@
       <TableColumn colKey="sort" label="排序"></TableColumn>
       <TableColumn colKey="status" label="状态">
         <template #default="scope">
-          <t-tag :theme="scope.row.status === 0 ? 'danger' : 'success'" size="small" effect="plain">
+          <t-tag :theme="scope.row.status === 0 ? 'danger' : 'success'" size="small" variant="light">
             {{ scope.row.status === 0 ? '失效' : '有效' }}
           </t-tag>
         </template>
       </TableColumn>
       <TableColumn label="操作" width="100">
         <template #default="scope">
-          <t-button theme="warning" size="small" @click="dialog(scope.row, 'update')"
-            shape="circle"><template #icon><DynamicIcon name="edit" /></template></t-button>
+          <t-button variant="outline" theme="default" size="small" @click="dialog(scope.row, 'update')"
+           >编辑</t-button>
         </template>
       </TableColumn>
     </CustomTable>
@@ -102,10 +108,10 @@
       </t-form-item>
     </t-form>
     <template #footer>
-      <div class="dialog-footer">
-        <t-button size="small" @click="closeStatusTypeDialog">取 消</t-button>
-        <t-button size="small" theme="primary" @click="submit">确 定</t-button>
-      </div>
+      <t-space>
+        <t-button variant="outline" size="small" @click="closeStatusTypeDialog">取 消</t-button>
+        <t-button variant="outline" size="small" theme="primary" @click="submit">确 定</t-button>
+      </t-space>
     </template>
   </t-dialog>
 </template>
@@ -222,20 +228,7 @@ onMounted(() => {
 </script>
 
 <style lang="less" scoped>
-.table-filter {
-  padding: 10px;
-
-  span {
-    font-size: 12px;
-    margin-left: 20px;
-  }
-
-  .t-select {
-    width: 70%;
-  }
-}
-
-.box-card {
+.management-card {
   height: calc(100vh - 190px);
   overflow: auto;
 }

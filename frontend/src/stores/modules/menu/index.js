@@ -65,7 +65,7 @@ export function mapMenusToRoutes(menuList, basePath = '') {
         name: menu.name || String(menu.id),
         meta: {
           title: menu.meta?.title || menu.name,
-          icon: menu.meta?.icon.replace('el-icon-', '') || menu.icon,
+          icon: menu.meta?.icon?.replace('el-icon-', '') || menu.icon,
           isDynamic: true
         },
         component: getComponent(menu.component)

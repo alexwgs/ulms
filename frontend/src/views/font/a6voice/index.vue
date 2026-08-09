@@ -1,9 +1,8 @@
 <template>
   <div>
     <div class="background-class"></div>
-    <t-row :gutter="20">
-        <div>
-          <t-space>
+    <div class="table-toolbar a6voice-toolbar">
+        <div class="toolbar-left">
           <t-radio-group v-model="queryInfo.category" size="small" @change="getArticalListData">
             <t-radio-button label="" value="">全部</t-radio-button>
             <t-radio-button v-for="item in articalCategoryList" :key="'2' + item.code" :label="item.codeval"
@@ -11,20 +10,17 @@
             <t-radio-button v-for="item in itemCategoryList" :key="'1' + item.code" :label="item.codeval"
               :value="'1' + item.code"></t-radio-button>
           </t-radio-group>
-          </t-space>
-            <t-space>
           <t-radio-group v-model="queryInfo.sortType" size="small" @change="changeSort">
             <t-radio-button label="最新" value="time"></t-radio-button>
             <t-radio-button label="最热" value="hot"></t-radio-button>
             <t-radio-button label="讨论最多" value="comment"></t-radio-button>
           </t-radio-group>
-            </t-space>
-          <t-space>
+        </div>
+        <div class="toolbar-right">
           <t-input size="small" placeholder="搜索帖子" v-model="queryInfo.query" @change="getArticalListData"
             style="width: 180px" :clearable="true"></t-input>
-          </t-space>
-          <t-space><t-button style="margin-left: 10px" size="small" @click="getArticalListData">刷新</t-button></t-space>
-          <t-space><t-dropdown style="margin-left: 10px" @click="goto" type="primary" size="small">
+          <t-button size="small" @click="getArticalListData">刷新</t-button>
+          <t-dropdown @click="goto" type="primary" size="small">
             <t-button theme="primary" size="small">
               发帖
             </t-button>
@@ -36,9 +32,8 @@
               </t-dropdown-menu>
             </template>
           </t-dropdown>
-          </t-space>
         </div>
-    </t-row>
+    </div>
     <t-row :gutter="20">
       <t-col :span="8">
         <div class="infinite-list" @end-reached="load">
@@ -50,33 +45,33 @@
           </div>
           <div></div>
         </div>
-        <t-pagination style="text-align: center; margin-top: 3px" @current-change="handleCurrentChange"
-          v-model:current="currentPage" :page-size="queryInfo.pageSize"
+        <t-pagination style="justify-content: center; margin-top: var(--td-comp-margin-xxl)" @current-change="handleCurrentChange"
+          v-model="currentPage" :page-size="queryInfo.pageSize"
           :total="total">
         </t-pagination>
       </t-col>
       <t-col :span="4">
         <div class="my-handle">
           <t-row>
-            <t-col style="text-align: center" :span="3"><t-button theme="success" size="small" @click="goto('my-artical')" plain shape="circle"><template #icon><DynamicIcon name="folder-opened" /></template></t-button>
+            <t-col style="text-align: center" :span="3"><t-button theme="success" size="small" @click="goto('my-artical')" variant="outline"><template #icon><DynamicIcon name="folder-opened" /></template></t-button>
               <div class="my-menu">帖子管理</div>
             </t-col>
-            <t-col style="text-align: center" :span="3"><t-button theme="success" size="small" @click="goto('collect')" plain shape="circle"><template #icon><DynamicIcon name="star-on" /></template></t-button>
+            <t-col style="text-align: center" :span="3"><t-button theme="success" size="small" @click="goto('collect')" variant="outline"><template #icon><DynamicIcon name="star-on" /></template></t-button>
               <div class="my-menu">我的收藏</div>
             </t-col>
             <t-col style="text-align: center" :span="3">
               <t-badge :value="unreadCount === 0 ? '' : unreadCount" class="item">
-                <t-button theme="success" size="small" @click="goto('atMe')" plain shape="circle"><template #icon><DynamicIcon name="chat-round" /></template></t-button>
+                <t-button theme="success" size="small" @click="goto('atMe')" variant="outline"><template #icon><DynamicIcon name="chat-round" /></template></t-button>
               </t-badge>
               <div class="my-menu">我的消息</div>
             </t-col>
             <t-col v-if="hasPermission('cyt:item:manager')" style="text-align: center" :span="3"><t-button
-                theme="success" size="small" @click="goto('my-item')" plain shape="circle"><template #icon><DynamicIcon name="folder-opened" /></template></t-button>
+                theme="success" size="small" @click="goto('my-item')" variant="outline"><template #icon><DynamicIcon name="folder-opened" /></template></t-button>
               <div class="my-menu">项目管理</div>
             </t-col>
           </t-row>
         </div>
-        <t-card class="box-card">
+        <t-card class="management-card">
           <template #header>
             <span>《A6有声公约》</span>
           </template>
@@ -144,7 +139,7 @@ import ArticalView from './components/ArticalView.vue'
 
 const router = useRouter()
 
-const fsURL = import.meta.env.VITE_FILE_MANAGE_BASE || ''
+const fsURL = import.meta.env.VITE_FILE_BASE_URL || ''
 const weeklyHotList = ref([])
 const commentRanks = ref({})
 const currentPage = ref(1)
@@ -281,7 +276,7 @@ defineExpose({
 
 .main-handle {
   height: 25px;
-  -color: var(--td-bg-color);
+  background-color: var(--td-bg-color-container);
   border-radius: 5px;
   padding: 10px;
   margin: 0 10px 10px 10px;
@@ -289,7 +284,7 @@ defineExpose({
 
 .my-handle {
   height: 55px;
--color: var(--td-bg-color);
+  background-color: var(--td-bg-color-container);
   border-radius: 5px;
   padding: 10px;
   margin-bottom: 10px;
@@ -337,7 +332,7 @@ defineExpose({
 
 .artical-box {
   position: relative;
-  border-bottom: #dddddd solid 1px;
+  border: 1px solid var(--td-component-stroke);
 }
 
 .my-menu {

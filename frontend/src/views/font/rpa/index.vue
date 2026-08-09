@@ -1,8 +1,8 @@
 <template>
-  <t-card class="box-card" style="height: calc(100vh - 130px)">
+  <t-card class="management-card" style="height: calc(100vh - 130px)">
     <t-row :gutter="20">
       <t-col :span="8">
-        <t-card class="box-card">
+        <t-card class="management-card">
           <template #header>
             <div class="clearfix">
               <span>RPA轻工具列表</span>
@@ -17,7 +17,7 @@
             "
           >
             <div
-              v-for="item in dictStore.dictList.rpa_tool_list_category"
+              v-for="item in (dictStore.dictList?.rpa_tool_list_category || [])"
               :key="item.code"
             >
               <t-divider content-position="left">{{

@@ -1,30 +1,27 @@
 <template>
   <div>
-    <t-card class="box-card">
+    <t-card class="management-card">
       <div class="text item">
-        <div class="table-filter">
-          <t-row>
+        <t-form :data="queryInfo" label-width="80px" colon class="filter-form">
+          <t-row :gutter="[24, 24]">
             <t-col :span="3">
-              <span class="demonstration"
-                >年份
+              <t-form-item label="年份" name="dateYear">
                 <t-date-picker
                   size="small"
-                  style="width: 70%"
                   @change="getArticalList"
                   v-model="yearPicker"
                   mode="year"
                   placeholder="选择年"
                 />
-              </span>
+              </t-form-item>
             </t-col>
             <t-col :span="3">
-              <span
-                >板块
+              <t-form-item label="板块" name="category">
                 <t-select
                   size="small"
                   v-model="queryInfo.category"
                   @change="getArticalList"
-                  placeholder="请选择,默认不限制"
+                  placeholder="全部"
                 >
                   <t-option :value="-1" label="全部"></t-option>
                   <t-option
@@ -34,16 +31,15 @@
                     :value="parseInt(item.code)"
                   ></t-option>
                 </t-select>
-              </span>
+              </t-form-item>
             </t-col>
             <t-col :span="3">
-              <span
-                >状态
+              <t-form-item label="状态" name="status">
                 <t-select
                   size="small"
                   v-model="queryInfo.status"
                   @change="getArticalList"
-                  placeholder="请选择,默认不限制"
+                  placeholder="全部"
                 >
                   <t-option label="全部" value=""></t-option>
                   <t-option
@@ -53,66 +49,55 @@
                     :value="item.code"
                   ></t-option>
                 </t-select>
-              </span>
+              </t-form-item>
             </t-col>
-          </t-row>
-
-          <t-row style="padding-top: 5px">
             <t-col :span="3">
-              <span class="demonstration"
-                >置顶
+              <t-form-item label="置顶" name="topFlag">
                 <t-select
                   size="small"
                   v-model="queryInfo.topFlag"
                   @change="getArticalList"
-                  placeholder="请选择,默认不限制"
+                  placeholder="全部"
                 >
                   <t-option label="全部" value=""></t-option>
                   <t-option label="未置顶" :value="0"></t-option>
                   <t-option label="已置顶" :value="1"></t-option>
                 </t-select>
-              </span>
+              </t-form-item>
             </t-col>
             <t-col :span="3">
-              <span class="demonstration"
-                >精华
+              <t-form-item label="精华" name="eliteFlag">
                 <t-select
                   size="small"
                   v-model="queryInfo.eliteFlag"
                   @change="getArticalList"
-                  placeholder="请选择,默认不限制"
+                  placeholder="全部"
                 >
                   <t-option label="全部" value=""></t-option>
                   <t-option label="未精华" :value="0"></t-option>
                   <t-option label="已精华" :value="1"></t-option>
                 </t-select>
-              </span>
+              </t-form-item>
             </t-col>
             <t-col :span="3">
-              <span class="demonstration"
-                >广场
+              <t-form-item label="广场" name="onStage">
                 <t-select
                   size="small"
                   v-model="queryInfo.onStage"
                   @change="getArticalList"
-                  placeholder="请选择,默认不限制"
+                  placeholder="全部"
                 >
                   <t-option label="全部" value=""></t-option>
                   <t-option label="未上广场" :value="0"></t-option>
                   <t-option label="上广场" :value="1"></t-option>
                 </t-select>
-              </span>
+              </t-form-item>
             </t-col>
-            <t-col :span="3">
-              <t-button
-                size="small"
-                theme="primary"
-                style="width: 100%"@click="openNoticeEdit('new')"
-                ><template #icon><DynamicIcon name="add" /></template>发起公告</t-button
-              >
+            <t-col :span="3" class="operation-container">
+              <t-button variant="outline" size="small" theme="primary" @click="openNoticeEdit('new')"><template #icon><DynamicIcon name="add" /></template>发起公告</t-button>
             </t-col>
           </t-row>
-        </div>
+        </t-form>
 
         <CustomTable rowKey="id"
           :data="articals"
@@ -125,9 +110,9 @@
                 v-for="item in dictStore.dict.cyt_system_category"
                 size="small"
                 :key="item.code"
-                :theme="scope.row.category == 1 ? 'danger' : 'info'"
+                :theme="scope.row.category == 1 ? 'danger' : 'default'"
                 :style="scope.row.category == item.code ? '' : 'display:none'"
-                effect="plain"
+                variant="light"
                 >{{ item.codeval }}</t-tag
               >
             </template>
@@ -147,8 +132,8 @@
                 style="cursor: pointer; margin-right: 3px"
                 size="small"
                 @click="setTopAndSoOn('top', scope.row.id, scope.row.topFlag)"
-                :theme="scope.row.topFlag ? 'success' : 'info'"
-                :effect="scope.row.topFlag ? 'dark' : 'plain'"
+                :theme="scope.row.topFlag ? 'success' : 'default'"
+                variant="light"
                 >置顶</t-tag
               >
               <t-tag
@@ -157,16 +142,16 @@
                 @click="
                   setTopAndSoOn('elite', scope.row.id, scope.row.eliteFlag)
                 "
-                :theme="scope.row.eliteFlag ? 'danger' : 'info'"
-                :effect="scope.row.eliteFlag ? 'dark' : 'plain'"
+                :theme="scope.row.eliteFlag ? 'danger' : 'default'"
+                variant="light"
                 >精华</t-tag
               >
               <t-tag
                 style="cursor: pointer; margin-right: 3px"
                 size="small"
                 @click="setTopAndSoOn('stage', scope.row.id, scope.row.onStage)"
-                :theme="scope.row.onStage ? 'warning' : 'info'"
-                :effect="scope.row.onStage ? 'dark' : 'plain'"
+                :theme="scope.row.onStage ? 'warning' : 'default'"
+                variant="light"
                 >广场</t-tag
               >
             </template>
@@ -181,7 +166,7 @@
                 :key="item.code"
                 :theme="scope.row.status == 1 ? 'success' : 'warning'"
                 :style="scope.row.status == item.code ? '' : 'display:none'"
-                effect="plain"
+                variant="light"
                 >{{ item.codeval }}</t-tag
               >
             </template>
@@ -194,25 +179,15 @@
 
           <TableColumn label="操作" width="150">
             <template #default="scope">
-              <t-button
-                theme="primary"
-                size="small"
-                @click="examineItem(scope.row)"
-                >审核</t-button
-              >
-              <t-button
-                theme="warning"
-                size="small"
-                @click="openNoticeEdit(scope.row.id)"
-                >编辑</t-button
-              >
+              <t-button variant="outline" theme="primary" size="small" @click="examineItem(scope.row)">审核</t-button>
+              <t-button variant="outline" theme="warning" size="small" @click="openNoticeEdit(scope.row.id)">编辑</t-button>
             </template>
           </TableColumn>
         </CustomTable>
 
         <t-pagination
           @current-change="handleCurrentChange"
-          v-model:current="currentPage"
+          v-model="currentPage"
           :page-size="queryInfo.pageSize"
 
           :total="total"
@@ -224,7 +199,7 @@
         header="审核"
         v-model:visible="examineDialogVisible"
         width="30%"
-        @before-close="examineHandleClose"
+        :before-close="examineHandleClose"
       >
         <div>
           审核结果：
@@ -239,10 +214,10 @@
           </t-select>
         </div>
         <template #footer>
-          <span class="dialog-footer">
-            <t-button @click="examineDialogVisible = false">取 消</t-button>
-            <t-button theme="primary" @click="examineSubmit">确 定</t-button>
-          </span>
+          <t-space>
+            <t-button variant="outline" @click="examineDialogVisible = false">取消</t-button>
+            <t-button variant="outline" theme="primary" @click="examineSubmit">确定</t-button>
+          </t-space>
         </template>
       </t-dialog>
 
@@ -260,10 +235,10 @@
           </t-select>
         </div>
         <template #footer>
-          <span class="dialog-footer">
-            <t-button @click="categoryDialogVisible = false">取 消</t-button>
-            <t-button theme="primary" @click="categorySubmit">确 定</t-button>
-          </span>
+          <t-space>
+            <t-button variant="outline" @click="categoryDialogVisible = false">取消</t-button>
+            <t-button variant="outline" theme="primary" @click="categorySubmit">确定</t-button>
+          </t-space>
         </template>
       </t-dialog>
     </t-card>
@@ -462,22 +437,14 @@ onMounted(() => {
 </script>
 
 <style lang="less" scoped>
-.box-card {
+.management-card {
   height: calc(100vh - 190px);
   overflow: auto;
 }
 
-.table-filter {
-  padding: 10px;
-
-  span {
-    font-size: 12px;
-    margin-left: 20px;
-  }
-
-  .t-select {
-    width: 70%;
-  }
+.filter-actions {
+  display: flex;
+  justify-content: flex-end;
 }
 
 .t-link {

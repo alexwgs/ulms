@@ -1,59 +1,41 @@
 <template>
   <div>
-    <t-card class="box-card" style="height: 200px">
-      <div style="float: left">
+    <t-card class="academy-card profile-card">
+      <div class="profile-avatar">
         <t-avatar
           shape="round"
-          size="160px"
+          size="96px"
           fit="fill"
           :src="fsURL + userStore.avatar"
         ></t-avatar>
       </div>
-      <div
-        style="
-          float: left;
-          padding-left: 15px;
-          min-width: 720px;
-          padding-bottom: 20px;
-        "
-      >
-        <t-tag effect="plain"
-          >{{ userStore.ploName }} / {{ userStore.ploNum }}</t-tag
-        >
-        <t-row :gutter="10" style="font-size: 12px; padding-top: 15px">
-          <t-col :span="6">科室：{{ userStore.deptName }}</t-col>
-          <t-col :span="6">组别：{{ userStore.groupName }}</t-col>
-        </t-row>
-        <t-divider style="margin: 15px 0 15px 0"></t-divider>
-        <t-row
-          v-if="myPoint"
-          :gutter="10"
-          style="font-size: 12px; padding-top: 5px"
-        >
-          <t-col :span="3"
-            >金币：<t-tag theme="default">{{ myPoint.coin }}</t-tag></t-col
-          >
-          <t-col :span="3"
-            >培训课程:
-            <t-tag theme="default">{{ myPoint.signNum }}</t-tag></t-col
-          >
-          <t-col :span="3"
-            >授课课时: <t-tag theme="default">{{ myPoint.hours }}</t-tag></t-col
-          >
-          <t-col :span="3"
-            >积分: <t-tag theme="default">{{ myPoint.point }}</t-tag></t-col
-          >
-        </t-row>
+      <div class="profile-main">
+        <div class="profile-name">{{ userStore.ploName }} · {{ userStore.ploNum }}</div>
+        <div class="profile-dept">科室：{{ userStore.deptName }}　组别：{{ userStore.groupName }}</div>
+        <div class="profile-stats" v-if="myPoint">
+          <div class="profile-stat">
+            <span class="stat-num">{{ myPoint.coin }}</span>
+            <span class="stat-label">金币</span>
+          </div>
+          <div class="profile-stat">
+            <span class="stat-num">{{ myPoint.signNum }}</span>
+            <span class="stat-label">培训课程</span>
+          </div>
+          <div class="profile-stat">
+            <span class="stat-num">{{ myPoint.hours }}</span>
+            <span class="stat-label">授课课时</span>
+          </div>
+          <div class="profile-stat">
+            <span class="stat-num">{{ myPoint.point }}</span>
+            <span class="stat-label">积分</span>
+          </div>
+        </div>
       </div>
     </t-card>
     <t-row :gutter="10" style="margin-top: 10px; width: 100%">
       <t-col :span="8">
-        <t-card class="box-card" style="height: calc(100vh - 330px)">
-          <template #header>
-            <div class="clearfix">
-              <span>进行中的学习</span>
-            </div>
-          </template>
+        <t-card class="academy-card" style="height: calc(100vh - 320px)">
+          <h3 class="academy-section-title">进行中的学习</h3>
           <div>
             <t-empty
               v-if="total == 0"
@@ -80,7 +62,7 @@
                   ellipsis>
                   <template #default="scope">
                     <t-tag
-                      effect="plain"
+                      variant="light"
                       size="small"
                       :theme="scope.row.studyComp == 1 ? 'success' : 'danger'"
                     >
@@ -98,7 +80,7 @@
                   ellipsis>
                   <template #default="scope">
                     <t-tag
-                      effect="plain"
+                      variant="light"
                       size="small"
                       :theme="
                         scope.row.ifEval == 0
@@ -126,7 +108,7 @@
                   ellipsis>
                   <template #default="scope">
                     <t-tag
-                      effect="plain"
+                      variant="light"
                       size="small"
                       :theme="
                         scope.row.ifExam == 0
@@ -162,12 +144,8 @@
         </t-card>
       </t-col>
       <t-col :span="4">
-        <t-card class="box-card" style="height: calc(100vh - 330px)">
-          <template #header>
-            <div class="clearfix">
-              <span>学习计划</span>
-            </div>
-          </template>
+        <t-card class="academy-card" style="height: calc(100vh - 320px)">
+          <h3 class="academy-section-title">学习计划</h3>
           <t-empty :image-size="200" description="暂未启用"></t-empty>
         </t-card>
       </t-col>
@@ -185,6 +163,7 @@ import { useUserStore } from '@/stores'
 const router = useRouter()
 const userStore = useUserStore()
 
+// 展示类文件统一走 HTTPS 文件管理地址，避免混合内容被浏览器拦截
 const fsURL = import.meta.env.VITE_FILE_BASE_URL
 const myPoint = ref(null)
 const queryInfo = ref({
@@ -209,10 +188,7 @@ const getStudyLog = async () => {
 }
 
 const gotoCourseView = (courseId) => {
-  const routeData = router.resolve({
-    path: '/college/course/view',
-    query: { courseId: courseId }
-  })
+  const routeData = router.resolve({ name: 'college-course-view', params: { courseId: courseId } })
   window.open(routeData.href, '_blank')
 }
 
@@ -229,4 +205,56 @@ onMounted(() => {
 })
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+.profile-card {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 20px 24px;
+  background: linear-gradient(120deg, #10273e 0%, var(--academy-navy) 75%);
+  border: none;
+}
+
+.profile-avatar {
+  flex: none;
+}
+
+.profile-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.profile-name {
+  font-size: 20px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.profile-dept {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.68);
+  margin: 6px 0 14px;
+}
+
+.profile-stats {
+  display: flex;
+  gap: 36px;
+}
+
+.profile-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  .stat-num {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--academy-gold-2);
+  }
+
+  .stat-label {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.68);
+  }
+}
+</style>

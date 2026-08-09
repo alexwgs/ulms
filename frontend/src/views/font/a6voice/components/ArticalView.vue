@@ -13,8 +13,8 @@
       </t-col>
       <t-col :span="2">
         <div class="elite-badage">
-          <t-tag v-if="articalitem.topFlag === 1" size="small" theme="success" effect="dark">置顶</t-tag>
-          <t-tag v-if="articalitem.eliteFlag === 1" size="small" theme="danger" effect="dark">精华</t-tag>
+          <t-tag v-if="articalitem.topFlag === 1" size="small" theme="success" variant="light">置顶</t-tag>
+          <t-tag v-if="articalitem.eliteFlag === 1" size="small" theme="danger" variant="light">精华</t-tag>
         </div>
       </t-col>
     </t-row>
@@ -23,7 +23,7 @@
       </t-col>
     </t-row>
     <div class="artical-list-info">
-      <t-tag size="small" :theme="articalTypeTag" effect="plain">{{
+      <t-tag size="small" :theme="articalTypeTag" variant="light">{{
         articalTypeText
         }}</t-tag>
       <span v-if="articalitem.user">
@@ -100,7 +100,7 @@ const timeAgo = computed(() => {
 <style lang="less" scoped>
 .link {
   text-decoration: none;
-  color: var(--td-font-color);
+  color: var(--td-text-color-primary);
 }
 
 .artical-title {

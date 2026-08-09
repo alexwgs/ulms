@@ -85,6 +85,20 @@
       order by ${orderByClause}
     </if>
   </select>
+  <select id="selectTreeByStat" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select t.LIB_CODE,
+           t.LIB_NAME,
+           t.LIB_LEVEL,
+           t.UP_CODE,
+           t.LIB_DIFF,
+           nvl((select count(*)
+                  from TRM_QUES_BANK q
+                 where q.LIB_CODE = t.LIB_CODE
+                   and q.QUES_STAT = 1), 0) as QUES_NUM,
+           t.LIB_STAT
+      from TRM_QUES_LIB t
+     where t.LIB_STAT = #{status,jdbcType=DECIMAL}
+  </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />

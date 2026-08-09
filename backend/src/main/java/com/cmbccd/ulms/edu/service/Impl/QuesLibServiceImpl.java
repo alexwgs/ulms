@@ -4,8 +4,6 @@ import com.cmbccd.ulms.common.util.Util;
 import com.cmbccd.ulms.edu.dao.QuesBankMapper;
 import com.cmbccd.ulms.edu.dao.QuesLibMapper;
 import com.cmbccd.ulms.edu.domain.QuesLib;
-import com.cmbccd.ulms.edu.domain.QuesLibExample;
-import com.cmbccd.ulms.edu.domain.QuesLibExample.Criteria;
 import com.cmbccd.ulms.edu.service.QuesLibService;
 import com.cmbccd.ulms.sys.dao.PublicMapper;
 import org.springframework.stereotype.Service;
@@ -28,10 +26,7 @@ public class QuesLibServiceImpl implements QuesLibService {
 
 	@Override
 	public List<QuesLib> quesTree(Integer status) {
-		QuesLibExample example = new QuesLibExample();
-		Criteria criteria = example.createCriteria();
-		criteria.andLibStatEqualTo(status);
-		List<QuesLib> list = quesLibMapper.selectByExample(example);
+		List<QuesLib> list = quesLibMapper.selectTreeByStat(status);
 		
 		List<QuesLib> list1 = list.stream().filter(e -> e.getLibLevel() == 0 ).collect(Collectors.toList());
 		List<QuesLib> list2 = list.stream().filter(e -> e.getLibLevel() == 1 ).collect(Collectors.toList());

@@ -1,15 +1,19 @@
 <template>
-  <t-card class="box-card">
-    <t-row :gutter="15">
-      <t-col :span="9">
-        <t-date-range-picker @change="dateChangeEvent" size="small" format="YYYY-MM-DD" v-model="dateDuration" :placeholder="['开始日期', '结束日期']"></t-date-range-picker>
-      </t-col>
-      <t-col :span="3" class="text-right">
-        <t-button theme="primary" size="small" @click="taskApi.downloadTaskSummaryReport(queryInfo)">
-          下载
-        </t-button>
-      </t-col>
-    </t-row>
+  <t-card class="management-card">
+    <t-form :data="queryInfo" label-width="80px" colon class="filter-form">
+      <t-row :gutter="[24, 24]">
+        <t-col :span="5">
+          <t-form-item label="日期范围" name="dateDuration">
+            <t-date-range-picker @change="dateChangeEvent" size="small" format="YYYY-MM-DD" v-model="dateDuration" :placeholder="['开始日期', '结束日期']"></t-date-range-picker>
+          </t-form-item>
+        </t-col>
+        <t-col :span="3" class="operation-container">
+          <t-button theme="primary" size="small" @click="taskApi.downloadTaskSummaryReport(queryInfo)">
+            下载
+          </t-button>
+        </t-col>
+      </t-row>
+    </t-form>
     <CustomTable rowKey="id" :data="caseTaskList" size="small" :default-sort="{ prop: 'take', order: 'descending' }" stripe
       height="calc(100vh - 270px)" :loading="loading">
       <TableColumn colKey="deptNum" sortable label="科室"></TableColumn>
@@ -79,7 +83,7 @@ const dateChangeEvent = () => {
 </script>
 
 <style lang="less" scoped>
-.box-card {
+.management-card {
   height: calc(100vh - 190px);
   overflow: auto;
 }

@@ -19,19 +19,19 @@
                 font-size: 14px;
               ">
               <div style="display: flex; gap: 4px; align-items: center">
-                <t-tag v-for="tag in activeTags" :key="tag.label" :theme="tag.type" effect="dark" size="small">
+                <t-tag v-for="tag in activeTags" :key="tag.label" :theme="tag.type" variant="light" size="small">
                   {{ tag.label }}
                 </t-tag>
               </div>
-              <span style="color: #909399">发布人：{{
+              <span style="color: var(--td-text-color-placeholder)">发布人：{{
                 artical.user ? artical.user.ploName : '匿名'
               }}</span>
-              <span style="color: #909399">发布时间：{{ artical.pubDate }}</span>
+              <span style="color: var(--td-text-color-placeholder)">发布时间：{{ artical.pubDate }}</span>
               <div style="
                   margin-left: auto;
                   display: flex;
                   gap: 12px;
-                  color: #797979;
+                  color: var(--td-text-color-secondary);
                 ">
                 <span><t-icon>
                     <View />
@@ -68,16 +68,16 @@
             <div v-if="artical.files" class="attachments">
               <div class="attach-title">附件下载：</div>
               <t-button v-for="(file, index) in parseFiles(artical.files)" :key="index" size="small" theme="primary"
-                plain @click="downloadFile(file)">
+                variant="outline" @click="downloadFile(file)">
                 {{ file.name }}
               </t-button>
             </div>
 
             <div class="artical-actions">
-              <t-button :type="isLike ? 'primary' : ''" :disabled="isLike === 1" @click="handleLike">
+              <t-button :theme="isLike ? 'primary' : 'default'" :disabled="isLike === 1" @click="handleLike">
                 <i class="iconfont iconzan1"></i> 点赞 {{ artical.likeNum }}
               </t-button>
-              <t-button :type="isCollect ? 'primary' : ''" @click="handleCollect">
+              <t-button :theme="isCollect ? 'primary' : 'default'" @click="handleCollect">
                 <i class="iconfont iconshoucang1"></i>
                 {{ isCollect ? '已' : '' }}收藏 {{ artical.collectNum }}
               </t-button>
@@ -165,7 +165,7 @@ const dictStore = useDictStore()
 const route = useRoute()
 const router = useRouter()
 
-const fsURL = import.meta.env.VITE_FILE_MANAGE_BASE || ''
+const fsURL = import.meta.env.VITE_FILE_BASE_URL || ''
 
 const articalId = ref(route.params.id)
 const articalType = ref(route.params.type || 'view')
@@ -428,7 +428,7 @@ background: #fff;
 
 .artical-meta {
   .artical-info {
-    color: #909399;
+    color: var(--td-text-color-placeholder);
     font-size: 14px;
     margin-bottom: 10px;
 
@@ -472,7 +472,7 @@ background: #f5f7fa;
 
       .role {
         font-size: 12px;
-        color: #909399;
+        color: var(--td-text-color-placeholder);
       }
     }
   }
@@ -529,10 +529,10 @@ background: #f5f7fa;
     display: flex;
     justify-content: space-between;
     padding: 8px 0;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--td-component-stroke);
 
     .label {
-      color: #909399;
+      color: var(--td-text-color-placeholder);
     }
 
     .value {
@@ -545,7 +545,7 @@ background: #f5f7fa;
   .related-item {
     padding: 10px;
     cursor: pointer;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--td-component-stroke);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -563,7 +563,7 @@ background: #f5f7fa;
 
     .related-num {
       font-size: 12px;
-      color: #909399;
+      color: var(--td-text-color-placeholder);
       margin-left: 10px;
     }
   }

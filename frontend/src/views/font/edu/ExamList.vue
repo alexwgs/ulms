@@ -1,7 +1,6 @@
 <template>
   <div class="container">
-    <t-alert v-if="userId != serverUserId" title="注意！！因系统存在缓存，该信息非你的试卷，请按下CTRL+SHIFT+DEL 清除缓存后重新登录" theme="error"
-      effect="dark">
+    <t-alert v-if="userId != serverUserId" title="注意！！因系统存在缓存，该信息非你的试卷，请按下CTRL+SHIFT+DEL 清除缓存后重新登录" theme="error">
     </t-alert>
     <div class="title">未完成的考试</div>
     <CustomTable rowKey="id" :data="currentExam" size="small" style="width: 100%; margin-top: 15px" height="20vh"
@@ -71,7 +70,7 @@
         </template>
       </TableColumn>
     </CustomTable>
-    <t-pagination @current-change="handleCurrentChange" v-model:current="currentPage"
+    <t-pagination @current-change="handleCurrentChange" v-model="currentPage"
       :page-size="queryInfo.pageSize" :total="total">
     </t-pagination>
     <ExamBook ref="examBookRef"></ExamBook>

@@ -1,70 +1,56 @@
 <template>
   <div>
-    <t-card class="box-card">
-      <t-row style="padding-bottom: 10px" :gutter="10">
-        <t-col :span="2"
-          ><t-button
-            theme="primary"
-            size="small"
-            @click="
+    <t-card class="management-card">
+      <div class="table-toolbar">
+        <div class="toolbar-left">
+          <t-button variant="outline" theme="primary" size="small" @click="
               treeNodeManage(
                 { name: '', pid: 0, treeLevel: 0, sort: 1, status: 1 },
                 'add'
               )
             "
             >新增一级节点</t-button
-          ></t-col
-        >
-        <t-col :span="2"
-          ><t-tag :theme="currentNode == null ? 'danger' : 'success'">{{
+          >
+          <t-tag :theme="currentNode == null ? 'danger' : 'success'" variant="light">{{
             currentNode == null ? '选择目录' : '表加入:' + currentNode.name
-          }}</t-tag></t-col
-        >
-        <t-col :span="2">
+          }}</t-tag>
           <t-popconfirm
             content="确定要讲表移入此分类么？"
             width="250"
             @confirm="moveInTree()"
           >
-            <template #reference
-              ><t-button
-                slot="reference"
-                theme="primary"
-                size="small"><template #icon><DynamicIcon name="arrow-left" /></template>移入</t-button
-              ></template
-            >
+            <t-button variant="outline" theme="primary" size="small"><template #icon><DynamicIcon name="arrow-left" /></template>移入</t-button>
           </t-popconfirm>
-        </t-col>
-        <t-col :span="2">
+        </div>
+        <div class="toolbar-right">
           <t-select
             v-model="tableQueryInfo.flag"
             size="small"
             placeholder="请选择过滤规则"
+            style="width: 130px"
             @change="getTableList"
           >
             <t-option label="已分类" :value="1"></t-option>
             <t-option label="未分类" :value="0"></t-option>
           </t-select>
-        </t-col>
-        <t-col :span="4">
-          <t-input
-            placeholder="查询"
-            size="small"
-            v-model="tableQueryInfo.keyWord"
-            class="input-with-select"
-          >
-            <t-button
-              slot="append" @click="getTableList"
+          <t-input-adornment>
+            <template #append>
+              <t-button variant="outline" theme="primary" @click="getTableList" size="small">搜索</t-button>
+            </template>
+            <t-input
+              placeholder="查询"
               size="small"
-            ><template #icon><DynamicIcon name="search" /></template></t-button>
-          </t-input>
-        </t-col>
-        <t-col :span="1">
-          <t-button theme="danger" size="small" @click="syncTableInfo()"
+              v-model="tableQueryInfo.keyWord"
+              class="input-with-select"
+              style="width: 220px"
+              @enter="getTableList"
+            />
+          </t-input-adornment>
+          <t-button variant="outline" theme="primary" size="small" @click="syncTableInfo()"
             >同步</t-button
           >
-        </t-col>
-      </t-row>
+        </div>
+      </div>
       <t-row :gutter="20">
         <t-col :span="4">
           <t-tree
@@ -73,21 +59,21 @@
             :keys="{ value: 'id', label: 'name', children: 'children' }"
             @click="nodeclick"
           >
-            <template #default="{ node }">
+            <template #label="{ node }">
               <span class="custom-tree-node">
                 <span>{{ node.data.name }}</span>
                 <span
                   ><div v-if="node.data.treeLevel !== 3">
-                    <t-button
+                    <t-button variant="outline"
                       link
                       theme="primary"
                       size="small"
                       @click="treeNodeManage(node.data, 'add')"
                       >新增</t-button
                     >
-                    <t-button
+                    <t-button variant="outline"
                       link
-                      theme="warning"
+                      theme="primary"
                       size="small"
                       @click="treeNodeManage(node.data, 'edit')"
                       >修改</t-button
@@ -98,16 +84,14 @@
                     content="确定要讲表移出此分类么？"
                     width="250"
                     @confirm="removeTreeNood(node)"
-                    ><template #reference>
-                      <t-button
-                        slot="reference"
-                        theme="danger"
-                        link
-                        size="small"
-                        >删除</t-button
-                      >
-                    </template></t-popconfirm
-                  >
+                    >
+                    <t-button variant="outline"
+                      theme="primary"
+                      link
+                      size="small"
+                      >删除</t-button
+                    >
+                  </t-popconfirm>
                 </span>
               </span>
             </template>
@@ -119,7 +103,7 @@
             size="small"
             stripe
             style="width: 100%"
-            ref="selectTable"
+            ref="selectTableRef"
             height="calc(100vh - 350px)"
             @select-change="handleSelectionChange">
             <TableColumn type="multiple" width="55"></TableColumn>
@@ -137,11 +121,11 @@
               ellipsis></TableColumn>
             <TableColumn label="操作" width="60">
               <template #default="scope">
-                <t-button
-                  size="small"theme="warning"
+                <t-button variant="outline"
+                  size="small"theme="primary"
                   @click="updateColumn(scope.row)"
-                  circle
-                ><template #icon><DynamicIcon name="edit" /></template></t-button>
+                 
+                >编辑</t-button>
               </template>
             </TableColumn>
           </CustomTable>
@@ -161,7 +145,7 @@
       >
         <t-form-item
           label="分类名称"
-          prop="name"
+          name="name"
           :label-width="formLabelWidth"
         >
           <t-input v-model="treeForm.name" autocomplete="off"></t-input>
@@ -183,14 +167,14 @@
         </t-form-item>
       </t-form>
       <template #footer>
-        <div class="dialog-footer">
-          <t-button size="small" @click="tableTreeDialogFormVisible = false"
+        <t-space>
+          <t-button variant="outline" size="small" @click="tableTreeDialogFormVisible = false"
             >取 消</t-button
           >
-          <t-button size="small" theme="primary" @click="tableTreeFormSubmit"
+          <t-button variant="outline" size="small" theme="primary" @click="tableTreeFormSubmit"
             >确 定</t-button
           >
-        </div>
+        </t-space>
       </template>
     </t-dialog>
     <Column ref="columnRef"></Column>
@@ -354,7 +338,7 @@ onMounted(() => {
 })
 </script>
 <style lang="less" scoped>
-.box-card {
+.management-card {
   height: calc(100vh - 190px);
   overflow: auto;
 }

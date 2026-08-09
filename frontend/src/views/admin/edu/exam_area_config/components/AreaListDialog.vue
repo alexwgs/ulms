@@ -42,12 +42,12 @@
         <TableColumn colKey="seatDesc" label="座位描述"></TableColumn>
         <TableColumn label="操作" width="110">
           <template #default="scope">
-            <t-button 
-              theme="warning" size="small" 
-              @click="editAreaListBtn(scope.row)"><template #icon><DynamicIcon name="edit" /></template></t-button>
-            <t-button 
+            <t-button variant="outline" 
+              theme="default" size="small" 
+              @click="editAreaListBtn(scope.row)">编辑</t-button>
+            <t-button variant="outline" 
               theme="danger" size="small" 
-              @click="deleteAreaList(scope.row.journo)"><template #icon><DynamicIcon name="delete" /></template></t-button>
+              @click="deleteAreaList(scope.row.journo)">删除</t-button>
           </template>
         </TableColumn>
       </CustomTable>

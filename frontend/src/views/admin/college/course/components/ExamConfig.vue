@@ -9,7 +9,7 @@
     >
       <t-row :gutter="10">
         <t-col :span="4">
-          <t-card class="box-card">
+          <t-card class="management-card">
             <t-input
               size="small"
               placeholder="输入关键字进行过滤"
@@ -23,11 +23,11 @@
               @click="nodeclick"
               :filter="filterNode"
             >
-              <template #default="{ node }">
+              <template #label="{ node }">
                 <span class="custom-tree-node">
                   <span
                     >{{ node.data.libName }}
-                    <t-tag v-if="node.data.libLevel === 2" size="small">{{
+                    <t-tag v-if="node.data.libLevel === 2" size="small" variant="light">{{
                       node.data.quesNum
                     }}</t-tag></span
                   >
@@ -39,7 +39,7 @@
         <t-col :span="8">
           <t-row style="margin-bottom: 5px">
             <t-col :span="12"
-              ><t-tag>选择：{{ templateFormData.libName }}</t-tag></t-col
+              ><t-tag variant="light">选择：{{ templateFormData.libName }}</t-tag></t-col
             >
           </t-row>
           <t-form
@@ -56,7 +56,6 @@
                 size="small"
                 :step="1"
                 :max="templateFormRule.quesLimit"
-                label="题目数"
                 :style="{ width: '100%' }"
               ></t-input-number>
             </t-form-item>
@@ -191,7 +190,9 @@ const getTemplate = () => {
       templateFormData.quesLimit = res.data.quesNum
       nextTick(() => {
         const record = tree.value.getItem(templateFormData.libCode)
-        if (!record || !record.parent || !record.parent.parent) {
+        const level1 = record && record.getParent ? record.getParent() : null
+        const level0 = level1 && level1.getParent ? level1.getParent() : null
+        if (!record || !level1 || !level0) {
           templateFormData.quesLimit = 0
           templateFormData.libName =
             '题库取路径错误或已被移除,请重新选择试题抽取路径！'
@@ -200,9 +201,9 @@ const getTemplate = () => {
           )
         } else {
           templateFormData.libName =
-            record.parent.parent.data.libName +
+            level0.data.libName +
             '->' +
-            record.parent.data.libName +
+            level1.data.libName +
             '->' +
             record.data.libName
           templateFormData.quesLimit = record.data.quesNum
@@ -227,15 +228,15 @@ const filterNode = (node) => {
 }
 
 const nodeclick = (context) => {
-      const { node: treeNode } = context;
-      const obj = treeNode.data;
+  const { node: treeNode } = context
+  const obj = treeNode.data
   if (obj.libLevel === 2) {
+    const level1 = treeNode.getParent ? treeNode.getParent() : null
+    const level0 = level1 && level1.getParent ? level1.getParent() : null
     templateFormData.libName =
-      treeNode.parent.parent.data.libName +
-      '->' +
-      treeNode.parent.data.libName +
-      '->' +
-      obj.libName
+      level0 && level1
+        ? level0.data.libName + '->' + level1.data.libName + '->' + obj.libName
+        : obj.libName
     templateFormData.libCode = obj.libCode
     templateFormData.quesNum = 1
     templateFormData.passNum = 1
@@ -306,7 +307,7 @@ defineExpose({
 })
 </script>
 <style lang="less" scoped>
-.box-card {
+.management-card {
   height: 450px;
   overflow: auto;
 }

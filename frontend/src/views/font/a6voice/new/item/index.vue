@@ -1,6 +1,11 @@
 <template>
-  <t-card class="box-card">
-    <div @back="() => router.back()" content="创建新项目"></div>
+  <t-card class="management-card">
+    <div class="sub-page-header">
+      <t-button theme="default" variant="text" @click="router.back()">
+        
+      返回</t-button>
+      <span class="sub-page-title">创建新项目</span>
+    </div>
     <t-divider></t-divider>
     <t-form ref="formRef" :data="form" label-width="80px" size="small" :rules="formRules">
       <t-form-item label="板块" name="category">
@@ -69,7 +74,7 @@ const route = useRoute()
 const dictStore = useDictStore()
 const formRef = ref(null)
 
-const fsURL = import.meta.env.VITE_FILE_MANAGE_BASE || import.meta.env.VITE_API_BASE_URL
+const fsURL = import.meta.env.VITE_FILE_BASE_URL
 const id = ref('')
 const cover = ref([])
 const form = reactive({
@@ -216,7 +221,7 @@ onMounted(() => {
 </script>
 
 <style lang="less" scoped>
-.box-card {
+.management-card {
   display: flex;
   flex-direction: column;
 }
@@ -230,7 +235,7 @@ onMounted(() => {
 }
 
 .avatar-upload:hover {
-  border-color: #409eff;
+  border-color: var(--td-brand-color);
 }
 
 .avatar-uploader-icon {

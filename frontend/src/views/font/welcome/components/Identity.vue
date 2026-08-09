@@ -3,7 +3,7 @@
     header="身份选择"
     v-model:visible="dialogVisible"
     width="50%"
-    @before-close="handleClose"
+    :before-close="handleClose"
   >
     <t-form :data="form" label-width="80px">
       <t-form-item label="选择身份">

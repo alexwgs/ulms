@@ -26,7 +26,7 @@
       </li>
       <li>
         <t-tooltip :content="theme === 'light' ? '切换至黑暗模式' : '切换至亮色模式'" placement="bottom">
-          <t-button class="nav-btn" variant="outline" shape="circle" @click="handleToggleTheme">
+          <t-button class="nav-btn" variant="outline" @click="handleToggleTheme">
             <DynamicIcon :name="theme === 'dark' ? 'moon' : 'sunny'" />
           </t-button>
         </t-tooltip>
@@ -35,7 +35,7 @@
         <t-tooltip content="消息通知" placement="bottom">
           <div class="message-box-trigger">
             <t-badge :count="9" dot>
-              <t-button class="nav-btn" variant="outline" shape="circle" @click="setPopoverVisible">
+              <t-button class="nav-btn" variant="outline" @click="setPopoverVisible">
                 <DynamicIcon name="notification" />
               </t-button>
             </t-badge>
@@ -100,6 +100,7 @@ const setPopoverVisible = () => {
   refBtn.value.dispatchEvent(event)
 }
 
+// 头像为展示类图片，统一走 HTTPS 的文件管理地址，避免混合内容被浏览器拦截
 const fsBaseURL = import.meta.env.VITE_FILE_BASE_URL
 
 // 主题相关

@@ -404,9 +404,11 @@
 </select>
 
 <update id="updateQuesNumber">
-update trm_ques_lib a 
-set a.ques_num
-= (select ques_num from (select count(*) as ques_num,lib_code from trm_ques_bank where ques_stat=1 group by lib_code) b where a.lib_code=b.lib_code)
+update trm_ques_lib a
+set a.ques_num = nvl((select count(*)
+                        from trm_ques_bank b
+                       where b.lib_code = a.lib_code
+                         and b.ques_stat = 1), 0)
 </update>
 
   <update id="invalidAllQuestionByQuesLib" parameterType="java.lang.String">

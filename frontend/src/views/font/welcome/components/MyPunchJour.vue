@@ -3,7 +3,7 @@
     header="考勤记录"
     v-model:visible="dialogVisible"
     width="80%"
-    @before-close="handleClose"
+    :before-close="handleClose"
   >
     <t-form layout="inline" :data="queryForm" class="demo-form-inline">
       <t-form-item label="日期">
@@ -33,12 +33,12 @@
         width="120"></TableColumn>
       <TableColumn colKey="status" label="状态" width="100">
         <template #default="scope">
-          <t-tag v-if="scope.row.status === 1" theme="success">正常</t-tag>
+          <t-tag v-if="scope.row.status === 1" theme="success" variant="light">正常</t-tag>
           <t-tag v-else-if="scope.row.status === 2" theme="warning"
-            >迟到</t-tag
+             variant="light">迟到</t-tag
           >
-          <t-tag v-else-if="scope.row.status === 3" theme="danger">早退</t-tag>
-          <t-tag v-else theme="default">缺卡</t-tag>
+          <t-tag v-else-if="scope.row.status === 3" theme="danger" variant="light">早退</t-tag>
+          <t-tag v-else theme="default" variant="light">缺卡</t-tag>
         </template>
       </TableColumn>
       <TableColumn colKey="remark" label="备注"></TableColumn>

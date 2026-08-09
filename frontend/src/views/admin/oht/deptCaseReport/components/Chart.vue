@@ -110,7 +110,7 @@ const chartOption = computed(() => {
       axisPointer: {
         type: 'cross',
         crossStyle: {
-          color: '#999'
+          color: '#999999'
         }
       }
     },

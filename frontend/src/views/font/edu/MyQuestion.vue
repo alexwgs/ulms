@@ -28,7 +28,7 @@
               <div class="answer">
                 答案：{{ item.question?.answer }}<br />知识库名：{{
                   item.question?.knowledge
-                }}<t-button class="uncollect-botton" size="small" style="float: right" circle
+                }}<t-button variant="outline" class="uncollect-botton" size="small" style="float: right"
                   @click="uncollect(item.journo)"><template #icon><DynamicIcon name="star" /></template></t-button>
               </div>
             </div>
@@ -38,11 +38,11 @@
       <t-col :span="3">
         <div class="slogan">
           <div style="padding-top: 40px">
-            <t-button theme="primary" class="mybutton" @click="changeType('wrong')" round><template #icon><DynamicIcon name="bookmark" /></template>我 的 错
+            <t-button theme="primary" class="mybutton" @click="changeType('wrong')" shape="round"><template #icon><DynamicIcon name="bookmark" /></template>我 的 错
               题</t-button>
           </div>
           <div style="padding-top: 40px">
-            <t-button theme="primary" class="mybutton" @click="changeType('collect')" round><template #icon><DynamicIcon name="star" /></template>我 的 收
+            <t-button theme="primary" class="mybutton" @click="changeType('collect')" shape="round"><template #icon><DynamicIcon name="star" /></template>我 的 收
               藏</t-button>
           </div>
           <img class="brush-icon" src="../../../assets/img/edu/my-questions-logo.png" />
@@ -115,8 +115,8 @@ onMounted(() => {
 
 .mybutton {
   color: #31b97f;
--color: #ffffff;
-  border-color: #ffffff;
+background-color: var(--td-bg-color-container);
+  border-color: var(--td-bg-color-container);
   font-size: 20px;
 }
 
@@ -150,7 +150,7 @@ onMounted(() => {
 
   .uncollect-botton {
     color: #fee300;
--color: transparent;
+background-color: transparent;
     border-color: #ffed44;
     margin-right: 10px;
   }
@@ -161,7 +161,7 @@ onMounted(() => {
   margin: 10px;
   padding: 10px;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
--color: rgba(255, 255, 255, 0.1);
+background-color: rgba(255, 255, 255, 0.1);
   border-radius: 4px;
 }
 </style>

@@ -1,41 +1,43 @@
 <template>
-  <t-card class="box-card">
-    <t-row>
-      <t-col :span="3">
-        <span>
-          <t-date-range-picker size="small" style="width: 100%" v-model="dataRange" @change="daterangeChange" :placeholder="['开始日期', '结束日期']" />
-        </span>
-      </t-col>
-      <t-col :span="3">
-        <span>
-          <t-select
-            size="small"
-            v-model="queryInfo.fileSuffix"
-            @change="getTableList"
-            placeholder="请选择,文件扩展名"
-          >
-            <t-option value="" label="全部"></t-option>
-            <t-option
-              v-for="item in suffix"
-              :key="item"
-              :value="item"
-              :label="item"
-            ></t-option>
-          </t-select>
-        </span>
-      </t-col>
-      <t-col :span="3">
-        <span>
-          <t-input
-            size="small"
-            v-model="queryInfo.fileName"
-            @change="getTableList"
-            clearable
-            placeholder="使用文件名模糊查询"
-          />
-        </span>
-      </t-col>
-    </t-row>
+  <t-card class="management-card">
+    <t-form :data="queryInfo" label-width="80px" colon class="filter-form">
+      <t-row :gutter="[24, 24]">
+        <t-col :span="4">
+          <t-form-item label="日期范围" name="dataRange">
+            <t-date-range-picker size="small" v-model="dataRange" @change="daterangeChange" :placeholder="['开始日期', '结束日期']" />
+          </t-form-item>
+        </t-col>
+        <t-col :span="3">
+          <t-form-item label="扩展名" name="fileSuffix">
+            <t-select
+              size="small"
+              v-model="queryInfo.fileSuffix"
+              @change="getTableList"
+              placeholder="全部"
+            >
+              <t-option value="" label="全部"></t-option>
+              <t-option
+                v-for="item in suffix"
+                :key="item"
+                :value="item"
+                :label="item"
+              ></t-option>
+            </t-select>
+          </t-form-item>
+        </t-col>
+        <t-col :span="4">
+          <t-form-item label="文件名" name="fileName">
+            <t-input
+              size="small"
+              v-model="queryInfo.fileName"
+              @change="getTableList"
+              clearable
+              placeholder="使用文件名模糊查询"
+            />
+          </t-form-item>
+        </t-col>
+      </t-row>
+    </t-form>
 
     <CustomTable rowKey="id"
       :data="tableData"
@@ -78,6 +80,7 @@
         <template #default="scope">
           <t-space>
             <t-button
+              variant="outline"
               theme="primary"
               size="small":disabled="
                 scope.row.fileSuffix !== 'jpg' && scope.row.fileSuffix !== 'png'
@@ -94,8 +97,8 @@
                 )
               "
             ><template #icon><DynamicIcon name="image" /></template></t-button>
-            <t-button
-              theme="primary"
+            <t-button variant="outline"
+              theme="default"
               size="small" @click="
                 downloadFile(
                   fsURL +
@@ -107,7 +110,7 @@
                     scope.row.fileSuffix
                 )
               "
-            ><template #icon><DynamicIcon name="download" /></template></t-button>
+            >下载</t-button>
           </t-space>
         </template>
       </TableColumn>
@@ -141,9 +144,10 @@ import { ref, reactive, onMounted } from 'vue'
 import { MessagePlugin } from 'tdesign-vue-next'
 import { ImageIcon, DownloadIcon } from 'tdesign-icons-vue-next'
 import { userFileApi } from '@/api/admin/userFiles' // 导入API函数
+import { usePagination } from '@/hooks/usePagination'
 
 // 环境变量
-const fsURL = ref(import.meta.env.VITE_FILE_MANAGE_BASE)
+const fsURL = ref(import.meta.env.VITE_FILE_BASE_URL)
 
 // 表格数据
 const tableData = ref([])
@@ -165,8 +169,6 @@ const queryInfo = reactive({
 })
 
 // 分页参数
-const currentPage = ref(1)
-const pageSizes = ref([20, 100, 500])
 const total = ref(0)
 
 // 图片预览
@@ -217,17 +219,10 @@ const daterangeChange = () => {
 }
 
 // 分页大小变化
-const handleSizeChange = (pageSize) => {
-  queryInfo.pageSize = pageSize
-  getTableList()
-}
+
 
 // 当前页变化
-const handleCurrentChange = (page) => {
-  queryInfo.pageNum = page
-  currentPage.value = page
-  getTableList()
-}
+
 
 // 表格排序
 const tableSort = (data) => {
@@ -254,6 +249,7 @@ onMounted(() => {
   getSuffixList()
   getTableList()
 })
+const { currentPage, pageSizes, handleCurrentChange, handleSizeChange } = usePagination({ query: queryInfo, fetch: getTableList, pageSizes: [20, 100, 500] })
 </script>
 
 <style scoped>
@@ -264,7 +260,7 @@ onMounted(() => {
   }
 
   .t-select {
-    width: 55%;
+    width: 100%;
   }
 }
 
@@ -272,7 +268,7 @@ onMounted(() => {
   font-size: 12px;
 }
 
-.box-card {
+.management-card {
   height: calc(100vh - 190px);
   overflow: auto;
 }

@@ -1,33 +1,34 @@
 <template>
   <div>
     <t-card class="main-container">
-      <t-alert
+      <PageTips
         title="操作说明"
         theme="info"
         message="此处仅针对学霸刷题中反馈的题目问题。无论选择复议通过还是复议不过均不对原题做任何联动。如需修改题目请自行于题库配置维护！"
         :closable="false"
       >
-      </t-alert>
-      <t-row style="padding-bottom: 10px" :gutter="15">
-        <t-col :span="2">
-          <t-select
-            v-model="queryInfo.disputeResult"
-            size="small"
-            placeholder="复议状态"
-            @change="listDisputeList"
-          >
-            <t-option
-              v-for="item in dictStore.dictList.trm_exam_dispute_result"
-              :key="item.code"
-              :label="item.codeval"
-              :value="parseInt(item.code)"
-            ></t-option>
-          </t-select>
-        </t-col>
-        <t-col :span="5"> </t-col>
-        <t-col :span="2"> </t-col>
-        <t-col :span="2"> </t-col>
-      </t-row>
+      </PageTips>
+      <t-form :data="queryInfo" label-width="80px" colon class="filter-form">
+        <t-row :gutter="[24, 24]">
+          <t-col :span="3">
+            <t-form-item label="复议状态" name="disputeResult">
+              <t-select
+                v-model="queryInfo.disputeResult"
+                size="small"
+                placeholder="全部"
+                @change="listDisputeList"
+              >
+                <t-option
+                  v-for="item in (dictStore.dictList?.trm_exam_dispute_result || [])"
+                  :key="item.code"
+                  :label="item.codeval"
+                  :value="parseInt(item.code)"
+                ></t-option>
+              </t-select>
+            </t-form-item>
+          </t-col>
+        </t-row>
+      </t-form>
       <CustomTable rowKey="id" :data="disputeList" size="small" height="calc(100vh - 400px)">
         <TableColumn
           property="quesCode"
@@ -89,14 +90,14 @@
               theme="success"
               size="small"
               @click="disputeSubmit(scope.row, 1)"
-              plain
+              variant="outline"
               >复议通过</t-button
             >
             <t-button
               theme="danger"
               size="small"
               @click="disputeSubmit(scope.row, 0)"
-              plain
+              variant="outline"
               >复议不过</t-button
             >
           </template>

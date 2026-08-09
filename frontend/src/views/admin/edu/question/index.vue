@@ -1,9 +1,10 @@
 <template>
   <div>
-    <t-card class="box-card">
-      <t-row style="padding-bottom: 10px" :gutter="15">
-        <t-col :span="2">
+    <t-card class="management-card">
+      <div class="table-toolbar">
+        <div class="toolbar-left">
           <t-button
+            variant="outline"
             theme="primary"
             size="small"
             @click="
@@ -20,15 +21,12 @@
             "
             >新增节点</t-button
           >
-        </t-col>
-        <t-col :span="2">
-          <t-tag :theme="currentNode == null ? 'danger' : 'primary'">{{
+          <t-tag :theme="currentNode == null ? 'danger' : 'primary'" variant="light">{{
             currentNode == null ? '选择目录' : '位置:' + currentNode.libName
           }}</t-tag>
-        </t-col>
-        <t-col :span="3">
           <t-space>
             <t-button
+              variant="outline"
               theme="primary"
               size="small"
               :disabled="currentNode == null || currentNode.libLevel != 2"
@@ -40,50 +38,50 @@
               ><template #icon><DynamicIcon name="edit" /></template>新建</t-button
             >
             <t-button
+              variant="outline"
               theme="primary"
-              size="small":disabled="transInfo.checkedQuestions.length <= 0"
+              size="small" :disabled="transInfo.checkedQuestions.length <= 0"
               @click="treeDialogFormVisible = !treeDialogFormVisible"
               ><template #icon><DynamicIcon name="position" /></template>移动</t-button
             >
             <t-button
+              variant="outline"
               theme="primary"
               size="small" @click="questionBankApi.downloadQuestionReport(queryInfo)"
               ><template #icon><DynamicIcon name="download" /></template>下载</t-button
             >
           </t-space>
-        </t-col>
-        <t-col :span="2">
+        </div>
+        <div class="toolbar-right">
           <t-select
             v-model="queryInfo.quesStat"
             size="small"
             placeholder="请选择过滤规则"
-            style="width: 100%"
+            style="width: 140px"
             @change="getTableList"
           >
             <t-option label="生效" value="1" />
             <t-option label="失效" value="0" />
           </t-select>
-        </t-col>
-        <t-col :span="4">
-          <t-input
-            placeholder="输入要搜索的内容"
-            size="small"
-            v-model="queryInfo.query"
-          >
-            <t-select
-              v-model="queryInfo.querytype"
-              slot="prepend"
-              style="width: 100px"
-              placeholder="请选择"
-            >
-              <t-option label="题目" value="quesStem" />
-              <t-option label="业务类型" value="category" />
-              <t-option label="题目编号" value="quesCode" />
-            </t-select>
-            <t-button slot="append" @click="getTableList"><template #icon><DynamicIcon name="search" /></template></t-button>
-          </t-input>
-        </t-col>
-      </t-row>
+          <t-input-adornment>
+            <template #prepend>
+              <t-select
+                v-model="queryInfo.querytype"
+                style="width: 100px"
+                placeholder="请选择"
+              >
+                <t-option label="题目" value="quesStem" />
+                <t-option label="业务类型" value="category" />
+                <t-option label="题目编号" value="quesCode" />
+              </t-select>
+            </template>
+            <template #append>
+              <t-button variant="outline" @click="getTableList"><template #icon><DynamicIcon name="search" /></template>搜索</t-button>
+            </template>
+            <t-input placeholder="输入要搜索的内容" size="small" v-model="queryInfo.query" style="width: 300px"></t-input>
+          </t-input-adornment>
+        </div>
+      </div>
       <t-row :gutter="20">
         <t-col :span="3">
           <div style="height: calc(100vh - 280px); overflow: auto">
@@ -96,27 +94,26 @@
               @drag-end="handleDragEnd"
               draggable
             >
-              <template #default="{ node }">
+              <template #label="{ node }">
                 <span class="custom-tree-node">
                   <span
-                    >{{ node.data.libName }}
-                    <t-tag
-                      v-if="node.data.libLevel === 2"
-                      size="small"
-                      effect="plain"
-                      >{{ node.data.quesNum }}</t-tag
+                    >{{ node.data.libName }}<template
+                      v-if="!node.data.children || node.data.children.length === 0"
+                      >[{{ node.data.quesNum ?? 0 }}]</template
                     ></span
                   >
                   <span>
                     <t-button
-                      :text="true"
+                      variant="text"
+                      theme="primary"
                       v-show="node.data.libLevel !== 2"
                       size="small"
                       @click="treeNodeManage(node.data, 'add')"
                       >新增</t-button
                     >
                     <t-button
-                      :text="true"
+                      variant="text"
+                      theme="primary"
                       size="small"
                       @click="treeNodeManage(node.data, 'edit')"
                       >修改</t-button
@@ -147,7 +144,7 @@
                 <t-tag
                   :theme="scope.row.quesType == 2 ? 'success' : 'primary'"
                   size="small"
-                  effect="plain"
+                  variant="light"
                 >
                   {{
                     scope.row.quesType === 2
@@ -188,15 +185,14 @@
             />
             <TableColumn label="操作" width="90">
               <template #default="scope">
-                <t-button size="small"
+                <t-button variant="outline" size="small"
                   @click="questionViewRef.show(scope.row)"
-                  circle
-                ><template #icon><DynamicIcon name="view-list" /></template></t-button>
-                <t-button
-                  theme="primary" size="small"
+                 ><template #icon><DynamicIcon name="view-list" /></template>查看</t-button>
+                <t-button variant="outline"
+                  theme="default" size="small"
                   @click="transferObjToChildren(scope.row)"
-                  circle
-                ><template #icon><DynamicIcon name="edit" /></template></t-button>
+                 
+                >编辑</t-button>
               </template>
             </TableColumn>
           </CustomTable>
@@ -226,15 +222,12 @@
           activable
           @click="tansNodeclick"
         >
-          <template #default="{ node }">
+          <template #label="{ node }">
             <span class="custom-tree-node">
               <span
-                >{{ node.data.libName }}
-                <t-tag
-                  v-if="node.data.libLevel === 2"
-                  size="small"
-                  effect="plain"
-                  >{{ node.data.quesNum }}</t-tag
+                >{{ node.data.libName }}<template
+                  v-if="!node.data.children || node.data.children.length === 0"
+                  >[{{ node.data.quesNum ?? 0 }}]</template
                 ></span
               >
             </span>
@@ -242,14 +235,14 @@
         </t-tree>
       </div>
       <template #footer>
-        <span class="dialog-footer">
-          <t-button size="small" @click="treeDialogFormVisible = false"
+        <t-space>
+          <t-button variant="outline" size="small" @click="treeDialogFormVisible = false"
             >取 消</t-button
           >
-          <t-button size="small" theme="primary" @click="transSubmit"
+          <t-button variant="outline" size="small" theme="primary" @click="transSubmit"
             >确 定</t-button
           >
-        </span>
+        </t-space>
       </template>
     </t-dialog>
 
@@ -273,7 +266,7 @@
       >
         <t-form-item
           label="分类名称"
-          prop="libName"
+          name="libName"
           :label-width="formLabelWidth"
         >
           <t-input v-model="treeForm.libName" autocomplete="off" />
@@ -286,14 +279,14 @@
         </t-form-item>
       </t-form>
       <template #footer>
-        <span class="dialog-footer">
-          <t-button size="small" @click="tableTreeDialogFormVisible = false"
+        <t-space>
+          <t-button variant="outline" size="small" @click="tableTreeDialogFormVisible = false"
             >取 消</t-button
           >
-          <t-button size="small" theme="primary" @click="tableTreeFormSubmit"
+          <t-button variant="outline" size="small" theme="primary" @click="tableTreeFormSubmit"
             >确 定</t-button
           >
-        </span>
+        </t-space>
       </template>
     </t-dialog>
 
@@ -314,6 +307,7 @@ import QuestionDialog from './components/QuestionDialog.vue'
 import QuestionView from './components/QuestionView.vue'
 import { questionLibApi } from '@/api/edu/questionLib'
 import { questionBankApi } from '@/api/edu/questionBank'
+import { usePagination } from '@/hooks/usePagination'
 
 const treeRef = ref(null)
 const transTreeRef = ref(null)
@@ -324,8 +318,6 @@ const treeFormRef = ref(null)
 const treeData = ref([])
 const tableData = ref([])
 const currentNode = ref(null)
-const currentPage = ref(1)
-const pageSizes = ref([20, 100, 500])
 const total = ref(0)
 const questionObj = ref(null)
 const treeDialogFormVisible = ref(false)
@@ -446,15 +438,9 @@ const tableSort = (data) => {
   getTableList()
 }
 
-const handleCurrentChange = (page) => {
-  queryInfo.pageNum = page
-  getTableList()
-}
 
-const handleSizeChange = (pageSize) => {
-  queryInfo.pageSize = pageSize
-  getTableList()
-}
+
+
 
 const transferObjToChildren = (row) => {
   // 深拷贝
@@ -495,18 +481,20 @@ const getQuesLibName = (libCode) => {
   if (!tree) return '[级别异常]' + libCode
 
   const record = tree.getItem(libCode)
-  let libName = ''
   try {
-    libName =
-      record.parent.parent.data.libName +
+    const level1 = record && record.getParent ? record.getParent() : null
+    const level0 = level1 && level1.getParent ? level1.getParent() : null
+    if (!level0 || !level1) return '[级别异常]' + libCode
+    return (
+      level0.data.libName +
       '->' +
-      record.parent.data.libName +
+      level1.data.libName +
       '->' +
       record.data.libName
+    )
   } catch (error) {
-    libName = '[级别异常]' + libCode
+    return '[级别异常]' + libCode
   }
-  return libName
 }
 
 const updateTree = () => {
@@ -546,9 +534,10 @@ const handleDragEnd = (context) => {
       MessagePlugin.error('操作失败，请重试')
     })
 }
+const { currentPage, pageSizes, handleCurrentChange, handleSizeChange } = usePagination({ query: queryInfo, fetch: getTableList, pageSizes: [20, 100, 500] })
 </script>
 <style lang="less" scoped>
-.box-card {
+.management-card {
   height: calc(100vh - 190px);
   overflow: auto;
 }

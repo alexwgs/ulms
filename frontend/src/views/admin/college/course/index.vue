@@ -1,38 +1,51 @@
 <template>
   <div style="height: 100%">
-    <t-card class="box-card">
-      <t-row :gutter="20">
-        <t-col :span="4">
-          <t-input
-            placeholder="模糊搜索"
-            size="small"
-            v-model="queryInfo.query"
-          >
-            <t-button
-              slot="append" @click="getCourseTable()"><template #icon><DynamicIcon name="search" /></template></t-button>
-          </t-input>
-        </t-col>
-        <t-col :span="3">
-          <t-select
-            v-model="queryInfo.status"
-            size="small"
-            placeholder="请选择发布状态"
-            @change="getCourseTable()"
-          >
-            <t-option label="全部" value=""></t-option>
-            <t-option label="已发布" :value="1"></t-option>
-            <t-option label="未发布" :value="0"></t-option>
-          </t-select>
-        </t-col>
-        <t-col :span="4">
-          <t-button theme="primary" size="small" @click="courseManager(null)"
-            >新建课程</t-button
-          >
+    <t-card class="management-card">
+      <PageTips
+        title="操作说明"
+        theme="info"
+        :closable="false"
+        message="请正确使用字典配置：1.点击名单可以查看或配置考试名单。2.试题请配置。3.点击复议可以查看该考试的复议情况！4.红色的时钟表示该场考试需要设置考试预约时间"
+      >
+      </PageTips>
+      <div class="filter-bar">
+        <t-form
+          :data="queryInfo"
+          label-width="80px"
+          colon
+          layout="inline"
+          class="filter-form"
+        >
+          <t-form-item label="关键字" name="query">
+            <t-input-adornment style="width: 260px">
+              <template #append>
+                <t-button variant="outline" theme="primary" @click="getCourseTable()">搜索</t-button>
+              </template>
+              <t-input placeholder="模糊搜索" size="small" v-model="queryInfo.query"></t-input>
+            </t-input-adornment>
+          </t-form-item>
+          <t-form-item label="状态" name="status">
+            <t-select
+              v-model="queryInfo.status"
+              size="small"
+              placeholder="全部"
+              style="width: 150px"
+              @change="getCourseTable()"
+            >
+              <t-option label="全部" value=""></t-option>
+              <t-option label="已发布" :value="1"></t-option>
+              <t-option label="未发布" :value="0"></t-option>
+            </t-select>
+          </t-form-item>
+        </t-form>
+        <div class="operation-container">
+          <t-button variant="outline" theme="primary" size="small" @click="courseManager(null)">新建课程</t-button>
           <t-button
-            theme="primary"
+            variant="outline"
+            theme="default"
             size="small"
             @click="
-              $global.downloadExcel(
+              downloadExcel(
                 'college/report/course',
                 null,
                 '课程详情明细.xlsx'
@@ -40,15 +53,8 @@
             "
             >下载课程列表</t-button
           >
-        </t-col>
-      </t-row>
-      <t-alert
-        title="操作说明"
-        theme="info"
-        :closable="false"
-        message="请正确使用字典配置：1.点击名单可以查看或配置考试名单。2.试题请配置。3.点击复议可以查看该考试的复议情况！4.红色的时钟表示该场考试需要设置考试预约时间"
-      >
-      </t-alert>
+        </div>
+      </div>
       <CustomTable rowKey="id"
         :data="courses"
         size="small"
@@ -128,7 +134,7 @@
           >
         </TableColumn>
         <TableColumn
-          prop="ifExam"
+          colKey="courseFile"
           label="附件"
           sortable="custom"
           width="70px">
@@ -193,7 +199,7 @@
               @click="updateStatus(scope.row)"
               :type="scope.row.status ? 'success' : 'danger'"
               size="small"
-            >
+             variant="light">
               {{ scope.row.status ? '已发布' : '未发布' }}
             </t-tag></template
           >
@@ -205,69 +211,28 @@
           ellipsis></TableColumn>
         <TableColumn label="操作" fixed="right" width="150px">
           <template #default="scope">
-            <t-button
-              theme="primary" size="small"
+            <t-button variant="outline"
+              theme="default" size="small"
               @click="courseManager(scope.row)"
-              shape="circle"><template #icon><DynamicIcon name="edit" /></template></t-button>
-            <t-button
+             >编辑</t-button>
+            <t-button variant="outline"
               v-if="scope.row.bookExam === 1"
               theme="danger" size="small"
               @click="() => bookInfoRef.show(scope.row.examCode)"
-              shape="circle"
-            ><template #icon><DynamicIcon name="time" /></template></t-button>
-            <t-popup placement="top" width="400" trigger="click">
-              <p>报表下载</p>
-              <div style="text-align: right; margin: 0">
-                <t-button
-                  theme="primary"
-                  size="small"
-                  @click="
-                    $global.downloadExcel(
-                      'college/report/hum/' + scope.row.courseId,
-                      null,
-                      '课程学习记录明细BY人员.xlsx'
-                    )
-                  "
-                  >学习报表</t-button
-                >
-                <t-button
-                  theme="primary"
-                  size="small"
-                  @click="
-                    $global.downloadExcel(
-                      'college/report/exam/' + scope.row.courseId,
-                      null,
-                      '课程考试记录BY人员.xlsx'
-                    )
-                  "
-                  >考试报表</t-button
-                >
-                <t-button
-                  theme="primary"
-                  size="small"
-                  @click="
-                    $global.downloadExcel(
-                      'college/report/eval/' + scope.row.courseId,
-                      null,
-                      '满意度评价明细By课程.xlsx'
-                    )
-                  "
-                  >满意度报表</t-button
-                >
-              </div>
-              <template #reference>
-                <t-button
-                  style="margin-left: 10px"
-                  theme="warning" size="small"
-                  shape="circle"><template #icon><DynamicIcon name="file" /></template></t-button>
+             ><template #icon><DynamicIcon name="time" /></template>预约</t-button>
+            <t-dropdown trigger="click">
+              <t-button variant="outline" theme="default" size="small">
+                <template #icon><DynamicIcon name="file" /></template>报表下载
+              </t-button>
+              <template #dropdown>
+                <t-dropdown-menu>
+                  <t-dropdown-item value="hum" @click="() => downloadReport('hum', scope.row)">学习报表</t-dropdown-item>
+                  <t-dropdown-item value="exam" @click="() => downloadReport('exam', scope.row)">考试报表</t-dropdown-item>
+                  <t-dropdown-item value="eval" @click="() => downloadReport('eval', scope.row)">满意度报表</t-dropdown-item>
+                </t-dropdown-menu>
               </template>
-            </t-popup>
-            <t-button
-              size="small"
-              round
-              @click="() => taskListRef.show(scope.row.courseId)"
-              >任务</t-button
-            >
+            </t-dropdown>
+            <t-button variant="outline" theme="default" size="small" @click="() => taskListRef.show(scope.row.courseId)">任务</t-button>
           </template>
         </TableColumn>
       </CustomTable>
@@ -430,14 +395,10 @@
       </t-form>
 
       <template #footer>
-        <div class="dialog-footer">
-          <t-button size="small" @click="courseFormVisible = false"
-            >取消</t-button
-          >
-          <t-button size="small" theme="primary" @click="submitForm()"
-            >确定</t-button
-          >
-        </div>
+        <t-space>
+          <t-button size="small" variant="outline" @click="courseFormVisible = false">取消</t-button>
+          <t-button size="small" variant="outline" theme="primary" @click="submitForm()">确定</t-button>
+        </t-space>
       </template>
     </t-dialog>
 
@@ -448,12 +409,12 @@
       @close="onClose"
       v-model:visible="recommendFormVisible"
     >
-      <t-alert
+      <PageTips
         title="操作说明"
         theme="info"
         :closable="false"
         message="滚动广告输入0则为不展示。输入数字大于1则有大到小滚动。推荐分类，输入相同分类名称则自动归类在首页推荐栏位展示"
-      ></t-alert>
+      ></PageTips>
       <t-form
         ref="recommendFormRef"
         layout="inline"
@@ -490,14 +451,10 @@
         </t-form-item>
       </t-form>
       <template #footer>
-        <div class="dialog-footer">
-          <t-button size="small" @click="recommendFormVisible = false"
-            >取消</t-button
-          >
-          <t-button size="small" theme="primary" @click="submitRecommendForm()"
-            >确定</t-button
-          >
-        </div>
+        <t-space>
+          <t-button size="small" variant="outline" @click="recommendFormVisible = false">取消</t-button>
+          <t-button size="small" variant="outline" theme="primary" @click="submitRecommendForm()">确定</t-button>
+        </t-space>
       </template>
     </t-dialog>
     <CourseFile ref="courseFileRef" @refresh="getCourseTable"></CourseFile>
@@ -521,6 +478,7 @@ import { courseTypeApi } from '@/api/college/courseType'
 import { teacherApi } from '@/api/college/teacher'
 import { teachGroupApi } from '@/api/college/teachGroup'
 import { useDictStore } from '@/stores'
+import { downloadExcel } from '@/utils/request'
 
 const dictStore = useDictStore()
 const courseFileRef = ref(null)
@@ -619,6 +577,27 @@ const handleSizeChange = (pageSize) => {
 const handleCurrentChange = (page) => {
   queryInfo.pageNum = page
   getCourseTable()
+}
+
+// 报表下载：点击“报表下载”弹出 学习/考试/满意度 报表
+const downloadReport = (type, row) => {
+  const configs = {
+    hum: {
+      url: 'college/report/hum/' + row.courseId,
+      name: '课程学习记录明细BY人员.xlsx'
+    },
+    exam: {
+      url: 'college/report/exam/' + row.courseId,
+      name: '课程考试记录BY人员.xlsx'
+    },
+    eval: {
+      url: 'college/report/eval/' + row.courseId,
+      name: '满意度评价明细By课程.xlsx'
+    }
+  }
+  const cfg = configs[type]
+  if (!cfg) return
+  downloadExcel(cfg.url, null, cfg.name)
 }
 
 const tableSort = (data) => {
@@ -775,11 +754,27 @@ onMounted(() => {
 </script>
 
 <style lang="less" scoped>
-.form-inline .t-input {
-  --td-input-width: 150px;
+.filter-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
 }
 
-.form-inline .t-select {
-  --td-select-width: 150px;
+.filter-bar .filter-form {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+  margin-bottom: 0;
+}
+
+.filter-bar .operation-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
 }
 </style>

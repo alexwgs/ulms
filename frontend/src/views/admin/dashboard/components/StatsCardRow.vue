@@ -131,10 +131,10 @@ defineProps({
 
 .stat-card--danger .stat-card__icon {
   background: rgba(245, 108, 108, 0.1);
-  color: #f56c6c;
+  color: var(--td-error-color);
 }
 
 .stat-card--danger .stat-card__value {
-  color: #f56c6c;
+  color: var(--td-error-color);
 }
 </style>

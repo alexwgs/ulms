@@ -1,56 +1,60 @@
 <template>
-  <t-alert
+  <PageTips
     title="操作说明"
     theme="info"
     :closable="false"
     message="请正确使用菜单信息：1.菜单名称为前端菜单显示名称。2.排序越小，显示越靠前。3.最后一集为资源点配置。"
   />
-  <t-card class="box-card">
-    <t-row :gutter="20">
-      <t-col :span="3">
-        <t-select
-          size="small"
-          v-model="queryInfo.system"
-          placeholder="选择菜单系统"
-          @change="getMenuList"
-        >
-          <t-option
-            v-for="item in dictStore.dictList.sys_menu_system"
-            :key="item.code"
-            :label="item.codeval"
-            :value="item.code"
-          />
-        </t-select>
-      </t-col>
-      <t-col :span="2">
-        <t-radio-group
-          size="small"
-          v-model="queryInfo.useage"
-          @change="getMenuList"
-        >
-          <t-radio-button
-            v-for="item in dictStore.dictList.sys_menu_usage"
-            :key="item.code"
-            :value="parseInt(item.code)"
-          >
-            {{ item.codeval }}
-          </t-radio-button>
-        </t-radio-group>
-      </t-col>
-      <t-col :span="5">
-        <div class="buttons">
-          <t-button size="small" @click="setAllExpand(true)"
+  <t-card class="management-card">
+    <t-form :data="queryInfo" label-width="80px" colon class="filter-form">
+      <t-row :gutter="[24, 24]">
+        <t-col :span="3">
+          <t-form-item label="菜单系统" name="system">
+            <t-select
+              size="small"
+              v-model="queryInfo.system"
+              placeholder="选择菜单系统"
+              @change="getMenuList"
+            >
+              <t-option
+                v-for="item in (dictStore.dictList?.sys_menu_system || [])"
+                :key="item.code"
+                :label="item.codeval"
+                :value="item.code"
+              />
+            </t-select>
+          </t-form-item>
+        </t-col>
+        <t-col :span="3">
+          <t-form-item label="用途" name="useage">
+            <t-radio-group
+              size="small"
+              v-model="queryInfo.useage"
+              @change="getMenuList"
+            >
+              <t-radio-button
+                v-for="item in (dictStore.dictList?.sys_menu_usage || [])"
+                :key="item.code"
+                :value="parseInt(item.code)"
+              >
+                {{ item.codeval }}
+              </t-radio-button>
+            </t-radio-group>
+          </t-form-item>
+        </t-col>
+        <t-col :span="6" class="operation-container">
+          <t-button variant="outline" size="small" @click="setAllExpand(true)"
             >展开所有节点</t-button
           >
-          <t-button size="small" @click="setAllExpand(false)"
+          <t-button variant="outline" size="small" @click="setAllExpand(false)"
             >收起所有节点</t-button
           >
-          <t-button size="small" theme="primary" @click="add"
+          <t-button variant="outline" size="small" theme="primary" @click="add"
             >添加菜单</t-button
           >
-        </div>
-      </t-col>
-    </t-row>
+        </t-col>
+      </t-row>
+    </t-form>
     <CustomTable
       ref="menuTreeRef"
       size="small"
@@ -75,12 +79,12 @@
       <TableColumn colKey="status" label="状态" width="80">
         <template #default="{ row }">
           <t-tag
-            v-for="item in dictStore.dictList.sys_menu_status"
+            v-for="item in (dictStore.dictList?.sys_menu_status || [])"
             v-show="row.status == item.code"
             :key="item.code"
             size="small"
             :theme="item.code == 0 ? 'danger' : 'success'"
-          >
+           variant="light">
             {{ item.codeval }}
           </t-tag>
         </template>
@@ -91,23 +95,23 @@
         ellipsis></TableColumn>
       <TableColumn label="操作" width="180">
         <template #default="{ row }">
-          <t-button
+          <t-button variant="outline"
             v-if="row.menuType == 0 && row.pid != 0"
             theme="primary" size="small"
             @click="() => addResourse(row)"
-            circle
-          ><template #icon><DynamicIcon name="plus" /></template></t-button>
-          <t-button
-            theme="warning"
+           
+          >新增</t-button>
+          <t-button variant="outline"
+            theme="default"
             size="small" @click="() => update(row)"
-            circle
-          ><template #icon><DynamicIcon name="edit" /></template></t-button>
-          <t-button
+           
+          >编辑</t-button>
+          <t-button variant="outline"
             v-if="row.menuType == 0"
             theme="danger"
             size="small" @click="() => remove(row)"
-            circle
-          ><template #icon><DynamicIcon name="delete" /></template></t-button>
+           
+          >删除</t-button>
         </template>
       </TableColumn>
     </CustomTable>
@@ -125,7 +129,7 @@
             placeholder="选择菜单系统"
           >
             <t-option
-              v-for="item in dictStore.dictList.sys_menu_system"
+              v-for="item in (dictStore.dictList?.sys_menu_system || [])"
               :key="item.code"
               :label="item.codeval"
               :value="item.code"
@@ -135,7 +139,7 @@
         <t-form-item
           label="菜单名称"
           :label-width="formLabelWidth"
-          prop="name"
+          name="name"
         >
           <t-input
             size="small"
@@ -146,7 +150,7 @@
         <t-form-item
           label="菜单描述"
           :label-width="formLabelWidth"
-          prop="intro"
+          name="intro"
         >
           <t-textarea size="small"
             :autosize="{ minRows: 2, maxRows: 4 }"
@@ -156,7 +160,7 @@
         <t-form-item
           label="菜单地址"
           :label-width="formLabelWidth"
-          prop="path"
+          name="path"
         >
           <t-input
             size="small"
@@ -167,7 +171,7 @@
         <t-form-item
           label="菜单排序"
           :label-width="formLabelWidth"
-          prop="sort"
+          name="sort"
         >
           <t-input
             size="small"
@@ -194,14 +198,14 @@
         <t-form-item
           label="图标样式"
           :label-width="formLabelWidth"
-          prop="icon"
+          name="icon"
         >
           <icon-select v-model="formdata.icon" />
         </t-form-item>
         <t-form-item
           label="菜单状态"
           :label-width="formLabelWidth"
-          prop="status"
+          name="status"
         >
           <t-select
             size="small"
@@ -219,7 +223,7 @@
         <t-form-item
           label="前台后台"
           :label-width="formLabelWidth"
-          prop="useage"
+          name="useage"
         >
           <t-select
             size="small"
@@ -227,7 +231,7 @@
             placeholder="选择菜单类型"
           >
             <t-option
-              v-for="item in dictStore.dictList.sys_menu_usage"
+              v-for="item in (dictStore.dictList?.sys_menu_usage || [])"
               :key="item.code"
               :label="item.codeval"
               :value="parseInt(item.code)"
@@ -237,7 +241,7 @@
         <t-form-item
           label="菜单类型"
           :label-width="formLabelWidth"
-          prop="menuType"
+          name="menuType"
         >
           <t-select
             size="small"
@@ -245,7 +249,7 @@
             placeholder="选择菜单类型"
           >
             <t-option
-              v-for="item in dictStore.dictList.sys_menu_type"
+              v-for="item in (dictStore.dictList?.sys_menu_type || [])"
               :key="item.code"
               :label="item.codeval"
               :value="parseInt(item.code)"
@@ -255,7 +259,7 @@
         <t-form-item
           label="资源名称"
           :label-width="formLabelWidth"
-          prop="resourse"
+          name="resourse"
         >
           <t-input
             size="small"
@@ -266,10 +270,10 @@
         </t-form-item>
       </t-form>
       <template #footer>
-        <t-button size="small" @click="dialogFormVisible = false"
+        <t-button variant="outline" size="small" @click="dialogFormVisible = false"
           >取 消</t-button
         >
-        <t-button size="small" theme="primary" @click="dialogSubmit"
+        <t-button variant="outline" size="small" theme="primary" @click="dialogSubmit"
           >确 定</t-button
         >
       </template>
@@ -288,7 +292,7 @@
         <t-form-item
           label="资源名称"
           :label-width="formLabelWidth"
-          prop="name"
+          name="name"
         >
           <t-input
             size="small"
@@ -299,7 +303,7 @@
         <t-form-item
           label="资源代码"
           :label-width="formLabelWidth"
-          prop="resourse"
+          name="resourse"
         >
           <t-input
             size="small"
@@ -310,7 +314,7 @@
         <t-form-item
           label="资源描述"
           :label-width="formLabelWidth"
-          prop="intro"
+          name="intro"
         >
           <t-textarea size="small"
             :autosize="{ minRows: 2, maxRows: 4 }"
@@ -335,7 +339,7 @@
         <t-form-item
           label="资源状态"
           :label-width="formLabelWidth"
-          prop="status"
+          name="status"
         >
           <t-select
             size="small"
@@ -353,7 +357,7 @@
         <t-form-item
           label="前台后台"
           :label-width="formLabelWidth"
-          prop="useage"
+          name="useage"
         >
           <t-input
             size="small"
@@ -364,7 +368,7 @@
         <t-form-item
           label="菜单类型"
           :label-width="formLabelWidth"
-          prop="menuType"
+          name="menuType"
         >
           <t-select
             size="small"
@@ -373,7 +377,7 @@
             disabled
           >
             <t-option
-              v-for="item in dictStore.dictList.sys_menu_type"
+              v-for="item in (dictStore.dictList?.sys_menu_type || [])"
               :key="item.code"
               :label="item.codeval"
               :value="parseInt(item.code)"
@@ -382,10 +386,10 @@
         </t-form-item>
       </t-form>
       <template #footer>
-        <t-button size="small" @click="resourseFormVisible = false"
+        <t-button variant="outline" size="small" @click="resourseFormVisible = false"
           >取 消</t-button
         >
-        <t-button size="small" theme="primary" @click="resourseSubmit"
+        <t-button variant="outline" size="small" theme="primary" @click="resourseSubmit"
           >确 定</t-button
         >
       </template>
@@ -571,17 +575,8 @@ const resourseSubmit = async () => {
   }
 }
 
-const expandTable = (arr, state) => {
-  arr.forEach((i) => {
-    menuTreeRef.value.toggleRowExpansion(i, state)
-    if (i.children) {
-      expandTable(i.children, state)
-    }
-  })
-}
-
 const setAllExpand = (state) => {
-  expandTable(list.value, state)
+  menuTreeRef.value?.setAllExpanded(state)
 }
 
 // Lifecycle
@@ -603,7 +598,7 @@ onMounted(() => {
   font-size: 14px;
   padding-right: 8px;
 }
-.box-card {
+.management-card {
   height: calc(100vh - 190px);
   overflow: auto;
 }

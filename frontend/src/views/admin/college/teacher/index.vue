@@ -1,42 +1,44 @@
 <template>
   <div style="height: 100%">
-    <t-card class="box-card">
-      <t-row :gutter="20">
-        <t-col :span="4">
-          <t-input
-            placeholder="模糊搜索"
-            size="small"
-            v-model="queryInfo.query"
-          >
-            <t-button
-              slot="append" @click="getLecturer()"><template #icon><DynamicIcon name="search" /></template></t-button>
-          </t-input>
-        </t-col>
-        <t-col :span="3">
-          <t-select
-            v-model="queryInfo.status"
-            size="small"
-            placeholder="请选择发布状态"
-            @change="getLecturer()"
-          >
-            <t-option label="全部" value=""></t-option>
-            <t-option label="有效" :value="1"></t-option>
-            <t-option label="无效" :value="0"></t-option>
-          </t-select>
-        </t-col>
-        <t-col :span="4">
-          <t-button theme="primary" size="small" @click="teacherManager(null)"
-            >新建讲师</t-button
-          >
-        </t-col>
-      </t-row>
-      <t-alert
+    <t-card class="management-card">
+      <t-form :data="queryInfo" label-width="80px" colon class="filter-form">
+        <t-row :gutter="[24, 24]">
+          <t-col :span="5">
+            <t-form-item label="关键字" name="query">
+              <t-input-adornment>
+                <template #append>
+                  <t-button variant="outline" theme="primary" @click="getLecturer()">搜索</t-button>
+                </template>
+                <t-input placeholder="模糊搜索" size="small" v-model="queryInfo.query"></t-input>
+              </t-input-adornment>
+            </t-form-item>
+          </t-col>
+          <t-col :span="3">
+            <t-form-item label="状态" name="status">
+              <t-select
+                v-model="queryInfo.status"
+                size="small"
+                placeholder="全部"
+                @change="getLecturer()"
+              >
+                <t-option label="全部" value=""></t-option>
+                <t-option label="有效" :value="1"></t-option>
+                <t-option label="无效" :value="0"></t-option>
+              </t-select>
+            </t-form-item>
+          </t-col>
+          <t-col :span="3" class="operation-container">
+            <t-button variant="outline" theme="primary" size="small" @click="teacherManager(null)">新建讲师</t-button>
+          </t-col>
+        </t-row>
+      </t-form>
+      <PageTips
         title="操作说明"
-        theme="info"
+        theme="default"
         message="请正确使用字典配置：1.虚拟账号请工号输入XN开头。2.非虚拟账号请使用选择控件选人，勿手工修改姓名及工号。3.若不对外展示的讲师或离职人员请将状态设置为失效。"
         :closable="false"
       >
-      </t-alert>
+      </PageTips>
       <CustomTable rowKey="id"
         :data="teachers"
         size="small"
@@ -102,7 +104,7 @@
               @click="updateStatus(scope.row)"
               :type="scope.row.status ? 'success' : 'danger'"
               size="small"
-              >{{ scope.row.status ? '有效' : '无效' }}[{{
+               variant="light">{{ scope.row.status ? '有效' : '无效' }}[{{
                 scope.row.status
               }}]</t-tag
             ></template
@@ -111,9 +113,9 @@
         <TableColumn label="操作" fixed="right" width="90px">
           <template #default="scope">
             <t-button
-              theme="primary" size="small"
+              theme="default" size="small"
               @click="teacherManager(scope.row)"
-              shape="circle"><template #icon><DynamicIcon name="edit" /></template></t-button>
+             >编辑</t-button>
           </template>
         </TableColumn>
       </CustomTable>
@@ -145,14 +147,16 @@
         style="max-width: 600px"
       >
         <t-form-item label="工号" name="ploNum">
-          <t-input
-            v-model="teacherFormData.ploNum"
-            placeholder="请选择讲师信息"
-            clearable
-            :style="{ width: '100%' }"
-          >
-            <t-button slot="append" @click="treeDialogVisiable = !treeDialogVisiable"><template #icon><DynamicIcon name="search" /></template></t-button>
-          </t-input>
+          <t-input-adornment>
+            <template #append>
+              <t-button variant="outline" theme="primary" @click="treeDialogVisiable = !treeDialogVisiable">选择</t-button>
+            </template>
+            <t-input
+              v-model="teacherFormData.ploNum"
+              placeholder="请选择讲师信息"
+              clearable
+            ></t-input>
+          </t-input-adornment>
         </t-form-item>
 
         <t-form-item label="姓名" name="ploName">
@@ -255,14 +259,10 @@
         </t-form-item>
       </t-form>
       <template #footer>
-        <div class="dialog-footer">
-          <t-button size="small" @click="teacherFormVisible = false"
-            >取消</t-button
-          >
-          <t-button size="small" theme="primary" @click="submitForm()"
-            >确定</t-button
-          >
-        </div>
+        <t-space>
+          <t-button size="small" variant="outline" @click="teacherFormVisible = false">取消</t-button>
+          <t-button size="small" variant="outline" theme="primary" @click="submitForm()">确定</t-button>
+        </t-space>
       </template>
     </t-dialog>
     <t-dialog header="选择员工" v-model:visible="treeDialogVisiable" width="500px">
@@ -273,11 +273,9 @@
         @getUser="getUserInfo"
       ></EmployeeSelect>
       <template #footer>
-        <div class="dialog-footer">
-          <t-button size="small" @click="treeDialogVisiable = false"
-            >确 定</t-button
-          >
-        </div>
+        <t-space>
+          <t-button size="small" variant="outline" theme="primary" @click="treeDialogVisiable = false">确定</t-button>
+        </t-space>
       </template>
     </t-dialog>
   </div>
@@ -291,6 +289,8 @@ import EmployeeSelect from '../../../../components/EmployeeSelect.vue'
 import { teacherApi } from '@/api/college/teacher'
 
 const fsURL = import.meta.env.VITE_FILE_BASE_URL
+// 展示类图片统一走 HTTPS 文件管理地址，避免混合内容被浏览器拦截
+const displayURL = import.meta.env.VITE_FILE_BASE_URL || fsURL
 
 const queryInfo = reactive({
   orderType: ' desc',
@@ -392,7 +392,7 @@ const teacherManager = (lecturer) => {
       fileList.value = [
         {
           name: lecturer.avatar,
-          url: fsURL + '/upload/getFile/college-avatar/' + lecturer.avatar
+          url: displayURL + '/upload/getFile/college-avatar/' + lecturer.avatar
         }
       ]
     }

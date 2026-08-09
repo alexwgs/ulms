@@ -8,11 +8,7 @@
     >
       <t-row :gutter="10">
         <t-col :span="5">
-          <t-input
-            placeholder="请输入对应的搜索内容"
-            v-model="queryInfo.query"
-            size="small"
-          >
+          <t-input-adornment>
             <template #prepend>
               <t-select
                 v-model="queryInfo.queryType"
@@ -27,28 +23,30 @@
               </t-select>
             </template>
             <template #append>
-              <t-button
+              <t-button variant="outline" theme="primary"
                 size="small" @click="getExamScoreList()"
-              ><template #icon><DynamicIcon name="search" /></template></t-button>
+              >搜索</t-button>
             </template>
-          </t-input>
+            <t-input placeholder="请输入对应的搜索内容" v-model="queryInfo.query" size="small"></t-input>
+          </t-input-adornment>
         </t-col>
         <t-col :span="5">
-          <EmployeeSelect
-            v-model="examScoreForm.ploNum"
-            placeholder="请选择员工"
-            size="small"
-          />
-          <t-button
-            slot="append"
-            theme="primary"
-            size="small" @click="addNewUser"
-          ><template #icon><DynamicIcon name="plus" /></template></t-button>
+          <t-space>
+            <EmployeeSelect
+              v-model="examScoreForm.ploNum"
+              placeholder="请选择员工"
+              size="small"
+            />
+            <t-button variant="outline"
+              theme="primary"
+              size="small" @click="addNewUser"
+            >新增</t-button>
+          </t-space>
         </t-col>
         <t-col :span="2">
-          <t-button
+          <t-button variant="outline"
             size="small"
-            theme="primary"
+            theme="default"
             @click="
               uploadExcelRef.show({
                 url: 'edu/excel/in/ques/score',
@@ -104,13 +102,13 @@
         />
         <TableColumn label="操作" width="80px">
           <template #default="scope">
-            <!-- <t-button v-if="scope.row.compStat===0" theme="primary" size="small" @click="editBtn(scope.row)" shape="circle"><template #icon><DynamicIcon name="edit" /></template></t-button> -->
-            <t-button
+            <!-- <t-button variant="outline" v-if="scope.row.compStat===0" theme="default" size="small" @click="editBtn(scope.row)">编辑</t-button> -->
+            <t-button variant="outline"
               v-if="scope.row.compStat === 0"
-              theme="warning" size="small"
+              theme="danger" size="small"
               @click="deleteUser(scope.row.journo)"
-              circle
-            ><template #icon><DynamicIcon name="delete" /></template></t-button>
+             
+            >删除</t-button>
             <t-button
               v-else
               theme="danger"
@@ -155,10 +153,9 @@ import UploadExcel from '@/components/UploadExcel.vue'
 import { examConfigApi } from '@/api/edu/examConfig'
 import { useDictStore } from '@/stores'
 import EmployeeSelect from '@/components/EmployeeSelect.vue'
+import { usePagination } from '@/hooks/usePagination'
 const uploadExcelRef = ref(null)
 const dialogVisible = ref(false)
-const currentPage = ref(1)
-const pageSizes = ref([20, 100, 500])
 const total = ref(0)
 const examScoreeList = ref([])
 const dictStore = useDictStore()
@@ -222,15 +219,9 @@ const addNewUser = async () => {
   }
 }
 
-const handleSizeChange = (pageSize) => {
-  queryInfo.pageSize = pageSize
-  getExamScoreList()
-}
 
-const handleCurrentChange = (page) => {
-  queryInfo.pageNum = page
-  getExamScoreList()
-}
+
+
 
 const tableSort = (data) => {
   if (!data.descending) queryInfo.orderType = ' asc '
@@ -270,5 +261,6 @@ const reExam = (row) => {
 defineExpose({
   show
 })
+const { currentPage, pageSizes, handleCurrentChange, handleSizeChange } = usePagination({ query: queryInfo, fetch: getExamScoreList, pageSizes: [20, 100, 500] })
 </script>
 <style lang="less" scoped></style>

@@ -21,6 +21,8 @@ public interface QuesLibMapper {
 
     QuesLib selectByPrimaryKey(String libCode);
 
+    List<QuesLib> selectTreeByStat(@Param("status") Integer status);
+
     int updateByExampleSelective(@Param("record") QuesLib record, @Param("example") QuesLibExample example);
 
     int updateByExample(@Param("record") QuesLib record, @Param("example") QuesLibExample example);

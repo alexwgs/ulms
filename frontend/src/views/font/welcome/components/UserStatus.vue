@@ -66,7 +66,7 @@ import Notification from './Notification.vue'
 
 const router = useRouter()
 
-const fsURL = import.meta.env.VITE_FILE_MANAGE_BASE || ''
+const fsURL = import.meta.env.VITE_FILE_BASE_URL || ''
 const user = ref(null)
 const avatar = ref('')
 const identityUpdateFlag = ref(false)
@@ -146,7 +146,7 @@ const hasPermission = (permission) => {
 }
 .notice-btn {
   font-size: 20px;
-  color: #409eff;
+  color: var(--td-brand-color);
   padding: 0;
 }
 .avatar_box {
@@ -159,10 +159,10 @@ const hasPermission = (permission) => {
   line-height: 1.5;
 }
 .take-case {
-  color: #67c23a;
+  color: var(--td-success-color);
 }
 .refuse-case {
-  color: #909399;
+  color: var(--td-text-color-placeholder);
 }
 .user-status-popup {
   position: absolute;

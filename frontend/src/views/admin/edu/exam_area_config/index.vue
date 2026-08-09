@@ -1,66 +1,76 @@
 <template>
   <div>
-    <t-card class="box-card">
+    <t-card class="management-card">
       <div class="text item">
         <t-row :gutter="15">
           <t-col :span="6">
-            <t-row :gutter="15">
-              <t-col :span="6">考场配置</t-col>
-              <t-col :span="3">
-                <t-select size="small" v-model="areaConfigQueryInfo.status" placeholder="状态" @change="getAreaConfig">
-                  <t-option label="生效" :value="1"></t-option>
-                  <t-option label="失效" :value="0"></t-option>
-                </t-select>
-              </t-col>
-              <t-col :span="3">
-                <t-button theme="primary" size="small" @click="addAreaConfigBtn">新增配置</t-button>
-              </t-col>
-            </t-row>
+            <t-form :data="areaConfigQueryInfo" label-width="80px" colon class="filter-form">
+              <t-row :gutter="[24, 24]">
+                <t-col :span="4">
+                  <t-form-item label="状态" name="status">
+                    <t-select size="small" v-model="areaConfigQueryInfo.status" placeholder="请选择" @change="getAreaConfig">
+                      <t-option label="生效" :value="1"></t-option>
+                      <t-option label="失效" :value="0"></t-option>
+                    </t-select>
+                  </t-form-item>
+                </t-col>
+                <t-col :span="4" class="operation-container">
+                  <t-button variant="outline" theme="primary" size="small" @click="addAreaConfigBtn">新增配置</t-button>
+                </t-col>
+              </t-row>
+            </t-form>
             <CustomTable rowKey="id" :data="areaConfig" size="small" stripe height="calc(100vh - 360px)">
               <TableColumn colKey="areaName" label="配置名称" width="130"></TableColumn>
               <TableColumn colKey="areaDesc" ellipsis label="配置说明"></TableColumn>
               <TableColumn label="状态" width="80">
                 <template #default="scope">
-                  <t-tag size="small" :theme="scope.row.areaStat ? 'success' : 'danger'" effect="plain">{{ scope.row.areaStat ? '生效' : '失效' }}</t-tag>
+                  <t-tag size="small" :theme="scope.row.areaStat ? 'success' : 'danger'" variant="light">{{ scope.row.areaStat ? '生效' : '失效' }}</t-tag>
                 </template>
               </TableColumn>
               <TableColumn colKey="handlePlo" label="维护工号" width="90"></TableColumn>
               <TableColumn colKey="handleDate" ellipsis label="维护时间" width="100"></TableColumn>
               <TableColumn label="操作" width="110">
                 <template #default="scope">
-                  <t-button theme="primary" size="small" @click="viewAreaListBtn(scope.row)"><template #icon><DynamicIcon name="search" /></template></t-button>
-                  <t-button theme="warning" size="small" @click="editAreaConfigBtn(scope.row)"><template #icon><DynamicIcon name="edit" /></template></t-button>
+                  <t-space>
+                  <t-button variant="outline" theme="primary" size="small" @click="viewAreaListBtn(scope.row)">查看</t-button>
+                  <t-button variant="outline" theme="default" size="small" @click="editAreaConfigBtn(scope.row)">编辑</t-button>
+                  </t-space>
                 </template>
               </TableColumn>
             </CustomTable>
           </t-col>
           <t-col :span="6">
-            <t-row :gutter="15">
-              <t-col :span="6">时间配置</t-col>
-              <t-col :span="3">
-                <t-select size="small" v-model="timeConfigQueryInfo.status" placeholder="状态" @change="getTimeConfig">
-                  <t-option label="生效" :value="1"></t-option>
-                  <t-option label="失效" :value="0"></t-option>
-                </t-select>
-              </t-col>
-              <t-col :span="3">
-                <t-button theme="primary" size="small" @click="addTimeConfigBtn">新增配置</t-button>
-              </t-col>
-            </t-row>
+            <t-form :data="timeConfigQueryInfo" label-width="80px" colon class="filter-form">
+              <t-row :gutter="[24, 24]">
+                <t-col :span="4">
+                  <t-form-item label="状态" name="status">
+                    <t-select size="small" v-model="timeConfigQueryInfo.status" placeholder="请选择" @change="getTimeConfig">
+                      <t-option label="生效" :value="1"></t-option>
+                      <t-option label="失效" :value="0"></t-option>
+                    </t-select>
+                  </t-form-item>
+                </t-col>
+                <t-col :span="4" class="operation-container">
+                  <t-button variant="outline" theme="primary" size="small" @click="addTimeConfigBtn">新增配置</t-button>
+                </t-col>
+              </t-row>
+            </t-form>
             <CustomTable rowKey="id" :data="timeConfig" size="small" stripe height="calc(100vh - 360px)">
               <TableColumn colKey="bookName" label="配置名称" width="130"></TableColumn>
               <TableColumn colKey="bookDesc" ellipsis label="配置说明"></TableColumn>
               <TableColumn label="状态" width="80">
                 <template #default="scope">
-                  <t-tag size="small" :theme="scope.row.bookStat ? 'success' : 'danger'" effect="plain">{{ scope.row.bookStat ? '生效' : '失效' }}</t-tag>
+                  <t-tag size="small" :theme="scope.row.bookStat ? 'success' : 'danger'" variant="light">{{ scope.row.bookStat ? '生效' : '失效' }}</t-tag>
                 </template>
               </TableColumn>
               <TableColumn colKey="handlePlo" label="维护工号" width="90"></TableColumn>
               <TableColumn colKey="handleDate" ellipsis label="维护时间" width="100"></TableColumn>
               <TableColumn label="操作" width="110">
                 <template #default="scope">
-                  <t-button theme="primary" size="small" @click="viewTimeListBtn(scope.row)"><template #icon><DynamicIcon name="search" /></template></t-button>
-                  <t-button theme="warning" size="small" @click="editTimeConfigBtn(scope.row)"><template #icon><DynamicIcon name="edit" /></template></t-button>
+                  <t-space>
+                  <t-button variant="outline" theme="primary" size="small" @click="viewTimeListBtn(scope.row)">查看</t-button>
+                  <t-button variant="outline" theme="default" size="small" @click="editTimeConfigBtn(scope.row)">编辑</t-button>
+                  </t-space>
                 </template>
               </TableColumn>
             </CustomTable>
@@ -228,20 +238,9 @@ const viewTimeListBtn = (row) => {
 </script>
 
 <style lang="less" scoped>
-.box-card {
+.management-card {
   height: calc(100vh - 190px);
   overflow: auto;
-}
-
-.table-filter {
-  padding: 10px;
-  span {
-    font-size: 12px;
-    margin-left: 20px;
-  }
-  .t-select {
-    width: 70%;
-  }
 }
 
 .t-link {

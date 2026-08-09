@@ -4,7 +4,7 @@
     v-model:visible="dialogVisible"
     width="60%"
     :close-on-overlay-click="false"
-    @before-close="handleClose"
+    :before-close="handleClose"
   >
     <t-form
       ref="toolFormRef"
@@ -30,7 +30,7 @@
         <t-form-item label="分类" name="category" required>
           <t-select v-model="formData.category" placeholder="请选择工具类别">
             <t-option
-              v-for="item in dictStore.dictList.rpa_tool_list_category"
+              v-for="item in (dictStore.dictList?.rpa_tool_list_category || [])"
               :key="item.code"
               :label="item.codeval"
               :value="item.code"

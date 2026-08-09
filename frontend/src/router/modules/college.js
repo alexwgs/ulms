@@ -6,7 +6,7 @@ const COLLEGE = {
   component: () => import('@/views/font/college/index.vue'),
   meta: {
     title: '学习平台',
-    icon: 'el-icon-reading'
+    icon: 'book-open'
   },
   children: [
     {
@@ -24,7 +24,7 @@ const COLLEGE = {
     {
       path: 'teacher',
       name: 'college-teacher',
-      component: () => import('@/views/font/college/teacher/index.vue'),
+      component: () => import('@/views/font/college/teacher/list.vue'),
       meta: { title: '讲师列表' }
     },
     {
@@ -36,7 +36,7 @@ const COLLEGE = {
     {
       path: 'course',
       name: 'college-course',
-      component: () => import('@/views/font/college/course/index.vue'),
+      component: () => import('@/views/font/college/course/command.vue'),
       meta: { title: '课程列表' }
     },
     {

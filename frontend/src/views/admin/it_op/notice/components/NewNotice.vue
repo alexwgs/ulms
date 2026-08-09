@@ -1,6 +1,6 @@
 <template>
   <div>
-    <t-card class="box-card">
+    <t-card class="management-card">
       <t-form
         ref="formRef"
         :data="form"
@@ -10,7 +10,7 @@
         <t-form-item label="板块" name="category">
           <t-select v-model="form.category" placeholder="请选择发帖板块">
             <t-option
-              v-for="category in dictStore.dictList.cyt_system_category"
+              v-for="category in (dictStore.dictList?.cyt_system_category || [])"
               :key="category.id"
               :label="category.codeval"
               :value="parseInt(category.code)"
@@ -43,6 +43,7 @@ import { useRouter } from 'vue-router'
 import { MessagePlugin } from 'tdesign-vue-next'
 import WangEditor from '@/components/WangEditor.vue'
 import { manageNoticeApi } from '@/api/admin/manageNotice'
+import { getArticalDetail } from '@/api/a6voice/index.js'
 import { useDictStore } from '@/stores'
 
 const dictStore = useDictStore()
@@ -92,7 +93,7 @@ const submitStat = ref(false)
 const initArtical = async () => {
   if (props.id !== 'new') {
     try {
-      const res = await getArticalDetailApi(`cyt/artical/${props.id}`)
+      const res = await getArticalDetail(props.id)
       if (res.code !== 200) {
         MessagePlugin.error(res.msg)
         return

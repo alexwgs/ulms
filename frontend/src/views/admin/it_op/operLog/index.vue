@@ -1,52 +1,54 @@
 <template>
-  <t-card class="box-card">
-    <t-row>
-      <t-col :span="3">
-        <t-date-range-picker v-model="dataRange" @change="daterangeChange" :placeholder="['开始日期', '结束日期']" size="small" style="width: 100%" />
-      </t-col>
-      <t-col :span="2">
-        <t-select
-          v-model="queryInfo.status"
-          placeholder="操作类型"
-          @change="getOperLogListData"
-          style="width: 120px"
-          size="small"
-        >
-          <t-option value="" label="全部" />
-          <t-option :value="0" label="正常" />
-          <t-option :value="1" label="异常" />
-        </t-select>
-      </t-col>
-      <t-col :span="6">
-        <t-input
-          v-model="queryInfo.query"
-          placeholder="请输入内容"
-          size="small"
-          style="max-width: 450px"
-        >
-          <template #prepend>
+  <t-card class="management-card">
+    <t-form :data="queryInfo" label-width="80px" colon class="filter-form">
+      <t-row :gutter="[24, 24]">
+        <t-col :span="5">
+          <t-form-item label="日期范围" name="dataRange">
+            <t-date-range-picker v-model="dataRange" @change="daterangeChange" :placeholder="['开始日期', '结束日期']" size="small" />
+          </t-form-item>
+        </t-col>
+        <t-col :span="3">
+          <t-form-item label="操作类型" name="status">
             <t-select
-              v-model="queryInfo.queryType"
-              placeholder="请选择"
+              v-model="queryInfo.status"
+              placeholder="全部"
+              @change="getOperLogListData"
               size="small"
-              style="width: 100px"
             >
-              <t-option label="模块标题" value="title" />
-              <t-option label="触发用户" value="ploNum" />
+              <t-option value="" label="全部" />
+              <t-option :value="0" label="正常" />
+              <t-option :value="1" label="异常" />
             </t-select>
-          </template>
-          <template #append>
-            <t-button
-              size="small" @change="getOperLogListData"><template #icon><DynamicIcon name="search" /></template></t-button>
-          </template>
-        </t-input>
-      </t-col>
-      <t-col :span="1">
-        <t-button theme="default" size="small" @click="handleDownload">
-          下载
-        </t-button>
-      </t-col>
-    </t-row>
+          </t-form-item>
+        </t-col>
+        <t-col :span="6">
+          <t-form-item label="关键字" name="query">
+            <t-input-adornment>
+              <template #prepend>
+                <t-select
+                  v-model="queryInfo.queryType"
+                  placeholder="请选择"
+                  size="small"
+                >
+                  <t-option label="模块标题" value="title" />
+                  <t-option label="触发用户" value="ploNum" />
+                </t-select>
+              </template>
+              <template #append>
+                <t-button variant="outline" theme="primary"
+                  size="small" @click="getOperLogListData">搜索</t-button>
+              </template>
+              <t-input v-model="queryInfo.query" placeholder="请输入内容" size="small"></t-input>
+            </t-input-adornment>
+          </t-form-item>
+        </t-col>
+        <t-col :span="3" class="operation-container">
+          <t-button variant="outline" theme="default" size="small" @click="handleDownload">
+            下载
+          </t-button>
+        </t-col>
+      </t-row>
+    </t-form>
 
     <CustomTable rowKey="id"
       :data="tableData"
@@ -122,15 +124,13 @@
             trigger="hover"
             :content="scope.row.errorMsg"
           >
-            <template #reference>
-              <t-tag
-                :theme="scope.row.status === 1 ? 'danger' : 'success'"
-                effect="plain"
-                size="small"
-              >
-                {{ scope.row.status === 1 ? '异常' : '正常' }}
-              </t-tag>
-            </template>
+            <t-tag
+              :theme="scope.row.status === 1 ? 'danger' : 'success'"
+              variant="light"
+              size="small"
+            >
+              {{ scope.row.status === 1 ? '异常' : '正常' }}
+            </t-tag>
           </t-popup>
         </template>
       </TableColumn>
@@ -152,12 +152,11 @@
 import { ref, onMounted } from 'vue'
 import { MessagePlugin } from 'tdesign-vue-next'
 import { operLogApi } from '@/API/admin/operLog'
+import { usePagination } from '@/hooks/usePagination'
 
 // 响应式数据
 const tableData = ref([])
 const dataRange = ref([])
-const currentPage = ref(1)
-const pageSizes = ref([20, 100, 500])
 const total = ref(0)
 
 const queryInfo = ref({
@@ -200,17 +199,10 @@ const daterangeChange = () => {
 }
 
 // 处理页码大小改变
-const handleSizeChange = (pageSize) => {
-  queryInfo.value.pageSize = pageSize
-  getOperLogListData()
-}
+
 
 // 处理当前页改变
-const handleCurrentChange = (page) => {
-  queryInfo.value.pageNum = page
-  currentPage.value = page
-  getOperLogListData()
-}
+
 
 // 表格排序
 const tableSort = (data) => {
@@ -244,13 +236,14 @@ const handleDownload = async () => {
 onMounted(() => {
   getOperLogListData()
 })
+const { currentPage, pageSizes, handleCurrentChange, handleSizeChange } = usePagination({ query: queryInfo, fetch: getOperLogListData, pageSizes: [20, 100, 500] })
 </script>
 
 <style lang="less" scoped>
 .t-link {
   font-size: 12px;
 }
-.box-card {
+.management-card {
   height: calc(100vh - 190px);
   overflow: auto;
 }

@@ -128,7 +128,7 @@
               <t-tooltip class="item" :content="'答案：' + item.answer" placement="top-start">
                 <t-col :span="11">{{ index + 1 }}、{{ item.quesCode }}</t-col>
               </t-tooltip>
-              <t-col style="text-align: center" :span="1"><t-tag theme="success" size="small" effect="dark">
+              <t-col style="text-align: center" :span="1"><t-tag theme="success" size="small" variant="light">
                   {{ item.passFlag }}</t-tag></t-col>
             </t-row>
           </div>
@@ -257,7 +257,7 @@ onMounted(() => {
 .rank-area {
   height: calc(100vh - 410px);
   border-radius: 10px;
--color: rgba(233, 233, 233, 0.24);
+background-color: rgba(233, 233, 233, 0.24);
   padding: 10px;
   overflow-y: auto;
 
@@ -275,21 +275,21 @@ onMounted(() => {
 .question-area {
   height: calc(100vh - 270px);
   border-radius: 10px;
--color: rgba(233, 233, 233, 0.24);
+background-color: rgba(233, 233, 233, 0.24);
   padding: 10px;
   overflow-y: auto;
 }
 
 .t-range-editor--mini :deep(.t-range-input) {
--color: transparent;
-  color: #ffffff;
+background-color: transparent;
+  color: var(--td-bg-color-container);
 }
 
 .my-rank-area {
   margin-top: 15px;
   height: calc(100vh - 510px);
   border-radius: 10px;
--color: rgba(233, 233, 233, 0.24);
+background-color: rgba(233, 233, 233, 0.24);
   padding: 10px;
   overflow-y: auto;
 

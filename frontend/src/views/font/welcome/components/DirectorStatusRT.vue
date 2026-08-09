@@ -3,7 +3,7 @@
     header="主任状态RT"
     v-model:visible="dialogVisible"
     width="80%"
-    @before-close="handleClose"
+    :before-close="handleClose"
   >
     <t-form layout="inline" :data="queryForm" class="demo-form-inline">
       <t-form-item label="日期">
@@ -25,7 +25,7 @@
         width="120"></TableColumn>
       <TableColumn colKey="status" label="状态" width="150">
         <template #default="scope">
-          <t-tag :theme="getStatusType(scope.row.status)">
+          <t-tag :theme="getStatusType(scope.row.status)" variant="light">
             {{ getStatusText(scope.row.status) }}
           </t-tag>
         </template>

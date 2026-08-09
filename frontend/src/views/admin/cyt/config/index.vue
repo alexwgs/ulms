@@ -1,5 +1,5 @@
 <template>
-  <t-card class="box-card">
+  <t-card class="management-card">
     <div>
       <t-row :gutter="10">
         <t-col :span="3">
@@ -17,6 +17,7 @@
         <t-col :span="7">
           <t-button
             size="small"
+            variant="outline"
             theme="primary" @click="addCategory"><template #icon><DynamicIcon name="add" /></template>新增板块</t-button
           >
         </t-col>
@@ -35,7 +36,7 @@
             <t-tag
               size="small"
               :theme="JSON.parse(scope.row.description).examine?'success':'danger'"
-              effect="dark"
+              variant="light"
               >{{JSON.parse(scope.row.description).examine?'是':'否'}}</t-tag
             >
           </template>
@@ -45,7 +46,7 @@
             <t-tag
               size="small"
               :theme="JSON.parse(scope.row.description).postFlag?'success':'danger'"
-              effect="dark"
+              variant="light"
               >{{JSON.parse(scope.row.description).postFlag?'是':'否'}}</t-tag
             >
           </template>
@@ -55,7 +56,7 @@
             <t-tag
               size="small"
               :theme="JSON.parse(scope.row.description).commentFlag?'success':'danger'"
-              effect="dark"
+              variant="light"
               >{{JSON.parse(scope.row.description).commentFlag?'是':'否'}}</t-tag
             >
           </template>
@@ -65,7 +66,7 @@
             <t-tag
               size="small"
               :theme="JSON.parse(scope.row.description).anonFlag?'success':'danger'"
-              effect="dark"
+              variant="light"
               >{{JSON.parse(scope.row.description).anonFlag?'是':'否'}}</t-tag
             >
           </template>
@@ -75,14 +76,14 @@
             <t-tag
               size="small"
               :theme="scope.row.status === 1? 'success': 'danger'"
-              effect="dark"
+              variant="light"
               >{{scope.row.status === 1? '生效': '失效'}}</t-tag
             >
           </template>
         </TableColumn>
         <TableColumn label="操作">
           <template #default="scope">
-            <t-button size="small" @click="updateDialog(scope.row)"
+            <t-button size="small" variant="outline" @click="updateDialog(scope.row)"
               >编辑</t-button
             >
           </template>
@@ -94,7 +95,7 @@
       header="类别配置"
       v-model:visible="descriptionDialogVisible"
       width="50%"
-      @before-close="addDialogClose"
+      :before-close="addDialogClose"
     >
       <t-form
         :data="category"
@@ -117,14 +118,14 @@
           <t-input size="small" v-model="category.codeval"></t-input>
         </t-form-item>
         <t-form-item label="板块配置">
-          <t-switch v-model="description.examine" active-text="审核">
-          </t-switch>
-          <t-switch v-model="description.postFlag" active-text="发帖">
-          </t-switch>
-          <t-switch v-model="description.commentFlag" active-text="评论">
-          </t-switch>
-          <t-switch v-model="description.anonFlag" active-text="匿名">
-          </t-switch>
+<t-switch v-model="description.examine" :label="['审核', '']">
+</t-switch>
+<t-switch v-model="description.postFlag" :label="['发帖', '']">
+</t-switch>
+<t-switch v-model="description.commentFlag" :label="['评论', '']">
+</t-switch>
+<t-switch v-model="description.anonFlag" :label="['匿名', '']">
+</t-switch>
         </t-form-item>
         <t-form-item label="状态">
           <t-select
@@ -138,14 +139,14 @@
         </t-form-item>
       </t-form>
       <template #footer>
-        <div class="dialog-footer">
-          <t-button size="small" @click="descriptionDialogVisible = false"
+        <t-space>
+          <t-button variant="outline" size="small" @click="descriptionDialogVisible = false"
             >取 消</t-button
           >
-          <t-button size="small" theme="primary" @click="categorySubmit"
+          <t-button variant="outline" size="small" theme="primary" @click="categorySubmit"
             >确 定</t-button
           >
-        </div>
+        </t-space>
       </template>
     </t-dialog>
 
@@ -153,7 +154,7 @@
       header="新增分类"
       v-model:visible="addDialogVisible"
       width="50%"
-      @before-close="addDialogClose"
+      :before-close="addDialogClose"
     >
       <t-form
         :data="category"
@@ -176,14 +177,14 @@
           <t-input size="small" v-model="category.codeval"></t-input>
         </t-form-item>
         <t-form-item label="板块配置">
-          <t-switch v-model="description.examine" active-text="审核">
-          </t-switch>
-          <t-switch v-model="description.postFlag" active-text="发帖">
-          </t-switch>
-          <t-switch v-model="description.commentFlag" active-text="评论">
-          </t-switch>
-          <t-switch v-model="description.anonFlag" active-text="匿名">
-          </t-switch>
+<t-switch v-model="description.examine" :label="['审核', '']">
+</t-switch>
+<t-switch v-model="description.postFlag" :label="['发帖', '']">
+</t-switch>
+<t-switch v-model="description.commentFlag" :label="['评论', '']">
+</t-switch>
+<t-switch v-model="description.anonFlag" :label="['匿名', '']">
+</t-switch>
         </t-form-item>
         <t-form-item label="状态" required>
           <t-select
@@ -197,14 +198,14 @@
         </t-form-item>
       </t-form>
       <template #footer>
-        <div class="dialog-footer">
-          <t-button size="small" @click="addDialogVisible = false"
+        <t-space>
+          <t-button variant="outline" size="small" @click="addDialogVisible = false"
             >取 消</t-button
           >
-          <t-button size="small" theme="primary" @click="categoryAddSubmit"
+          <t-button variant="outline" size="small" theme="primary" @click="categoryAddSubmit"
             >确 定</t-button
           >
-        </div>
+        </t-space>
       </template>
     </t-dialog>
   </t-card>
@@ -353,7 +354,7 @@ onMounted(() => {
 </script>
 
 <style lang="less" scoped>
-.box-card {
+.management-card {
   height: calc(100vh - 190px);
   overflow: auto;
 }

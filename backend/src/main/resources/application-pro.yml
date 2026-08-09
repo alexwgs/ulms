@@ -43,7 +43,7 @@ spring:
       connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
       stat-view-servlet:
         enabled: true
-        url-pattern: /durid/*
+        url-pattern: /druid/*
         login-username: wei6130
         login-password: wei6130
         reset-enable: false

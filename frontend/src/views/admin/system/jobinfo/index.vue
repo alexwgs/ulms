@@ -1,24 +1,24 @@
 <template>
-  <t-alert title="操作说明" theme="info" :closable="false"
+  <PageTips title="操作说明" theme="info" :closable="false"
     message="请正确使用岗位信息：1.岗位编号为3位数字，第一位按照一二线区分设置。2.理论上数值越大岗位级别越高。3.请不要随意设置岗位。" />
-  <t-card class="box-card">
-    <div class="table-filter">
-      <t-row>
-        <t-col :span="3" v-if="false"> </t-col>
-        <t-col :span="2">
-          <span>
-            <t-select size="small" v-model="queryInfo.jobStatus" @change="getList" placeholder="岗位状态">
+  <t-card class="management-card">
+    <t-form :data="queryInfo" label-width="80px" colon class="filter-form">
+      <t-row :gutter="[24, 24]">
+        <t-col :span="4">
+          <t-form-item label="岗位状态" name="jobStatus">
+            <t-select size="small" v-model="queryInfo.jobStatus" @change="getList" placeholder="全部">
               <t-option value="" label="全部"></t-option>
-              <t-option v-for="item in dictStore.dictList.sys_dict_status" :key="item.id" :label="item.codeval"
+              <t-option v-for="item in (dictStore.dictList?.sys_dict_status || [])" :key="item.id" :label="item.codeval"
                 :value="String(item.code)"></t-option>
             </t-select>
-          </span>
+          </t-form-item>
         </t-col>
-        <t-col :span="6"> </t-col>
-        <t-col :span="1">
-          <t-button theme="primary" size="small" @click="configManageRef?.openDialog()">新增</t-button>
+        <t-col :span="3" class="operation-container">
+          <t-button variant="outline" theme="primary" size="small" @click="configManageRef?.openDialog()">新增</t-button>
         </t-col>
       </t-row>
+    </t-form>
+    <div class="table-container">
       <CustomTable rowKey="id" :data="tableData" size="small" sortable="custom" @sort-change="tableSort" stripe
         height="calc(100vh - 380px)">
         <TableColumn colKey="jobLevel" sortable="custom" label="岗位编号" width="160"></TableColumn>
@@ -28,18 +28,18 @@
         <TableColumn colKey="organ" label="机构号" width="160"></TableColumn>
         <TableColumn colKey="status" label="状态" width="120">
           <template #default="scope">
-            <t-tag size="small" :theme="String(scope.row.jobStatus) === '0' ? 'danger' : 'success'" effect="dark">{{
+            <t-tag size="small" :theme="String(scope.row.jobStatus) === '0' ? 'danger' : 'success'" variant="light">{{
               dictStore.getDictLabel('sys_dict_status', scope.row.jobStatus)
             }}</t-tag>
           </template>
         </TableColumn>
         <TableColumn colKey="status" label="操作" width="120">
           <template #default="scope">
-            <t-button theme="primary" size="small" @click="
+            <t-button variant="outline" theme="default" size="small" @click="
               configManageRef?.openDialog(
                 JSON.parse(JSON.stringify(scope.row))
               )
-              " shape="circle"><template #icon><DynamicIcon name="edit" /></template></t-button>
+              ">编辑</t-button>
           </template>
         </TableColumn>
       </CustomTable>
@@ -111,23 +111,14 @@ const tableSort = ({ sortBy, descending }) => {
 
 <style lang="less" scoped>
 .table-filter {
-  padding: 10px;
-
-  span {
-    font-size: 12px;
-    margin-left: 20px;
-  }
-
-  .t-select {
-    width: 55%;
-  }
+  padding: 0;
 }
 
 .t-link {
   font-size: 12px;
 }
 
-.box-card {
+.management-card {
   height: calc(100vh - 240px);
   overflow: auto;
 }

@@ -3,7 +3,7 @@ import { getDictionary } from '@/api/auth.js'
 
 const useDictStore = defineStore('dict', {
   state: () => ({
-    dictList: null
+    dictList: {}
   }),
 
   getters: {
@@ -13,25 +13,36 @@ const useDictStore = defineStore('dict', {
   },
   actions: {
     setDict(partial) {
-      this.dictList = partial
+      this.dictList = partial || {}
     },
     async getDictList() {
-      // 缓存读取逻辑
-      const cache = localStorage.getItem('dictCache')
-      if (cache) {
-        try {
-          this.dictList = JSON.parse(cache)
-          return
-        } catch (e) {
-          console.error('字典缓存解析失败', e)
+      // 防止并发重复请求
+      if (this._dictLoading) return
+      this._dictLoading = true
+      try {
+        // 缓存读取逻辑
+        const cache = localStorage.getItem('dictCache')
+        if (cache) {
+          try {
+            this.dictList = JSON.parse(cache) || {}
+            return
+          } catch (e) {
+            console.error('字典缓存解析失败', e)
+          }
         }
+
+        // 原始请求逻辑
+        const res = await getDictionary()
+        this.dictList = (res && res.data) || {}
+
+        // 缓存更新
+        localStorage.setItem('dictCache', JSON.stringify(this.dictList))
+      } catch (e) {
+        console.error('获取字典失败', e)
+        if (!this.dictList) this.dictList = {}
+      } finally {
+        this._dictLoading = false
       }
-
-      // 原始请求逻辑
-      const res = await getDictionary()
-
-      // 缓存更新
-      localStorage.setItem('dictCache', JSON.stringify(res.data))
     },
     /**
      * 获取指定字典的列表
@@ -42,15 +53,14 @@ const useDictStore = defineStore('dict', {
     getDictByNames(dictName, status) {
       // 0- 失效 1- 有效 空值-全部
       // 判断当前dict存不存在，若不存在从服务器获取
-      if (!this.dictList) {
-        this.fetchDict()
+      if (!this.dictList || !Object.keys(this.dictList).length) {
+        this.getDictList()
       }
       if (dictName == null || dictName == undefined || dictName == '') return []
-
-      if (status) {
-        return this.dictList[dictName].filter((item) => item.status == 1)
-      }
-      return this.dictList[dictName]
+      const dicts = this.dictList?.[dictName]
+      if (!Array.isArray(dicts)) return []
+      if (status) return dicts.filter((item) => item.status == 1)
+      return dicts
     },
     /**
      * 通过指定的字典名称和值匹配中文名称
@@ -60,22 +70,20 @@ const useDictStore = defineStore('dict', {
      */
     getDictName(dictName, val) {
       // 判断当前dict存不存在，若不存在从服务器获取
-      if (!this.dictList) {
+      if (!this.dictList || !Object.keys(this.dictList).length) {
         this.getDictList()
       }
-      const _dict = this.dictList
-      const dicts = _dict[dictName]
+      const dicts = this.dictList?.[dictName]
       let value = dicts?.find((element) => element.code == val)
       return value ? value.codeval : '未定义'
     },
     getDictLabel(dictName, val) {
       // 判断当前dict存不存在，若不存在从服务器获取
-      if (!this.dictList) {
+      if (!this.dictList || !Object.keys(this.dictList).length) {
         this.getDictList()
       }
-      const _dict = this.dictList
-      const dicts = _dict[dictName]
-      let value = dicts.find((element) => element.code == val)
+      const dicts = this.dictList?.[dictName]
+      let value = dicts?.find((element) => element.code == val)
       return value ? value.codeval : '未定义'
     }
   }

@@ -16,14 +16,14 @@
               <t-tag
                 v-if="artical[item.field] == item.val"
                 :theme="item.type"
-                effect="dark"
+                variant="light"
                 size="small"
               >
                 {{ item.label }}
               </t-tag>
             </span>
             <div class="artical-icon">
-              <span style="color: #909399; font-size: 14px; padding-right: 10px"
+              <span style="color: var(--td-text-color-placeholder); font-size: 14px; padding-right: 10px"
                 >发布人：{{
                   artical.user ? artical.user.ploName : '匿名'
                 }}
@@ -53,30 +53,32 @@
               size="small"
               @click="downloadFile(file.path)"
               theme="primary"
-              plain
+              variant="outline"
               >{{ file.name }}</t-button
             >
           </p>
           <div class="artical-operations">
             <t-button
               size="small"
-              :type="isLike == 0 ? '' : 'primary'"
+              :theme="isLike == 0 ? 'default' : 'primary'"
               :disabled="isLike == 1 ? true : false"
-              icon="iconfont iconzan1"
               @click="setLike(1, artical.id)"
-              round
-              >&emsp;点 赞&emsp;{{ artical.likeNum }}</t-button
+              shape="round"
             >
+              <template #icon><i class="iconfont iconzan1"></i></template>
+              &emsp;点 赞&emsp;{{ artical.likeNum }}
+            </t-button>
             <t-button
               size="small"
-              :type="isCollect == 0 ? '' : 'primary'"
-              icon="iconfont iconshoucang1"
+              :theme="isCollect == 0 ? 'default' : 'primary'"
               @click="setCollect"
-              round
-              >&emsp;{{ artical.isCollect == 0 ? '' : '已' }} 收 藏&emsp;{{
-                artical.collectNum
-              }}</t-button
+              shape="round"
             >
+              <template #icon><i class="iconfont iconshoucang1"></i></template>
+              &emsp;{{ artical.isCollect == 0 ? '' : '已' }} 收 藏&emsp;{{
+                artical.collectNum
+              }}
+            </t-button>
           </div>
         </div>
       </t-row>
@@ -107,7 +109,7 @@ import Comment from './Comment.vue'
 import { httpInstance } from '@/utils/request'
 import useDictStore from '@/stores/modules/dict'
 const route = useRoute()
-const fsURL = import.meta.env.VITE_FILE_MANAGE_BASE || import.meta.env.VITE_FILE_BASE_URL
+const fsURL = import.meta.env.VITE_FILE_BASE_URL
 const dictStore = useDictStore()
 const commentRef = ref(null)
 const artical = reactive({
@@ -251,7 +253,7 @@ onMounted(() => {
 <style lang="less" scoped>
 .view-container {
   width: 100%;
--color: #eaedf1;
+background-color: var(--td-bg-color-page);
   min-height: 100%;
   .mian-container {
     margin: 0 auto;
@@ -263,8 +265,9 @@ onMounted(() => {
   padding-left: 40px;
 }
 .artical-content {
+  width: 100%;
   padding: 20px;
--color: #fff;
+  background-color: #fff;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
 .artical-icon {
@@ -273,7 +276,7 @@ onMounted(() => {
     margin-right: 20px;
     font-size: 16px;
     font {
-      color: #797979;
+      color: var(--td-text-color-secondary);
     }
   }
 }
@@ -300,14 +303,14 @@ onMounted(() => {
   box-sizing: border-box;
   border-radius: 4px;
   position: relative;
--color: #fff;
+background-color: #fff;
   overflow: hidden;
   opacity: 1;
   display: flex;
   align-items: center;
   transition: opacity 0.2s;
--color: #f4f4f5;
-  color: #909399;
+background-color: var(--td-bg-color-secondarycontainer);
+  color: var(--td-text-color-placeholder);
   margin-top: 15px;
   margin-bottom: 15px;
   .author-info {

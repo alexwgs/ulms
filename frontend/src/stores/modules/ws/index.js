@@ -110,9 +110,15 @@ export const useWsStore = defineStore('websocket', {
     // 建立WebSocket连接
     connect() {
       try {
-        // 自动适配 HTTP/HTTPS：根据当前页面协议选择 ws:// 或 wss://
-        const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://'
-        // 开发模式：直连后端（使用 env 中配置的 host）；生产模式：与页面同源
+        // 自动适配 HTTP/HTTPS：
+        // 开发模式直接采用 env 中配置的协议与 host（例如 wss://localhost:8443），
+        // 避免 http://localhost:5173 页面被拼成 ws://localhost:8443 导致 TLS 握手失败；
+        // 生产模式与页面同源，按页面协议选择 ws/wss。
+        const protocol = import.meta.env.DEV
+          ? new URL(import.meta.env.VITE_WS_BASE_URL).protocol + '//'
+          : window.location.protocol === 'https:'
+            ? 'wss://'
+            : 'ws://'
         const host = import.meta.env.DEV
           ? new URL(import.meta.env.VITE_WS_BASE_URL).host
           : window.location.host

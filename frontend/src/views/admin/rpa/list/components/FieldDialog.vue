@@ -4,7 +4,7 @@
     v-model:visible="dialogVisible"
     width="50%"
     :close-on-overlay-click="false"
-    @before-close="handleClose"
+    :before-close="handleClose"
   >
     <t-form
       ref="formRef"

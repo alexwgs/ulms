@@ -1,25 +1,30 @@
 <template>
   <div>
-    <t-card class="box-card">
-      <div class="table-filter">
-        <t-row :gutter="15">
+    <t-card class="management-card">
+      <t-form :data="params" label-width="80px" colon class="filter-form">
+        <t-row :gutter="[24, 24]">
           <t-col :span="5">
-            <t-date-picker size="small" style="width:100%" v-model="params.dataDate" format="YYYY-MM-DD"
-              mode="date" @change="datePick" placeholder="选择日期"></t-date-picker>
+            <t-form-item label="日期" name="dataDate">
+              <t-date-picker size="small" v-model="params.dataDate" format="YYYY-MM-DD"
+                mode="date" @change="datePick" placeholder="选择日期"></t-date-picker>
+            </t-form-item>
           </t-col>
           <t-col :span="5">
-            <t-input placeholder="点击右边按钮选择人员" size="small" v-model="userList">
-              <template #append>
-                <t-button size="small" @click="treeDialogVisiable = !treeDialogVisiable"><template #icon><DynamicIcon name="zoom-in" /></template></t-button>
-              </template>
-            </t-input>
+            <t-form-item label="人员" name="userList">
+              <t-input-adornment>
+                <template #append>
+                  <t-button variant="outline" theme="default" size="small" @click="treeDialogVisiable = !treeDialogVisiable">选择</t-button>
+                </template>
+                <t-input placeholder="点击右边按钮选择人员" size="small" v-model="userList"></t-input>
+              </t-input-adornment>
+            </t-form-item>
           </t-col>
-          <t-col :span="3">
+          <t-col :span="3" class="operation-container">
             <t-button size="small" theme="primary" @click="getStatusJourDetail">查询</t-button>
-            <t-button size="small" theme="primary" @click="handleDownloadExcel">报表</t-button>
+            <t-button size="small" theme="default" @click="handleDownloadExcel">报表</t-button>
           </t-col>
         </t-row>
-      </div>
+      </t-form>
       <CustomTable rowKey="id" :data="statusList" size="small" stripe height="calc(100vh - 325px)">
         <TableColumn colKey="begTime" label="开始时间"></TableColumn>
         <TableColumn colKey="endTime" label="结束时间"></TableColumn>
@@ -90,20 +95,7 @@ const handleDownloadExcel = () => {
 </script>
 
 <style lang="less" scoped>
-.table-filter {
-  padding: 10px;
-
-  span {
-    font-size: 12px;
-    margin-left: 20px;
-  }
-
-  .t-select {
-    width: 70%;
-  }
-}
-
-.box-card {
+.management-card {
   height: calc(100vh - 190px);
   overflow: auto;
 }

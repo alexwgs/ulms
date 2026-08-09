@@ -226,5 +226,8 @@
   <select id="getNewId" resultType="java.lang.Integer">
     select case when count(1) >0 then max(id) + 1 else 1 end from PDA_HELPER_TREE
   </select>
+  <select id="selectByPid" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    select id from PDA_HELPER_TREE where pid = #{pid,jdbcType=DECIMAL} order by sort
+  </select>
 
 </mapper>

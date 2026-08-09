@@ -1,8 +1,8 @@
 <template>
   <div>
     <t-card class="main-container">
-      <t-row style="padding-bottom: 10px" :gutter="15">
-        <t-col :span="5">
+      <div class="table-toolbar">
+        <div class="toolbar-left">
           <t-radio-group
             v-model="dataType"
             size="small"
@@ -13,16 +13,14 @@
             <t-radio-button label="BY 科室" :value="2"></t-radio-button>
             <t-radio-button label="BY 业务类型" :value="3"></t-radio-button>
           </t-radio-group>
-        </t-col>
-        <t-col :span="6">
+        </div>
+        <div class="toolbar-right">
           <t-date-range-picker size="small" v-model="dateRange" :placeholder="['开始日期', '结束日期']" @change="listBrushConfig" ></t-date-range-picker>
-        </t-col>
-        <t-col :span="2">
-          <t-button theme="primary" size="small" @click="downloadReport"
+          <t-button variant="outline" theme="primary" size="small" @click="downloadReport"
             >下载</t-button
           >
-        </t-col>
-      </t-row>
+        </div>
+      </div>
       <CustomTable rowKey="id"
         :data="tableData"
         size="small"

@@ -607,4 +607,8 @@
     order by view_Num+reply_Num*2+Like_num*2+collect_Num*3 desc
   </select>
 
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from CYT_ARTICAL_LIST
+    where ID = #{id,jdbcType=DECIMAL}
+  </delete>
 </mapper>

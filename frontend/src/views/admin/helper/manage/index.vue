@@ -1,41 +1,58 @@
 <template>
   <div style="height:100%">
-    <t-card class="box-card">
-      <t-row :gutter="15">
-        <t-col :span="3">
-          <t-input placeholder="模糊搜索" size="small" v-model="queryInfo.query">
-            <template #append>
-              <t-button @click="getArticals"><template #icon><DynamicIcon name="search" /></template></t-button>
-            </template>
-          </t-input>
-        </t-col>
-        <t-col :span="3">
-          <t-cascader v-model="queryInfo.routeId" size="small" :options="tree" :props="{ value: 'id', label: 'name' }"
-            :style="{ width: '100%' }" placeholder="选择路径筛选" @change="routerChange" clearable></t-cascader>
-        </t-col>
-        <t-col :span="3">
-          <t-select v-model="queryInfo.status" size="small" placeholder="请选择发布状态" @change="getArticals">
-            <t-option label="全部" value=""></t-option>
-            <t-option label="有效" :value="1"></t-option>
-            <t-option label="无效" :value="0"></t-option>
-          </t-select>
-        </t-col>
-        <t-col :span="3">
-          <t-button theme="primary" size="small" @click="articalManager('add', null)">新建文章</t-button>
-          <!-- <t-button theme="primary" size="small" @click="$global.downloadExcel('college/report/course', null, '课程详情明细.xlsx')">下载文章</t-button> -->
-        </t-col>
-      </t-row>
-      <t-alert title="操作说明" theme="info" :closable="false"
-        message="请正确使用文章管理配置：1.地区/条线 新版本暂未启用。2.前端文章顺序优先按照序号从小到大，再由点击量倒序。3.状态为已发布"></t-alert>
+    <t-card class="management-card">
+      <PageTips title="操作说明" theme="info" :closable="false"
+        message="请正确使用文章管理配置：1.地区/条线 新版本暂未启用。2.前端文章顺序优先按照序号从小到大，再由点击量倒序。3.状态为已发布"></PageTips>
+      <div class="filter-bar">
+        <t-form
+          :data="queryInfo"
+          label-width="80px"
+          colon
+          layout="inline"
+          class="filter-form"
+        >
+          <t-form-item label="关键字" name="query">
+            <t-input-adornment style="width: 260px">
+              <template #append>
+                <t-button variant="outline" theme="primary" @click="getArticals">搜索</t-button>
+              </template>
+              <t-input placeholder="模糊搜索" size="small" v-model="queryInfo.query"></t-input>
+            </t-input-adornment>
+          </t-form-item>
+          <t-form-item label="路径" name="routeId">
+            <t-cascader
+              v-model="queryInfo.routeId"
+              size="small"
+              :options="tree"
+              :keys="{ value: 'id', label: 'name' }"
+              placeholder="选择路径筛选"
+              style="width: 180px"
+              @change="routerChange"
+              clearable
+            ></t-cascader>
+          </t-form-item>
+          <t-form-item label="状态" name="status">
+            <t-select
+              v-model="queryInfo.status"
+              size="small"
+              placeholder="全部"
+              style="width: 140px"
+              @change="getArticals"
+            >
+              <t-option label="全部" value=""></t-option>
+              <t-option label="有效" :value="1"></t-option>
+              <t-option label="无效" :value="0"></t-option>
+            </t-select>
+          </t-form-item>
+        </t-form>
+        <div class="operation-container">
+          <t-button variant="outline" theme="primary" size="small" @click="articalManager('add', null)">新建文章</t-button>
+        </div>
+      </div>
       <CustomTable rowKey="id" :data="articals" size="small" height="calc(100vh - 400px)" stripe @sort-change="tableSort"
         style="width: 100%">
         <!-- <TableColumn colKey="routeId" label="路径" sortable="custom" ellipsis></TableColumn> -->
         <TableColumn colKey="title" label="标题" sortable="custom" ellipsis></TableColumn>
-        <!-- <TableColumn colKey="area" label="地区" sortable="custom" width="70px">
-        <template slot-scope="scope">
-          {{arealist.filter(item => item.value === scope.row.area)[0].label}}
-        </template>
-      </TableColumn> -->
         <TableColumn colKey="owner" label="条线" sortable="custom" width="70px">
           <template #default="scope">
             {{ownerlist.find(item => item.value === scope.row.owner)?.label || ''}}
@@ -49,16 +66,16 @@
         <TableColumn colKey="sorting" label="序号" sortable="custom" width="70px"
           ellipsis></TableColumn>
         <TableColumn colKey="status" label="状态" sortable="custom" width="75px">
-          <template #default="scope"><t-tag :theme="scope.row.status ? 'success' : 'danger'" size="small">{{
+          <template #default="scope"><t-tag :theme="scope.row.status ? 'success' : 'danger'" size="small" variant="light">{{
             scope.row.status ? '已发布' : '未发布' }}</t-tag></template>
         </TableColumn>
         <TableColumn colKey="updateDate" label="操作时间" sortable="custom" width="140px"></TableColumn>
         <TableColumn label="操作" width="100px">
           <template #default="scope">
-            <t-button size="small" theme="primary" @click="articalManager('update', scope.row.journo)"
-              shape="circle"><template #icon><DynamicIcon name="edit" /></template></t-button>
-            <t-button size="small" theme="danger" @click="deleteArtical(scope.row.journo)"
-              shape="circle"><template #icon><DynamicIcon name="delete" /></template></t-button>
+            <t-button variant="outline" size="small" theme="default" @click="articalManager('update', scope.row.journo)"
+             >编辑</t-button>
+            <t-button variant="outline" size="small" theme="danger" @click="deleteArtical(scope.row.journo)"
+             >删除</t-button>
           </template>
         </TableColumn>
       </CustomTable>
@@ -183,12 +200,27 @@ const routerChange = () => {
 }
 </script>
 <style lang="less" scoped>
-.custom-tree-node {
-  flex: 1;
+.filter-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 14px;
-  padding-right: 8px;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.filter-bar .filter-form {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+  margin-bottom: 0;
+}
+
+.filter-bar .operation-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
 }
 </style>

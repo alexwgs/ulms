@@ -5,7 +5,7 @@
       v-model:visible="dialogVisible"
       :close-on-overlay-click="false"
       width="80%"
-      @before-close="handleClose"
+      :before-close="handleClose"
     >
       <t-alert
         title="1.先选择上传文件类型。2.点击放大镜选择文件。3.可自行修改文件学习时长及文件显示名称！"
@@ -39,26 +39,21 @@
             :auto-upload="false"
             :multiple="false"
             :limit="1"
-            :accept="
-              formData.fileType == 1
-                ? 'video/mp4, audio/mpeg, application/pdf, application/vnd.ms-powerpoint'
-                : ''
-            "
             :show-file-list="true"
             @change="handleChange"
             :file-list="fileList"
           >
+          <t-input-adornment style="width: 100%">
+            <template #append>
+              <t-button variant="outline" theme="primary" size="small">搜索</t-button>
+            </template>
             <t-input
               v-model="formData.fileName"
-              style="width: 100%"
               size="small"
               placeholder="请选择上传文件"
               readonly
-            >
-              <template #append>
-                <t-button size="small"><template #icon><DynamicIcon name="search" /></template></t-button>
-              </template>
-            </t-input>
+            ></t-input>
+          </t-input-adornment>
           </t-upload>
         </t-col>
         <t-col :span="2">
@@ -106,7 +101,7 @@
                 <t-tag
                   :theme="scope.row.status ? 'success' : 'danger'"
                   @click="changeStatus(scope.row)"
-                  >{{ scope.row.status ? '有效' : '无效' }}</t-tag
+                   variant="light">{{ scope.row.status ? '有效' : '无效' }}</t-tag
                 >
               </template>
             </TableColumn>
@@ -147,7 +142,7 @@
                 <t-tag
                   :theme="scope.row.status ? 'success' : 'danger'"
                   @click="changeStatus(scope.row)"
-                  >{{ scope.row.status ? '有效' : '无效' }}</t-tag
+                   variant="light">{{ scope.row.status ? '有效' : '无效' }}</t-tag
                 >
               </template>
             </TableColumn>
@@ -231,9 +226,7 @@ const changeStatus = (row) => {
 const handleChange = (fileData) => {
   const fileSize = (fileData.size / 1024 / 1024).toFixed(2)
   if (parseFloat(fileSize) >= 300) {
-    if (fileUploadRef.value) {
-      fileUploadRef.value.clearFiles()
-    }
+    fileList.value = []
     return MessagePlugin.error('上传文件过大！最大300MB，当前：' + fileSize + 'MB')
   }
 
@@ -241,7 +234,7 @@ const handleChange = (fileData) => {
   getFileDuration(fileData)
 }
 
-const handleSuccess = (response, fileData) => {
+const handleSuccess = ({ response }) => {
   loading.value = false
   if (response.code !== 200) {
     clearFileUpload()
@@ -272,15 +265,12 @@ const handleSuccess = (response, fileData) => {
 
 const submitFile = () => {
   if (fileUploadRef.value) {
-    fileUploadRef.value.submit()
+    fileUploadRef.value.uploadFiles()
   }
   loading.value = true
 }
 
 const clearFileUpload = () => {
-  if (fileUploadRef.value) {
-    fileUploadRef.value.clearFiles()
-  }
   // 上传成功后数据重置
   formData.duration = 0
   formData.fileName = ''
@@ -299,9 +289,6 @@ const getFileDuration = (fileData) => {
     })
   } else if (ext === 'pdf') {
     formData.duration = 300
-  } else if (formData.fileType === 1) {
-    MessagePlugin.error('您所提交的文件格式不支持！目前仅支持【mp3、mp4】')
-    return false
   }
 }
 
@@ -323,6 +310,7 @@ const batchUpdate = async () => {
     )
     if (res.code !== 200) return MessagePlugin.error(res.msg)
     MessagePlugin.success(res.msg)
+    emit('refresh')
     dialogVisible.value = false
   } catch (error) {
     MessagePlugin.error('批量更新失败')

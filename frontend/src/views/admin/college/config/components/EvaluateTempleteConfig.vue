@@ -1,27 +1,37 @@
 <template>
-  <div>
-    <t-row :gutter="15" style="margin-bottom: 10px">
-      <t-col :span="12">
-        <t-select v-model="tempInfo.tempStat" size="small" style="width: 100px; margin-right: 10px"
-          placeholder="请选择模板状态" @change="getTempleteList">
-          <t-option label="生效" :value="1"></t-option>
-          <t-option label="失效" :value="0"></t-option>
-        </t-select>
-        <t-button theme="primary" size="small" @click="handleAdd"><template #icon><DynamicIcon name="plus" /></template>新增评价模板</t-button>
-      </t-col>
-    </t-row>
+  <t-card class="management-card">
+    <!-- 搜索区域 -->
+    <t-form :data="tempInfo" label-width="80px" colon class="filter-form">
+      <t-row :gutter="[24, 24]">
+        <t-col :span="4">
+          <t-form-item label="筛选条件" name="tempStat">
+            <t-select v-model="tempInfo.tempStat" size="small" placeholder="请选择模板状态" @change="getTempleteList">
+              <t-option label="生效" :value="1"></t-option>
+              <t-option label="失效" :value="0"></t-option>
+            </t-select>
+          </t-form-item>
+        </t-col>
+        <t-col :span="8" class="operation-container">
+          <t-space>
+            <t-button variant="outline" theme="primary" size="small" @click="handleAdd">
+              <template #icon><DynamicIcon name="plus" /></template>新增评价模板
+            </t-button>
+          </t-space>
+        </t-col>
+      </t-row>
+    </t-form>
 
-    <CustomTable rowKey="id" :data="tempList" size="small" height="calc(100vh - 250px)" stripe style="width: 100%">
+    <CustomTable rowKey="id" :data="tempList" size="small" height="calc(100vh - 350px)" stripe style="width: 100%">
       <TableColumn colKey="tempName" label="模板名称" ellipsis></TableColumn>
       <TableColumn colKey="tempStat" label="状态" width="90px" ellipsis>
         <template #default="scope">
-          <t-tag :theme="scope.row.tempStat ? 'success' : 'danger'" size="small">{{ scope.row.tempStat ? '生效' : '失效'
+          <t-tag :theme="scope.row.tempStat ? 'success' : 'danger'" size="small" variant="light">{{ scope.row.tempStat ? '生效' : '失效'
           }}</t-tag>
         </template>
       </TableColumn>
       <TableColumn label="操作" fixed="right" width="100px">
         <template #default="scope">
-          <t-button theme="primary" size="small" @click="handleEdit(scope.row)" shape="circle"><template #icon><DynamicIcon name="edit" /></template></t-button>
+          <t-button variant="outline" theme="default" size="small" @click="handleEdit(scope.row)">编辑</t-button>
         </template>
       </TableColumn>
     </CustomTable>
@@ -35,19 +45,20 @@
         </t-form-item>
         <t-form-item label="操作" name="sort">
           <t-space>
-            <t-button theme="primary" @click="addQuestion(1)"><template #icon><DynamicIcon name="arrow-left" /></template>添加评分</t-button>
-            <t-button theme="primary" @click="addQuestion(2)">添加问答<template #suffix><DynamicIcon name="arrow-right" /></template></t-button>
+            <t-button variant="outline" theme="primary" @click="addQuestion(1)"><template #icon><DynamicIcon name="arrow-left" /></template>添加评分</t-button>
+            <t-button variant="outline" theme="primary" @click="addQuestion(2)">添加问答<template #suffix><DynamicIcon name="arrow-right" /></template></t-button>
           </t-space>
         </t-form-item>
         <t-form-item :label="'题目' + (index + 1)" v-for="(item, index) in tempInfo.record" :key="index">
-          <t-input placeholder="题干内容" v-model="item.quesCont">
+          <t-input-adornment>
             <template #prepend>{{
               item.quesType == 1 ? '评分题目' : '开放问题'
             }}</template>
             <template #append>
-              <t-button @click="removeQuestion(index)"><template #icon><DynamicIcon name="delete" /></template></t-button>
+              <t-button variant="outline" theme="danger" @click="removeQuestion(index)">删除</t-button>
             </template>
-          </t-input>
+            <t-input placeholder="题干内容" v-model="item.quesCont"></t-input>
+          </t-input-adornment>
         </t-form-item>
         <t-form-item label="状态" name="tempStat">
           <t-select v-model="tempInfo.tempStat" placeholder="请选择状态" clearable :style="{ width: '100%' }">
@@ -57,13 +68,13 @@
         </t-form-item>
       </t-form>
       <template #footer>
-        <div class="dialog-footer">
-          <t-button size="small" @click="tempInfo.tempDialogVisible = false">取 消</t-button>
-          <t-button size="small" theme="primary" @click="handleSubmit">确 定</t-button>
-        </div>
+        <t-space>
+          <t-button size="small" variant="outline" @click="tempInfo.tempDialogVisible = false">取消</t-button>
+          <t-button size="small" variant="outline" theme="primary" @click="handleSubmit">确定</t-button>
+        </t-space>
       </template>
     </t-dialog>
-  </div>
+  </t-card>
 </template>
 
 <script setup>

@@ -1,5 +1,5 @@
 <template>
-  <t-card class="box-card" style="height: calc(100vh - 130px)">
+  <t-card class="management-card" style="height: calc(100vh - 130px)">
     <t-row :gutter="15">
       <t-col :span="3">
         <t-card shadow>
@@ -35,26 +35,27 @@
       </t-col>
       <t-col :span="9">
         <div style="width: 100%">
-          <t-input
-            placeholder="请输入关键字,可按下回车查询"
-            v-model="queryInfo.query"
-            size="small"
-            clearable
-            @change="getArticalListByQuery('keyword')"
-          >
+          <t-input-adornment>
             <template #append>
               <t-button @click="getArticalListByQuery('content')"><template #icon><DynamicIcon name="search" /></template>全文搜索</t-button
               >
             </template>
-          </t-input>
+            <t-input
+              placeholder="请输入关键字,可按下回车查询"
+              v-model="queryInfo.query"
+              size="small"
+              clearable
+              @change="getArticalListByQuery('keyword')"
+            ></t-input>
+          </t-input-adornment>
           <div style="padding-top: 10px; font-size: 14px">
             <div class="left" style="line-height: 40px">
-              当前筛选：<t-tag v-if="currentNode == null">全部</t-tag
+              当前筛选：<t-tag v-if="currentNode == null" variant="light">全部</t-tag
               ><t-tag
                 v-else
                 closable
                 theme="danger"
-                effect="plain"
+                variant="light"
                 @close="routeArtical(null)"
                 >{{ currentNode.name }}</t-tag
               >
@@ -97,7 +98,7 @@
         <t-pagination
           @page-size-change="handleSizeChange"
           @current-change="handleCurrentChange"
-          v-model:current="queryInfo.pageNum"
+          v-model="queryInfo.pageNum"
           :page-size-options="[20, 40, 100, 200]"
           v-model:page-size="queryInfo.pageSize"
 

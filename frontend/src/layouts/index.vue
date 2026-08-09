@@ -141,7 +141,7 @@ onMounted(() => {
   min-height: 100vh;
   width: 100%;
   overflow-y: auto;
--color: var(--td-bg-color-page);
+background-color: var(--td-bg-color-page);
   transition: padding 0.2s cubic-bezier(0.34, 0.69, 0.1, 1);
 }
 

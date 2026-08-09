@@ -1,11 +1,11 @@
 <template>
 <div style="height:100%">
-  <t-card class="box-card">
+  <t-card class="management-card">
     <t-row :gutter="15">
       <t-col :span="4">
       </t-col>
       <t-col :span="8">
-        <t-button theme="primary" size="small" @click="() => uploadExcelRef.show({url:'college/group/upload'})"><template #icon><DynamicIcon name="add" /></template></t-button>
+        <t-button variant="outline" theme="primary" size="small" @click="() => uploadExcelRef.show({url:'college/group/upload'})"><template #icon><DynamicIcon name="add" /></template>导入分组</t-button>
       </t-col>
     </t-row>
     <t-row :gutter="15">
@@ -17,7 +17,7 @@
           </TableColumn>
           <TableColumn label="操作" fixed="right" width="100px">
             <template #default="scope">
-              <t-button theme="primary" size="small" @click="getList(scope.row.groupName)" shape="circle"><template #icon><DynamicIcon name="edit" /></template></t-button>
+              <t-button variant="outline" theme="default" size="small" @click="getList(scope.row.groupName)">编辑</t-button>
             </template>
           </TableColumn>
         </CustomTable>
@@ -27,18 +27,26 @@
     <t-dialog header="名单管理" v-model:visible="dialogVisible" :close-on-overlay-click="false" width="70%">
       <t-row :gutter="10">
         <t-col :span="5">
-          <t-input placeholder="请输入对应的搜索内容" v-model="empListQueryInfo.query" size="small">
-              <t-select v-model="empListQueryInfo.queryType" slot="prepend" style="width:130px" placeholder="请选择">
+          <t-input-adornment>
+              <template #prepend>
+              <t-select v-model="empListQueryInfo.queryType" placeholder="请选择">
                   <t-option label="姓名" value="ploName"></t-option>
                   <t-option label="工号" value="ploNum"></t-option>
               </t-select>
-              <t-button slot="append" @click="getList()"><template #icon><DynamicIcon name="search" /></template></t-button>
-          </t-input>
+              </template>
+              <template #append>
+              <t-button variant="outline" theme="primary" @click="getList()">搜索</t-button>
+              </template>
+              <t-input placeholder="请输入对应的搜索内容" v-model="empListQueryInfo.query" size="small"></t-input>
+          </t-input-adornment>
         </t-col>
         <t-col :span="5">
-          <t-input placeholder="输入工号添加" v-model="ploNum" size="small">
-              <t-button slot="append" theme="primary" @click="addUser({groupName: empListQueryInfo.groupName, ploNum: ploNum})"><template #icon><DynamicIcon name="add" /></template>增加</t-button>
-          </t-input>
+          <t-input-adornment>
+              <template #append>
+              <t-button variant="outline" theme="primary" @click="addUser({groupName: empListQueryInfo.groupName, ploNum: ploNum})"><template #icon><DynamicIcon name="add" /></template>增加</t-button>
+              </template>
+              <t-input placeholder="输入工号添加" v-model="ploNum" size="small"></t-input>
+          </t-input-adornment>
         </t-col>
       </t-row>
         <CustomTable rowKey="id" :data="empList" size="small" height="400px" stripe @sort-change="tableSort" style="width: 100%">
@@ -60,7 +68,7 @@
             </TableColumn>
             <TableColumn label="操作"  width="80px">
                 <template #default="scope">
-                    <t-button theme="danger" size="small" @click="()=>{ deleteUser(scope.row) }" shape="circle"><template #icon><DynamicIcon name="delete" /></template></t-button>
+                    <t-button variant="outline" theme="danger" size="small" @click="()=>{ deleteUser(scope.row) }">删除</t-button>
                 </template>
             </TableColumn>
         </CustomTable>
@@ -74,10 +82,10 @@
             :total="total">
         </t-pagination>
         <template #footer>
-            <div class="dialog-footer">
-                <t-button size="small" @click="dialogVisible = false">取 消</t-button>
-                <t-button size="small" theme="primary" @click="dialogVisible = false">确 定</t-button>
-            </div>
+            <t-space>
+                <t-button size="small" variant="outline" @click="dialogVisible = false">取消</t-button>
+                <t-button size="small" variant="outline" theme="primary" @click="dialogVisible = false">确定</t-button>
+            </t-space>
         </template>
     </t-dialog>
   <UploadExcel ref="uploadExcelRef" title="授课对象分组导入" info="不在分组名单内为全员；导入【授课对象分组】，表头需有“员编”、“授课对象”列！ "></UploadExcel>

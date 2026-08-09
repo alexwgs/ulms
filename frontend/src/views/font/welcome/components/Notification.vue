@@ -6,24 +6,23 @@
       v-show="visiable"
       @click.stop
       @mouseleave="visiable = false"
-      type="border-card"
     >
       <t-tabs
         v-model="activeName"
         @change="handleClick"
         style="height: 350px"
       >
-        <t-tab-panel label="通知" name="first">
+        <t-tab-panel label="通知" value="first">
           <div style="height: 300px; overflow: auto">
             <t-collapse
               v-model="activeNames"
               @change="handleChange"
               height="100%"
-              accordion
+              expand-mutex
             >
               <t-collapse-panel
                 v-for="item in noticeMessage"
-                :name="item.id"
+                :value="item.id"
                 :title="
                   (item.ifRead ? '[已读]' : '[未读]') +
                   '[' +
@@ -39,10 +38,10 @@
             </t-collapse>
           </div>
         </t-tab-panel>
-        <t-tab-panel label="消息" name="second">
+        <t-tab-panel label="消息" value="second">
           <t-empty></t-empty>
         </t-tab-panel>
-        <t-tab-panel label="待办事项" name="third">
+        <t-tab-panel label="待办事项" value="third">
           <t-empty></t-empty>
         </t-tab-panel>
       </t-tabs>

@@ -8,11 +8,7 @@
     >
       <t-row :gutter="10">
         <t-col :span="5">
-          <t-input
-            placeholder="请输入对应的搜索内容"
-            v-model="queryInfo.query"
-            size="small"
-          >
+          <t-input-adornment>
             <template #prepend>
               <t-select
                 v-model="queryInfo.queryType"
@@ -27,10 +23,11 @@
               </t-select>
             </template>
             <template #append>
-              <t-button size="small"
-                @click="getCourseTaskList"><template #icon><DynamicIcon name="search" /></template></t-button>
+              <t-button variant="outline" theme="primary" size="small"
+                @click="getCourseTaskList">搜索</t-button>
             </template>
-          </t-input>
+            <t-input placeholder="请输入对应的搜索内容" v-model="queryInfo.query" size="small"></t-input>
+          </t-input-adornment>
         </t-col>
         <t-col :span="5">
           <EmployeeSelect
@@ -103,7 +100,7 @@
       <t-pagination
         @page-size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        v-model:current="currentPage"
+        v-model="currentPage"
         :page-size-options="pageSizes"
         v-model:page-size="queryInfo.pageSize"
 

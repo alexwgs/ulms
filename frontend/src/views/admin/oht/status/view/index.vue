@@ -1,23 +1,28 @@
 <template>
-  <t-card class="box-card">
-    <div class="table-filter">
-      <t-row :gutter="15">
+  <t-card class="management-card">
+    <t-form :data="dateRange" label-width="80px" colon class="filter-form">
+      <t-row :gutter="[24, 24]">
         <t-col :span="4">
-          <t-date-range-picker size="small" v-model="dateRange" format="YYYY-MM-DD" @change="datePick" :placeholder="['开始日期', '结束日期']"></t-date-range-picker>
+          <t-form-item label="日期范围" name="dateRange">
+            <t-date-range-picker size="small" v-model="dateRange" format="YYYY-MM-DD" @change="datePick" :placeholder="['开始日期', '结束日期']"></t-date-range-picker>
+          </t-form-item>
         </t-col>
         <t-col :span="4">
-          <t-input placeholder="点击右边按钮选择人员" size="small" v-model="userList">
-            <template #append>
-              <t-button size="small" @click="treeDialogVisiable = !treeDialogVisiable"><template #icon><DynamicIcon name="zoom-in" /></template></t-button>
-            </template>
-          </t-input>
+          <t-form-item label="人员" name="userList">
+            <t-input-adornment>
+              <template #append>
+                <t-button variant="outline" theme="default" size="small" @click="treeDialogVisiable = !treeDialogVisiable">选择</t-button>
+              </template>
+              <t-input placeholder="点击右边按钮选择人员" size="small" v-model="userList"></t-input>
+            </t-input-adornment>
+          </t-form-item>
         </t-col>
-        <t-col :span="3">
+        <t-col :span="3" class="operation-container">
           <t-button size="small" theme="primary" @click="getChartData">查询</t-button>
-          <t-button size="small" theme="primary" @click="handleDownloadExcel">报表</t-button>
+          <t-button size="small" theme="default" @click="handleDownloadExcel">报表</t-button>
         </t-col>
       </t-row>
-    </div>
+    </t-form>
     <AsyncECharts :option="chartOption" :loading="loading" height="550px" width="100%"></AsyncECharts>
   </t-card>
   <EmpTree v-model:treeVisiable="treeDialogVisiable" type="101" :mutiselect="true" @getChecked="getTreeChecked">
@@ -150,20 +155,7 @@ const handleDownloadExcel = () => {
 </script>
 
 <style lang="less" scoped>
-.table-filter {
-  padding: 10px;
-
-  span {
-    font-size: 12px;
-    margin-left: 20px;
-  }
-
-  .t-select {
-    width: 70%;
-  }
-}
-
-.box-card {
+.management-card {
   height: calc(100vh - 190px);
   overflow: auto;
 }

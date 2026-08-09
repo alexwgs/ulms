@@ -3,7 +3,6 @@
     <t-alert
       title='点击选择"科室"可下钻至小组数据。点击"BACK"可返回"科室"数据！'
       theme="success"
-      effect="dark"
       :closable="false"
     />
     <div

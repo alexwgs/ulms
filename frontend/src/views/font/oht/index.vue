@@ -65,7 +65,7 @@
                     </div>
                     <!-- 系统消息 -->
                     <div v-if="item.direction === 3" class="message-content system">
-                      <t-tag theme="default" effect="dark" size="small">
+                      <t-tag theme="default" variant="light" size="small">
                         {{ item.content }}
                       </t-tag>
                     </div>
@@ -82,16 +82,16 @@
                   <!-- Emoji按钮 -->
                   <div class="tool-item">
                     <t-popup placement="top-start" :width="320" trigger="click">
-                      <template #reference>
-                        <t-button text @click="toggleEmoji">
-                          <t-icon size="20">
-                            <SunnyIcon />
-                          </t-icon>
-                        </t-button>
+                      <t-button text @click="toggleEmoji">
+                        <t-icon size="20">
+                          <SunnyIcon />
+                        </t-icon>
+                      </t-button>
+                      <template #content>
+                        <div class="emoji-picker-container">
+                          <emoji-picker v-if="showEmoji" @select="onEmojiSelect" />
+                        </div>
                       </template>
-                      <div class="emoji-picker-container">
-                        <emoji-picker v-if="showEmoji" @select="onEmojiSelect" />
-                      </div>
                     </t-popup>
                   </div>
 
@@ -168,10 +168,10 @@
               <div class="info-item" v-if="ohtStore.station">
                 <span class="label">位置信息：</span>
                 <div class="tags">
-                  <t-tag theme="primary" effect="dark" size="small">
+                  <t-tag theme="primary" variant="light" size="small">
                     EXT: {{ ohtStore.station.extnNum }}
                   </t-tag>
-                  <t-tag theme="success" effect="dark" size="small">
+                  <t-tag theme="success" variant="light" size="small">
                     楼层: {{ ohtStore.station.floorNum }}
                   </t-tag>
                 </div>
@@ -183,9 +183,9 @@
               <div class="info-item" v-if="ohtStore.ohtRole.roleType === 1">
                 <span class="label">接单数据：</span>
                 <div class="tags">
-                  <t-tag theme="success" effect="light">接起: {{ ohtStore.taskCaseNum.takeNum }}</t-tag>
-                  <t-tag theme="warning" effect="light">忽略: {{ ohtStore.taskCaseNum.ignoreNum }}</t-tag>
-                  <t-tag theme="danger" effect="light">拒绝: {{ ohtStore.taskCaseNum.refuseNum }}</t-tag>
+                  <t-tag theme="success" variant="light">接起: {{ ohtStore.taskCaseNum.takeNum }}</t-tag>
+                  <t-tag theme="warning" variant="light">忽略: {{ ohtStore.taskCaseNum.ignoreNum }}</t-tag>
+                  <t-tag theme="danger" variant="light">拒绝: {{ ohtStore.taskCaseNum.refuseNum }}</t-tag>
                 </div>
               </div>
 
@@ -240,7 +240,7 @@ const messageCont = ref([])
 const sending = ref(false)
 const showEmoji = ref(false)
 
-const fsURL = import.meta.env.VITE_FILE_MANAGE_BASE || import.meta.env.VITE_API_BASE_URL
+const fsURL = import.meta.env.VITE_FILE_BASE_URL
 const defaultAvatar = new URL('@/assets/img/default_avatar.png', import.meta.url).href
 
 const message = reactive({
@@ -362,7 +362,7 @@ onMounted(() => {
     justify-content: space-between;
     align-items: center;
     padding: 12px 16px;
-background: linear-gradient(135deg, #409eff 0%, #67c23a 100%);
+background: linear-gradient(135deg, var(--td-brand-color) 0%, var(--td-success-color) 100%);
     color: white;
 
     .chat-title {
@@ -387,7 +387,7 @@ background: linear-gradient(135deg, #409eff 0%, #67c23a 100%);
   height: calc(100vh - 580px);
   min-height: 300px;
   overflow: hidden;
-background: var(--td-bg-color);
+  background: var(--td-bg-color-container);
   padding: 15px;
 
   .message-list {
@@ -482,7 +482,7 @@ background: #dadada;
 
         .sender-name {
           font-size: 12px;
-          color: #999;
+          color: var(--td-text-color-secondary);
           margin-bottom: 4px;
         }
 
@@ -508,7 +508,7 @@ background: #dadada;
 
 .input-area {
   border-top: 1px solid #e8e8e8;
-background: var(--td-bg-color);
+  background: var(--td-bg-color-container);
   padding: 10px 15px;
 
   .toolbar {
@@ -545,7 +545,7 @@ background: var(--td-bg-color);
 
     .tips {
       font-size: 12px;
-      color: #999;
+      color: var(--td-text-color-secondary);
     }
   }
 }

@@ -1,40 +1,45 @@
 <template>
   <div style="height: 100%">
-    <t-card class="box-card">
-      <t-row :gutter="20">
-        <t-col :span="4">
-          <t-input
-            placeholder="模糊搜索"
-            size="small"
-            v-model="queryInfo.query"
-          >
-            <t-button slot="append" @click="getExamInfoList()"><template #icon><DynamicIcon name="search" /></template></t-button>
-          </t-input>
+    <t-card class="management-card">
+      <t-form :data="queryInfo" label-width="80px" colon class="filter-form">
+      <t-row :gutter="[24, 24]">
+        <t-col :span="5">
+          <t-form-item label="关键字" name="query">
+            <t-input-adornment>
+              <template #append>
+                <t-button variant="outline" theme="primary" @click="getExamInfoList()">搜索</t-button>
+              </template>
+              <t-input placeholder="模糊搜索" size="small" v-model="queryInfo.query"></t-input>
+            </t-input-adornment>
+          </t-form-item>
         </t-col>
         <t-col :span="3">
-          <t-select
-            v-model="queryInfo.status"
-            size="small"
-            placeholder="请选择状态"
-            @change="getExamInfoList()"
-          >
-            <t-option label="有效" :value="1" />
-            <t-option label="无效" :value="0" />
-          </t-select>
+          <t-form-item label="状态" name="status">
+            <t-select
+              v-model="queryInfo.status"
+              size="small"
+              placeholder="全部"
+              @change="getExamInfoList()"
+            >
+              <t-option label="有效" :value="1" />
+              <t-option label="无效" :value="0" />
+            </t-select>
+          </t-form-item>
         </t-col>
-        <t-col :span="4">
-          <t-button theme="primary" size="small" @click="addNewExamInfoBtn()"
+        <t-col :span="3" class="operation-container">
+          <t-button variant="outline" theme="default" size="small" @click="addNewExamInfoBtn()"
             >新建考试</t-button
           >
         </t-col>
       </t-row>
-      <t-alert
+      </t-form>
+      <PageTips
         title="操作说明"
-        theme="info"
+        theme="default"
         message="请正确使用字典配置：1.点击名单可以查看或配置考试名单。2.试题请配置。3.点击复议可以查看该考试的复议情况！4.红色的时钟表示该场考试需要设置考试预约时间"
         :closable="false"
       >
-      </t-alert>
+      </PageTips>
       <CustomTable rowKey="id"
         :data="examTableList"
         size="small"
@@ -66,7 +71,7 @@
           <template #default="scope">
             <t-link
               size="small"
-              theme="primary"
+              theme="default"
               @click="() => examScoreRef.show(scope.row.examCode)"
               >管理</t-link
             >
@@ -96,7 +101,7 @@
             <t-link
               v-if="scope.row.bookExam === 1"
               size="small"
-              theme="primary"
+              theme="default"
               @click="() => examTimeConfigRef.show(scope.row.examCode)"
               >配置</t-link
             >
@@ -115,7 +120,7 @@
             <t-link
               v-else
               size="small"
-              theme="success"
+              theme="default"
               @click="disputeManageRef.show(scope.row.examCode)"
               >{{ scope.row.disputeDate }}</t-link
             >
@@ -129,15 +134,12 @@
               content="阅卷后试卷不可修改，不可恢复，将结算所有考试人员得分！"
               @confirm="readTestAction(scope.row.examCode)"
             >
-              <template #reference>
-                <t-link
-                  size="small"
-                  theme="primary"
-                  :underline="true"
-                  slot="reference"
-                  >阅卷</t-link
-                >
-              </template>
+              <t-link
+                size="small"
+                theme="default"
+                :underline="true"
+                >阅卷</t-link
+              >
             </t-popconfirm>
             <span v-else-if="scope.row.ifRead === 1">{{
               dictStore.getDictLabel('yes_or_not', scope.row.ifRead)
@@ -147,44 +149,44 @@
         </TableColumn>
         <TableColumn label="操作" fixed="right" width="160px">
           <template #default="scope">
-            <t-button
-              theme="primary" size="small"
+            <t-button variant="outline"
+              theme="default" size="small"
               @click="examInfoEditBtn(scope.row)"
-              circle
-            ><template #icon><DynamicIcon name="edit" /></template></t-button>
-            <t-button
+             
+            >编辑</t-button>
+            <t-button variant="outline"
               v-if="scope.row.bookExam === 1" size="small"
               @click="() => bookInfoRef.show(scope.row.examCode)"
-              circle
-            ><template #icon><DynamicIcon name="timer" /></template></t-button>
+             ><template #icon><DynamicIcon name="timer" /></template>预约</t-button>
             <t-popup placement="right" width="400" trigger="click">
-              <template #reference>
-                <t-button
-                  style="margin-left: 10px" size="small"
-                  circle
-                ><template #icon><DynamicIcon name="document" /></template></t-button>
+              <t-button variant="outline"
+                size="small"
+               ><template #icon><DynamicIcon name="document" /></template>报表</t-button>
+              <template #content>
+                <div style="text-align: right; margin: 0">
+                  <t-button
+                    variant="outline"
+                    theme="primary"
+                    size="small"
+                    @click="
+                      examConfigApi.downloadExamScoreReport(scope.row.examCode)
+                    "
+                    >成绩报表（个人）</t-button
+                  >
+                  <t-button variant="outline" theme="primary" size="small"
+                    >成绩报表（小组）</t-button
+                  >
+                  <t-button
+                    variant="outline"
+                    theme="primary"
+                    size="small"
+                    @click="
+                      examConfigApi.downloadExamTestReport(scope.row.examCode)
+                    "
+                    >试卷明细</t-button
+                  >
+                </div>
               </template>
-              <div style="text-align: right; margin: 0">
-                <t-button
-                  theme="primary"
-                  size="small"
-                  @click="
-                    examConfigApi.downloadExamScoreReport(scope.row.examCode)
-                  "
-                  >成绩报表（个人）</t-button
-                >
-                <t-button theme="primary" size="small"
-                  >成绩报表（小组）</t-button
-                >
-                <t-button
-                  theme="primary"
-                  size="small"
-                  @click="
-                    examConfigApi.downloadExamTestReport(scope.row.examCode)
-                  "
-                  >试卷明细</t-button
-                >
-              </div>
             </t-popup>
           </template>
         </TableColumn>
@@ -221,7 +223,7 @@
             <t-form-item
               label="考试名称"
               :label-width="formLabelWidth"
-              prop="examName"
+              name="examName"
             >
               <t-input
                 size="small"
@@ -232,14 +234,14 @@
             <t-form-item
               label="考试周期"
               :label-width="formLabelWidth"
-              prop="cycleDate"
+              name="cycleDate"
             >
               <t-date-range-picker v-model="datetimeRange" size="small" style="width: 100%" enable-time-picker format="YYYY-MM-DD HH:mm:ss" :placeholder="['开始日期', '结束日期']" />
             </t-form-item>
             <t-form-item
               label="考场区域"
               :label-width="formLabelWidth"
-              prop="areaCode"
+              name="areaCode"
             >
               <t-select
                 size="small"
@@ -258,7 +260,7 @@
             <t-form-item
               label="考试时长(分)"
               :label-width="formLabelWidth"
-              prop="examTime"
+              name="examTime"
             >
               <t-input
                 size="small"
@@ -270,7 +272,7 @@
             <t-form-item
               label="考试中断"
               :label-width="formLabelWidth"
-              prop="ifBreak"
+              name="ifBreak"
             >
               <t-select
                 size="small"
@@ -278,7 +280,7 @@
                 placeholder="考试是否可中途退出"
               >
                 <t-option
-                  v-for="item in dictStore.dictList.yes_or_not"
+                  v-for="item in (dictStore.dictList?.yes_or_not || [])"
                   :key="item.code"
                   :label="item.codeval"
                   :value="parseInt(item.code)"
@@ -290,7 +292,7 @@
             <t-form-item
               label="试卷用途"
               :label-width="formLabelWidth"
-              prop="examUse"
+              name="examUse"
             >
               <t-select
                 v-model="examForm.examUse"
@@ -312,28 +314,29 @@
               />
             </t-form-item>
             <t-form-item label="计分方式" :label-width="formLabelWidth">
-              <t-input
-                placeholder="请输入单位分值"
-                size="small"
-                v-model="examForm.unitScore"
-                :disabled="examForm.scoreMethod === 0"
-              >
-                <t-select
-                  v-model="examForm.scoreMethod"
+              <t-input-adornment>
+                <template #prepend>
+                  <t-select
+                    v-model="examForm.scoreMethod"
+                    size="small"
+                    placeholder="请选择"
+                  >
+                    <t-option label="百分制" :value="0" />
+                    <t-option label="累分制" :value="1" />
+                  </t-select>
+                </template>
+                <t-input
+                  placeholder="请输入单位分值"
                   size="small"
-                  slot="prepend"
-                  placeholder="请选择"
-                  style="width: 130px"
-                >
-                  <t-option label="百分制" :value="0" />
-                  <t-option label="累分制" :value="1" />
-                </t-select>
-              </t-input>
+                  v-model="examForm.unitScore"
+                  :disabled="examForm.scoreMethod === 0"
+                ></t-input>
+              </t-input-adornment>
             </t-form-item>
             <t-form-item
               label="预约考试"
               :label-width="formLabelWidth"
-              prop="bookExam"
+              name="bookExam"
             >
               <t-select
                 size="small"
@@ -341,7 +344,7 @@
                 placeholder="是否需要预约才可考试"
               >
                 <t-option
-                  v-for="item in dictStore.dictList.yes_or_not"
+                  v-for="item in (dictStore.dictList?.yes_or_not || [])"
                   :key="item.code"
                   :label="item.codeval"
                   :value="parseInt(item.code)"
@@ -351,7 +354,7 @@
             <t-form-item
               label="单题时长(秒)"
               :label-width="formLabelWidth"
-              prop="quesTime"
+              name="quesTime"
             >
               <t-input
                 size="small"
@@ -363,7 +366,7 @@
             <t-form-item
               label="重新考试"
               :label-width="formLabelWidth"
-              prop="ifAgain"
+              name="ifAgain"
             >
               <t-select
                 size="small"
@@ -371,7 +374,7 @@
                 placeholder="是否可重复考试"
               >
                 <t-option
-                  v-for="item in dictStore.dictList.yes_or_not"
+                  v-for="item in (dictStore.dictList?.yes_or_not || [])"
                   :key="item.code"
                   :label="item.codeval"
                   :value="parseInt(item.code)"
@@ -386,7 +389,7 @@
             <t-form-item
               label="音频重播(*"
               :label-width="formLabelWidth"
-              prop="audioAgain"
+              name="audioAgain"
             >
               <t-select
                 size="small"
@@ -394,7 +397,7 @@
                 placeholder="声音文件是否可以重播"
               >
                 <t-option
-                  v-for="item in dictStore.dictList.yes_or_not"
+                  v-for="item in (dictStore.dictList?.yes_or_not || [])"
                   :key="item.code"
                   :label="item.codeval"
                   :value="parseInt(item.code)"
@@ -404,7 +407,7 @@
             <t-form-item
               label="题号随机"
               :label-width="formLabelWidth"
-              prop="quesRandom"
+              name="quesRandom"
             >
               <t-select
                 size="small"
@@ -412,7 +415,7 @@
                 placeholder="题号是否随机"
               >
                 <t-option
-                  v-for="item in dictStore.dictList.yes_or_not"
+                  v-for="item in (dictStore.dictList?.yes_or_not || [])"
                   :key="item.code"
                   :label="item.codeval"
                   :value="parseInt(item.code)"
@@ -422,7 +425,7 @@
             <t-form-item
               label="题目跳转"
               :label-width="formLabelWidth"
-              prop="skipQues"
+              name="skipQues"
             >
               <t-select
                 size="small"
@@ -430,7 +433,7 @@
                 placeholder="是否可以选择题号跳转"
               >
                 <t-option
-                  v-for="item in dictStore.dictList.yes_or_not"
+                  v-for="item in (dictStore.dictList?.yes_or_not || [])"
                   :key="item.code"
                   :label="item.codeval"
                   :value="parseInt(item.code)"
@@ -440,7 +443,7 @@
             <t-form-item
               label="选项展示(*"
               :label-width="formLabelWidth"
-              prop="optionOrder"
+              name="optionOrder"
             >
               <t-select
                 size="small"
@@ -454,7 +457,7 @@
             <t-form-item
               label="复议时间"
               :label-width="formLabelWidth"
-              prop="disputeDate"
+              name="disputeDate"
             >
               <t-date-picker
                 mode="date"
@@ -469,7 +472,7 @@
             <t-form-item
               label="视频重播(*"
               :label-width="formLabelWidth"
-              prop="videoAgain"
+              name="videoAgain"
             >
               <t-select
                 size="small"
@@ -477,7 +480,7 @@
                 placeholder="视频文件是否可以重播"
               >
                 <t-option
-                  v-for="item in dictStore.dictList.yes_or_not"
+                  v-for="item in (dictStore.dictList?.yes_or_not || [])"
                   :key="item.code"
                   :label="item.codeval"
                   :value="parseInt(item.code)"
@@ -487,7 +490,7 @@
             <t-form-item
               label="选项随机"
               :label-width="formLabelWidth"
-              prop="optionRandom"
+              name="optionRandom"
             >
               <t-select
                 size="small"
@@ -495,7 +498,7 @@
                 placeholder="选项乱序"
               >
                 <t-option
-                  v-for="item in dictStore.dictList.yes_or_not"
+                  v-for="item in (dictStore.dictList?.yes_or_not || [])"
                   :key="item.code"
                   :label="item.codeval"
                   :value="parseInt(item.code)"
@@ -505,7 +508,7 @@
             <t-form-item
               label="答错继续"
               :label-width="formLabelWidth"
-              prop="wrongBreak"
+              name="wrongBreak"
             >
               <t-select
                 size="small"
@@ -513,7 +516,7 @@
                 placeholder="答错是否自动提交试卷"
               >
                 <t-option
-                  v-for="item in dictStore.dictList.yes_or_not"
+                  v-for="item in (dictStore.dictList?.yes_or_not || [])"
                   :key="item.code"
                   :label="item.codeval"
                   :value="parseInt(item.code)"
@@ -523,7 +526,7 @@
             <t-form-item
               label="试卷状态"
               :label-width="formLabelWidth"
-              prop="examStat"
+              name="examStat"
             >
               <t-select
                 size="small"
@@ -538,18 +541,19 @@
         </t-row>
       </t-form>
       <template #footer>
-        <span class="dialog-footer">
-          <t-button size="small" @click="examFormVisible = false"
+        <t-space>
+          <t-button variant="outline" size="small" @click="examFormVisible = false"
             >取 消</t-button
           >
           <t-button
+            variant="outline"
             size="small"
             theme="primary"
             @click="examFormSubmit"
             :disabled="examForm.ifRead === 1"
             >确 定</t-button
           >
-        </span>
+        </t-space>
       </template>
     </t-dialog>
 
@@ -576,6 +580,7 @@ import ExamQuestionConfig from './components/ExamQuestionConfig.vue'
 import ExamTimeConfig from './components/ExamTimeConfig.vue'
 import DisputeManage from './components/DisputeManage.vue'
 import BookInfo from './components/BookInfo.vue'
+import { usePagination } from '@/hooks/usePagination'
 
 // 组件引用
 const examScoreRef = ref(null)
@@ -587,8 +592,6 @@ const examFormRef = ref(null)
 
 // 响应式数据
 const examTableList = ref([])
-const currentPage = ref(1)
-const pageSizes = ref([20, 100, 500])
 const total = ref(0)
 const examFormVisible = ref(false)
 const examFormTitle = ref('')
@@ -766,15 +769,9 @@ const readTestAction = async (examCode) => {
 }
 
 // 分页处理
-const handleSizeChange = (pageSize) => {
-  queryInfo.pageSize = pageSize
-  getExamInfoList()
-}
 
-const handleCurrentChange = (page) => {
-  queryInfo.pageNum = page
-  getExamInfoList()
-}
+
+
 
 // 排序处理
 const tableSort = (data) => {
@@ -789,9 +786,10 @@ const getYesOrNoText = (code) => {
   const item = yesOrNoOptions.value.find((e) => parseInt(e.code) === code)
   return item ? item.codeval : code
 }
+const { currentPage, pageSizes, handleCurrentChange, handleSizeChange } = usePagination({ query: queryInfo, fetch: getExamInfoList, pageSizes: [20, 100, 500] })
 </script>
 <style lang="less" scoped>
-.box-card {
+.management-card {
   height: calc(100vh - 190px);
   overflow: auto;
 }

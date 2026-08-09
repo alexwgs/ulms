@@ -9,7 +9,7 @@
 
       <t-col :span="4">
         <t-row style="height: 250px">
-          <t-card class="box-card" style="width: 100%">
+          <t-card class="management-card" style="width: 100%">
             <template #header>
               <div class="clearfix">
                 <span>系统公告</span>
@@ -32,7 +32,7 @@
           </t-card>
         </t-row>
         <t-row>
-          <t-card class="box-card" style="width: 100%">
+          <t-card class="management-card" style="width: 100%">
             <template #header>
               <div class="clearfix">
                 <span>快捷功能</span>
@@ -41,35 +41,35 @@
             <div class="scroll" style="height: calc(100vh - 515px)">
               <t-row :gutter="20" v-if="userId.substring(0, 1) != '6' || userId == '655012'">
                 <t-col class="quick-menu-col" :span="4">
-                  <t-button theme="primary" @click="punchCardInDialogVisible = true" plain
-                    shape="circle"><template #icon><DynamicIcon name="upload" /></template></t-button>
+                  <t-button theme="primary" @click="punchCardInDialogVisible = true" variant="outline"
+                   >上传</t-button>
                   <div class="quick-menu-font">上班打卡</div>
                 </t-col>
                 <t-col class="quick-menu-col" :span="4">
-                  <t-button theme="danger" @click="punchCardOutDialogVisible = true" plain
-                    shape="circle"><template #icon><DynamicIcon name="download" /></template></t-button>
+                  <t-button theme="default" @click="punchCardOutDialogVisible = true" variant="outline"
+                   >下载</t-button>
                   <div class="quick-menu-font">下班打卡</div>
                 </t-col>
                 <t-col class="quick-menu-col" :span="4">
-                  <t-button theme="success" @click="myPunchJourRef.show()" plain shape="circle"><template #icon><DynamicIcon name="ticket" /></template></t-button>
+                  <t-button theme="success" @click="myPunchJourRef.show()" variant="outline"><template #icon><DynamicIcon name="ticket" /></template></t-button>
                   <div class="quick-menu-font">考勤记录</div>
                 </t-col>
               </t-row>
               <t-row :gutter="20">
                 <t-col class="quick-menu-col" :span="4" v-if="hasPermission('main:directorStatus:view')">
-                  <t-button theme="primary" @click="directorStatusFlag = true" plain shape="circle"><template #icon><DynamicIcon name="upload" /></template></t-button>
+                  <t-button theme="primary" @click="directorStatusFlag = true" variant="outline">上传</t-button>
                   <div class="quick-menu-font">主任状态RT</div>
                 </t-col>
                 <t-col class="quick-menu-col" v-if="hasPermission('main:quickLink:cmbstudy')" :span="4">
-                  <t-button theme="primary" @click="location('edu')" plain shape="circle"><template #icon><DynamicIcon name="education" /></template></t-button>
+                  <t-button theme="primary" @click="location('edu')" variant="outline"><template #icon><DynamicIcon name="education" /></template></t-button>
                   <div class="quick-menu-font">小招学霸2.0</div>
                 </t-col>
                 <t-col class="quick-menu-col" v-if="hasPermission('main:quickLink:a6college')" :span="4">
-                  <t-button theme="primary" @click="location('college')" plain shape="circle"><template #icon><DynamicIcon name="education" /></template></t-button>
+                  <t-button theme="primary" @click="location('college')" variant="outline"><template #icon><DynamicIcon name="education" /></template></t-button>
                   <div class="quick-menu-font">A6魔法学院</div>
                 </t-col>
                 <t-col class="quick-menu-col" v-if="hasPermission('main:quickLink:bpms')" :span="4">
-                  <t-button theme="primary" @click="location('bpms')" plain shape="circle"><template #icon><DynamicIcon name="cloudy-day" /></template></t-button>
+                  <t-button theme="primary" @click="location('bpms')" variant="outline"><template #icon><DynamicIcon name="cloudy-day" /></template></t-button>
                   <div class="quick-menu-font">绩效平台</div>
                 </t-col>
               </t-row>
@@ -81,21 +81,21 @@
     </t-row>
 
     <t-dialog header="上班打卡" v-model:visible="punchCardInDialogVisible" width="70%">
-      <iframe v-if="hasPermission('main:punchcard:old')" :src="'http://10.47.24.45/auxs/hr_manager_sys/mood_api/punch_card_in.jsp?czy_code=' +
-        userId
-        " width="100%" height="470px" frameborder="0" scrolling="auto"></iframe>
-      <iframe v-else :src="'http://10.47.24.45/auxs/hr_manager_sys/mood_api/punch_card_in.jsp?czy_code=' +
-        userId
-        " width="100%" height="470px" frameborder="0" scrolling="auto"></iframe>
+      <iframe v-if="!isSecurePage" :src="punchCardUrl('punch_card_in')" width="100%" height="470px"
+        frameborder="0" scrolling="auto"></iframe>
+      <div v-else class="punch-card-fallback">
+        <p>内网打卡系统为 HTTP 地址，当前 HTTPS 安全页面无法直接嵌入，请在新窗口打开打卡。</p>
+        <t-button theme="primary" variant="outline" @click="openPunchCard('punch_card_in')">在新窗口打开上班打卡</t-button>
+      </div>
     </t-dialog>
 
     <t-dialog header="下班打卡" v-model:visible="punchCardOutDialogVisible" width="70%">
-      <iframe v-if="hasPermission('main:punchcard:old')" :src="'http://10.47.24.45/auxs/hr_manager_sys/mood_api/punch_card_out.jsp?czy_code=' +
-        userId
-        " width="100%" height="470px" frameborder="0" scrolling="auto"></iframe>
-      <iframe v-else :src="'http://10.47.24.45/auxs/hr_manager_sys/mood_api/punch_card_out.jsp?czy_code=' +
-        userId
-        " width="100%" height="470px" frameborder="0" scrolling="auto"></iframe>
+      <iframe v-if="!isSecurePage" :src="punchCardUrl('punch_card_out')" width="100%" height="470px"
+        frameborder="0" scrolling="auto"></iframe>
+      <div v-else class="punch-card-fallback">
+        <p>内网打卡系统为 HTTP 地址，当前 HTTPS 安全页面无法直接嵌入，请在新窗口打开打卡。</p>
+        <t-button theme="primary" variant="outline" @click="openPunchCard('punch_card_out')">在新窗口打开下班打卡</t-button>
+      </div>
     </t-dialog>
 
     <MyPunchJour ref="myPunchJourRef"></MyPunchJour>
@@ -119,6 +119,14 @@ import Todolist from './components/todolist.vue'
 const router = useRouter()
 
 const userId = ref('')
+
+// 打卡系统为内网 HTTP 地址，HTTPS 页面下浏览器会拦截混合内容 iframe，改为提示并提供新窗口打开
+const isSecurePage = window.location.protocol === 'https:'
+const punchCardUrl = (type) =>
+  `http://10.47.24.45/auxs/hr_manager_sys/mood_api/${type}.jsp?czy_code=${userId.value || ''}`
+const openPunchCard = (type) => {
+  window.open(punchCardUrl(type), '_blank')
+}
 const punchCardInDialogVisible = ref(false)
 const punchCardOutDialogVisible = ref(false)
 const directorStatusFlag = ref(false)
@@ -193,6 +201,18 @@ const location = (system) => {
 </script>
 
 <style lang="less" scoped>
+.punch-card-fallback {
+  height: 470px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--td-comp-margin-l);
+  color: var(--td-text-color-secondary);
+  background-color: var(--td-bg-color-secondarycontainer);
+  border-radius: var(--td-radius-default);
+}
+
 .t-row {
   margin-bottom: 15px;
 }
@@ -201,7 +221,7 @@ const location = (system) => {
   margin-top: 5px;
 }
 
-.box-card {
+.management-card {
   height: 100%;
 }
 
@@ -212,20 +232,20 @@ const location = (system) => {
 
 .quick-menu-font {
   font-size: 14px;
-  color: var(--td-font-color);
+  color: var(--td-text-color-primary);
   padding-top: 5px;
 
   &:hover {
-    color: #67c23a;
+    color: var(--td-success-color);
   }
 }
 
 .quick-login-btn {
--color: var(--td-font-color);
+  background-color: var(--td-text-color-primary);
   cursor: pointer;
 
   &:hover {
--color: #67c23a;
+background-color: var(--td-success-color);
   }
 }
 

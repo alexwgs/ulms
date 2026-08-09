@@ -16,23 +16,23 @@
       :closable="false" show-icon>
       当前求助订单已开始分派,当前等待 [
       <b style="color: red"> {{ ohtStore.ohtWaitSeconds }} </b> ] 秒！
-      <t-button theme="danger" size="small" @click="cancelDialogVisible = true" round>[取消求助]</t-button>
+      <t-button theme="danger" size="small" @click="cancelDialogVisible = true" shape="round">[取消求助]</t-button>
     </t-alert>
 
     <t-alert v-if="ohtStore.ohtStatusInfo === 'reconnectWait'" style="margin-top: 0" title="正在发起求助" theme="success"
       :closable="false" show-icon>
       您在等待过程中出现断线重连,当前等待 [
       <b style="color: red"> {{ ohtStore.ohtWaitSeconds }} </b> ] 秒！
-      <t-button theme="danger" size="small" @click="cancelDialogVisible = true" round>[取消求助]</t-button>
+      <t-button theme="danger" size="small" @click="cancelDialogVisible = true" shape="round">[取消求助]</t-button>
     </t-alert>
 
     <t-alert v-if="ohtStore.ohtStatusInfo === 'unfinish'" style="margin-top: 0" title="请尽快结案" theme="warning"
       :closable="false" show-icon>
       当前有尚未结案的订单，请先操作结案！
       <t-button theme="primary" v-if="ohtStore.ohtRole.roleType === 0" size="small"
-        @click="bcaseCompDialogVisible = true" round>[完成结案]</t-button>
+        @click="bcaseCompDialogVisible = true" shape="round">[完成结案]</t-button>
       <t-button theme="primary" v-if="ohtStore.ohtRole.roleType === 1" size="small"
-        @click="pcaseCompDialogVisible = true" round>[完成结案]</t-button>
+        @click="pcaseCompDialogVisible = true" shape="round">[完成结案]</t-button>
     </t-alert>
 
     <t-alert v-if="ohtStore.ohtStatusInfo === 'task'" style="margin-top: 0" title="请尽快接单" theme="success"
@@ -41,9 +41,9 @@
       <b style="color: red"> {{ ohtStore.ohtWaitSeconds }} </b> ]
       秒，请尽快接单！
       <t-button v-if="ohtStore.ohtRole.roleType === 1" theme="primary" size="small" @click="takeOrder()"
-        round>[接单]</t-button>
+        shape="round">[接单]</t-button>
       <t-button v-if="ohtStore.ohtRole.roleType === 1" theme="danger" size="small" @click="refuseOrder()"
-        round>[拒绝]</t-button>
+        shape="round">[拒绝]</t-button>
     </t-alert>
 
     <t-alert v-if="
@@ -58,7 +58,7 @@
       }}</b>，可以通过对话框开始对话！
       <b v-if="ohtStore.ohtStatusInfo === 'otherComplete0'"
         style="color: red">请注意：对方已结案，退出此对话！此时发送消息对方无法接收！</b><t-button theme="primary" size="small"
-        @click="bcaseCompDialogVisible = true" round>[完成结案]</t-button>
+        @click="bcaseCompDialogVisible = true" shape="round">[完成结案]</t-button>
     </t-alert>
 
     <t-alert v-if="
@@ -73,7 +73,7 @@
       }}</b>，可以通过对话框开始对话！
       <b v-if="ohtStore.ohtStatusInfo === 'otherComplete1'"
         style="color: red">请注意：对方已结案，退出此对话！此时发送消息对方无法接收！</b><t-button theme="primary" size="small"
-        @click="pcaseCompDialogVisible = true" round>[完成结案]</t-button>
+        @click="pcaseCompDialogVisible = true" shape="round">[完成结案]</t-button>
     </t-alert>
 
     <t-alert v-if="ohtStore.ohtStatusInfo === 'disconnect'" style="margin-top: 0" title="断线重连" theme="warning"
@@ -85,9 +85,9 @@
         ohtStore.currentCase.pickExtn
       }}</b>，您当前发送消息对方无法接收！
       <t-button v-if="ohtStore.ohtRole.roleType === 0" theme="primary" size="small"
-        @click="bcaseCompDialogVisible = true" round>[完成结案]</t-button>
+        @click="bcaseCompDialogVisible = true" shape="round">[完成结案]</t-button>
       <t-button v-else-if="ohtStore.ohtRole.roleType === 1" theme="primary" size="small"
-        @click="pcaseCompDialogVisible = true" round>[完成结案]</t-button>
+        @click="pcaseCompDialogVisible = true" shape="round">[完成结案]</t-button>
     </t-alert>
 
     <t-alert v-if="ohtStore.ohtStatusInfo === 'reconnect0'" style="margin-top: 0" title="断线重连" theme="success"
@@ -98,7 +98,7 @@
       ]恢复连接,分机号码：<b style="color: red">{{
         ohtStore.currentCase.pickExtn
       }}</b>，可以通过对话框开始对话！
-      <t-button theme="primary" size="small" @click="bcaseCompDialogVisible = true" round>[完成结案]</t-button>
+      <t-button theme="primary" size="small" @click="bcaseCompDialogVisible = true" shape="round">[完成结案]</t-button>
     </t-alert>
 
     <t-alert v-if="ohtStore.ohtStatusInfo === 'reconnect1'" style="margin-top: 0" title="断线重连" theme="success"
@@ -110,12 +110,12 @@
       ]恢复连接,分机号码：<b style="color: red">{{
         ohtStore.currentCase.buildExtn
       }}</b>，可以通过对话框开始对话！
-      <t-button theme="primary" size="small" @click="pcaseCompDialogVisible = true" round>[完成结案]</t-button>
+      <t-button theme="primary" size="small" @click="pcaseCompDialogVisible = true" shape="round">[完成结案]</t-button>
     </t-alert>
     <t-alert v-if="ohtStore.ohtStatusInfo === 'error'" style="margin-top: 0" title="求助系统发生问题" theme="error"
       :closable="false" show-icon>
       您当前到角色或您的相关配置不正确，不可使用举手系统！
-      <!-- <t-button theme="primary" size="small" round>[反馈]</t-button> -->
+      <!-- <t-button theme="primary" size="small" shape="round">[反馈]</t-button> -->
     </t-alert>
     <!--------------------------------------------下面事操作对话框------------------------------------------------------>
     <t-dialog header="重要提示" v-model:visible="helpTypeDialogVisible" width="60%" placement="center">

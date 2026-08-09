@@ -10,14 +10,14 @@
               <t-tag
                 v-if="artical[item.field] == item.val"
                 :theme="item.type"
-                effect="dark"
+                variant="light"
                 size="small"
               >
                 {{ item.label }}
               </t-tag>
             </span>
             <div class="artical-icon">
-              <span style="color: #909399; font-size: 14px; padding-right: 10px"
+              <span style="color: var(--td-text-color-placeholder); font-size: 14px; padding-right: 10px"
                 >发布人：{{ artical.user.ploName }} &emsp;|&emsp;发布时间：{{
                   artical.pubDate
                 }}</span
@@ -90,7 +90,7 @@
         <t-card class="comment">
           <t-divider>
             <t-pagination
-              v-model:current="currentPage"
+              v-model="currentPage"
               @current-change="handleCurrentChange"
               :page-size="commnetQueryInfo.pageSize"
 
@@ -141,6 +141,7 @@ import { getComments } from '../../../../../api/cyt/index.js'
 const route = useRoute()
 
 // 从环境变量获取文件服务URL
+// 展示类文件统一走 HTTPS 文件管理地址，避免混合内容被浏览器拦截
 const fsURL = import.meta.env.VITE_FILE_BASE_URL
 
 const id = ref(route.params.id) // 获取传递的参数
@@ -206,12 +207,12 @@ onMounted(() => {
 <style lang="less" scoped>
 .view-container {
   height: 100%;
--color: #eaedf1;
+background-color: var(--td-bg-color-page);
 }
 
 .artical-content {
   padding: 20px;
--color: #fff;
+background-color: #fff;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
 
@@ -223,7 +224,7 @@ onMounted(() => {
     font-size: 16px;
 
     font {
-      color: #797979;
+      color: var(--td-text-color-secondary);
     }
   }
 }
@@ -249,14 +250,14 @@ onMounted(() => {
   box-sizing: border-box;
   border-radius: 4px;
   position: relative;
--color: #fff;
+background-color: #fff;
   overflow: hidden;
   opacity: 1;
   display: flex;
   align-items: center;
   transition: opacity 0.2s;
--color: #f4f4f5;
-  color: #909399;
+background-color: var(--td-bg-color-secondarycontainer);
+  color: var(--td-text-color-placeholder);
   margin-top: 15px;
   margin-bottom: 15px;
 
@@ -282,7 +283,7 @@ onMounted(() => {
   display: block;
   margin-top: 10px;
   padding: 20px 0 20px 34px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--td-component-stroke);
   position: relative;
 
   .comment-btn {
@@ -319,7 +320,7 @@ onMounted(() => {
       top: 0;
       font-size: 12px;
       line-height: 24px;
-      color: #999;
+      color: var(--td-text-color-secondary);
     }
   }
 
@@ -336,7 +337,7 @@ onMounted(() => {
     margin-bottom: 15px;
     position: relative;
     font-size: 14px;
-    color: #999;
+    color: var(--td-text-color-secondary);
   }
 
   .reply {
@@ -349,7 +350,7 @@ onMounted(() => {
     color: #666;
     word-break: break-word;
     margin: 10px;
--color: #fff;
+background-color: #fff;
   }
 }
 </style>

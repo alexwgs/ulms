@@ -4,7 +4,7 @@
       <div class="card-header">
         <UserCircleIcon />
         <span>在线用户</span>
-        <t-tag size="small" round effect="dark" theme="success">
+        <t-tag size="small" round variant="light" theme="success">
           {{ ohtStore.ohtUserList.length }}
         </t-tag>
       </div>
@@ -15,7 +15,7 @@
       <div class="section-header">
         <UserIcon />
         <span class="section-title">接单组</span>
-        <t-tag size="small" round effect="plain">{{ responders.length }}</t-tag>
+        <t-tag size="small" round variant="light">{{ responders.length }}</t-tag>
       </div>
       <div class="user-cards">
         <div
@@ -48,7 +48,7 @@
             <t-tag
               :theme="responderStatusType(user)"
               size="small"
-              effect="dark"
+              variant="light"
               round
             >
               {{ responderStatusText(user) }}
@@ -64,7 +64,7 @@
       <div class="section-header seeker-header">
         <ErrorCircleFilledIcon />
         <span class="section-title">求助组</span>
-        <t-tag size="small" round effect="plain" theme="warning">{{ seekers.length }}</t-tag>
+        <t-tag size="small" round variant="light" theme="warning">{{ seekers.length }}</t-tag>
       </div>
       <div class="user-cards">
         <div
@@ -97,7 +97,7 @@
             <t-tag
               :theme="seekerStatusType(user)"
               size="small"
-              effect="dark"
+              variant="light"
               round
             >
               {{ seekerStatusText(user) }}
@@ -122,7 +122,7 @@ import { useOhtStore, useDictStore } from '@/stores'
 const ohtStore = useOhtStore()
 const dictStore = useDictStore()
 
-const fsURL = import.meta.env.VITE_FILE_MANAGE_BASE
+const fsURL = import.meta.env.VITE_FILE_BASE_URL
 const defaultAvatar = new URL('@/assets/img/default_avatar.png', import.meta.url).href
 
 const now = ref(Date.now())
@@ -276,7 +276,7 @@ function formatWaitTime(waitTime) {
 
   :deep(.t-card__header) {
     padding: 12px 16px;
-    border-bottom: 1px solid var(--td-border-color-lighter);
+    border-bottom: 1px solid var(--td-component-stroke);
   }
   :deep(.t-card__body) {
     flex: 1;
@@ -297,7 +297,7 @@ function formatWaitTime(waitTime) {
 // ========== 分组区域 ==========
 .section {
   &:not(:last-child) {
-    border-bottom: 1px solid var(--td-border-color-lighter);
+    border-bottom: 1px solid var(--td-component-stroke);
   }
 }
 
@@ -311,7 +311,7 @@ function formatWaitTime(waitTime) {
   color: var(--td-text-color-secondary);
   position: sticky;
   top: 0;
-background: var(--td-bg-color);
+background: var(--td-bg-color-container);
   z-index: 1;
 }
 
@@ -328,7 +328,7 @@ background: var(--td-bg-color);
   margin-bottom: 4px;
   border-radius: 10px;
   border-left: 3px solid transparent;
-background: var(--td-bg-color);
+background: var(--td-bg-color-container);
   transition: 0.2s, transform 0.15s;
 
   &:hover {

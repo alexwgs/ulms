@@ -1,15 +1,15 @@
 <template>
-  <t-alert
+  <PageTips
     title="操作说明"
     theme="info"
     :closable="false"
     message="请正确使用部门编号：1.一共需设置4位数字。2.第一位为地区编码3为武汉。3.第二位为科室编号。4.最后两位为组别编号。"
   />
-  <t-card class="box-card">
+  <t-card class="management-card">
     <t-row :gutter="20">
       <t-col :span="5">
         <t-col :span="3">
-          <t-button theme="primary" size="small" @click="addDepartment"
+          <t-button variant="outline" theme="primary" size="small" @click="addDepartment"
             >添加部门</t-button
           >
         </t-col>
@@ -31,14 +31,14 @@
       <TableColumn colKey="upDept" label="上级部门"> </TableColumn>
       <TableColumn label="操作" width="200">
         <template #default="scope">
-          <t-button
-            size="small" theme="warning"
+          <t-button variant="outline"
+            size="small" theme="primary"
             @click="update(scope.row)"
-            shape="circle"><template #icon><DynamicIcon name="edit" /></template></t-button>
-          <t-button
+           >编辑</t-button>
+          <t-button variant="outline"
             size="small" theme="danger"
             @click="remove(scope.$index, scope.row)"
-            shape="circle"><template #icon><DynamicIcon name="delete" /></template></t-button>
+           >删除</t-button>
         </template>
       </TableColumn>
     </CustomTable>
@@ -53,7 +53,7 @@
       <t-form-item
         label="部门编号"
         :label-width="formLabelWidth"
-        prop="deptNum"
+        name="deptNum"
       >
         <t-input
           size="small"
@@ -65,7 +65,7 @@
       <t-form-item
         label="部门名称"
         :label-width="formLabelWidth"
-        prop="deptName"
+        name="deptName"
       >
         <t-input
           size="small"
@@ -76,7 +76,7 @@
       <t-form-item
         label="上级部门"
         :label-width="formLabelWidth"
-        prop="upDept"
+        name="upDept"
       >
         <t-select
           size="small"
@@ -95,14 +95,14 @@
       </t-form-item>
     </t-form>
     <template #footer>
-      <span class="dialog-footer">
-        <t-button size="small" @click="dialogFormVisible = false"
+      <t-space>
+        <t-button variant="outline" size="small" @click="dialogFormVisible = false"
           >取 消</t-button
         >
-        <t-button size="small" theme="primary" @click="dialogFormSubmit"
+        <t-button variant="outline" size="small" theme="primary" @click="dialogFormSubmit"
           >确 定</t-button
         >
-      </span>
+      </t-space>
     </template>
   </t-dialog>
 </template>
@@ -231,7 +231,7 @@ const dialogFormSubmit = async () => {
   font-size: 14px;
   padding-right: 8px;
 }
-.box-card {
+.management-card {
   height: calc(100vh - 240px);
 }
 </style>
