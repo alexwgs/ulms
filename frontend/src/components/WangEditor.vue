@@ -80,7 +80,6 @@ watch(valueHtml, (newValue) => {
 // 工具栏配置
 const toolbarConfig = {
   excludeKeys: [
-    'uploadVideo',
     'insertVideo'
   ]
 }
@@ -91,7 +90,7 @@ const editorConfig = {
   readOnly: props.disabled,
   MENU_CONF: {
     uploadImage: {
-      server: fileBaseUrl ? `${fileBaseUrl}/cytFile` : '/upload/file/cytFile',
+      server: fileBaseUrl + 'upload/file/cytFile',
       fieldName: 'file',
       maxFileSize: 5 * 1024 * 1024, // 5MB
       maxNumberOfFiles: 10,
@@ -105,7 +104,12 @@ const editorConfig = {
           return
         }
         // 从响应中获取图片 URL
-        const url = res.data?.file?.url || res.data?.url || res.url
+        const path = res.data?.file?.path || res.data?.path
+        if (!path) {
+          MessagePlugin.error('图片上传失败：未获取到文件地址')
+          return
+        }
+        const url = fileBaseUrl + path
         const alt = res.data?.file?.name || res.data?.name || '图片'
         const href = url
         // 插入图片
@@ -120,7 +124,28 @@ const editorConfig = {
       timeout: 30 * 1000 // 30秒
     },
     uploadVideo: {
-      disabled: true
+      server: fileBaseUrl + 'upload/file/cytFile',
+      fieldName: 'file',
+      maxFileSize: 100 * 1024 * 1024, // 100MB
+      maxNumberOfFiles: 5,
+      allowedFileTypes: ['video/*'],
+      timeout: 120 * 1000, // 120秒
+      customInsert(res, insertFn) {
+        if (res.code !== 200) {
+          MessagePlugin.error(res.msg || '上传失败')
+          return
+        }
+        const path = res.data?.file?.path || res.data?.path
+        if (!path) {
+          MessagePlugin.error('视频上传失败：未获取到文件地址')
+          return
+        }
+        insertFn(fileBaseUrl + path, '')
+      },
+      onError(file, err, res) {
+        console.error('上传视频错误:', err, res)
+        MessagePlugin.error('视频上传失败，请重试')
+      }
     }
   }
 }

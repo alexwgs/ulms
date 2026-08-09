@@ -1,42 +1,74 @@
 <template>
-  <t-card shadow :body-style="{ padding: '10px' }">
-    <t-row>
-      <t-col :span="9">
-        <div class="artical-title">
-          <span style="font-weight: 550; font-size: 14px" v-if="articalitem.articalType === 1">[{{ itemCategoryText
-            }}]</span>
-          <span style="font-weight: 550; font-size: 14px" v-else>[{{ articalCategoryText }}]</span>
-          <router-link class="link" target="_blank" :to="articalRoute">{{
-            articalitem.title
-            }}</router-link>
-        </div>
-      </t-col>
-      <t-col :span="2">
-        <div class="elite-badage">
-          <t-tag v-if="articalitem.topFlag === 1" size="small" theme="success" variant="light">置顶</t-tag>
-          <t-tag v-if="articalitem.eliteFlag === 1" size="small" theme="danger" variant="light">精华</t-tag>
-        </div>
-      </t-col>
-    </t-row>
-    <t-row>
-      <t-col :span="12" style="max-height: 30px; font-size: 12px; padding: 5px">
-      </t-col>
-    </t-row>
-    <div class="artical-list-info">
-      <t-tag size="small" :theme="articalTypeTag" variant="light">{{
-        articalTypeText
+  <div class="artical-card">
+    <div class="artical-header">
+      <div class="artical-tags">
+        <t-tag size="small" :theme="articalTypeTag" variant="light">{{
+          articalTypeText
         }}</t-tag>
-      <span v-if="articalitem.user">
-        {{ articalitem.user.ploName }}/{{ articalitem.user.ploNum }}
-      </span>
-      <span v-else>匿名</span>
-      <span>{{ timeAgo }}</span>
-      <span class="icon-list"><i class="iconfont iconfaxian">{{ articalitem.viewNum }} 次查看</i>&nbsp;
-        <i class="iconfont iconxiaoxi">{{ articalitem.replyNum }} 条评论</i>&nbsp;
-        <i >{{ articalitem.likeNum + articalitem.collectNum }} 个点赞收藏</i>
+        <t-tag
+          v-if="articalitem.articalType === 1"
+          size="small"
+          theme="warning"
+          variant="light"
+          >{{ itemCategoryText }}</t-tag
+        >
+        <t-tag
+          v-else-if="articalitem.articalType !== 1"
+          size="small"
+          theme="primary"
+          variant="light"
+          >{{ articalCategoryText }}</t-tag
+        >
+      </div>
+      <div class="artical-badges">
+        <t-tag
+          v-if="articalitem.topFlag === 1"
+          size="small"
+          theme="success"
+          variant="light"
+          >置顶</t-tag
+        >
+        <t-tag
+          v-if="articalitem.eliteFlag === 1"
+          size="small"
+          theme="danger"
+          variant="light"
+          >精华</t-tag
+        >
+      </div>
+    </div>
+    <div class="artical-title">
+      <router-link class="link" target="_blank" :to="articalRoute">{{
+        articalitem.title
+      }}</router-link>
+    </div>
+    <div class="artical-meta">
+      <span class="author">{{
+        articalitem.user
+          ? articalitem.user.ploName + ' / ' + articalitem.user.ploNum
+          : '匿名'
+      }}</span>
+      <span class="dot">·</span>
+      <span class="time">{{ timeAgo }}</span>
+      <span class="stats">
+        <span class="stat"
+          ><DynamicIcon name="view-list" /> {{ articalitem.viewNum }}
+          浏览</span
+        >
+        <span class="stat"
+          ><DynamicIcon name="chat-round" /> {{ articalitem.replyNum }}
+          评论</span
+        >
+        <span class="stat"
+          ><DynamicIcon name="thumb-up" /> {{ articalitem.likeNum }}</span
+        >
+        <span class="stat"
+          ><DynamicIcon name="star-on" /> {{ articalitem.collectNum }}
+          收藏</span
+        >
       </span>
     </div>
-  </t-card>
+  </div>
 </template>
 
 <script setup>
@@ -98,52 +130,78 @@ const timeAgo = computed(() => {
 </script>
 
 <style lang="less" scoped>
-.link {
-  text-decoration: none;
-  color: var(--td-text-color-primary);
+.artical-card {
+  background: var(--td-bg-color-container);
+  border: 1px solid var(--td-component-stroke-color);
+  border-radius: 8px;
+  padding: 14px 18px;
+  margin-bottom: 12px;
+  transition: box-shadow 0.2s ease;
+}
+
+.artical-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.artical-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.artical-tags {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .artical-title {
-  padding-left: 10px;
-  font-size: 16px;
-  padding-top: 5px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.5;
 
   .link {
-    display: inline-block;
-    min-width: 430px;
+    color: var(--td-text-color-primary);
+    text-decoration: none;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .link:hover {
+    color: var(--td-brand-color);
   }
 }
 
-.artical-list-info {
-  font-size: 12px;
-  color: #666;
-  padding-left: 10px;
-  padding-right: 10px;
-  position: relative;
+.artical-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  font-size: 13px;
+  color: var(--td-text-color-secondary);
 
-  i {
-    font-size: 12px;
-    padding-left: 5px;
+  .dot {
+    color: #c2c2c2;
   }
 
-  span {
-    padding-left: 5px;
+  .author {
+    color: var(--td-brand-color);
   }
 
-  .icon-list {
-    position: absolute;
-    right: 0;
-    top: 0;
+  .stats {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 16px;
   }
-}
 
-.elite-badage {
-  position: absolute;
-  right: 15px;
-  top: 5px;
-  font-size: 0;
+  .stat {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
 }
 </style>

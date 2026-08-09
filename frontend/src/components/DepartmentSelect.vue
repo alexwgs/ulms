@@ -81,7 +81,12 @@ export default {
 
 <script setup>
 import { ref, onMounted, watch } from 'vue'
-import { departmentTree, groupTree, joblevelTree } from '@/api/permissionAPI'
+import {
+  departmentTree,
+  departmentTreeAll,
+  groupTree,
+  joblevelTree
+} from '@/api/permissionAPI'
 import { useUserStore, useAppStore } from '@/stores'
 
 const { moduleSize } = useAppStore()
@@ -142,6 +147,8 @@ const initData = async () => {
     let res = {}
     if (props.dataType === 'dept') {
       res = await departmentTree()
+    } else if (props.dataType === 'all') {
+      res = await departmentTreeAll()
     } else if (props.dataType === 'group') {
       res = await groupTree()
     } else if (props.dataType === 'joblevel') {

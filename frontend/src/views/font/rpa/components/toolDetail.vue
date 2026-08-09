@@ -1,8 +1,14 @@
 <template>
   <t-card class="management-card" style="height: calc(100vh - 180px); overflow: auto">
     <div>
-      <t-descriptions direction="vertical" size="small" :column="2" border>
-        <t-descriptions-item label="工具名称" :span="1">{{
+      <t-descriptions
+        layout="vertical"
+        size="small"
+        :column="2"
+        bordered
+        :label-style="{ width: '120px' }"
+      >
+        <t-descriptions-item label="工具名称" :span="2">{{
           record.name
         }}</t-descriptions-item>
         <t-descriptions-item label="联系人">
@@ -11,14 +17,15 @@
         <t-descriptions-item label="运行时长">{{
           record.runTimes
         }}</t-descriptions-item>
-        <t-descriptions-item label="使用说明" :span="1">
+        <t-descriptions-item label="使用说明" :span="2">
           <div v-html="record.memo"></div>
         </t-descriptions-item>
-        <t-descriptions-item label="运行参数" :span="1">
+        <t-descriptions-item label="运行参数" :span="2">
           <t-form
             :data="fromData"
             :rules="rules"
             ref="ruleFormRef"
+            layout="vertical"
             label-width="120px"
           >
             <div v-for="item in list" :key="item.id">
@@ -28,8 +35,20 @@
                 :required="item.required"
                 :style="item.orderId < 0 ? 'display:none' : ''"
               >
+                <t-textarea
+                  v-if="
+                    item.type === 'input' &&
+                    getOptionValue(item.options, 'type') === 'textarea'
+                  "
+                  v-model="fromData[item.fieldName]"
+                  :maxlength="getOptionValue(item.options, 'maxlength')"
+                  :minlength="getOptionValue(item.options, 'minlength')"
+                  :rows="getOptionValue(item.options, 'rows')"
+                  :placeholder="getOptionValue(item.options, 'placeholder')"
+                  size="small"
+                ></t-textarea>
                 <t-input
-                  v-if="item.type === 'input'"
+                  v-else-if="item.type === 'input'"
                   style="width: 100%"
                   v-model="fromData[item.fieldName]"
                   :type="getOptionValue(item.options, 'type')"
@@ -63,8 +82,23 @@
                   v-model="fromData[item.fieldName]"
                   :mode="getOptionValue(item.options, 'type')"
                   placeholder="选择日期"
-                  :format="getOptionValue(item.options, 'format')"
-                  :value-type="getOptionValue(item.options, 'valueFormat')"
+                  :format="
+                    normalizeDateFormat(
+                      getOptionValue(item.options, 'format')
+                    ) || 'YYYY-MM-DD'
+                  "
+                  :value-type="
+                    normalizeDateFormat(
+                      getOptionValue(item.options, 'valueFormat')
+                    ) || 'YYYY-MM-DD'
+                  "
+                  :enable-time-picker="
+                    (
+                      normalizeDateFormat(
+                        getOptionValue(item.options, 'format')
+                      ) || ''
+                    ).indexOf('HH') !== -1
+                  "
                 ></t-date-picker>
                 <t-date-range-picker
                   v-else-if="item.type === 'dateRange'"
@@ -72,7 +106,24 @@
                   size="small"
                   v-model="fromData[item.fieldName]"
                   placeholder="选择日期"
-                  :format="getOptionValue(item.options, 'format') || 'YYYY-MM-DD'"
+                  :format="
+                    normalizeDateFormat(
+                      getOptionValue(item.options, 'format')
+                    ) || 'YYYY-MM-DD'
+                  "
+                  :value-type="
+                    normalizeDateFormat(
+                      getOptionValue(item.options, 'valueFormat')
+                    ) || 'YYYY-MM-DD'
+                  "
+                  :enable-time-picker="
+                    getOptionValue(item.options, 'type') === 'datetimerange' ||
+                    (
+                      normalizeDateFormat(
+                        getOptionValue(item.options, 'format')
+                      ) || ''
+                    ).indexOf('HH') !== -1
+                  "
                 ></t-date-range-picker>
                 <UserSelect
                   v-else-if="item.type === 'userSelect'"
@@ -84,17 +135,11 @@
                   style="width: 100%"
                   v-model="fromData[item.fieldName]"
                   size="small"
-                  :type="getOptionValue(item.options, 'type')"
+                  :data-type="
+                    getOptionValue(item.options, 'type') || 'dept'
+                  "
+                  :mutiple="getOptionValue(item.options, 'mutiselect')"
                   :placeholder="getOptionValue(item.options, 'placeholder')"
-                  :props="{
-                    label: 'label',
-                    children: 'children',
-                    value: 'label',
-                    checkStrictly:
-                      getOptionValue(item.options, 'type') === 'dept',
-                    emitPath: false,
-                    multiple: getOptionValue(item.options, 'mutiselect')
-                  }"
                 ></OrgCascader>
                 <div v-else-if="item.type === 'batchData'">
                   <t-textarea style="width: 100%"
@@ -133,17 +178,10 @@
                         ? runUser.deptName
                         : runUser.groupName
                     "
-                    :type="getOptionValue(item.options, 'type')"
+                    :data-type="
+                      getOptionValue(item.options, 'type') || 'dept'
+                    "
                     :disabled="true"
-                    :props="{
-                      label: 'label',
-                      children: 'children',
-                      value: 'label',
-                      checkStrictly:
-                        getOptionValue(item.options, 'type') === 'dept',
-                      emitPath: false,
-                      multiple: false
-                    }"
                   ></OrgCascader>
                 </div>
               </t-form-item>
@@ -380,6 +418,15 @@ const getOptionValue = (options, key) => {
     console.error('解析选项失败:', error)
     return ''
   }
+}
+
+// 兼容 Java 风格时间格式（yyyy-MM-dd）转 TDesign/dayjs 风格（YYYY-MM-DD）
+const normalizeDateFormat = (format) => {
+  if (!format) return ''
+  return String(format)
+    .replace(/yyyy/g, 'YYYY')
+    .replace(/dd/g, 'DD')
+    .replace(/yy/g, 'YY')
 }
 
 // 辅助函数：获取选择器选项

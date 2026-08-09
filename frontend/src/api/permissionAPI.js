@@ -41,6 +41,10 @@ export function findEmployeeByJobLevel(jobLevels) {
 export function departmentTree() {
   return httpInstance({url: '/department/tree/dept', method: 'get'})
 }
+// 查询科室组别完整树（含组别）
+export function departmentTreeAll() {
+  return httpInstance({url: '/department/tree/all', method: 'get'})
+}
 // 查询科室组别树
 export function groupTree() {
   return httpInstance({url: '/department/tree/cust', method: 'get'})

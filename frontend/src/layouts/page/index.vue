@@ -42,16 +42,29 @@ watch(
 <style scoped lang="less">
 .content-container {
   height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
   margin: 0;
 }
 
 .box-card {
+  flex: 1;
+  min-height: 0;
   width: 100%;
   border: none;
+  display: flex;
+  flex-direction: column;
 
   :deep(.t-card__header) {
     padding: 12px 20px;
     border-bottom: 1px solid var(--td-border-level-1-color);
+  }
+
+  :deep(.t-card__body) {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
   }
 }
 

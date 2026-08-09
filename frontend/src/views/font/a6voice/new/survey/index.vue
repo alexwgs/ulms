@@ -30,7 +30,7 @@
           </t-col>
           <t-col :span="6">
             <t-form-item>
-              <t-dropdown @click="addQuestion">
+              <t-dropdown @click="(dropdownItem) => addQuestion(dropdownItem.value)">
                 <t-button theme="primary" size="small">
                   添加题目
                   <AddIcon />
@@ -38,7 +38,7 @@
                 <template #dropdown>
                   <t-dropdown-menu>
                     <t-dropdown-item v-for="item in dictStore.getDictByNames('cyt_survey_question_type', 1)"
-                      :key="item.id" :command="item.code">{{ item.codeval }}</t-dropdown-item>
+                      :key="item.id" :value="item.code">{{ item.codeval }}</t-dropdown-item>
                   </t-dropdown-menu>
                 </template>
               </t-dropdown>

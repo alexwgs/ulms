@@ -41,7 +41,7 @@ import { computed, ref, onMounted } from 'vue'
 
 const isInit = ref(false);
 const appStore = useAppStore();
-const navbarHeight = `60px`;
+const navbarHeight = `59px`;
 
 const navbar = computed(() => appStore.navbar);
 const hideMenu = computed(() => appStore.hideMenu);
@@ -138,14 +138,15 @@ onMounted(() => {
 }
 
 .layout-content {
-  min-height: 100vh;
+  height: 100vh;
   width: 100%;
-  overflow-y: auto;
-background-color: var(--td-bg-color-page);
+  background-color: var(--td-bg-color-page);
   transition: padding 0.2s cubic-bezier(0.34, 0.69, 0.1, 1);
 }
 
 .t-content {
+  height: 100%;
+  box-sizing: border-box;
   padding: 20px;
 }
 </style>

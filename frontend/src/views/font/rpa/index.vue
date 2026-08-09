@@ -3,11 +3,13 @@
     <t-row :gutter="20">
       <t-col :span="8">
         <t-card class="management-card">
-          <template #header>
-            <div class="clearfix">
-              <span>RPA轻工具列表</span>
-            </div>
-          </template>
+          <t-input
+            v-model="searchStr"
+            placeholder="按工具名称过滤"
+            size="small"
+            clearable
+            style="margin-bottom: 10px"
+          />
           <div
             style="
               height: calc(100vh - 230px);
@@ -19,6 +21,7 @@
             <div
               v-for="item in (dictStore.dictList?.rpa_tool_list_category || [])"
               :key="item.code"
+              v-show="filteredList(item.code).length > 0"
             >
               <t-divider content-position="left">{{
                 item.codeval
@@ -86,9 +89,14 @@ const queryInfo = ref({
   pageNum: 1
 })
 
-// 筛选工具列表
+// 筛选工具列表（按分类 + 工具名称）
 const filteredList = (category) => {
-  return list.value.filter((tool) => tool.category === category)
+  const keyword = searchStr.value.trim()
+  return list.value.filter(
+    (tool) =>
+      tool.category === category &&
+      (!keyword || (tool.name || '').includes(keyword))
+  )
 }
 
 // 获取工具列表

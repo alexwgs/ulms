@@ -334,8 +334,8 @@ const formData = ref({
 
   // 日期相关
   editable: true,
-  valueFormat: 'yyyy-MM-dd',
-  format: 'yyyy-MM-dd',
+  valueFormat: 'YYYY-MM-DD',
+  format: 'YYYY-MM-DD',
   rangeSeparator: '至',
 
   // 架构控件

@@ -12,7 +12,7 @@
         <t-radio-group v-model="form.category" size="small" @change="getExamin">
           <t-radio-button v-for="item in dictStore.getDictByNames('cyt_artical_category', 1).filter(
             (item) => item.status == 1
-          )" :key="'2' + item.code" :label="parseInt(item.code)">{{ item.codeval }}</t-radio-button>
+          )" :key="'2' + item.code" :value="parseInt(item.code)">{{ item.codeval }}</t-radio-button>
         </t-radio-group>
         {{ examineInfo }}
       </t-form-item>
@@ -150,7 +150,9 @@ const getExamin = () => {
   const category = dictList.find(
     (item) => parseInt(item.code) === form.category && item.status === 1
   )
-  categoryFlags.value = JSON.parse(category.description)
+  categoryFlags.value = category?.description
+    ? JSON.parse(category.description)
+    : {}
   
   if (categoryFlags.value.examine) {
     form.status = 3
@@ -161,38 +163,40 @@ const getExamin = () => {
   }
 }
 
-const handleRemove = (file, fileList) => {
-  files.value = []
-  for (let i = 0; i < fileList.length; i++) {
-    if (fileList[i].response && fileList[i].response.file) {
-      files.value.push(JSON.stringify(fileList[i].response.file))
+const handleRemove = ({ file }) => {
+  const removed = file?.response?.data?.file
+  if (!removed) return
+  files.value = files.value.filter((item) => {
+    try {
+      return JSON.parse(item).fileId !== removed.fileId
+    } catch {
+      return true
     }
-  }
+  })
 }
 
-const uploadFileSuccess = (res, fileList) => {
-  files.value.push(JSON.stringify(res.data.file))
+const uploadFileSuccess = ({ response }) => {
+  if (response.code !== 200) return MessagePlugin.error(response.msg)
+  files.value.push(JSON.stringify(response.data.file))
 }
 
-const handleExceed = (files, fileList) => {
+const handleExceed = ({ files, currentFiles }) => {
   MessagePlugin.warning(
-    `当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`
+    `当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + currentFiles.length} 个文件`
   )
 }
 
-const beforeRemove = (file, fileList) => {
-  return DialogPlugin.confirm(`确定移除 ${file.name} ？`, '确认删除', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning'
-  }).then(() => {
-    for (let i = 0; i < fileList.length; i++) {
-      if (file.uid === fileList[i].uid) {
-        fileList.splice(i, 1)
-        return
-      }
-    }
-  }).catch(() => {
+const beforeRemove = (file) => {
+  return new Promise((resolve) => {
+    DialogPlugin.confirm({
+      header: '确认删除',
+      body: `确定移除 ${file.name} 吗？`,
+      theme: 'warning',
+      confirmBtn: '确定',
+      cancelBtn: '取消',
+      onConfirm: () => resolve(true),
+      onClose: () => resolve(false)
+    })
   })
 }
 

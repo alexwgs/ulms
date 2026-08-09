@@ -20,30 +20,38 @@
           <t-input size="small" placeholder="搜索帖子" v-model="queryInfo.query" @change="getArticalListData"
             style="width: 180px" :clearable="true"></t-input>
           <t-button size="small" @click="getArticalListData">刷新</t-button>
-          <t-dropdown @click="goto" type="primary" size="small">
-            <t-button theme="primary" size="small">
-              发帖
-            </t-button>
-            <template #dropdown>
-              <t-dropdown-menu>
-                <t-dropdown-item v-if="hasPermission('cyt:artical:add')" command="artical/new">讨论帖</t-dropdown-item>
-                <t-dropdown-item v-if="hasPermission('cyt:item:add')" command="item/new">课题发布</t-dropdown-item>
-                <t-dropdown-item v-if="hasPermission('cyt:survey:add')" command="survey/new">调研发布</t-dropdown-item>
-              </t-dropdown-menu>
-            </template>
-          </t-dropdown>
+          <t-button
+            v-if="hasPermission('cyt:artical:add')"
+            theme="primary"
+            size="small"
+            @click="goto('artical/new')"
+            >发讨论帖</t-button
+          >
+          <t-button
+            v-if="hasPermission('cyt:item:add')"
+            theme="primary"
+            size="small"
+            @click="goto('item/new')"
+            >课题发布</t-button
+          >
+          <t-button
+            v-if="hasPermission('cyt:survey:add')"
+            theme="primary"
+            size="small"
+            @click="goto('survey/new')"
+            >调研发布</t-button
+          >
         </div>
     </div>
     <t-row :gutter="20">
       <t-col :span="8">
-        <div class="infinite-list" @end-reached="load">
+        <div class="infinite-list">
           <div class="artical-list-tab">
             <t-empty v-if="articalList.length == 0" description="没有符合条件的文章"></t-empty>
             <div class="artical-box" v-for="artical in articalList" :key="artical.id">
               <ArticalView :articalitem="artical"></ArticalView>
             </div>
           </div>
-          <div></div>
         </div>
         <t-pagination style="justify-content: center; margin-top: var(--td-comp-margin-xxl)" @current-change="handleCurrentChange"
           v-model="currentPage" :page-size="queryInfo.pageSize"
@@ -254,12 +262,6 @@ const getUnreadCountData = async () => {
   }
 }
 
-const load = () => {
-  queryInfo.value.pageSize =
-    (queryInfo.value.pageNum + 1) * queryInfo.value.pageSize
-  getArticalListData()
-}
-
 defineExpose({
   getArticalList: getArticalListData
 })
@@ -327,12 +329,11 @@ defineExpose({
 }
 
 .artical-list-tab {
-  height: calc(100vh - 225px);
+  height: 100%;
 }
 
 .artical-box {
   position: relative;
-  border: 1px solid var(--td-component-stroke);
 }
 
 .my-menu {
@@ -379,6 +380,7 @@ defineExpose({
 
 .infinite-list {
   height: calc(100vh - 310px);
+  overflow-y: auto;
   padding: 0;
   margin: 0;
   list-style: none;
