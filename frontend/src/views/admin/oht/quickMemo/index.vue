@@ -76,7 +76,7 @@ import { ref, reactive, onMounted } from 'vue'
 import { MessagePlugin } from 'tdesign-vue-next'
 import {
   quickMemoApi
-} from '@/api/oht/quickMemo.js'
+} from '@/api/oht/quickMemo'
 import { useDictStore } from '@/stores'
 import { useCrudPage } from '@/hooks/useCrudPage'
 
