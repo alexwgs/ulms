@@ -106,7 +106,7 @@
                       </t-button>
                       <template #dropdown>
                         <t-dropdown-menu>
-                          <t-dropdown-item v-for="item in quickMemo" :key="item.journo" :command="item.memo">
+                          <t-dropdown-item v-for="item in quickMemo" :key="item.journo" :value="item.memo">
                             {{ item.memo }}
                           </t-dropdown-item>
                         </t-dropdown-menu>
@@ -305,7 +305,7 @@ const getQuickMemo = async () => {
 }
 
 const selectQuickMemo = (data) => {
-  chatContent.value = data
+  chatContent.value = data.value
 }
 
 const clearChatMessage = () => {
