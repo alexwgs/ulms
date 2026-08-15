@@ -74,7 +74,7 @@
 
 ### 剩余结构性重构（建议下一阶段继续）
 1. 前端 CRUD 样板抽取（useCrudPage hook + quickUrl/role/user/quickMemo/dictionary/ad/station/errorLog/userFiles/statusType/operLog 已改造；其余 CRUD 页如 dailyConfig 等可继续推广）
-2. 后端 Controller 业务下沉 Service（college：CourseController/TeachGroup/CourseTeacher/Evaluate、edu：QuesBankController/BrushScoreService/ExamInfo/DailyConfig/BrushConfig、sys：QuickUrl/Dictionary/Ad/ErrorLog/UserFiles/OperLog、oht：StatusType/OhtRole/RoleList/QuickMemo、helper：HelperArtical、flow：FlowProxy、youngTalk：Message/Collect/Answer/Comment/Artical 已完成；DailyScore 报表及 StudyLog/QuesScore/Case 等复杂查询待推广）
+2. 后端 Controller 业务下沉 Service（college：CourseController/TeachGroup/CourseTeacher/Evaluate、edu：QuesBankController/BrushScoreService/ExamInfo/DailyConfig/BrushConfig/QuesScore、sys：QuickUrl/Dictionary/Ad/ErrorLog/UserFiles/OperLog、oht：StatusType/OhtRole/RoleList/QuickMemo、helper：HelperArtical、flow：FlowProxy、youngTalk：Message/Collect/Answer/Comment/Artical 已完成；DailyScore 报表及 StudyLog 等复杂查询待推广）
 3. ~~后端 DataCache 静态 Map / WebSocketServer.state 收敛~~（已完成）
 4. 前端渐进 TS 化深入（api 模块 role.ts、dictionary.ts 已启用类型；其余 api 模块 → store → router meta 逐步启用类型）
 5. db TableController sync/update 权限（需前端菜单配合确认权限码）

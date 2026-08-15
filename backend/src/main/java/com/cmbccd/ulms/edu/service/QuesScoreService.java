@@ -1,10 +1,12 @@
 package com.cmbccd.ulms.edu.service;
 
+import com.cmbccd.ulms.common.util.DataPage;
 import com.cmbccd.ulms.edu.domain.QuesScore;
 import com.cmbccd.ulms.edu.domain.QuesScoreExample;
 import com.cmbccd.ulms.edu.domain.report.QuesScoreHum;
 
 import java.util.List;
+import java.util.Map;
 
 public interface QuesScoreService {
 	int create(QuesScore record);
@@ -14,6 +16,8 @@ public interface QuesScoreService {
 	int delete(String journo);
 	
 	List<QuesScore> list(QuesScoreExample example);
+
+	DataPage<QuesScore> listExamUserByQuery(Map<String, String> params);
 	
 	QuesScore getUserQuesScore(String examCode,String userId);
 	

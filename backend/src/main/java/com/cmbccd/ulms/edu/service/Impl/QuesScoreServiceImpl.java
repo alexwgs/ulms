@@ -1,6 +1,7 @@
 package com.cmbccd.ulms.edu.service.impl;
 
 import com.cmbccd.ulms.common.controller.DataCache;
+import com.cmbccd.ulms.common.util.DataPage;
 import com.cmbccd.ulms.common.util.Util;
 import com.cmbccd.ulms.edu.dao.QuesScoreMapper;
 import com.cmbccd.ulms.edu.domain.QuesScore;
@@ -8,12 +9,16 @@ import com.cmbccd.ulms.edu.domain.QuesScoreExample;
 import com.cmbccd.ulms.edu.domain.QuesScoreExample.Criteria;
 import com.cmbccd.ulms.edu.domain.report.QuesScoreHum;
 import com.cmbccd.ulms.edu.service.QuesScoreService;
+import com.cmbccd.ulms.sys.domain.Department;
 import com.cmbccd.ulms.sys.service.PublicService;
 import com.cmbccd.ulms.sys.domain.Employee;
+import com.github.pagehelper.PageHelper;
 import org.springframework.stereotype.Service;
 
 import jakarta.annotation.Resource;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class QuesScoreServiceImpl implements QuesScoreService {
@@ -55,6 +60,46 @@ public class QuesScoreServiceImpl implements QuesScoreService {
 			 item.setUser(DataCache.getEmployees().get(item.getPloNum()));
 		 }
 		return list;
+	}
+
+	@Override
+	public DataPage<QuesScore> listExamUserByQuery(Map<String, String> params) {
+		String examCode = params.get("examCode");
+		String query = params.get("query");
+		String queryType = params.get("queryType");
+		Map<String, Integer> pageParams = Util.innitTablePages(params);
+		QuesScoreExample example = new QuesScoreExample();
+		Criteria criteria = example.createCriteria();
+		if (!Util.isNullorEmpty(query)) {
+			if ("ploNum".equals(queryType)) {
+				criteria.andPloNumEqualTo(query);
+			} else if ("ploName".equals(queryType)) {
+				List<String> ploNums = DataCache.getEmployees().values().stream()
+						.filter(e -> e.getPloName().contains(query)).map(Employee::getPloNum)
+						.collect(Collectors.toList());
+				if (ploNums.isEmpty()) criteria.andPloNumIsNull();
+				else criteria.andPloNumIn(ploNums);
+			} else if ("deptNum".equals(queryType)) {
+				List<String> deptNums = DataCache.getDepartments().values().stream()
+						.filter(e -> e.getDeptName().contains(query) && Util.isNullorEmpty(e.getUpDept()))
+						.map(Department::getDeptNum).collect(Collectors.toList());
+				if (deptNums.isEmpty()) criteria.andPloNumIsNull();
+				else criteria.andDeptNumIn(deptNums);
+			} else if ("deptGroup".equals(queryType)) {
+				List<String> deptNums = DataCache.getDepartments().values().stream()
+						.filter(e -> e.getDeptName().contains(query) && !Util.isNullorEmpty(e.getUpDept()))
+						.map(Department::getDeptNum).collect(Collectors.toList());
+				if (deptNums.isEmpty()) criteria.andPloNumIsNull();
+				else criteria.andDeptGroupIn(deptNums);
+			}
+		}
+		if (!Util.isNullorEmpty(examCode)) criteria.andExamCodeEqualTo(examCode);
+		PageHelper.startPage(pageParams.get("pageNum"), pageParams.get("pageSize"));
+		if (!Util.isNullorEmpty(params.get("order"))) {
+			example.setOrderByClause(Util.buildOrderByClause(params.get("order"), params.get("orderType")));
+		}
+		List<QuesScore> list = list(example);
+		return new DataPage<QuesScore>(list);
 	}
 
 	@Override
