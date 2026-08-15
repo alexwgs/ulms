@@ -1,9 +1,11 @@
 package com.cmbccd.ulms.youngTalk.service;
 
+import com.cmbccd.ulms.common.util.DataPage;
 import com.cmbccd.ulms.youngTalk.domain.Message;
 import com.cmbccd.ulms.youngTalk.domain.MessageExample;
 
 import java.util.List;
+import java.util.Map;
 
 public interface MessageService {
 
@@ -14,6 +16,8 @@ public interface MessageService {
 	public int setReadById (int id );
 	
 	public List<Message> getMessageList(MessageExample example);
+
+	public DataPage<Message> listMessageByQuery(Map<String, String> params, String userId);
 	
 	public int updateSelectivaById(Message record);
 	

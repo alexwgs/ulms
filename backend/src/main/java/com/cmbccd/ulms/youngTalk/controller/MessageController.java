@@ -1,19 +1,12 @@
 package com.cmbccd.ulms.youngTalk.controller;
 
-import com.cmbccd.ulms.common.controller.DataCache;
-import com.cmbccd.ulms.common.util.DataPage;
 import com.cmbccd.ulms.common.util.Util;
 import com.cmbccd.ulms.sys.domain.Msg;
 import com.cmbccd.ulms.youngTalk.domain.Message;
-import com.cmbccd.ulms.youngTalk.domain.MessageExample;
-import com.cmbccd.ulms.youngTalk.domain.MessageExample.Criteria;
-import com.cmbccd.ulms.youngTalk.service.ArticalService;
 import com.cmbccd.ulms.youngTalk.service.MessageService;
-import com.github.pagehelper.PageHelper;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.annotation.Resource;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -29,8 +22,6 @@ import java.util.Map;
 public class MessageController {
 	@Resource
 	private MessageService messageService;
-	@Resource
-	private ArticalService articalService;
 
 
 	@GetMapping("/message/list")
@@ -39,30 +30,7 @@ public class MessageController {
 		if (userId.equals("0")) {
 			return Msg.error("您无权做此操作！请通过A6广场操作！");
 		}
-		MessageExample example = new MessageExample();
-		Criteria criteria = example.createCriteria();
-		if (!Util.isNullorEmpty(params.get("messageType"))) {
-			criteria.andMessageTypeEqualTo(Integer.parseInt(params.get("messageType")));
-		}
-		if (!Util.isNullorEmpty(params.get("isRead"))) {
-			criteria.andIsReadEqualTo(Integer.parseInt(params.get("isRead")));
-		} else {
-			criteria.andIsReadEqualTo(0);
-		}
-		criteria.andToUserEqualTo(userId);
-
-		if (!Util.isNullorEmpty(params.get("order"))) {
-			example.setOrderByClause(Util.buildOrderByClause(params.get("order"), params.get("orderType")));
-		}
-
-		Map<String, Integer> pageParams = Util.innitTablePages(params);
-		PageHelper.startPage(pageParams.get("pageNum"), pageParams.get("pageSize"));
-		List<Message> messages = messageService.getMessageList(example);
-		for (Message message : messages) {
-			message.setArtical(articalService.getArticalByIdWithNoContent(message.getArticalId()));
-			message.setfUser(DataCache.getEmployees().get(message.getFromUser()));
-		}
-		return Msg.success(new DataPage<Message>(messages));
+		return Msg.success(messageService.listMessageByQuery(params, userId));
 	}
 
 	/**
