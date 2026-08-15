@@ -24,41 +24,6 @@
       size="small"
       @sort-change="tableSort"
       height="calc(100vh - 440px)">
-      <TableColumn type="expand">
-        <template #default="{ row: scope }">
-          <t-row
-            :class="['bdbottom', i1 === 0 ? 'bdtop' : '', 'vcenter']"
-            v-for="(item1, i1) in scope.children"
-            :key="item1.id"
-          >
-            <t-col :span="3">
-              <t-tag :key="item1.id" variant="light">{{ item1.name }}</t-tag>
-            </t-col>
-            <t-col :span="10">
-              <t-row
-                :class="[i2 === 0 ? '' : 'bdtop', 'vcenter']"
-                v-for="(item2, i2) in item1.children"
-                :key="item2.id"
-              >
-                <t-col :span="3">
-                  <t-tag :key="item2.id" theme="primary" variant="light">{{
-                    item2.name
-                  }}</t-tag>
-                </t-col>
-                <t-col :span="9">
-                  <t-tag
-                    v-for="item3 in item2.children"
-                    :key="item3.id"
-                    theme="primary"
-                    closable
-                     variant="light">{{ item3.name }}</t-tag
-                  >
-                </t-col>
-              </t-row>
-            </t-col>
-          </t-row>
-        </template>
-      </TableColumn>
       <TableColumn
         label="角色ID"
         prop="id"
@@ -223,7 +188,7 @@
 
 <script setup>
 import { MessagePlugin } from 'tdesign-vue-next'
-import { ref, onMounted, nextTick } from 'vue'
+import { ref, onMounted } from 'vue'
 import { roleApi } from '@/api/system/role'
 import { menuApi } from '@/api/system/menu'
 import { useCrudPage } from '@/hooks/useCrudPage'
@@ -299,13 +264,14 @@ const getMenuTree = async () => {
   }
 }
 
-const dispatchPermission = (rowData) => {
+const dispatchPermission = async (rowData) => {
   updateRoleId.value = rowData.id
-  getMenuTree()
   permissionTreeVisible.value = true
-  nextTick(() => {
-    checkedKeys.value = rowData.permissions ? rowData.permissions.split(',') : []
-  })
+  // 先等菜单树加载完成，再回填已勾选权限，避免树数据未就绪导致默认值丢失
+  await getMenuTree()
+  checkedKeys.value = rowData.permissions
+    ? rowData.permissions.split(',').filter(Boolean).map(Number)
+    : []
 }
 
 const submitPermission = async () => {
@@ -360,7 +326,10 @@ const closeRoleAddDialog = () => {
 }
 
 const closePermissionTreeDialog = () => {
-  // 清理逻辑
+  // 关闭时清理勾选状态，避免下次打开残留
+  checkedKeys.value = []
+  halfCheckedKeys.value = []
+  expandedKeys.value = []
 }
 
 const tableSort = (data) => {
@@ -388,6 +357,25 @@ const setAllExpand = (state) => {
 }
 
 const onPermissionTreeChange = (value, context) => {
+  const node = context.node
+  // 勾选父节点时自动级联勾选所有子孙节点（仅勾选方向级联）；
+  // 取消勾选保持父子独立，因此取消所有子节点后父节点仍可单独勾选。
+  const isChecked = node && Array.isArray(value) && value.includes(node.value)
+  if (isChecked && node && Array.isArray(node.children) && node.children.length > 0) {
+    const collectIds = (nodes) => {
+      let ids = []
+      for (const n of nodes) {
+        ids.push(n.value)
+        if (Array.isArray(n.children) && n.children.length > 0) {
+          ids = ids.concat(collectIds(n.children))
+        }
+      }
+      return ids
+    }
+    checkedKeys.value = Array.from(new Set([...value, ...collectIds(node.children)]))
+  } else {
+    checkedKeys.value = value
+  }
   halfCheckedKeys.value = context.halfCheckedKeys || []
 }
 </script>
