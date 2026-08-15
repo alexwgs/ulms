@@ -25,23 +25,6 @@
             </t-select>
           </t-form-item>
         </t-col>
-        <t-col :span="3">
-          <t-form-item label="用途" name="useage">
-            <t-radio-group
-              size="small"
-              v-model="queryInfo.useage"
-              @change="getMenuList"
-            >
-              <t-radio-button
-                v-for="item in (dictStore.dictList?.sys_menu_usage || [])"
-                :key="item.code"
-                :value="parseInt(item.code)"
-              >
-                {{ item.codeval }}
-              </t-radio-button>
-            </t-radio-group>
-          </t-form-item>
-        </t-col>
         <t-col :span="6" class="operation-container">
           <t-button variant="outline" size="small" @click="setAllExpand(true)"
             >展开所有节点</t-button
@@ -416,8 +399,7 @@ const statusOptions = ref([
 ])
 
 const queryInfo = ref({
-  system: 'a6squre',
-  useage: 1
+  system: 'a6squre'
 })
 const dialogTitle = ref('')
 const list = ref([])

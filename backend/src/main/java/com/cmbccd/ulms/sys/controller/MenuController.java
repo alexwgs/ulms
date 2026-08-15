@@ -99,9 +99,13 @@ public class MenuController {
 //	@SaCheckPermission("menu:list")
 	public Msg getfontMenu(@RequestParam Map<String, String> params) {
 		String system = params.get("system");
-		Short useage = Short.parseShort(params.get("useage"));
 		if(Util.isNullorEmpty(system))	system = "a6squre";
-		if(Util.isNullorEmpty(useage))	useage = 1;
+		// useage 不再作为强制过滤条件：不传则返回全部菜单（前台+后台统一管理）
+		Short useage = null;
+		String useageStr = params.get("useage");
+		if(!Util.isNullorEmpty(useageStr)) {
+			useage = Short.parseShort(useageStr);
+		}
 		List<Menu> menuList = menuService.getMenu(system,useage);
 		return Msg.success( menuList);
 	}
