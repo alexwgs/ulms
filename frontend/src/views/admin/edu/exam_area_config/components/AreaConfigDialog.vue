@@ -82,7 +82,7 @@ const areaConfigRules = reactive({
 
 // Methods
 const submitAreaConfig = async () => {
-  const valid = await examAreaConfigApi.areaConfigFormRef.value.validate()
+  const valid = await areaConfigFormRef.value.validate()
   if (valid !== true) return
 
   try {

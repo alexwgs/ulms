@@ -51,10 +51,11 @@
 const uploadHeaders = { Authorization: localStorage.getItem('token') || '' }
 import { ref, reactive, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { MessagePlugin, DialogPlugin } from 'tdesign-vue-next'
+import { MessagePlugin } from 'tdesign-vue-next'
 import { httpInstance } from '@/utils/request'
 import WangEditor from '@/components/WangEditor.vue'
 import { useDictStore } from '@/stores'
+import { useConfirm } from '@/hooks/useConfirm'
 
 const router = useRouter()
 const route = useRoute()
@@ -187,17 +188,10 @@ const handleExceed = ({ files, currentFiles }) => {
   )
 }
 
-const beforeRemove = (file) => {
-  return new Promise((resolve) => {
-    DialogPlugin.confirm({
-      header: '确认删除',
-      body: `确定移除 ${file.name} 吗？`,
-      theme: 'warning',
-      confirmBtn: '确定',
-      cancelBtn: '取消',
-      onConfirm: () => resolve(true),
-      onClose: () => resolve(false)
-    })
+const beforeRemove = async (file) => {
+  const { confirm: confirmDialog } = useConfirm()
+  return confirmDialog(`确定移除 ${file.name} 吗？`, {
+    title: '确认删除'
   })
 }
 

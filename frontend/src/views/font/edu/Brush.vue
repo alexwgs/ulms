@@ -133,8 +133,9 @@ import { brushApi } from '@/api/edu/brush'
 import { questionBankApi } from '@/api/edu/questionBank'
 import { questionCollectApi } from '@/api/edu/questionCollect'
 import { questionDisputeApi } from '@/api/edu/questionDispute'
-import { MessagePlugin, DialogPlugin } from 'tdesign-vue-next'
+import { MessagePlugin } from 'tdesign-vue-next'
 import { NotificationIcon, StarIcon, ErrorCircleIcon } from 'tdesign-icons-vue-next'
+import { usePrompt } from '@/hooks/usePrompt'
 
 const fsURL = import.meta.env.VITE_FILE_BASE_URL
 
@@ -326,24 +327,20 @@ const submitDispute = async (record) => {
   MessagePlugin.success(res.msg)
 }
 
-const disputeBtn = () => {
-  DialogPlugin.prompt('请描述该题目问题的内容：', '题目问题反馈', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    inputPattern: /^.{2,250}$/,
-    inputErrorMessage: '复议理由不可为空，最长不超过250个字',
-    closeOnClickModal: false
+const disputeBtn = async () => {
+  const { prompt } = usePrompt()
+  const value = await prompt({
+    title: '题目问题反馈',
+    placeholder: '请描述该题目问题的内容：',
+    pattern: /^.{2,250}$/,
+    errorMessage: '复议理由不可为空，最长不超过250个字'
   })
-    .then(({ value }) => {
-      submitDispute({
-        quesCode: question.quesCode,
-        userAnswer: radio.value + checkbox.value.join(','),
-        disputeMemo: value
-      })
-    })
-    .catch(() => {
-      // 取消输入
-    })
+  if (value === null) return
+  submitDispute({
+    quesCode: question.quesCode,
+    userAnswer: radio.value + checkbox.value.join(','),
+    disputeMemo: value
+  })
 }
 
 onMounted(() => {

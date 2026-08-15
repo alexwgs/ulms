@@ -663,7 +663,7 @@ const submitForm = async () => {
     try {
       let res
       if (courseFormTitle.value === '课程新增') {
-        res = await courseApi.saveCourse(courseFormData)
+        res = await courseApi.addCourse(courseFormData)
       } else {
         res = await courseApi.updateCourse(courseFormData)
       }
@@ -704,10 +704,10 @@ const submitRecommendForm = async () => {
 
 const updateStatus = async (row) => {
   try {
-    const res = await courseApi.updateCourseStatus(
-      row.courseId,
-      row.status ? 0 : 1
-    )
+    const res = await courseApi.updateCourse({
+      courseId: row.courseId,
+      status: row.status ? 0 : 1
+    })
     if (res.code !== 200) return MessagePlugin.error(res.msg)
     MessagePlugin.success(res.msg)
     getCourseTable()

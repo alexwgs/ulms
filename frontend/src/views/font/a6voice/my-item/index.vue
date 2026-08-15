@@ -166,9 +166,10 @@
 const uploadHeaders = { Authorization: localStorage.getItem('token') || '' }
 import { ref, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { MessagePlugin, DialogPlugin } from 'tdesign-vue-next'
+import { MessagePlugin } from 'tdesign-vue-next'
 import { httpInstance } from '@/utils/request'
 import { useDictStore } from '@/stores'
+import { useConfirm } from '@/hooks/useConfirm'
 
 const router = useRouter()
 const dictStore = useDictStore()
@@ -287,28 +288,28 @@ const progressEdit = (index, row) => {
   getProgress()
 }
 
-const cancelProgress = (index, row) => {
-  DialogPlugin.confirm('此操作将永久删除该更新内容, 是否继续?', '提示', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning'
-  }).then(async () => {
-    try {
-      const progress = { id: row.id, status: 0 }
-      const res = await httpInstance.put('cyt/progress', progress)
-      if (res.code !== 200) {
-        MessagePlugin.error(res.msg)
-        return
-      }
-      MessagePlugin.success(res.msg)
-      getProgress()
-    } catch (error) {
-      MessagePlugin.error('删除失败')
-      console.error(error)
-    }
-  }).catch(() => {
-    MessagePlugin.info('取消删除！')
+const cancelProgress = async (index, row) => {
+  const { confirm: confirmDialog } = useConfirm()
+  const ok = await confirmDialog('此操作将永久删除该更新内容, 是否继续?', {
+    title: '提示'
   })
+  if (!ok) {
+    MessagePlugin.info('取消删除！')
+    return
+  }
+  try {
+    const progress = { id: row.id, status: 0 }
+    const res = await httpInstance.put('cyt/progress', progress)
+    if (res.code !== 200) {
+      MessagePlugin.error(res.msg)
+      return
+    }
+    MessagePlugin.success(res.msg)
+    getProgress()
+  } catch (error) {
+    MessagePlugin.error('删除失败')
+    console.error(error)
+  }
 }
 
 const handleCurrentChange = (page) => {
@@ -435,8 +436,11 @@ const handleExceed = (files, fileList) => {
   )
 }
 
-const beforeRemove = (file, fileList) => {
-  return DialogPlugin.confirm(`确定移除 ${file.name} ？`)
+const beforeRemove = async (file, fileList) => {
+  const { confirm: confirmDialog } = useConfirm()
+  return confirmDialog(`确定移除 ${file.name} ？`, {
+    title: '提示'
+  })
 }
 </script>
 

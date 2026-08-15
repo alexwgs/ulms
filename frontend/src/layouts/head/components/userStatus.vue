@@ -39,10 +39,11 @@
 
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount, onUnmounted } from 'vue'
-import { MessagePlugin, DialogPlugin } from 'tdesign-vue-next'
+import { MessagePlugin } from 'tdesign-vue-next'
 import { useUserStore, useAppStore, useMenuStore, useWsStore, useOhtStore } from '@/stores'
 import { statusTypeApi } from '@/api/oht/statusType'
 import { useRouter } from 'vue-router'
+import { usePrompt } from '@/hooks/usePrompt'
 
 const router = useRouter()
 const ohtStore = useOhtStore()
@@ -82,26 +83,21 @@ const statusChange = async (e, data) => {
     const selected = data.find((item) => { return item.statusName === e })
     statusChangeMsg.value.content = { id: selected.id, memo: '' }
     if (e === '自定义') {
-        try {
-            const dialog = DialogPlugin({
-                header: '提示',
-                body: '请输入您的自定义工作内容[2到6个字符]',
-                confirmBtn: '确定',
-                cancelBtn: '取消',
-                onConfirm: ({ e }) => {
-                    statusChangeMsg.value.content.memo = '自定义'
-                    wsStore.sendMessage(statusChangeMsg.value)
-                    stopUserStatusTimer()
-                    startUserStatusTimer()
-                    dialog.hide()
-                },
-                onClose: () => {
-                    MessagePlugin.info('取消输入')
-                }
-            })
-        } catch (error) {
+        const { prompt } = usePrompt()
+        const value = await prompt({
+            title: '提示',
+            placeholder: '请输入您的自定义工作内容[2到6个字符]',
+            pattern: /^.{2,6}$/,
+            errorMessage: '内容长度需为2到6个字符'
+        })
+        if (value === null) {
             MessagePlugin.info('取消输入')
+            return
         }
+        statusChangeMsg.value.content.memo = value
+        wsStore.sendMessage(statusChangeMsg.value)
+        stopUserStatusTimer()
+        startUserStatusTimer()
     } else {
         wsStore.sendMessage(statusChangeMsg.value)
         stopUserStatusTimer()

@@ -382,10 +382,11 @@
 
 <script setup>
 import { ref, onMounted, computed } from 'vue'
-import { MessagePlugin, DialogPlugin } from 'tdesign-vue-next'
+import { MessagePlugin } from 'tdesign-vue-next'
 import IconSelect from './components/IconSelect.vue'
 import { menuApi } from '@/api/system/menu'
 import { useDictStore } from '@/stores'
+import { useConfirm } from '@/hooks/useConfirm'
 
 const dictStore = useDictStore()
 // Refs
@@ -461,28 +462,23 @@ const getMenuList = async () => {
   }
 }
 
-const remove = (data) => {
-  DialogPlugin.confirm(
+const remove = async (data) => {
+  const { confirm: confirmDialog } = useConfirm()
+  const ok = await confirmDialog(
     '此操作将永久删除该记录,同时会删除子菜单, 是否继续?',
-    '提示',
-    {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning'
-    }
+    { title: '提示' }
   )
-    .then(async () => {
-      try {
-        const res = await menuApi.deleteMenu(data.id, data.pid)
-        MessagePlugin.success(res.msg)
-        getMenuList()
-      } catch (error) {
-        MessagePlugin.error(error.message)
-      }
-    })
-    .catch(() => {
-      MessagePlugin.info('取消删除')
-    })
+  if (!ok) {
+    MessagePlugin.info('取消删除')
+    return
+  }
+  try {
+    const res = await menuApi.deleteMenu(data.id, data.pid)
+    MessagePlugin.success(res.msg)
+    getMenuList()
+  } catch (error) {
+    MessagePlugin.error(error.message)
+  }
 }
 
 const update = (data) => {

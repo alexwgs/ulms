@@ -148,12 +148,13 @@
 </template>
 <script setup>
 import { ref, reactive } from 'vue'
-import { MessagePlugin, DialogPlugin } from 'tdesign-vue-next'
+import { MessagePlugin } from 'tdesign-vue-next'
 import UploadExcel from '@/components/UploadExcel.vue'
 import { examConfigApi } from '@/api/edu/examConfig'
 import { useDictStore } from '@/stores'
 import EmployeeSelect from '@/components/EmployeeSelect.vue'
 import { usePagination } from '@/hooks/usePagination'
+import { useConfirm } from '@/hooks/useConfirm'
 const uploadExcelRef = ref(null)
 const dialogVisible = ref(false)
 const total = ref(0)
@@ -230,32 +231,23 @@ const tableSort = (data) => {
   getExamScoreList()
 }
 
-const reExam = (row) => {
-  DialogPlugin.confirm(
-    '慎重！该操作将重置该用户的考试状态，是否继续?',
-    '提示',
-    {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning'
-    }
-  )
-    .then(async () => {
-      try {
-        const res = await examConfigApi.resetExamStatus(row)
-        if (res.code !== 200) return MessagePlugin.error(res.msg)
-        MessagePlugin.success(res.msg)
-        getExamScoreList()
-      } catch (error) {
-        MessagePlugin.error('重置考试状态失败')
-      }
-    })
-    .catch(() => {
-      MessagePlugin.info({
-        type: 'info',
-        message: '已取消操作'
-      })
-    })
+const reExam = async (row) => {
+  const { confirm: confirmDialog } = useConfirm()
+  const ok = await confirmDialog('慎重！该操作将重置该用户的考试状态，是否继续?', {
+    title: '提示'
+  })
+  if (!ok) {
+    MessagePlugin.info('已取消操作')
+    return
+  }
+  try {
+    const res = await examConfigApi.resetExamStatus(row)
+    if (res.code !== 200) return MessagePlugin.error(res.msg)
+    MessagePlugin.success(res.msg)
+    getExamScoreList()
+  } catch (error) {
+    MessagePlugin.error('重置考试状态失败')
+  }
 }
 
 defineExpose({

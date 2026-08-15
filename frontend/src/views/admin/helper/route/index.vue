@@ -118,8 +118,9 @@
 </template>
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
-import { MessagePlugin, DialogPlugin } from 'tdesign-vue-next'
+import { MessagePlugin } from 'tdesign-vue-next'
 import { treeApi } from '@/api/helper/tree'
+import { useConfirm } from '@/hooks/useConfirm'
 
 // 响应式数据
 const tree = ref([])
@@ -160,29 +161,24 @@ const getTree = async () => {
 }
 
 // 删除路径节点
-const deleteTree = (record) => {
-  DialogPlugin.confirm(
+const deleteTree = async (record) => {
+  const { confirm: confirmDialog } = useConfirm()
+  const ok = await confirmDialog(
     '此操作将永久删除该节点及以下所有节点, 是否继续?',
-    '提示',
-    {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning'
-    }
+    { title: '提示' }
   )
-    .then(async () => {
-      try {
-        const res = await treeApi.deleteTreeWithChildren(record.id)
-        if (res.code !== 200) return MessagePlugin.error(res.msg)
-        MessagePlugin.success(res.msg)
-        getTree()
-      } catch (error) {
-        MessagePlugin.error('删除失败')
-      }
-    })
-    .catch(() => {
-      MessagePlugin.info('已取消删除')
-    })
+  if (!ok) {
+    MessagePlugin.info('已取消删除')
+    return
+  }
+  try {
+    const res = await treeApi.deleteTreeWithChildren(record.id)
+    if (res.code !== 200) return MessagePlugin.error(res.msg)
+    MessagePlugin.success(res.msg)
+    getTree()
+  } catch (error) {
+    MessagePlugin.error('删除失败')
+  }
 }
 
 // 更新路径节点

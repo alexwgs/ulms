@@ -76,7 +76,8 @@ import {
   deteteRpaToolTemplete,
   updateRpaTool
 } from '@/api/rpa/rpa.js'
-import { MessagePlugin, DialogPlugin } from 'tdesign-vue-next'
+import { MessagePlugin } from 'tdesign-vue-next'
+import { useConfirm } from '@/hooks/useConfirm'
 
 const emit = defineEmits(['refresh'])
 
@@ -136,20 +137,18 @@ const openFieldDialog = (type, field = {}) => {
 
 // 删除字段
 const deleteField = async (id) => {
-  try {
-    await DialogPlugin.confirm('此操作将永久删除该字段, 是否继续?', '提示', {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning'
-    })
+  const { confirm: confirmDialog } = useConfirm()
+  const ok = await confirmDialog('此操作将永久删除该字段, 是否继续?', {
+    title: '提示'
+  })
+  if (!ok) return
 
+  try {
     await deteteRpaToolTemplete(id)
     MessagePlugin.success('删除成功')
     fetchFieldList()
   } catch (error) {
-    if (error !== 'cancel') {
-      MessagePlugin.error('删除失败')
-    }
+    MessagePlugin.error('删除失败')
   }
 }
 

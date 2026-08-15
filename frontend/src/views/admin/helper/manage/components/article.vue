@@ -93,10 +93,11 @@
 <script setup>
 const uploadHeaders = { Authorization: localStorage.getItem('token') || '' }
 import { ref, reactive, onMounted, nextTick } from 'vue'
-import { MessagePlugin, DialogPlugin } from 'tdesign-vue-next'
+import { MessagePlugin } from 'tdesign-vue-next'
 import WangEditor from '@/components/WangEditor.vue'
 import { articleApi } from '@/api/helper/article'
 import { treeApi } from '@/api/helper/tree'
+import { useConfirm } from '@/hooks/useConfirm'
 
 // 定义props和emit
 const emit = defineEmits(['refreshList'])
@@ -313,18 +314,11 @@ const handleExceed = (files, fileList) => {
   )
 }
 
-const beforeRemove = (file, fileList) => {
-  return DialogPlugin.confirm(`确定移除 ${file.name} ？`, '确认删除', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning'
+const beforeRemove = async (file, fileList) => {
+  const { confirm: confirmDialog } = useConfirm()
+  return confirmDialog(`确定移除 ${file.name} ？`, {
+    title: '确认删除'
   })
-    .then(() => {
-      return true
-    })
-    .catch(() => {
-      return false
-    })
 }
 
 // 直接暴露方法给父组件

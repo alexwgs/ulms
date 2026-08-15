@@ -185,9 +185,10 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import { MessagePlugin, DialogPlugin } from 'tdesign-vue-next'
+import { MessagePlugin } from 'tdesign-vue-next'
 import { examTestApi } from '@/api/edu/examTest'
 import { questionDisputeApi } from '@/api/edu/questionDispute'
+import { usePrompt } from '@/hooks/usePrompt'
 
 const fsURL = import.meta.env.VITE_FILE_BASE_URL
 const route = useRoute()
@@ -235,25 +236,21 @@ const submitDispute = async (record) => {
   getDisputeList()
 }
 
-const disputeBtn = (item) => {
-  DialogPlugin.prompt('请输入复议理由', '复议申请', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    inputPattern: /^.{2,250}$/,
-    inputErrorMessage: '复议理由不可为空，最长不超过250个字',
-    closeOnClickModal: false
+const disputeBtn = async (item) => {
+  const { prompt } = usePrompt()
+  const value = await prompt({
+    title: '复议申请',
+    placeholder: '请输入复议理由',
+    pattern: /^.{2,250}$/,
+    errorMessage: '复议理由不可为空，最长不超过250个字'
   })
-    .then(({ value }) => {
-      submitDispute({
-        examCode: item.examCode,
-        quesCode: item.question.quesCode,
-        userAnswer: item.userAnswer,
-        disputeMemo: value
-      })
-    })
-    .catch(() => {
-      // MessagePlugin.info('取消输入')
-    })
+  if (value === null) return
+  submitDispute({
+    examCode: item.examCode,
+    quesCode: item.question.quesCode,
+    userAnswer: item.userAnswer,
+    disputeMemo: value
+  })
 }
 
 onMounted(() => {

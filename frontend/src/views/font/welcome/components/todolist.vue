@@ -188,8 +188,9 @@
 
 <script setup>
 import { ref, reactive, computed, onMounted, nextTick } from 'vue'
-import { MessagePlugin, DialogPlugin } from 'tdesign-vue-next'
+import { MessagePlugin } from 'tdesign-vue-next'
 import { useOhtStore } from '@/stores'
+import { useConfirm } from '@/hooks/useConfirm'
 import { AddIcon, EditIcon, DeleteIcon, CheckIcon, RefreshIcon } from 'tdesign-icons-vue-next'
 import {
   getTodoList as apiGetTodoList,
@@ -271,6 +272,7 @@ const getTodoListData = () => {
 }
 
 const ohtStore = useOhtStore()
+const { confirm: confirmDialog } = useConfirm()
 const commitTodoAlert = (alertLists) => {
   ohtStore.setTodoAlert(alertLists)
 }
@@ -391,27 +393,25 @@ const updateTodo = (row) => {
   openTodoDialog('edit')
 }
 
-const deleteTodo = (row) => {
-  DialogPlugin.confirm('你是否确定永久删除此待办，不可恢复', '确认信息', {
-    distinguishCancelAndClose: true,
+const deleteTodo = async (row) => {
+  const ok = await confirmDialog('你是否确定永久删除此待办，不可恢复', {
+    title: '确认信息',
     confirmButtonText: '确认',
     cancelButtonText: '放弃删除'
   })
-    .then(async () => {
-      try {
-        const res = await apiDeleteTodo(row.id)
-        if (res.code !== 200) {
-          MessagePlugin.error(res.msg)
-          return
-        }
-        MessagePlugin.success(res.msg)
-        getTodoListData()
-        calendarUpdateFlag.value = 1
-      } catch (error) {
-        MessagePlugin.error('删除失败')
-      }
-    })
-    .catch(() => { })
+  if (!ok) return
+  try {
+    const res = await apiDeleteTodo(row.id)
+    if (res.code !== 200) {
+      MessagePlugin.error(res.msg)
+      return
+    }
+    MessagePlugin.success(res.msg)
+    getTodoListData()
+    calendarUpdateFlag.value = 1
+  } catch (error) {
+    MessagePlugin.error('删除失败')
+  }
 }
 
 const completeTodo = async (row) => {

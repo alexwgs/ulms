@@ -44,10 +44,11 @@
 
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
-import { MessagePlugin, DialogPlugin } from 'tdesign-vue-next'
+import { MessagePlugin } from 'tdesign-vue-next'
 import { useOhtStore, useWsStore } from '@/stores'
 import { MapAimingIcon, LocationIcon } from 'tdesign-icons-vue-next'
 import { getStatusTree } from '@/api/welcome/index.js'
+import { usePrompt } from '@/hooks/usePrompt'
 
 const emit = defineEmits(['editIdentity', 'changeUserStatus'])
 
@@ -94,30 +95,28 @@ const getStatusType = async () => {
   }
 }
 
-const statusChange = (e, data) => {
+const statusChange = async (e, data) => {
   const selected = data.find((item) => item.statusName === e)
   statusChangeMsg.value.content = { id: selected.id, memo: '' }
   emit('changeUserStatus', e)
 
   if (e === '自定义') {
-    DialogPlugin.prompt('请输入您的自定义工作内容[2到6个字符]', '提示', {
-      confirmButtonText: '确定',
-      showClose: false,
-      showCancelButton: false,
-      closeOnPressEscape: false,
-      closeOnClickModal: false,
-      inputPattern: /^.{2,6}$/,
-      inputErrorMessage: '内容长度需为2到6个字符'
+    const { prompt } = usePrompt()
+    const value = await prompt({
+      title: '提示',
+      placeholder: '请输入您的自定义工作内容[2到6个字符]',
+      pattern: /^.{2,6}$/,
+      errorMessage: '内容长度需为2到6个字符',
+      cancelText: null
     })
-      .then(async ({ value }) => {
-        statusChangeMsg.value.content.memo = value
-        sendWebSocketMessage(statusChangeMsg.value)
-        clearInterval(statusTimer.value)
-        userStatusTimer()
-      })
-      .catch(() => {
-        MessagePlugin.info('取消输入')
-      })
+    if (value === null) {
+      MessagePlugin.info('取消输入')
+      return
+    }
+    statusChangeMsg.value.content.memo = value
+    sendWebSocketMessage(statusChangeMsg.value)
+    clearInterval(statusTimer.value)
+    userStatusTimer()
   } else {
     sendWebSocketMessage(statusChangeMsg.value)
     clearInterval(statusTimer.value)

@@ -221,11 +221,12 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { MessagePlugin, DialogPlugin } from 'tdesign-vue-next'
+import { MessagePlugin } from 'tdesign-vue-next'
 import { useDictStore } from '@/stores'
 import ToolDialog from './components/ToolDialog.vue'
 import TemplateDialog from './components/TemplateDialog.vue'
 import RoleDialog from './components/RoleDialog.vue'
+import { useConfirm } from '@/hooks/useConfirm'
 import {
   getAllRpaTool,
   updateRpaToolStatus,
@@ -303,44 +304,37 @@ const openRoleDialog = (row) => {
 }
 
 // 更改工具状态
-const changeStatus = (row) => {
+const changeStatus = async (row) => {
   const nextStatus = row.status === 1 ? 0 : 1
-  DialogPlugin.confirm({
-    header: '提示',
-    body: `此操作将${row.status ? '禁用' : '启用'}该工具, 是否继续?`,
-    theme: 'warning',
-    confirmBtn: '确定',
-    cancelBtn: '取消',
-    onConfirm: async () => {
-      try {
-        await updateRpaToolStatus({ id: row.id, status: nextStatus })
-        MessagePlugin.success('状态更新成功')
-        getList()
-      } catch (error) {
-        MessagePlugin.error(error.message || '状态更新失败')
-      }
-    }
-  })
+  const { confirm: confirmDialog } = useConfirm()
+  const ok = await confirmDialog(
+    `此操作将${row.status ? '禁用' : '启用'}该工具, 是否继续?`,
+    { title: '提示' }
+  )
+  if (!ok) return
+  try {
+    await updateRpaToolStatus({ id: row.id, status: nextStatus })
+    MessagePlugin.success('状态更新成功')
+    getList()
+  } catch (error) {
+    MessagePlugin.error(error.message || '状态更新失败')
+  }
 }
 
 // 删除工具
-const removeTool = (row) => {
-  DialogPlugin.confirm({
-    header: '提示',
-    body: '此操作将永久删除该工具, 是否继续?',
-    theme: 'warning',
-    confirmBtn: '确定',
-    cancelBtn: '取消',
-    onConfirm: async () => {
-      try {
-        await deleteRpaTool(row.id)
-        MessagePlugin.success('删除成功')
-        getList()
-      } catch (error) {
-        MessagePlugin.error(error.message || '删除失败')
-      }
-    }
+const removeTool = async (row) => {
+  const { confirm: confirmDialog } = useConfirm()
+  const ok = await confirmDialog('此操作将永久删除该工具, 是否继续?', {
+    title: '提示'
   })
+  if (!ok) return
+  try {
+    await deleteRpaTool(row.id)
+    MessagePlugin.success('删除成功')
+    getList()
+  } catch (error) {
+    MessagePlugin.error(error.message || '删除失败')
+  }
 }
 
 // 初始化

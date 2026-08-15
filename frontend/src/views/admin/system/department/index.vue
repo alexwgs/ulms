@@ -108,10 +108,10 @@
 </template>
 
 <script setup>
-import { DialogPlugin } from 'tdesign-vue-next'
 import { MessagePlugin } from 'tdesign-vue-next'
 import { ref, reactive, onMounted } from 'vue'
 import { departmentApi } from '@/api/system/department'
+import { useConfirm } from '@/hooks/useConfirm'
 
 const deptartmentData = ref([])
 const dialogTitle = ref('')
@@ -180,24 +180,20 @@ const update = (data) => {
   dialogFormVisible.value = true
 }
 
-const remove = (node, data) => {
-  DialogPlugin.confirm(
+const remove = async (node, data) => {
+  const { confirm: confirmDialog } = useConfirm()
+  const ok = await confirmDialog(
     '此操作将永久删除该记录,同时会删除子菜单, 是否继续?',
-    '提示',
-    {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning'
-    }
-  ).then(async () => {
-    const res = await departmentApi.deleteDepartment(data.deptNum)
-    if (res.code !== 200) return
-    MessagePlugin.success(res.msg)
-    const parent = node.parent
-    const children = parent.data.children || parent.data
-    const index = children.findIndex((d) => d.id === data.id)
-    children.splice(index, 1)
-  })
+    { title: '提示' }
+  )
+  if (!ok) return
+  const res = await departmentApi.deleteDepartment(data.deptNum)
+  if (res.code !== 200) return
+  MessagePlugin.success(res.msg)
+  const parent = node.parent
+  const children = parent.data.children || parent.data
+  const index = children.findIndex((d) => d.id === data.id)
+  children.splice(index, 1)
 }
 
 const dialogFormSubmit = async () => {

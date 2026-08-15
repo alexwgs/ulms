@@ -74,9 +74,10 @@
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { MessagePlugin, DialogPlugin } from 'tdesign-vue-next'
+import { MessagePlugin } from 'tdesign-vue-next'
 import { httpInstance } from '@/utils/request'
 import { useDictStore } from '@/stores'
+import { useConfirm } from '@/hooks/useConfirm'
 
 const router = useRouter()
 const dictStore = useDictStore()
@@ -137,28 +138,29 @@ const updateArticle = (index, row) => {
   }
 }
 
-const articleDelete = (index, row) => {
-  DialogPlugin.confirm('删除后不可恢复，请确认是否要删除?', '提示', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
+const articleDelete = async (index, row) => {
+  const { confirm: confirmDialog } = useConfirm()
+  const ok = await confirmDialog('删除后不可恢复，请确认是否要删除?', {
+    title: '提示',
     type: 'error'
-  }).then(async () => {
-    try {
-      const params = { id: row.id, status: 0 }
-      const res = await httpInstance.put('cyt/article/delete', params)
-      if (res.code !== 200) {
-        MessagePlugin.error(res.msg)
-        return
-      }
-      MessagePlugin.success(res.msg)
-      getArticleList()
-    } catch (error) {
-      MessagePlugin.error('删除失败')
-      console.error(error)
-    }
-  }).catch(() => {
-    MessagePlugin.info('取消文章删除！')
   })
+  if (!ok) {
+    MessagePlugin.info('取消文章删除！')
+    return
+  }
+  try {
+    const params = { id: row.id, status: 0 }
+    const res = await httpInstance.put('cyt/article/delete', params)
+    if (res.code !== 200) {
+      MessagePlugin.error(res.msg)
+      return
+    }
+    MessagePlugin.success(res.msg)
+    getArticleList()
+  } catch (error) {
+    MessagePlugin.error('删除失败')
+    console.error(error)
+  }
 }
 
 const handleCurrentChange = (page) => {

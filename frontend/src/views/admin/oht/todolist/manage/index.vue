@@ -130,9 +130,10 @@
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
-import { MessagePlugin, DialogPlugin } from 'tdesign-vue-next'
+import { MessagePlugin } from 'tdesign-vue-next'
 import { httpInstance } from '@/utils/request'
 import EmpTree from '@/components/EmpTree.vue'
+import { useConfirm } from '@/hooks/useConfirm'
 
 const dateRange = ref([])
 const priorityList = ref([])
@@ -263,29 +264,26 @@ const submit = async () => {
   }
 }
 
-const deleteTodo = (row) => {
-  DialogPlugin.confirm('你是否确定永久删除此待办，不可恢复', '确认信息', {
-    distinguishCancelAndClose: true,
+const deleteTodo = async (row) => {
+  const { confirm: confirmDialog } = useConfirm()
+  const ok = await confirmDialog('你是否确定永久删除此待办，不可恢复', {
+    title: '确认信息',
     confirmButtonText: '确认',
     cancelButtonText: '放弃删除'
   })
-    .then(async () => {
-      try {
-        const res = await httpInstance.delete(`sys/todo/${row.id}`)
-        if (res.code !== 200) {
-          MessagePlugin.error(res.msg)
-          return
-        }
-        MessagePlugin.success(res.msg)
-        getTodolist()
-      } catch (error) {
-        MessagePlugin.error('删除失败')
-        console.error(error)
-      }
-    })
-    .catch(() => {
-      // 用户取消操作
-    })
+  if (!ok) return
+  try {
+    const res = await httpInstance.delete(`sys/todo/${row.id}`)
+    if (res.code !== 200) {
+      MessagePlugin.error(res.msg)
+      return
+    }
+    MessagePlugin.success(res.msg)
+    getTodolist()
+  } catch (error) {
+    MessagePlugin.error('删除失败')
+    console.error(error)
+  }
 }
 
 const openTodoDialog = (row, type) => {

@@ -113,9 +113,10 @@
 <script setup>
 import { ref, reactive, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import { MessagePlugin, DialogPlugin } from 'tdesign-vue-next'
+import { MessagePlugin } from 'tdesign-vue-next'
 import Comment from './Comment.vue'
 import { httpInstance } from '@/utils/request'
+import { useConfirm } from '@/hooks/useConfirm'
 
 const route = useRoute()
 const fsURL = import.meta.env.VITE_FILE_BASE_URL
@@ -300,29 +301,28 @@ const onCommentSubmitted = () => {
   article.replyNum++
 }
 
-const takeItem = () => {
-  DialogPlugin.confirm('认领后不可撤销，是否继续认领项目?', '提示', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
+const takeItem = async () => {
+  const { confirm: confirmDialog } = useConfirm()
+  const ok = await confirmDialog('认领后不可撤销，是否继续认领项目?', {
+    title: '提示',
     type: 'error'
   })
-    .then(async () => {
-      try {
-        const res = await httpInstance.put(`cyt/article/take/${id.value}`)
-        if (res.code !== 200) {
-          MessagePlugin.error(res.msg)
-          return
-        }
-        MessagePlugin.success(res.msg)
-        itemTakeFlag.value = true
-        getArticle()
-      } catch (error) {
-        MessagePlugin.error(error.message || '认领失败')
-      }
-    })
-    .catch(() => {
-      MessagePlugin.error('取消认领项目！')
-    })
+  if (!ok) {
+    MessagePlugin.error('取消认领项目！')
+    return
+  }
+  try {
+    const res = await httpInstance.put(`cyt/article/take/${id.value}`)
+    if (res.code !== 200) {
+      MessagePlugin.error(res.msg)
+      return
+    }
+    MessagePlugin.success(res.msg)
+    itemTakeFlag.value = true
+    getArticle()
+  } catch (error) {
+    MessagePlugin.error(error.message || '认领失败')
+  }
 }
 
 const user = ref({})

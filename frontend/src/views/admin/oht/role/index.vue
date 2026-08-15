@@ -47,11 +47,12 @@
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
-import { MessagePlugin, DialogPlugin } from 'tdesign-vue-next'
+import { MessagePlugin } from 'tdesign-vue-next'
 import { useDictStore } from '@/stores'
 import RoleDialog from './components/RoleDialog.vue'
 import RoleDispatchDialog from './components/RoleDispatchDialog.vue'
 import { roleApi } from '@/api/oht/role.js'
+import { useConfirm } from '@/hooks/useConfirm'
 
 const dictStore = useDictStore()
 
@@ -117,29 +118,18 @@ const tableSort = ({ sortBy, descending }) => {
 
 // 删除角色
 const removeRoleByRoleCode = async (row) => {
-  try {
-    await DialogPlugin.confirm(
-      '此操作将永久删除该记录, 是否继续?',
-      '提示',
-      {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }
-    ).then(async () => {
-      const res = await roleApi.deleteRole(row.roleCode)
-      if (res.code !== 200) {
-        MessagePlugin.error(res.msg)
-        return
-      }
-      MessagePlugin.success(res.msg)
-      getOhtRoleList()
-    })
-  } catch (error) {
-    if (error !== 'cancel') {
-      MessagePlugin.error('取消删除')
-    }
+  const { confirm: confirmDialog } = useConfirm()
+  const ok = await confirmDialog('此操作将永久删除该记录, 是否继续?', {
+    title: '提示'
+  })
+  if (!ok) return
+  const res = await roleApi.deleteRole(row.roleCode)
+  if (res.code !== 200) {
+    MessagePlugin.error(res.msg)
+    return
   }
+  MessagePlugin.success(res.msg)
+  getOhtRoleList()
 }
 
 // 添加角色

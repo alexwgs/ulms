@@ -382,9 +382,9 @@ async function configUpdate() {
   const valid = await brushConfigForm.value.validate()
   if (valid === true) {
     if (curentOperateType.value === 'edit') {
-      await brushApi.updateBrushConfigData()
+      await updateBrushConfigData()
     } else {
-      await brushApi.addBrushConfigData()
+      await addBrushConfigData()
     }
     brushConfigVisible.value = false
   }
