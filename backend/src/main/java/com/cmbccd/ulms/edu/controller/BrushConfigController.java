@@ -2,7 +2,6 @@ package com.cmbccd.ulms.edu.controller;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.cmbccd.ulms.common.annotation.MyLog;
-import com.cmbccd.ulms.common.util.DataPage;
 import com.cmbccd.ulms.common.util.Util;
 import com.cmbccd.ulms.edu.domain.BrushConfig;
 import com.cmbccd.ulms.edu.domain.BrushConfigExample;
@@ -12,7 +11,6 @@ import com.cmbccd.ulms.edu.service.BrushConfigService;
 import com.cmbccd.ulms.edu.service.BrushScoreService;
 import com.cmbccd.ulms.edu.service.DailyGroupService;
 import com.cmbccd.ulms.sys.domain.Msg;
-import com.github.pagehelper.PageHelper;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.annotation.Resource;
@@ -34,22 +32,7 @@ public class BrushConfigController {
 	
 	@GetMapping("/list")
 	public Msg listBrushConfig(@RequestParam Map<String, String> params) {
-		Map<String, Integer> pageParams = Util.innitTablePages(params);
-		BrushConfigExample example = new BrushConfigExample();
-		String queryType = params.get("queryType");
-		String query = params.get("query");
-	 	Criteria criteria = example.createCriteria();
-		if (!Util.isNullorEmpty(params.get("order"))) {
-			example.setOrderByClause(Util.buildOrderByClause(params.get("order"), params.get("orderType")));
-		}
-		if (!Util.isNullorEmpty(queryType) && !Util.isNullorEmpty(query)) {
-			if ("groupName".equals(queryType)) {
-				criteria.andGroupNameLike("%" + query + "%");
-			}
-		}
-		PageHelper.startPage(pageParams.get("pageNum"), pageParams.get("pageSize"));
-		List<BrushConfig> list= brushConfigService.list(example);
-		return Msg.success(new DataPage<BrushConfig>(list));
+		return Msg.success(brushConfigService.listBrushConfigByQuery(params));
 	}
 	
 	@PostMapping("/add")

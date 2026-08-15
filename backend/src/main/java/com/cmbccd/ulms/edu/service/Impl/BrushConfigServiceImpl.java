@@ -1,14 +1,19 @@
 package com.cmbccd.ulms.edu.service.impl;
 
+import com.cmbccd.ulms.common.util.DataPage;
+import com.cmbccd.ulms.common.util.Util;
 import com.cmbccd.ulms.edu.dao.BrushConfigMapper;
 import com.cmbccd.ulms.edu.domain.BrushConfig;
 import com.cmbccd.ulms.edu.domain.BrushConfigExample;
+import com.cmbccd.ulms.edu.domain.BrushConfigExample.Criteria;
 import com.cmbccd.ulms.edu.service.BrushConfigService;
 import com.cmbccd.ulms.sys.service.PublicService;
+import com.github.pagehelper.PageHelper;
 import org.springframework.stereotype.Service;
 
 import jakarta.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class BrushConfigServiceImpl implements BrushConfigService {
@@ -22,6 +27,26 @@ public class BrushConfigServiceImpl implements BrushConfigService {
 	@Override
 	public List<BrushConfig> list(BrushConfigExample example) {
 		return brushConfigMapper.selectByExample(example);
+	}
+
+	@Override
+	public DataPage<BrushConfig> listBrushConfigByQuery(Map<String, String> params) {
+		Map<String, Integer> pageParams = Util.innitTablePages(params);
+		BrushConfigExample example = new BrushConfigExample();
+		String queryType = params.get("queryType");
+		String query = params.get("query");
+		Criteria criteria = example.createCriteria();
+		if (!Util.isNullorEmpty(params.get("order"))) {
+			example.setOrderByClause(Util.buildOrderByClause(params.get("order"), params.get("orderType")));
+		}
+		if (!Util.isNullorEmpty(queryType) && !Util.isNullorEmpty(query)) {
+			if ("groupName".equals(queryType)) {
+				criteria.andGroupNameLike("%" + query + "%");
+			}
+		}
+		PageHelper.startPage(pageParams.get("pageNum"), pageParams.get("pageSize"));
+		List<BrushConfig> list = brushConfigMapper.selectByExample(example);
+		return new DataPage<BrushConfig>(list);
 	}
 
 	@Override

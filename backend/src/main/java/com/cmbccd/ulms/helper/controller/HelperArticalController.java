@@ -9,12 +9,10 @@ import cn.dev33.satoken.annotation.SaMode;
 import cn.dev33.satoken.stp.StpUtil;
 import com.cmbccd.ulms.common.annotation.MyLog;
 import com.cmbccd.ulms.common.util.DataPage;
-import com.cmbccd.ulms.common.util.Util;
 import com.cmbccd.ulms.helper.domain.HelperArtical;
 import com.cmbccd.ulms.helper.domain.HelperArticalExample;
 import com.cmbccd.ulms.helper.service.HelperArticalService;
 import com.cmbccd.ulms.sys.domain.Msg;
-import com.github.pagehelper.PageHelper;
 
 import org.springframework.web.bind.annotation.*;
 
@@ -32,43 +30,8 @@ public class HelperArticalController {
     @GetMapping("/list")
     @SaCheckPermission(value = {"helper:artical:list:self", "helper:artical:list"}, mode = SaMode.OR)
     public Msg list(@RequestParam Map<String, String> params) {
-        String status = params.get("status");
-        String routeId = params.get("routeId");
-        String query = params.get("query");
-        String queryType = params.get("queryType");
-        Map<String, Integer> pageParams = Util.innitTablePages(params);
-        HelperArticalExample example = new HelperArticalExample();
-        HelperArticalExample.Criteria criteria = example.createCriteria();
-        HelperArticalExample.Criteria criteria2 = example.createCriteria();
-        if (StpUtil.hasPermission("helper:artical:list:self")) {
-            criteria.andInsertPloEqualTo(Util.userIdByShiro());
-            criteria2.andUpdatePloEqualTo(Util.userIdByShiro());
-        }
-        if (!Util.isNullorEmpty(params.get("order"))) {
-            example.setOrderByClause(Util.buildOrderByClause(params.get("order"), params.get("orderType")));
-        }
-        if(!Util.isNullorEmpty(routeId)) {
-            criteria.andRouteIdEqualTo(Integer.parseInt(routeId));
-            criteria2.andRouteIdEqualTo(Integer.parseInt(routeId));
-        }
-        if(!Util.isNullorEmpty(status)) {
-            criteria.andStatusEqualTo(Integer.parseInt(status));
-            criteria2.andStatusEqualTo(Integer.parseInt(status));
-        }
-        if(!Util.isNullorEmpty(query)){
-            if(Util.isNullorEmpty(queryType) || queryType.equals("keyword")){
-                criteria2.andTitleLike("%"+query+"%");
-                criteria.andKeyWordLike("%"+query+"%");
-            }else if(queryType.equals("content")) {
-                criteria2.andTitleLike("%"+query+"%");
-                criteria.andContentLike("%"+query+"%");
-            }
-            example.or(criteria2);
-        }
-
-        PageHelper.startPage(pageParams.get("pageNum"), pageParams.get("pageSize"));
-        List<HelperArtical> list = helperArticalService.listNoBlob(example);
-        return Msg.success(new DataPage<HelperArtical>(list));
+        boolean selfOnly = StpUtil.hasPermission("helper:artical:list:self");
+        return Msg.success(helperArticalService.listArticalByQuery(params, selfOnly));
     }
 
     @GetMapping("/font/list")
