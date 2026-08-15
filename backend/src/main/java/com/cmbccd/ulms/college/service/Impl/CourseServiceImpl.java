@@ -8,12 +8,17 @@ import com.cmbccd.ulms.college.domain.Teacher;
 import com.cmbccd.ulms.college.service.CourseFileService;
 import com.cmbccd.ulms.college.service.CourseService;
 import com.cmbccd.ulms.college.service.CourseTeacherService;
+import com.cmbccd.ulms.college.service.CourseTypeService;
+import com.cmbccd.ulms.college.service.TeachGroupService;
+import com.cmbccd.ulms.common.util.DataPage;
 import com.cmbccd.ulms.common.util.Util;
 import com.cmbccd.ulms.sys.service.PublicService;
+import com.github.pagehelper.PageHelper;
 import org.springframework.stereotype.Service;
 
 import jakarta.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,6 +35,12 @@ public class CourseServiceImpl implements CourseService {
     @Resource
     private PublicService publicService;
 
+    @Resource
+    private TeachGroupService teachGroupService;
+
+    @Resource
+    private CourseTypeService courseTypeService;
+
     @Override
     public List<Course> list(CourseExample example) {
         List<Course> courses = courseMapper.selectByExample(example);
@@ -40,6 +51,64 @@ public class CourseServiceImpl implements CourseService {
             item.setLecturer(teacher.get(0).getPloName());
         }
         return courses;
+    }
+
+    @Override
+    public DataPage<Course> listCourseByUser(Map<String, String> params, String userId) {
+        Map<String, Integer> pageParams = Util.innitTablePages(params);
+        String courseType = params.get("courseType");
+        String queryType = params.get("queryType");
+        String query = params.get("query");
+        CourseExample example = new CourseExample();
+        CourseExample.Criteria criteria = example.createCriteria();
+        if (!Util.isNullorEmpty(params.get("order"))) {
+            example.setOrderByClause(Util.buildOrderByClause(params.get("order"), params.get("orderType")));
+        }
+        if (!Util.isNullorEmpty(query)) {
+            if ("courseName".equals(queryType)) {
+                criteria.andCourseNameLike("%" + query + "%");
+            } else if ("lecturer".equals(queryType)) {
+                criteria.andLecturerEqualTo(query);
+            }
+        }
+        String today = Util.getDateToday();
+        criteria.andStatusEqualTo((short) 1);
+        criteria.andBegDateLessThanOrEqualTo(today);
+        criteria.andEndDateGreaterThanOrEqualTo(today);
+        // 获取授课对象
+        criteria.andTeachObjectIn(teachGroupService.listGroupNameByPloNum(userId));
+        if (!Util.isNullorEmpty(courseType)) {
+            List<Integer> ids = courseTypeService.getChiledIds(Integer.parseInt(courseType));
+            criteria.andCourseTypeIn(ids.stream().map(e -> e.shortValue()).collect(Collectors.toList()));
+        }
+        PageHelper.startPage(pageParams.get("pageNum"), pageParams.get("pageSize"));
+        List<Course> list = list(example);
+        return new DataPage<Course>(list);
+    }
+
+    @Override
+    public DataPage<Course> listCourseByAdmin(Map<String, String> params) {
+        Map<String, Integer> pageParams = Util.innitTablePages(params);
+        String query = params.get("query");
+        String status = params.get("status");
+        CourseExample example = new CourseExample();
+        CourseExample.Criteria criteria = example.createCriteria();
+        if (!Util.isNullorEmpty(params.get("order"))) {
+            example.setOrderByClause(Util.buildOrderByClause(params.get("order"), params.get("orderType")));
+        }
+        if (!Util.isNullorEmpty(query)) {
+            if (query.length() == 13) {
+                criteria.andCourseIdEqualTo(query);
+            } else {
+                criteria.andCourseNameLike("%" + query + "%");
+            }
+        }
+        if (!Util.isNullorEmpty(status)) {
+            criteria.andStatusEqualTo(Short.parseShort(status));
+        }
+        PageHelper.startPage(pageParams.get("pageNum"), pageParams.get("pageSize"));
+        List<Course> list = listWithClob(example);
+        return new DataPage<Course>(list);
     }
 
     @Override

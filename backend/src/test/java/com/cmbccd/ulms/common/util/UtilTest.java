@@ -75,6 +75,14 @@ public class UtilTest {
     }
 
     @Test
+    void buildOrderByClauseOrderTypeTrimAndCase() {
+        assertEquals("data_time desc", Util.buildOrderByClause("dataTime", " DESC "));
+        assertEquals("data_time asc", Util.buildOrderByClause("dataTime", " Asc "));
+        assertEquals("data_time asc", Util.buildOrderByClause("dataTime", ""));
+        assertNull(Util.buildOrderByClause("dataTime", "random"));
+    }
+
+    @Test
     void isValidSqlIdentifierDetection() {
         assertTrue(Util.isValidSqlIdentifier("CUS_FLOW_CASE"));
         assertTrue(Util.isValidSqlIdentifier("case_id"));

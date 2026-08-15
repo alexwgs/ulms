@@ -42,7 +42,7 @@
 ### P3 类型与测试体系（可扩展 + 可测试）
 - [x] 建立 CI（.github/workflows/ci.yml：后端 mvn test + 前端 lint + build，push/PR 触发）
 - [~] 前端渐进 TS 化（第一步：tsconfig.json + src/types/api.d.ts 定义 ApiResponse/DataPage/PageQuery/DictionaryItem 类型契约，checkJs 关闭、不破坏存量 JS；后续 api 模块/store 逐步启用类型）
-- [~] 后端 Service 层单元测试：新增 MenuServiceImplTest（4 用例，覆盖 findMenuPermissionChild 的 Integer 比较修复、status 过滤、children 装配），总计 19 测试全绿；其余核心 Service（FlowCase/QuesBank/Case）的 Mockito 单测待补
+- [~] 后端 Service 层单元测试：新增 MenuServiceImplTest（4 用例）、DictionaryServiceImplTest + PublicServiceImplTest（Mockito，验证跨模块 DAO 收口正确委托 mapper）、UtilTest buildOrderByClause 边界测试（orderType trim/大小写），总计 22 测试全绿；其余核心 Service（FlowCase/QuesBank/Case）的 Mockito 单测待补
 
 ## 已完成
 - [x] 密码迁移 BCrypt（PasswordUtil + 透明升级）
@@ -73,8 +73,8 @@
 - 前端 `npm run lint`：0 error（1980 warning 为可逐步收敛的风格提示）
 
 ### 剩余结构性重构（建议下一阶段继续）
-1. 前端 CRUD 样板抽取（useCrudPage）
-2. 后端 Controller 业务下沉 Service（college/flow 试点）
+1. 前端 CRUD 样板抽取（已建 useCrudPage hook + quickUrl 试点改造完成：列表/分页/删除收敛到 useCrudPage，表单弹窗保留页面；user/role 等其余 CRUD 页待推广）
+2. 后端 Controller 业务下沉 Service（college 试点：CourseController 的 listCourse/listCourseByAdmin 下沉到 CourseService；edu 试点：QuesBankController 的 drawQuestionByLibCodes 抽题逻辑下沉到 BrushScoreService.drawQuestion；flow 等其他 Controller 待推广）
 3. 后端 DataCache 静态 Map / WebSocketServer.state 收敛
 4. 前端渐进 TS 化深入（api 模块 → store → router meta 逐步启用类型）
 5. db TableController sync/update 权限（需前端菜单配合确认权限码）

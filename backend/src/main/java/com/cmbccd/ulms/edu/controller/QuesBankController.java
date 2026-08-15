@@ -19,10 +19,8 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 @RestController
 @RequestMapping("edu/quesBank")
 public class QuesBankController {
@@ -88,29 +86,12 @@ public class QuesBankController {
 		if (Util.isNullorEmpty(userId)) {
 			return Msg.error("登录信息失败！");
 		}
-		String[] libCode = record.getLibCode().split(",");
-		List<String> libCodes = Arrays.asList(libCode);
-		List<String> quesCodes = questionService.getQuestion(libCodes, userId);
-		if (quesCodes.isEmpty())
-			return Msg.error("没有在题库中找到题目~");
-		Random random = new Random();
-		int examCodeIndex = random.nextInt(quesCodes.size());
-		QuesBank question = questionService.getNoSensitive(quesCodes.get(examCodeIndex));
-		int brushCount = brushScoreService.dayBrushCount(Util.getDateToday(),userId);
-		if(brushCount >= record.getDayLimit()) {
-			return Msg.error("您今日刷题数已满，休息一下吧~明天再来~");
+		try {
+			BrushScore brushScore = brushScoreService.drawQuestion(record.getLibCode(), userId, record.getDayLimit());
+			return Msg.success(brushScore);
+		} catch (IllegalArgumentException e) {
+			return Msg.error(e.getMessage());
 		}
-		if (Util.isNullorEmpty(question))
-			return Msg.error("休息一下吧~明天再来~");
-		// 首先插入答题数据，并将答题
-		BrushScore brushScore = new BrushScore();
-		brushScore.setQuesCode(question.getQuesCode());
-		brushScore.setLibCode(question.getLibCode());
-		brushScore = brushScoreService.createBrushScore(brushScore);
-		if (Util.isNullorEmpty(brushScore))
-			return Msg.error("获取题目失败啦~");
-		brushScore.setQuestion(question);
-		return Msg.success(brushScore);
 	}
 
 	@PutMapping("/transfer/{libCode}")

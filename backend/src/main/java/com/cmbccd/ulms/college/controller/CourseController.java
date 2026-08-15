@@ -5,13 +5,10 @@ import com.cmbccd.ulms.college.domain.CourseExample;
 import com.cmbccd.ulms.college.domain.Teacher;
 import com.cmbccd.ulms.college.service.CourseService;
 import com.cmbccd.ulms.college.service.CourseTeacherService;
-import com.cmbccd.ulms.college.service.CourseTypeService;
 import com.cmbccd.ulms.college.service.TeachGroupService;
 import com.cmbccd.ulms.common.annotation.MyLog;
-import com.cmbccd.ulms.common.util.DataPage;
 import com.cmbccd.ulms.common.util.Util;
 import com.cmbccd.ulms.sys.domain.Msg;
-import com.github.pagehelper.PageHelper;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import org.springframework.web.bind.annotation.*;
@@ -27,8 +24,6 @@ public class CourseController {
     @Resource
     private CourseService courseService;
     @Resource
-    private CourseTypeService courseTypeService;
-    @Resource
     private CourseTeacherService courseTeacherService;
     @Resource
     private TeachGroupService teachGroupService;
@@ -41,35 +36,7 @@ public class CourseController {
     @GetMapping("")
     public Msg ListCourse(@RequestParam Map<String, String> params) {
         String userId = Util.userIdByShiro();
-        Map<String, Integer> pageParams = Util.innitTablePages(params);
-        String courseType = params.get("courseType");
-        String queryType = params.get("queryType");
-        String query = params.get("query");
-        CourseExample example = new CourseExample();
-        CourseExample.Criteria criteria = example.createCriteria();
-        if (!Util.isNullorEmpty(params.get("order"))) {
-            example.setOrderByClause(Util.buildOrderByClause(params.get("order"), params.get("orderType")));
-        }
-        if (!Util.isNullorEmpty(query)) {
-            if("courseName".equals(queryType)) {
-                criteria.andCourseNameLike("%"+query+"%");
-            }else if ("lecturer".equals(queryType)){
-                criteria.andLecturerEqualTo(query);
-            }
-        }
-        String today = Util.getDateToday();
-        criteria.andStatusEqualTo((short)1);
-        criteria.andBegDateLessThanOrEqualTo(today);
-        criteria.andEndDateGreaterThanOrEqualTo(today);
-        // 获取授课对象
-        criteria.andTeachObjectIn(teachGroupService.listGroupNameByPloNum(userId));
-        if (!Util.isNullorEmpty(courseType)) {
-            List<Integer> ids = courseTypeService.getChiledIds(Integer.parseInt(courseType));
-            criteria.andCourseTypeIn(ids.stream().map(e -> e.shortValue()).collect(Collectors.toList()));
-        }
-        PageHelper.startPage(pageParams.get("pageNum"), pageParams.get("pageSize"));
-        List<Course> list = courseService.list(example);
-        return Msg.success(new DataPage<Course>(list));
+        return Msg.success(courseService.listCourseByUser(params, userId));
     }
     /**
      * 管理 - 课程列表
@@ -79,29 +46,7 @@ public class CourseController {
     @GetMapping("/list")
     @SaCheckPermission("college:course:list")
     public Msg ListCourseByAdmin(@RequestParam Map<String, String> params) {
-        Map<String, Integer> pageParams = Util.innitTablePages(params);
-        // String courseType = params.get("courseType");
-        // String queryType = params.get("queryType");
-        String query = params.get("query");
-        String status = params.get("status");
-        CourseExample example = new CourseExample();
-        CourseExample.Criteria criteria = example.createCriteria();
-        if (!Util.isNullorEmpty(params.get("order"))) {
-            example.setOrderByClause(Util.buildOrderByClause(params.get("order"), params.get("orderType")));
-        }
-        if (!Util.isNullorEmpty(query)) {
-            if(query.length() == 13) {
-                criteria.andCourseIdEqualTo(query);
-            }else{
-                criteria.andCourseNameLike("%"+query+"%");
-            }
-        }
-        if(!Util.isNullorEmpty(status)) {
-            criteria.andStatusEqualTo(Short.parseShort(status));
-        }
-        PageHelper.startPage(pageParams.get("pageNum"), pageParams.get("pageSize"));
-        List<Course> list = courseService.listWithClob(example);
-        return Msg.success(new DataPage<Course>(list));
+        return Msg.success(courseService.listCourseByAdmin(params));
     }
 
 

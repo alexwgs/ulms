@@ -72,7 +72,7 @@
         <template #default="scope">
           <t-button variant="outline" size="small" theme="default" @click="handleEdit(scope.$index, scope.row)"
            >编辑</t-button>
-          <t-button variant="outline" size="small" theme="danger" @click="handleDelete(scope.$index, scope.row)"
+          <t-button variant="outline" size="small" theme="danger" @click="handleDelete(scope.row)"
            >删除</t-button>
         </template>
       </TableColumn>
@@ -141,29 +141,43 @@
 
 <script setup>
 import { MessagePlugin } from 'tdesign-vue-next'
-const uploadHeaders = { Authorization: localStorage.getItem('token') || '' }
 import { ref, reactive, onMounted } from 'vue'
 import { quickUrlApi } from '@/api/system/quickUrl'
 import { useDictStore } from '@/stores'
-import { usePagination } from '@/hooks/usePagination'
-import { useConfirm } from '@/hooks/useConfirm'
+import { useCrudPage } from '@/hooks/useCrudPage'
+
+const uploadHeaders = { Authorization: localStorage.getItem('token') || '' }
 
 const dictStore = useDictStore()
-const list = ref([])
 const fsURL = import.meta.env.VITE_FILE_BASE_URL
 // 展示类文件统一走 HTTPS 文件管理地址，避免混合内容被浏览器拦截
 const displayURL = import.meta.env.VITE_FILE_BASE_URL || fsURL
-const queryInfo = reactive({
-  orderType: ' desc',
-  order: ' sort ',
-  querytype: '',
-  query: '',
-  area: '',
-  status: '-1',
-  pageSize: 20,
-  pageNum: 1
+
+const {
+  list,
+  total,
+  query: queryInfo,
+  currentPage,
+  pageSizes,
+  handleCurrentChange,
+  handleSizeChange,
+  load: getQuickUrlList,
+  remove: handleDelete
+} = useCrudPage({
+  fetchList: (q) => quickUrlApi.listQuickUrl(q),
+  defaultQuery: {
+    orderType: ' desc',
+    order: ' sort ',
+    querytype: '',
+    query: '',
+    area: '',
+    status: '-1',
+    pageSize: 20,
+    pageNum: 1
+  },
+  deleteApi: (row) => quickUrlApi.deleteQuickUrl(row),
+  pageSizes: [20, 100, 500]
 })
-const total = ref(0)
 const quickUrlForm = reactive({
   id: '',
   name: '',
@@ -207,13 +221,6 @@ onMounted(() => {
   getQuickUrlList()
 })
 
-const getQuickUrlList = async () => {
-  const res = await quickUrlApi.listQuickUrl(queryInfo)
-  if (res.code !== 200) return MessagePlugin.error(res.msg)
-  list.value = res.data.list
-  total.value = res.data.total
-}
-
 const handleEdit = (index, row) => {
   dialogTitle.value = '修改免登陆快链'
   dialogFormVisible.value = true
@@ -230,15 +237,6 @@ const handleEdit = (index, row) => {
     area: row.area
   })
   iconUrlList.value = [{ name: 'icon.png', url: displayURL + row.iconUrl }]
-}
-
-const handleDelete = async (index, row) => {
-  const ok = await confirm('此操作将永久删除该记录, 是否继续?')
-  if (!ok) return
-  const res = await quickUrlApi.deleteQuickUrl(row)
-  if (res.code !== 200) return MessagePlugin.error(res.msg)
-  MessagePlugin.success(res.msg)
-  getQuickUrlList()
 }
 
 const addStation = () => {
@@ -286,12 +284,10 @@ const dialogFormSubmit = async () => {
 }
 
 const tableSort = ({ sortBy, descending }) => {
-  queryInfo.orderType = !descending ? ' asc ' : ' desc '
-  queryInfo.order = sortBy
+  queryInfo.value.orderType = !descending ? ' asc ' : ' desc '
+  queryInfo.value.order = sortBy
   getQuickUrlList()
 }
-const { currentPage, pageSizes, handleCurrentChange, handleSizeChange } = usePagination({ query: queryInfo, fetch: getQuickUrlList, pageSizes: [20, 100, 500] })
-const { confirm } = useConfirm()
 </script>
 
 <style lang="less" scoped>

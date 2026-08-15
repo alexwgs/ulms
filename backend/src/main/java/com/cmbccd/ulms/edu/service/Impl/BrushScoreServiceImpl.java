@@ -20,9 +20,11 @@ import com.cmbccd.ulms.sys.domain.Employee;
 import org.springframework.stereotype.Service;
 
 import jakarta.annotation.Resource;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Random;
 
 @Service
 public class BrushScoreServiceImpl implements BrushScoreService{
@@ -124,6 +126,33 @@ public class BrushScoreServiceImpl implements BrushScoreService{
 		int count = brushScoreMapper.updateByPrimaryKeySelective(record);
 		if(count < 1) return null;
 		return record;
+	}
+
+	@Override
+	public BrushScore drawQuestion(String libCode, String userId, Integer dayLimit) {
+		List<String> libCodes = Arrays.asList(libCode.split(","));
+		List<String> quesCodes = quesBankService.getQuestion(libCodes, userId);
+		if (quesCodes.isEmpty()) {
+			throw new IllegalArgumentException("没有在题库中找到题目~");
+		}
+		int index = new Random().nextInt(quesCodes.size());
+		QuesBank question = quesBankService.getNoSensitive(quesCodes.get(index));
+		int brushCount = this.dayBrushCount(Util.getDateToday(), userId);
+		if (brushCount >= dayLimit) {
+			throw new IllegalArgumentException("您今日刷题数已满，休息一下吧~明天再来~");
+		}
+		if (Util.isNullorEmpty(question)) {
+			throw new IllegalArgumentException("休息一下吧~明天再来~");
+		}
+		BrushScore brushScore = new BrushScore();
+		brushScore.setQuesCode(question.getQuesCode());
+		brushScore.setLibCode(question.getLibCode());
+		brushScore = this.createBrushScore(brushScore);
+		if (Util.isNullorEmpty(brushScore)) {
+			throw new IllegalArgumentException("获取题目失败啦~");
+		}
+		brushScore.setQuestion(question);
+		return brushScore;
 	}
 
 	private static final java.util.Set<String> ALLOWED_ORDER_COLUMNS = new java.util.HashSet<>(

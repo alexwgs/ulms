@@ -28,6 +28,8 @@ public interface BrushScoreService {
 	int monthBrushCount(String dataDate, String ploNum);
 	
 	BrushScore submitAnswer(BrushScore record);
+
+	BrushScore drawQuestion(String libCode, String userId, Integer dayLimit);
 	
 	List<BrushScore> listWrongQuestion(String userId);
 	
