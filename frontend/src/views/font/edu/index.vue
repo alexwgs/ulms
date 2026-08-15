@@ -32,12 +32,12 @@
 
 <style lang="less" scoped>
 .home-container {
-background-color: #0c717d;
+  background-color: #0c717d;
   color: rgb(255, 255, 255);
   height: 100vh;
   min-height: 600px;
   margin: 0;
-  z-index: -999;
+  z-index: 1;
 }
 
 .logo {
@@ -48,7 +48,6 @@ background-color: #0c717d;
 
 .nav {
   padding-top: 10px;
-  width: 610px;
   display: inline-block;
   position: fixed;
   right: 100px;
@@ -72,8 +71,8 @@ background-color: #0c717d;
 
 .left-sticks {
   position: absolute;
--image: url(../../../assets/img/edu/left-sticks.png);
--size: 100% 100%;
+  background-image: url(../../../assets/img/edu/left-sticks.png);
+  background-size: 100% 100%;
   left: 10%;
   top: 40px;
   width: 200px;
@@ -82,8 +81,8 @@ background-color: #0c717d;
 
 .right-sticks {
   position: absolute;
--image: url(../../../assets/img/edu/right-sticks.png);
--size: 100% 100%;
+  background-image: url(../../../assets/img/edu/right-sticks.png);
+  background-size: 100% 100%;
   right: 0;
   top: 30px;
   width: 250px;
@@ -94,8 +93,8 @@ background-color: #0c717d;
   position: absolute;
   width: 100%;
   bottom: 0px;
--image: url(../../../assets/img/edu/bottom.png);
--size: 100% 100%;
+  background-image: url(../../../assets/img/edu/bottom.png);
+  background-size: 100% 100%;
   height: 200px;
 }
 
