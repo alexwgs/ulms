@@ -42,7 +42,7 @@
 ### P3 类型与测试体系（可扩展 + 可测试）
 - [x] 建立 CI（.github/workflows/ci.yml：后端 mvn test + 前端 lint + build，push/PR 触发）
 - [~] 前端渐进 TS 化（第一步：tsconfig.json + src/types/api.d.ts 定义 ApiResponse/DataPage/PageQuery/DictionaryItem 类型契约，checkJs 关闭、不破坏存量 JS；第二步：api/system/role.js → role.ts，带 ApiResponse/DataPage/PageQuery/Role 类型契约；后续 api 模块/store 逐步启用类型）
-- [~] 后端 Service 层单元测试：MenuServiceImplTest（4）、DictionaryServiceImplTest + PublicServiceImplTest（Mockito 委托）、RoleListServiceImplTest（4，增删改空值保护）、OperLogServiceImplTest（报表委托 mapper）、QuesBankServiceImplTest（6，单选/多选判分与空答案保护）、CaseServiceImplTest（2，无未结案空结果保护）、FlowCaseServiceImplTest（1，报表 flowId 空入参保护）、UtilTest buildOrderByClause 边界测试，总计 36 测试全绿；其余核心 Service 的 Mockito 单测可继续补
+- [~] 后端 Service 层单元测试：MenuServiceImplTest（4）、DictionaryServiceImplTest + PublicServiceImplTest（Mockito 委托）、RoleListServiceImplTest（4，增删改空值保护）、OperLogServiceImplTest（报表委托 mapper）、QuesBankServiceImplTest（6，单选/多选判分与空答案保护）、CaseServiceImplTest（2，无未结案空结果保护）、FlowCaseServiceImplTest（1，报表 flowId 空入参保护）、StudyLogServiceImplTest（7，课程完成判定分支）、UtilTest buildOrderByClause 边界测试，总计 43 测试全绿；其余核心 Service 的 Mockito 单测可继续补
 
 ## 已完成
 - [x] 密码迁移 BCrypt（PasswordUtil + 透明升级）
@@ -68,7 +68,7 @@
 - **P3 类型与测试体系**：🔄 约 65%（CI 建立、TS 起步 + 类型契约 + 首个 api 模块 role.ts、26 单元测试含 Mockito；其余核心 Service 单测、完整 TS 化待做）
 
 ### 验证结论（全绿）
-- 后端 `mvn test`：36 用例全绿
+- 后端 `mvn test`：43 用例全绿
 - 前端 `npm run build:dev`：构建成功
 - 前端 `npm run lint`：0 error（1980 warning 为可逐步收敛的风格提示）
 
