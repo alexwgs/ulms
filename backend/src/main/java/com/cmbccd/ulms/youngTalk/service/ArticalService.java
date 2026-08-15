@@ -1,9 +1,11 @@
 package com.cmbccd.ulms.youngTalk.service;
 
+import com.cmbccd.ulms.common.util.DataPage;
 import com.cmbccd.ulms.youngTalk.domain.Artical;
 import com.cmbccd.ulms.youngTalk.domain.ArticalExample;
 
 import java.util.List;
+import java.util.Map;
 /**
  * 
 * <p>Title: ArticalService.java</p>  
@@ -14,6 +16,8 @@ import java.util.List;
  */
 public interface ArticalService {
 	public List<Artical> selectByExampleNoContent(ArticalExample example);
+
+	public DataPage<Artical> listCategoryByQuery(Map<String, String> params);
 	
 	public List<Artical> selectByExampleWithContent(ArticalExample example);
 	
