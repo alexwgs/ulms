@@ -76,7 +76,7 @@
 1. 前端 CRUD 样板抽取（useCrudPage hook + quickUrl/role/user/quickMemo/dictionary/ad/station/errorLog/userFiles/statusType 已改造；其余 CRUD 页如 dailyConfig/operLog 等可继续推广）
 2. 后端 Controller 业务下沉 Service（college：CourseController/TeachGroup/CourseTeacher/Evaluate、edu：QuesBankController/BrushScoreService/ExamInfo/DailyConfig/BrushConfig、sys：QuickUrl/Dictionary/Ad/ErrorLog/UserFiles/OperLog、oht：StatusType/OhtRole/RoleList/QuickMemo、helper：HelperArtical、flow：FlowProxy、youngTalk：Message/Collect/Answer/Comment 已完成；youngTalk Artical 及 DailyScore 报表等复杂查询待推广）
 3. ~~后端 DataCache 静态 Map / WebSocketServer.state 收敛~~（已完成）
-4. 前端渐进 TS 化深入（api 模块 role.ts 已启用类型；其余 api 模块 → store → router meta 逐步启用类型）
+4. 前端渐进 TS 化深入（api 模块 role.ts、dictionary.ts 已启用类型；其余 api 模块 → store → router meta 逐步启用类型）
 5. db TableController sync/update 权限（需前端菜单配合确认权限码）
 6. Artical→Article 拼写纠正（涉及前后端 API 契约，专项）
 7. 其余核心 Service（FlowCase/QuesBank/Case）的 Mockito 单测
