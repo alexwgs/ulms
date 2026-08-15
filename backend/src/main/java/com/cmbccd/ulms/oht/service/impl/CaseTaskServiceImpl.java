@@ -35,8 +35,8 @@ public class CaseTaskServiceImpl implements CaseTaskService {
 		if (count > 0) {
 			return 0;
 		}
-		Employee user = DataCache.EMPLOYEE.get(userId);
-		Employee buildUser = DataCache.EMPLOYEE.get(buildId);
+		Employee user = DataCache.getEmployees().get(userId);
+		Employee buildUser = DataCache.getEmployees().get(buildId);
 		CaseTask record = new CaseTask();
 		record.setId(Util.getShortUuid());
 		record.setCaseId(caseId);
@@ -100,7 +100,7 @@ public class CaseTaskServiceImpl implements CaseTaskService {
 	public List<CaseTask> selectTaskByCaseId(String caseId) {
 		List<CaseTask> list = caseTaskMapper.selectTsakByCaseId(caseId);
 		for (CaseTask item : list) {
-			Employee emp = DataCache.EMPLOYEE.get(item.getUserId());
+			Employee emp = DataCache.getEmployees().get(item.getUserId());
 			item.setUserId(emp.getPloName() + "/" + item.getUserId());
 			item.setDeptNum(emp.getDeptName());
 			item.setGroupNum(emp.getGroupName());
@@ -112,7 +112,7 @@ public class CaseTaskServiceImpl implements CaseTaskService {
 	public List<CaseTaskReport> selectTsaksByDate(String begDate, String endDate) {
 		List<CaseTaskReport> list = caseTaskMapper.selectTsaksByDate(begDate, endDate);
 		for (CaseTaskReport item : list) {
-			Employee emp = DataCache.EMPLOYEE.get(item.getUserId());
+			Employee emp = DataCache.getEmployees().get(item.getUserId());
 			item.setUserName(emp.getPloName());
 			item.setDeptNum(emp.getDeptName());
 			item.setGroupNum(emp.getGroupName());

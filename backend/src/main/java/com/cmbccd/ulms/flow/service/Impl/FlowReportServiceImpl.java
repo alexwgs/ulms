@@ -67,7 +67,7 @@ public class FlowReportServiceImpl implements FlowReportService {
             for (FlowTable item : cols) {
                 if ("1".equals(item.getDictType())) {
                     String userId = e.get("PLO_NUM") != null ? e.get("PLO_NUM").toString() : "";
-                    Employee user = DataCache.EMPLOYEE.get(userId);
+                    Employee user = DataCache.getEmployees().get(userId);
                     if (user != null) {
                         row.add(user.getPloNum());
                         row.add(user.getPloName());
@@ -81,7 +81,7 @@ public class FlowReportServiceImpl implements FlowReportService {
                     }
                 } else if ("2".equals(item.getDictType())) {
                     String code = e.get(item.getColName()) != null ? e.get(item.getColName()).toString() : "";
-                    List<Dictionary> dicts = DataCache.Dict.stream().filter(t -> t.getName().equals(item.getDictName()) && t.getCode().equals(code)).collect(Collectors.toList());
+                    List<Dictionary> dicts = DataCache.getDicts().stream().filter(t -> t.getName().equals(item.getDictName()) && t.getCode().equals(code)).collect(Collectors.toList());
                     if (dicts.size() > 0) {
                         row.add(dicts.get(0).getCodeval());
                     } else {

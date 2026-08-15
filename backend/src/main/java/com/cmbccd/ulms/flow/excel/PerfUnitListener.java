@@ -38,12 +38,12 @@ public class PerfUnitListener extends AnalysisEventListener<Map<Integer, String>
             this.msg = Msg.error("员工编号不能为空！");
             return;
         }
-        if(!DataCache.EMPLOYEE.get(ploNum).getPloName().equals(ploName)) {
+        if(!DataCache.getEmployees().get(ploNum).getPloName().equals(ploName)) {
             this.msg = Msg.error("员工编号与姓名不匹配！");
             return;
         }
         // 获取单元名称
-        Dictionary dict = DataCache.Dict.stream().filter(item -> "bpms_perf_unit".equals(item.getName()) && item.getCodeval().equals(perfUnit)).findFirst().get();
+        Dictionary dict = DataCache.getDicts().stream().filter(item -> "bpms_perf_unit".equals(item.getName()) && item.getCodeval().equals(perfUnit)).findFirst().get();
         if(Util.isNullorEmpty(dict)) {
             this.msg = Msg.error("考核单元名称不正确！");
             return;

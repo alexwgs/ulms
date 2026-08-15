@@ -93,7 +93,7 @@ public class MessageHandle {
 	 * 案件状态变更后调用，确保在线列表中的用户状态实时同步。
 	 */
 	private static void refreshUserCaseAndBroadcast(String userId) {
-		InitUser user = WebSocketServer.state.getUser(userId);
+		InitUser user = WebSocketServer.getState().getUser(userId);
 		if (user == null || user.getOhtRole() == null) return;
 
 		Case unfinishCase;
@@ -104,14 +104,14 @@ public class MessageHandle {
 		}
 		if (unfinishCase != null) {
 			if (unfinishCase.getBuildId() != null) {
-				unfinishCase.setBuildUser(DataCache.EMPLOYEE.get(unfinishCase.getBuildId()));
+				unfinishCase.setBuildUser(DataCache.getEmployees().get(unfinishCase.getBuildId()));
 			}
 			if (unfinishCase.getPickId() != null) {
-				unfinishCase.setPickUser(DataCache.EMPLOYEE.get(unfinishCase.getPickId()));
+				unfinishCase.setPickUser(DataCache.getEmployees().get(unfinishCase.getPickId()));
 			}
 		}
 		user.setUnfinishCase(unfinishCase);
-		WebSocketServer.state.putUser(userId, user);
+		WebSocketServer.getState().putUser(userId, user);
 		WebSocketServer.boardcastAsync(
 				MsgTemplate.success("oht", "system", "update").add("data", user), null);
 	}
@@ -128,23 +128,23 @@ public class MessageHandle {
 		log.info("ws:" + msg);
 		JSONObject jsonMsg = JSONObject.parseObject(msg, Feature.DisableFieldSmartMatch);
 		log.info("jsonMsg:" + jsonMsg);
-		InitUser iUser = WebSocketServer.state.getUser(userId);
+		InitUser iUser = WebSocketServer.getState().getUser(userId);
 		if ("oht".equals(jsonMsg.getString("modal"))) {
 			if ("message".equals(jsonMsg.getString("type"))) {
 				OhtMsgTemplate ohtMsg = new OhtMsgTemplate();
-				String roomName = WebSocketServer.state.getUserRoom(userId);
+				String roomName = WebSocketServer.getState().getUserRoom(userId);
 				// 获取room中的其他用户
 				if (Util.isNullorEmpty(WebSocketServer.isRoomExist(roomName))) {
 					return;
 				}
-				for (String revUserId : WebSocketServer.state.getRoomMembers(roomName)) {
+				for (String revUserId : WebSocketServer.getState().getRoomMembers(roomName)) {
 					if (revUserId.equals(userId)) {
 						ohtMsg.setDirection(1);
 					} else {
 						ohtMsg.setDirection(2);
 					}
 
-					InitUser revUser = WebSocketServer.state.getUser(revUserId);
+					InitUser revUser = WebSocketServer.getState().getUser(revUserId);
 					ohtMsg.setSendId(userId);
 					ohtMsg.setSendName(iUser.getUser().getPloName());
 					ohtMsg.setRevId(revUserId);
@@ -226,7 +226,7 @@ public class MessageHandle {
 				if ("build".equals(action)) {
 					Case ohtCase = this.caseService.insertNewCase(userId, command.getInteger("caseType"),
 							iUser.getStation().getExtnNum());
-					WebSocketServer.state.setWaittingCase(this.caseService.getHelpWaitCase());
+					WebSocketServer.getState().setWaittingCase(this.caseService.getHelpWaitCase());
 					// 设置将用户接单状态修改为1-等待接单
 					// User.setOrderStatus(1);
 					// 返回提示当前已成功建立订单，提示前端变更状态
@@ -234,11 +234,11 @@ public class MessageHandle {
 							userId);
 					// 将案件发送给所有在线业务主任，将提醒安排在客户端判断
 					WebSocketServer.boardcastToDirectors(
-							MsgTemplate.success("oht", "command", "help").add("cases", WebSocketServer.state.getWaittingCase()),
+							MsgTemplate.success("oht", "command", "help").add("cases", WebSocketServer.getState().getWaittingCase()),
 							null);
 					fileRecord.writeChatRecordFile(ohtCase.getCaseId(),
 							JSON.toJSONString(MsgTemplate.success("oht", "command", "newCase").add("case", ohtCase)));
-					WebSocketServer.state.setWaittingCase(this.caseService.getHelpWaitCase());
+					WebSocketServer.getState().setWaittingCase(this.caseService.getHelpWaitCase());
 					// 将用户所在房间调换至CaseId的房间
 					WebSocketServer.roomChange(userId, ohtCase.getCaseId());
 					// 刷新求助者的未结案件，广播在线列表状态变更
@@ -277,9 +277,9 @@ public class MessageHandle {
 						WebSocketServer.sendMessage(MsgTemplate.success("oht", "error", "案件取消失败，请确认此案件是否已经被接起！"),
 								userId);
 					}
-					WebSocketServer.state.setWaittingCase(this.caseService.getHelpWaitCase());
+					WebSocketServer.getState().setWaittingCase(this.caseService.getHelpWaitCase());
 					WebSocketServer.boardcastToDirectors(
-							MsgTemplate.success("oht", "command", "help").add("cases", WebSocketServer.state.getWaittingCase()),
+							MsgTemplate.success("oht", "command", "help").add("cases", WebSocketServer.getState().getWaittingCase()),
 							null);
 					// 求助者取消案件，清除其未结案件缓存并广播
 					refreshUserCaseAndBroadcast(userId);
@@ -299,8 +299,8 @@ public class MessageHandle {
 						ohtCase.setPickExtn(iUser.getStation().getExtnNum());
 						ohtCase.setWaitTime(ohtCase.getPickTime() - ohtCase.getBuildTime());
 						ohtCase.setCaseStatus(2);
-						ohtCase.setBuildUser(DataCache.EMPLOYEE.get(ohtCase.getBuildId()));
-						ohtCase.setPickUser(DataCache.EMPLOYEE.get(ohtCase.getPickId()));
+						ohtCase.setBuildUser(DataCache.getEmployees().get(ohtCase.getBuildId()));
+						ohtCase.setPickUser(DataCache.getEmployees().get(ohtCase.getPickId()));
 						count = this.caseService.updateCaseBySelective(ohtCase);
 					}
 					if (count > 0) {
@@ -317,7 +317,7 @@ public class MessageHandle {
 						WebSocketServer.roomChange(userId, ohtCase.getCaseId());
 						WebSocketServer.sendMessageByRoom(
 								MsgTemplate.success("oht", "command", "linked").add("case", ohtCase),
-								WebSocketServer.state.getUserRoom(userId), null);
+								WebSocketServer.getState().getUserRoom(userId), null);
 						new ChatRecordFile().writeChatRecordFile(ohtCase.getCaseId(), JSON
 								.toJSONString(MsgTemplate.success("oht", "command", "linked").add("case", ohtCase)));
 						// 接单成功后刷新接单者和求助者的未结案件，广播在线列表状态变更
@@ -329,9 +329,9 @@ public class MessageHandle {
 					}
 					WebSocketServer.boardcastToDirectors(
 							MsgTemplate.success("oht", "command", "cancel").add("caseId", ohtCase.getCaseId()), userId);
-					WebSocketServer.state.setWaittingCase(this.caseService.getHelpWaitCase());
+					WebSocketServer.getState().setWaittingCase(this.caseService.getHelpWaitCase());
 					WebSocketServer.boardcastToDirectors(
-							MsgTemplate.success("oht", "command", "help").add("cases", WebSocketServer.state.getWaittingCase()),
+							MsgTemplate.success("oht", "command", "help").add("cases", WebSocketServer.getState().getWaittingCase()),
 							null);
 				} else if ("pcompCase".equals(action)) {
 					// 需先判断当前此订单是否已经被接起，若接起，则返回取消失败数据
@@ -352,11 +352,11 @@ public class MessageHandle {
 					if (count > 0) {
 						// User.setOrderStatus(0);
 						// 推送给发起人订单已接起，并将发起人状态设置为LINKED
-						WebSocketServer.state.setWaittingCase(this.caseService.getHelpWaitCase());
+						WebSocketServer.getState().setWaittingCase(this.caseService.getHelpWaitCase());
 						WebSocketServer.sendMessageByRoom(MsgTemplate.success("oht", "command", "otherComplete")
-								.add("case", WebSocketServer.state.getWaittingCase()), ohtCase.getCaseId(), userId);
+								.add("case", WebSocketServer.getState().getWaittingCase()), ohtCase.getCaseId(), userId);
 						WebSocketServer.sendMessageByRoom(MsgTemplate.success("oht", "command", "mineComplete")
-								.add("case", WebSocketServer.state.getWaittingCase()), ohtCase.getCaseId(), ohtCase.getBuildId());
+								.add("case", WebSocketServer.getState().getWaittingCase()), ohtCase.getCaseId(), ohtCase.getBuildId());
 					} else {
 						WebSocketServer.sendMessage(MsgTemplate.success("oht", "error", "完成结案失败，可能未找到该求助案件，请联系管理员！"),
 								userId);
@@ -365,7 +365,7 @@ public class MessageHandle {
 					WebSocketServer.roomChange(userId, "default");
 
 					WebSocketServer.boardcastToDirectors(
-							MsgTemplate.success("oht", "command", "help").add("cases", WebSocketServer.state.getWaittingCase()),
+							MsgTemplate.success("oht", "command", "help").add("cases", WebSocketServer.getState().getWaittingCase()),
 							null);
 					// 结案后清除双方的未结案件缓存并广播
 					refreshUserCaseAndBroadcast(userId);
@@ -392,11 +392,11 @@ public class MessageHandle {
 					if (count > 0) {
 						// User.setOrderStatus(0);
 						// 推送给发起人订单已接起，并将发起人状态设置为LINKED
-						WebSocketServer.state.setWaittingCase(this.caseService.getHelpWaitCase());
+						WebSocketServer.getState().setWaittingCase(this.caseService.getHelpWaitCase());
 						WebSocketServer.sendMessageByRoom(MsgTemplate.success("oht", "command", "otherComplete")
-								.add("case", WebSocketServer.state.getWaittingCase()), ohtCase.getCaseId(), userId);
+								.add("case", WebSocketServer.getState().getWaittingCase()), ohtCase.getCaseId(), userId);
 						WebSocketServer.sendMessageByRoom(MsgTemplate.success("oht", "command", "mineComplete")
-								.add("case", WebSocketServer.state.getWaittingCase()), ohtCase.getCaseId(), ohtCase.getPickId());
+								.add("case", WebSocketServer.getState().getWaittingCase()), ohtCase.getCaseId(), ohtCase.getPickId());
 						WebSocketServer.roomChange(userId, "default");
 						// 结案后清除双方的未结案件缓存并广播
 						refreshUserCaseAndBroadcast(userId);
@@ -406,7 +406,7 @@ public class MessageHandle {
 								MsgTemplate.success("oht", "error", "完成结案失败，可能未找到该求助案件或案件状态不正确，请联系管理员！"), userId);
 					}
 					// WebSocketServer.boardcastToDirectors(MsgTemplate.success("oht", "command",
-					// "help").add("cases", WebSocketServer.state.getWaittingCase()), null);
+					// "help").add("cases", WebSocketServer.getState().getWaittingCase()), null);
 					new ChatRecordFile().writeChatRecordFile(ohtCase.getCaseId(), JSON
 							.toJSONString(MsgTemplate.success("oht", "command", "otherComplete").add("case", ohtCase)));
 				} else if ("newTask".equals(action)) {
@@ -424,7 +424,7 @@ public class MessageHandle {
 						WebSocketServer.sendMessage(
 								MsgTemplate.success("oht", "error", "拒绝案件失败，可能未找到该求助案件或案件状态不正确，请联系管理员！"), userId);
 						WebSocketServer.sendMessageAsync(MsgTemplate.success("oht", "command", "help").add("cases",
-								WebSocketServer.state.getWaittingCase()), userId);
+								WebSocketServer.getState().getWaittingCase()), userId);
 					}
 				}
 			}
@@ -457,7 +457,7 @@ public class MessageHandle {
 	}
 
 	public String getRoom(String userId) {
-		String roomName = WebSocketServer.state.getUserRoom(userId);
+		String roomName = WebSocketServer.getState().getUserRoom(userId);
 		if (Util.isNullorEmpty(roomName)) {
 			roomName = "default";
 		}

@@ -92,7 +92,7 @@ public class AnswerController {
 		PageHelper.startPage(pageParams.get("pageNum"), pageParams.get("pageSize"));
 		List<Answer> users = answerService.selectSurveyUserIds(articalId);
 		for (Answer user : users) {
-			user.setUser(DataCache.EMPLOYEE.get(user.getUserId()));
+			user.setUser(DataCache.getEmployees().get(user.getUserId()));
 		}
 		return Msg.success(new DataPage<Answer>(users));
 	}

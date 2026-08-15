@@ -31,7 +31,7 @@ public class MoodRecordServiceImpl implements MoodRecordService {
 
     public MoodRecord fillRecord(MoodRecord record) {
         String userId = Util.userIdByShiro();
-        Employee user = DataCache.EMPLOYEE.get(userId);
+        Employee user = DataCache.getEmployees().get(userId);
         record.setHandleDate(Util.currentDateTime());
         record.setDataDate(Util.getDateToday());
         record.setUserId(userId);

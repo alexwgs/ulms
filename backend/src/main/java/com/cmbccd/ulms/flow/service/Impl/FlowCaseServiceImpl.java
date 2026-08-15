@@ -139,7 +139,7 @@ public class FlowCaseServiceImpl implements FlowCaseService {
         List<FlowCaseExcel> list = new ArrayList<>();
         base.forEach(flowCase -> {
             FlowCaseExcel excel = new FlowCaseExcel();
-            Employee appUser = DataCache.EMPLOYEE.get(flowCase.getApplyNum());
+            Employee appUser = DataCache.getEmployees().get(flowCase.getApplyNum());
             if (appUser != null) {
                 excel.setApplyDeptName(appUser.getDeptName());
                 excel.setApplyName(appUser.getPloName());
@@ -214,7 +214,7 @@ public class FlowCaseServiceImpl implements FlowCaseService {
         FlowInfo flowInfo =flowInfoService.get(flowCase.getFlowId());
         flowCase.setFlowInfo(flowInfo);
         flowCase.setFlowApproveLogs(flowApproveLogService.listByCaseIdWithProxy(flowCase.getId(), Util.userIdByShiro()));
-        flowCase.setApplyUser(DataCache.EMPLOYEE.get(flowCase.getApplyNum()));
+        flowCase.setApplyUser(DataCache.getEmployees().get(flowCase.getApplyNum()));
         List<Map<String, Object>> list = flowInfoService.listFlowData(flowCase.getFlowId(), caseId);
         flowCase.setData(list);
         return flowCase;
@@ -321,7 +321,7 @@ public class FlowCaseServiceImpl implements FlowCaseService {
             // 完成审批
             return flowCase;
         } else {
-            Employee user = DataCache.EMPLOYEE.get(currentUserId);
+            Employee user = DataCache.getEmployees().get(currentUserId);
             List<FlowApproveLog> nextList = logs.stream().filter(e -> e.getApproveLevel() == curLevel+1 && Util.isNullorEmpty(e.getHandleType())).collect(Collectors.toList());
             for (FlowApproveLog item: nextList) {
                 if(item.getModel() == 4) {

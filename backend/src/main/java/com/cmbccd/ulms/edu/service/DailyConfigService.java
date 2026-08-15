@@ -1,13 +1,17 @@
 package com.cmbccd.ulms.edu.service;
 
+import com.cmbccd.ulms.common.util.DataPage;
 import com.cmbccd.ulms.edu.domain.DailyConfig;
 import com.cmbccd.ulms.edu.domain.DailyConfigExample;
 
 import java.util.List;
+import java.util.Map;
 
 public interface DailyConfigService {
 
 	List<DailyConfig> list(DailyConfigExample example);
+
+	DataPage<DailyConfig> listDailyConfig(Map<String, String> params);
 	
 	int update(DailyConfig record);
 	

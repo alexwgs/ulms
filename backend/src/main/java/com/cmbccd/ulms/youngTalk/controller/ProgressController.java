@@ -37,7 +37,7 @@ public class ProgressController {
 
 		List<Progress> progresses = progressService.getProgressByArticalId(articalId);
 		for (Progress progress : progresses) {
-			progress.setUser(DataCache.EMPLOYEE.get(progress.getUserId()));
+			progress.setUser(DataCache.getEmployees().get(progress.getUserId()));
 		}
 
 		return Msg.success(progresses);

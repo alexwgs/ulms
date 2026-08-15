@@ -29,7 +29,7 @@ public class TeachGroupListener extends AnalysisEventListener<Map<Integer, Strin
         String ploNum = data.get(ploNumIndex);
         String groupName = data.get(typeIndex);
         if( Util.isNullorEmpty(ploNum) ) return;
-        Employee user = DataCache.EMPLOYEE.get(ploNum);
+        Employee user = DataCache.getEmployees().get(ploNum);
 
         TeachGroup record = new TeachGroup();
         record.setPloNum(ploNum);

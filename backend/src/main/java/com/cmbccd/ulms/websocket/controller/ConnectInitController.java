@@ -71,7 +71,7 @@ public class ConnectInitController {
 		// 设置默认接单状态 0-空闲 （1-求助等待中 2-处理中 3-待结案）
 		user.setOhtStatus(1);
 
-		user.setUser(DataCache.EMPLOYEE.get(userId));
+		user.setUser(DataCache.getEmployees().get(userId));
 				
 		List<RoleList> roleList = this.roleListService.getUserRoleListByUserId(userId, 1);
 
@@ -87,7 +87,7 @@ public class ConnectInitController {
 //		user.setOrderStatus(0);
 		// 如果用户是金普卡业务主任则需要初始化当前状态 及 当日是否有身份！
 		if (DIRECTOR_NUM.equals(user.getUser().getJobLevel())) {
-			WebSocketServer.state.addDirector(userId);
+			WebSocketServer.getState().addDirector(userId);
 			StatusJour statusJour = this.statusJourService.getUserLatestStatusJour(Util.getDateToday(), userId);
 			if (Util.isNullorEmpty(statusJour)) {
 				user.setIdentity("");
@@ -136,10 +136,10 @@ public class ConnectInitController {
 			}
 			if (!Util.isNullorEmpty(unfinishCase)) {
 				if (unfinishCase.getBuildId() != null) {
-					unfinishCase.setBuildUser(DataCache.EMPLOYEE.get(unfinishCase.getBuildId()));
+					unfinishCase.setBuildUser(DataCache.getEmployees().get(unfinishCase.getBuildId()));
 				}
 				if (unfinishCase.getPickId() != null) {
-					unfinishCase.setPickUser(DataCache.EMPLOYEE.get(unfinishCase.getPickId()));
+					unfinishCase.setPickUser(DataCache.getEmployees().get(unfinishCase.getPickId()));
 				}
 				user.setUnfinishCase(unfinishCase);
 			}

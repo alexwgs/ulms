@@ -24,7 +24,7 @@ public class BookListServiceImpl implements BookListService {
 	public List<BookList> list(BookListExample example) {
 		List<BookList> list = bookListMapper.selectByExampleWithDateTime(example);
 		for(BookList item : list) {
-			item.setUser(DataCache.EMPLOYEE.get(item.getPloNum()));
+			item.setUser(DataCache.getEmployees().get(item.getPloNum()));
 		}
 		return list;
 	}
@@ -41,7 +41,7 @@ public class BookListServiceImpl implements BookListService {
 		List<BookList> list = bookListMapper.selectByExample(example);
 		List<Employee> emps = new ArrayList<Employee>();
 		for(BookList item : list) {
-			emps.add(DataCache.EMPLOYEE.get(item.getPloNum()));
+			emps.add(DataCache.getEmployees().get(item.getPloNum()));
 		}
 		return emps;
 	}

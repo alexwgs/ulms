@@ -64,7 +64,7 @@ public class CaseServiceImpl implements CaseService {
 		if (cases.size() > 0) {
 			record = cases.get(0);
 			if (record.getPickId() != null) {
-				record.setPickUser(DataCache.EMPLOYEE.get(record.getPickId()));
+				record.setPickUser(DataCache.getEmployees().get(record.getPickId()));
 			}
 		}
 		return record;
@@ -86,7 +86,7 @@ public class CaseServiceImpl implements CaseService {
 		if (cases.size() > 0) {
 			record = cases.get(0);
 			if (record.getBuildId() != null) {
-				record.setBuildUser(DataCache.EMPLOYEE.get(record.getBuildId()));
+				record.setBuildUser(DataCache.getEmployees().get(record.getBuildId()));
 			}
 		}
 		return record;
@@ -95,7 +95,7 @@ public class CaseServiceImpl implements CaseService {
 	@Override
 	public Case insertNewCase(String userId, Integer caseType, String extnNum) {
 		Case record = new Case();
-		Employee user = DataCache.EMPLOYEE.get(userId);
+		Employee user = DataCache.getEmployees().get(userId);
 		record.setCaseId(Util.getShortUuid());
 		record.setDataTime(Util.currentDateTime());
 		record.setBuildId(userId);
@@ -140,7 +140,7 @@ public class CaseServiceImpl implements CaseService {
 		List<DirTakeCaseSumarry> list = new ArrayList<>();
 		// 从前使用的是有接单的人员名单，改为根据岗位获取人员名单
 //		List<String> pickIds = caseMapper.selectPickIdByDateTime(begDate + " 00:00:00", endDate + " 23:59:59");
-		List<String> pickIds = DataCache.EMPLOYEE.values().stream().filter(e -> "101".equals(e.getJobLevel()) && "00".equals(e.getPloStatus())).map(Employee::getPloNum).collect(Collectors.toList());
+		List<String> pickIds = DataCache.getEmployees().values().stream().filter(e -> "101".equals(e.getJobLevel()) && "00".equals(e.getPloStatus())).map(Employee::getPloNum).collect(Collectors.toList());
 		for (String pickId : pickIds) {
 			DirTakeCaseSumarry pickUser = creatNewCaseCompleteUser(pickId);
 			List<Map<String, Object>> level1Data = caseMapper.selectCaseCompleteCountByCaseType(begDate + " 00:00:00",
@@ -187,7 +187,7 @@ public class CaseServiceImpl implements CaseService {
 
 	public DirTakeCaseSumarry creatNewCaseCompleteUser(String userId) {
 		DirTakeCaseSumarry dir = new DirTakeCaseSumarry();
-		Employee user = DataCache.EMPLOYEE.get(userId);
+		Employee user = DataCache.getEmployees().get(userId);
 		dir.setUserId(userId);
 		dir.setUserName(user.getPloName());
 		dir.setDeptName(user.getDeptName());
@@ -281,7 +281,7 @@ public class CaseServiceImpl implements CaseService {
 				item.setBuildDept("");
 				item.setBuildGroup("");
 			} else {
-				Employee emp = DataCache.EMPLOYEE.get(item.getBuildId());
+				Employee emp = DataCache.getEmployees().get(item.getBuildId());
 				item.setBuildName(emp.getPloName());
 				item.setBuildDept(emp.getDeptName());
 				item.setBuildGroup(emp.getGroupName());
@@ -292,7 +292,7 @@ public class CaseServiceImpl implements CaseService {
 				item.setPickDept("");
 				item.setPickGroup("");
 			} else {
-				Employee emp = DataCache.EMPLOYEE.get(item.getPickId());
+				Employee emp = DataCache.getEmployees().get(item.getPickId());
 				item.setPickName(emp.getPloName());
 				item.setPickDept(emp.getDeptName());
 				item.setPickGroup(emp.getGroupName());

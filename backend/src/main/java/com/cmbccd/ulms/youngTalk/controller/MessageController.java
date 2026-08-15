@@ -60,7 +60,7 @@ public class MessageController {
 		List<Message> messages = messageService.getMessageList(example);
 		for (Message message : messages) {
 			message.setArtical(articalService.getArticalByIdWithNoContent(message.getArticalId()));
-			message.setfUser(DataCache.EMPLOYEE.get(message.getFromUser()));
+			message.setfUser(DataCache.getEmployees().get(message.getFromUser()));
 		}
 		return Msg.success(new DataPage<Message>(messages));
 	}

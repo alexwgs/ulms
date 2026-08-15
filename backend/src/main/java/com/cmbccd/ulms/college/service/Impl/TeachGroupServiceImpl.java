@@ -23,7 +23,7 @@ public class TeachGroupServiceImpl implements TeachGroupService {
     public List<TeachGroup> listUserByGroup(TeachGroupExample example) {
         List<TeachGroup> list = teachGroupMapper.selectByExample(example);
         list.forEach(item -> {
-            item.setUser(DataCache.EMPLOYEE.get(item.getPloNum()));
+            item.setUser(DataCache.getEmployees().get(item.getPloNum()));
         });
         return list;
     }

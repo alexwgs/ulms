@@ -70,9 +70,9 @@ public class EmployeeController {
 			} else if (key.equals("ploName")) {
 				criteria.andPloNameLike("%" + param + "%");
 			} else if (key.equals("deptNum")) {
-				criteria.andDeptNumIn(DataCache.DEPARTMENT.values().stream().filter(department -> department.getDeptName().indexOf(param)>-1 ).map(Department::getDeptNum).collect(Collectors.toList()));
+				criteria.andDeptNumIn(DataCache.getDepartments().values().stream().filter(department -> department.getDeptName().indexOf(param)>-1 ).map(Department::getDeptNum).collect(Collectors.toList()));
 			} else if (key.equals("deptGroup")) {
-				criteria.andDeptGroupIn(DataCache.DEPARTMENT.values().stream().filter(department -> department.getDeptName().indexOf(param)>-1 ).map(Department::getDeptNum).collect(Collectors.toList()));
+				criteria.andDeptGroupIn(DataCache.getDepartments().values().stream().filter(department -> department.getDeptName().indexOf(param)>-1 ).map(Department::getDeptNum).collect(Collectors.toList()));
 			} else if (key.equals("agentNum")) {
 				criteria.andPloNumEqualTo(agentService.getPloNumByAgent(param));
 			}
@@ -86,8 +86,8 @@ public class EmployeeController {
 		// Department dept;
 		for (Employee emp : emps) {
 			String userId = emp.getPloNum();
-			emp.setDeptName(Util.isNullorEmpty(emp.getDeptNum()) ?"":DataCache.DEPARTMENT.get(emp.getDeptNum()).getDeptName());
-			emp.setGroupName(Util.isNullorEmpty(emp.getDeptGroup()) ?"":DataCache.DEPARTMENT.get(emp.getDeptGroup()).getDeptName());
+			emp.setDeptName(Util.isNullorEmpty(emp.getDeptNum()) ?"":DataCache.getDepartments().get(emp.getDeptNum()).getDeptName());
+			emp.setGroupName(Util.isNullorEmpty(emp.getDeptGroup()) ?"":DataCache.getDepartments().get(emp.getDeptGroup()).getDeptName());
 			String agentNum = "";
 			agentNum = agentService.getCurrentAgentNum(userId);
 			agentNum = Util.stringNulltoEmpty(agentNum);
@@ -133,7 +133,7 @@ public class EmployeeController {
 		}
 
 		// 更新服务器缓存的数据
-		DataCache.EMPLOYEE.get(userId).setAvatar(employee.getAvatar());
+		DataCache.getEmployees().get(userId).setAvatar(employee.getAvatar());
 		return Msg.success("头像更新成功！");
 	}
 
@@ -160,10 +160,10 @@ public class EmployeeController {
 		String value = params.get("value");
 		String status = params.get("status");
 		if(Util.isNullorEmpty(status)){
-			List<Employee> emps = DataCache.EMPLOYEE.values().stream().filter(e -> e.getPloName().indexOf(value)>-1 || e.getPloNum().indexOf(value)>-1  || e.getGroupName().indexOf(value)>-1 || e.getDeptName().indexOf(value)>-1).collect(Collectors.toList());
+			List<Employee> emps = DataCache.getEmployees().values().stream().filter(e -> e.getPloName().indexOf(value)>-1 || e.getPloNum().indexOf(value)>-1  || e.getGroupName().indexOf(value)>-1 || e.getDeptName().indexOf(value)>-1).collect(Collectors.toList());
 			return Msg.success(sanitizeForPicker(emps));
 		}else {
-			List<Employee> emps = DataCache.EMPLOYEE.values().stream().filter(e -> e.getPloStatus().equals(status) && (e.getPloName().indexOf(value)>-1 || e.getPloNum().indexOf(value)>-1  || e.getGroupName().indexOf(value)>-1 || e.getDeptName().indexOf(value)>-1)).collect(Collectors.toList());
+			List<Employee> emps = DataCache.getEmployees().values().stream().filter(e -> e.getPloStatus().equals(status) && (e.getPloName().indexOf(value)>-1 || e.getPloNum().indexOf(value)>-1  || e.getGroupName().indexOf(value)>-1 || e.getDeptName().indexOf(value)>-1)).collect(Collectors.toList());
 			return Msg.success(sanitizeForPicker(emps));
 		}
 	}
@@ -171,7 +171,7 @@ public class EmployeeController {
 	@GetMapping("find/{jobLevels}")
 	public Msg getEmployeeListByJobLevel(@PathVariable("jobLevels") String jobLevels) {
 		if(Util.isNullorEmpty(jobLevels) || jobLevels.length()<3) return Msg.success(null);
-		List<Employee> emps = DataCache.EMPLOYEE.values().stream().filter(e -> jobLevels.indexOf(e.getJobLevel())>-1 && e.getPloStatus().equals("00")).collect(Collectors.toList());
+		List<Employee> emps = DataCache.getEmployees().values().stream().filter(e -> jobLevels.indexOf(e.getJobLevel())>-1 && e.getPloStatus().equals("00")).collect(Collectors.toList());
 		return Msg.success(sanitizeForPicker(emps));
 	}
 
@@ -338,7 +338,7 @@ public class EmployeeController {
 	public void reportExamScoreHum(HttpServletResponse response,@RequestParam Map<String, String> params) throws IOException {
 		response.setContentType("application/vnd.ms-excel");
 		response.setCharacterEncoding("utf-8");
-		List<Employee> list = DataCache.EMPLOYEE.values().stream().filter(e ->"00".equals(e.getPloStatus()) ).collect(Collectors.toList());
+		List<Employee> list = DataCache.getEmployees().values().stream().filter(e ->"00".equals(e.getPloStatus()) ).collect(Collectors.toList());
 		String fileName = "在职人员名单";
 		response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xlsx");
 		HorizontalCellStyleStrategy horizontalCellStyleStrategy = ExcelUtils.simpleExcelTemplateStyle();

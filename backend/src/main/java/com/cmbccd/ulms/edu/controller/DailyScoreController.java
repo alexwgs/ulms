@@ -86,11 +86,11 @@ public class DailyScoreController {
 			}else if ("ploName".equals(queryType)) {
 				criteria.andPloNameLike("%"+query+"%");
 			}else if ("group".equals(queryType)) {
-				List<String> condition = DataCache.DEPARTMENT.values().stream().filter(e -> e.getDeptName().indexOf(query)>-1).map(Department::getDeptNum).collect(Collectors.toList());
+				List<String> condition = DataCache.getDepartments().values().stream().filter(e -> e.getDeptName().indexOf(query)>-1).map(Department::getDeptNum).collect(Collectors.toList());
 				condition.add("0");
 				criteria.andDeptGroupIn(condition);
 			}else if ("dept".equals(queryType)) {
-				List<String> condition = DataCache.DEPARTMENT.values().stream().filter(e ->  e.getDeptName().indexOf(query)>-1).map(Department::getDeptNum).collect(Collectors.toList());
+				List<String> condition = DataCache.getDepartments().values().stream().filter(e ->  e.getDeptName().indexOf(query)>-1).map(Department::getDeptNum).collect(Collectors.toList());
 				condition.add("0");
 				criteria.andDeptNumIn(condition);
 			}

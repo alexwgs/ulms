@@ -46,11 +46,16 @@ public class WebSocketServer {
     private static final String DEFAULT_ROOM = "default";
 
     /** 状态管理服务 —— 由 Spring 根据 ulms.ws.multi-instance 配置自动注入对应实现 */
-    public static WsStateService state;
+    private static volatile WsStateService state;
 
     @Resource
     public void setState(WsStateService service) {
         WebSocketServer.state = service;
+    }
+
+    /** 状态管理服务访问器（静态桥接，供 @ServerEndpoint 实例与其他组件读取共享状态） */
+    public static WsStateService getState() {
+        return state;
     }
 
     // ========== IP 配置器 ==========

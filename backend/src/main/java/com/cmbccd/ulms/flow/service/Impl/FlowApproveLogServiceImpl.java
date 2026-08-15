@@ -167,7 +167,7 @@ public class FlowApproveLogServiceImpl implements FlowApproveLogService {
 
 
             String userId = Util.userIdByShiro();
-            Employee user = DataCache.EMPLOYEE.get(userId);
+            Employee user = DataCache.getEmployees().get(userId);
             if (user == null) continue;
             log.setId(Util.getUUID());
             log.setCaseId(CaseId);

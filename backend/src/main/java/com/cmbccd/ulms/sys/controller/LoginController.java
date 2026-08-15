@@ -66,7 +66,7 @@ public class LoginController {
 		SaTokenInfo tokenInfo = StpUtil.getTokenInfo();
 		operateLogService.add("LOGIN", "submit");
 		return Msg.success("登录成功！欢迎 " + user0.getName() + " 使用A6广场").put("token", tokenInfo.tokenValue).put("userId", user.getCzyCode())
-				.put("user", DataCache.EMPLOYEE.get(user.getCzyCode()));
+				.put("user", DataCache.getEmployees().get(user.getCzyCode()));
 	}
 
 	// test
@@ -76,7 +76,7 @@ public class LoginController {
 		if (Util.isNullorEmpty(userId)) {
 			return new Msg(401, "Token已过期或没有登录！");
 		}
-		return Msg.success().put("user", DataCache.EMPLOYEE.get(userId));
+		return Msg.success().put("user", DataCache.getEmployees().get(userId));
 	}
 
 	@PostMapping( "/log")

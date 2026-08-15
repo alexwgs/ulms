@@ -90,7 +90,7 @@
     <t-pagination
       @page-size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-      :current="queryInfo.pageNum"
+      :current="currentPage"
       :page-size-options="pageSizes"
       :page-size="queryInfo.pageSize"
 
@@ -222,16 +222,13 @@
 </template>
 
 <script setup>
-import { DialogPlugin } from 'tdesign-vue-next'
 import { MessagePlugin } from 'tdesign-vue-next'
 import { ref, onMounted, nextTick } from 'vue'
 import { roleApi } from '@/api/system/role'
 import { menuApi } from '@/api/system/menu'
-import { usePagination } from '@/hooks/usePagination'
+import { useCrudPage } from '@/hooks/useCrudPage'
 
 // 数据
-const roleList = ref([])
-const total = ref(0)
 const permissionsTree = ref([])
 const permissionTreeVisible = ref(false)
 const roleUpdateVisible = ref(false)
@@ -263,31 +260,35 @@ const roleFormRules = ref({
   ]
 })
 
-// 查询参数
-const queryInfo = ref({
-  orderType: ' asc',
-  order: ' id ',
-  querytype: '',
-  query: '',
-  pageSize: 20,
-  pageNum: 1
+// 列表 + 分页 + 删除（useCrudPage 样板）
+const {
+  list: roleList,
+  total,
+  query: queryInfo,
+  currentPage,
+  pageSizes,
+  handleCurrentChange,
+  handleSizeChange,
+  load: getRoleList,
+  remove: removeRoleById
+} = useCrudPage({
+  fetchList: (q) => roleApi.listRole(q),
+  defaultQuery: {
+    orderType: ' asc',
+    order: ' id ',
+    querytype: '',
+    query: '',
+    pageSize: 20,
+    pageNum: 1
+  },
+  deleteApi: (row) => roleApi.deleteRole(row.id),
+  pageSizes: [20, 100, 500]
 })
 
 // 生命周期
 onMounted(() => {
   getRoleList()
 })
-
-// 方法
-const getRoleList = async () => {
-  try {
-    const res = await roleApi.listRole()
-    roleList.value = res.data.list
-    total.value = res.data.total
-  } catch (error) {
-    MessagePlugin.error(error.message)
-  }
-}
 
 const getMenuTree = async () => {
   try {
@@ -305,26 +306,6 @@ const dispatchPermission = (rowData) => {
   nextTick(() => {
     checkedKeys.value = rowData.permissions ? rowData.permissions.split(',') : []
   })
-}
-
-const removeRoleById = (data) => {
-  DialogPlugin.confirm('此操作将永久删除该记录, 是否继续?', '提示', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning'
-  })
-    .then(async () => {
-      try {
-        const res = await roleApi.deleteRole(data.id)
-        MessagePlugin.success(res.msg)
-        getRoleList()
-      } catch (error) {
-        MessagePlugin.error(error.message)
-      }
-    })
-    .catch(() => {
-      MessagePlugin.info('取消删除')
-    })
 }
 
 const submitPermission = async () => {
@@ -381,13 +362,6 @@ const closeRoleAddDialog = () => {
 const closePermissionTreeDialog = () => {
   // 清理逻辑
 }
-
-const { pageSizes, handleCurrentChange, handleSizeChange } = usePagination({
-  query: queryInfo,
-  fetch: getRoleList,
-  pageSizes: [20, 100, 500],
-  resetToFirstOnSizeChange: false
-})
 
 const tableSort = (data) => {
   queryInfo.value.orderType = data.descending ? ' desc ' : ' asc '

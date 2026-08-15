@@ -99,11 +99,11 @@ public class CaseController {
 		
 		List<Case> cases = caseService.getCaseList(example);
 		for (Case item : cases) {
-			item.setBuildUser(DataCache.EMPLOYEE.get(item.getBuildId()));
+			item.setBuildUser(DataCache.getEmployees().get(item.getBuildId()));
 			if (Util.isNullorEmpty(item.getPickId())) {
 				continue;
 			}
-			item.setPickUser(DataCache.EMPLOYEE.get(item.getPickId()));
+			item.setPickUser(DataCache.getEmployees().get(item.getPickId()));
 		}
 
 		return Msg.success(new DataPage<Case>(cases));

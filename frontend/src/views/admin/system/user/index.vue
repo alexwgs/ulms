@@ -111,7 +111,7 @@
     <t-pagination
       @page-size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-      :current="queryInfo.pageNum"
+      :current="currentPage"
       :page-size-options="pageSizes"
       :page-size="queryInfo.pageSize"
 
@@ -129,42 +129,35 @@ import { ref, onMounted } from 'vue'
 import RoleDialog from './components/RoleDialog.vue'
 import { employeeApi } from '@/api/system/employee'
 import { jobinfoApi } from '@/api/system/jobinfo'
-import { usePagination } from '@/hooks/usePagination'
+import { useCrudPage } from '@/hooks/useCrudPage'
 const roleDialogRef = ref(null)
 
-// 查询参数
-const queryInfo = ref({
-  orderType: 'desc',
-  order: '',
-  queryType: 'ploNum',
-  query: '',
-  pageSize: 20,
-  pageNum: 1
-})
-
 const employmentStatus = ref('00')
-const loading = ref(false)
-const list = ref([])
-const total = ref(0)
 const jobLevelList = ref([])
 
-// 获取员工列表
-const getEmployeeList = async () => {
-  try {
-    loading.value = true
-    const res = await employeeApi.listEmployeeByStatus(
-      employmentStatus.value,
-      queryInfo.value
-    )
-    if (res.code != 200) return
-    list.value = res.data.list
-    total.value = res.data.total
-  } catch (error) {
-    console.error('获取员工列表失败:', error)
-  } finally {
-    loading.value = false
-  }
-}
+// 列表 + 分页（useCrudPage 样板，无删除操作）
+const {
+  list,
+  total,
+  loading,
+  query: queryInfo,
+  currentPage,
+  pageSizes,
+  handleCurrentChange,
+  handleSizeChange,
+  load: getEmployeeList
+} = useCrudPage({
+  fetchList: (q) => employeeApi.listEmployeeByStatus(employmentStatus.value, q),
+  defaultQuery: {
+    orderType: 'desc',
+    order: '',
+    queryType: 'ploNum',
+    query: '',
+    pageSize: 20,
+    pageNum: 1
+  },
+  pageSizes: [20, 100, 500]
+})
 const getJobLevelList = async () => {
   try {
     const res = await jobinfoApi.listAllJobLevel()
@@ -186,16 +179,6 @@ const getJobName = (level) => {
   }
   return level == null || level === '' ? '--' : String(level)
 }
-// 分页大小变化
-const { pageSizes, handleCurrentChange, handleSizeChange } = usePagination({
-  query: queryInfo,
-  fetch: getEmployeeList,
-  pageSizes: [20, 100, 500],
-  resetToFirstOnSizeChange: false
-})
-
-// 当前页码变化
-
 // 编辑员工
 const handleEdit = (row) => {
 }

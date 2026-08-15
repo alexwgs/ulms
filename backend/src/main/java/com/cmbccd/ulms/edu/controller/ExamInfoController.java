@@ -4,17 +4,13 @@ import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.annotation.SaMode;
 import cn.dev33.satoken.stp.StpUtil;
 import com.cmbccd.ulms.common.annotation.MyLog;
-import com.cmbccd.ulms.common.util.DataPage;
 import com.cmbccd.ulms.common.util.Util;
 import com.cmbccd.ulms.edu.domain.ExamInfo;
-import com.cmbccd.ulms.edu.domain.ExamInfoExample;
-import com.cmbccd.ulms.edu.domain.ExamInfoExample.Criteria;
 import com.cmbccd.ulms.edu.domain.QuesTemp;
 import com.cmbccd.ulms.edu.service.BookListService;
 import com.cmbccd.ulms.edu.service.ExamInfoService;
 import com.cmbccd.ulms.edu.service.QuesTempService;
 import com.cmbccd.ulms.sys.domain.Msg;
-import com.github.pagehelper.PageHelper;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,27 +34,8 @@ public class ExamInfoController {
 	@GetMapping("/config/list")
 	@SaCheckPermission(value = {"edu:exam:list:self", "edu:exam:list"}, mode = SaMode.OR)
 	public Msg listExamInfoQuery(@RequestParam Map<String, String> params) {
-		String examStat = params.get("status");
-		String query = params.get("query");
-		Map<String, Integer> pageParams = Util.innitTablePages(params);
-		ExamInfoExample example = new ExamInfoExample();
-		Criteria criteria = example.createCriteria();
-		if (!Util.isNullorEmpty(params.get("order"))) {
-			example.setOrderByClause(Util.buildOrderByClause(params.get("order"), params.get("orderType")));
-		}
-
-		if(!Util.isNullorEmpty(examStat))
-			criteria.andExamStatEqualTo(Integer.parseInt(examStat));
-		if(!Util.isNullorEmpty(query))
-			criteria.andExamNameLike("%"+query+"%");
-		if(!StpUtil.hasPermission("edu:exam:list")) {
-			criteria.andHandlePloEqualTo(Util.userIdByShiro());
-		}
-
-		PageHelper.startPage(pageParams.get("pageNum"), pageParams.get("pageSize"));
-
-		List<ExamInfo> list = examInfoService.list(example);
-		return Msg.success(new DataPage<ExamInfo>(list));
+		boolean selfOnly = !StpUtil.hasPermission("edu:exam:list");
+		return Msg.success(examInfoService.listExamInfoQuery(params, selfOnly));
 	}
 	
 	@PutMapping("/config/update")

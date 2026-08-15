@@ -200,7 +200,7 @@ public class QuesTestServiceImpl implements QuesTestService {
 		List<QuesTestDetail> list = quesTestMapper.reportQuesTestDetail(examCode);
 
 		for (QuesTestDetail record : list) {
-			Employee user = DataCache.EMPLOYEE.get(record.getPloNum());
+			Employee user = DataCache.getEmployees().get(record.getPloNum());
 			if (!Util.isNullorEmpty(user)) {
 				record.setDeptNum(user.getDeptName());
 				record.setDeptGroup(user.getGroupName());

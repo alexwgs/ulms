@@ -62,9 +62,9 @@ public class CommentController {
 			if (comment.getAnonFlag() == 1) {
 				comment.setUserid("匿名");
 			}else{
-				comment.setUser(DataCache.EMPLOYEE.get(comment.getUserid()));
+				comment.setUser(DataCache.getEmployees().get(comment.getUserid()));
 			}
-			comment.setUser(DataCache.EMPLOYEE.get(comment.getUserid()));
+			comment.setUser(DataCache.getEmployees().get(comment.getUserid()));
 			List<Reply> replys = replyService.getReplyByCommentId(comment.getId());
 			List<Like> likes = likeService.getCommentLikeById(comment.getId(),userId);
 			if(Util.isNullorEmpty(replys)) { continue;}
@@ -72,7 +72,7 @@ public class CommentController {
 				if (reply.getAnonFlag() == 1) {
 					reply.setUserid("匿名");
 				}else{
-					reply.setUser(DataCache.EMPLOYEE.get(reply.getUserid()));
+					reply.setUser(DataCache.getEmployees().get(reply.getUserid()));
 				}
 			}
 			
@@ -157,7 +157,7 @@ public class CommentController {
 		PageHelper.startPage(1, 12);
 		List<HashMap<String, Object>> rank = commentService.getCommentCountRank();
 		for (HashMap<String, Object> item : rank) {
-			item.put("user", DataCache.EMPLOYEE.get(item.get("userid")));
+			item.put("user", DataCache.getEmployees().get(item.get("userid")));
 		}
 		return Msg.success(rank);
 	}

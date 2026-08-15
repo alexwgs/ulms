@@ -28,7 +28,7 @@ public class JobInfoController {
 
     @GetMapping("")
     public Msg listforselective() {
-        List<JobInfo> list = DataCache.JOB;
+        List<JobInfo> list = DataCache.getJobs();
         return Msg.success(list);
     }
 

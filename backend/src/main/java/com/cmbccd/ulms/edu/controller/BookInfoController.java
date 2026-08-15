@@ -63,7 +63,7 @@ public class BookInfoController {
 			if("ploNum".equals(queryType)) {
 				criteria.andPloNumEqualTo(query);
 			}else if("ploName".equals(queryType)) {
-				List<String> ploNums = DataCache.EMPLOYEE.values().stream().filter(e -> e.getPloName().indexOf(query)>-1 ).map(Employee::getPloNum).collect(Collectors.toList());
+				List<String> ploNums = DataCache.getEmployees().values().stream().filter(e -> e.getPloName().indexOf(query)>-1 ).map(Employee::getPloNum).collect(Collectors.toList());
 				if(ploNums.size()<1) criteria.andPloNumIsNull();
 				else criteria.andPloNumIn(ploNums);
 			}

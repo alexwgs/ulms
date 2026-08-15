@@ -3,6 +3,7 @@
  */
 package com.cmbccd.ulms.sys.service;
 
+import com.cmbccd.ulms.common.util.DataPage;
 import com.cmbccd.ulms.sys.domain.Dictionary;
 import com.cmbccd.ulms.sys.domain.DictionaryExample;
 
@@ -28,6 +29,8 @@ public interface DictionaryService {
 	
 	//获取Dictionary列表
 	public List<Dictionary> getDictionaryList(DictionaryExample example);
+	//分页获取Dictionary列表（管理端查询）
+	public DataPage<Dictionary> getDictionaryListByAdmin(Map<String, String> params);
 	//通过字典名获取字典Map（key为code）
 	public Map<String, Dictionary> getDictionaryMapByName(String name);
 	//修改

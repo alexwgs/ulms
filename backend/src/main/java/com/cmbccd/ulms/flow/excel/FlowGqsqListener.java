@@ -48,7 +48,7 @@ public class FlowGqsqListener extends AnalysisEventListener<Map<Integer, String>
             this.msg = Msg.error("员工编号不能为空！");
             return;
         }
-        Employee user = DataCache.EMPLOYEE.get(ploNum);
+        Employee user = DataCache.getEmployees().get(ploNum);
         if(Util.isNullorEmpty(user)) {
             this.msg = Msg.error("没有查询到此用户！");
             return;
@@ -59,7 +59,7 @@ public class FlowGqsqListener extends AnalysisEventListener<Map<Integer, String>
         }
 
         // 获取单元名称
-        Dictionary dict = DataCache.Dict.stream().filter(item -> "aux_reason".equals(item.getName()) && item.getCodeval().equals(auxReason)).findFirst().get();
+        Dictionary dict = DataCache.getDicts().stream().filter(item -> "aux_reason".equals(item.getName()) && item.getCodeval().equals(auxReason)).findFirst().get();
         if(Util.isNullorEmpty(dict)) {
             this.msg = Msg.error("公勤原因不正确，请按指定名称填写！");
             return;

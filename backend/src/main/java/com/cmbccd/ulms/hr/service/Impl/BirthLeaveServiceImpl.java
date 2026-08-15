@@ -27,7 +27,7 @@ public class BirthLeaveServiceImpl implements BirthLeaveService {
         List<BirthLeave> list = birthLeaveMapper.listBirthLeave(ploNum);
         for (BirthLeave item: list
              ) {
-            item.setUser(DataCache.EMPLOYEE.get(item.getPloNum()));
+            item.setUser(DataCache.getEmployees().get(item.getPloNum()));
         }
         return list;
     }

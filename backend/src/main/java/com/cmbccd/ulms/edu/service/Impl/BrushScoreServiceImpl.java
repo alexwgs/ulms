@@ -66,7 +66,7 @@ public class BrushScoreServiceImpl implements BrushScoreService{
 		}
 		String dateTime = Util.currentDateTime();
 		record.setJourno(publicService.getJourno());
-		Employee user = DataCache.EMPLOYEE.get(userId);
+		Employee user = DataCache.getEmployees().get(userId);
 		record.setPloNum(userId);
 		record.setPassFlag(0);
 		record.setPloName(user.getPloName());
@@ -101,7 +101,7 @@ public class BrushScoreServiceImpl implements BrushScoreService{
 		}
 		String dateTime = Util.currentDateTime();
 		record.setJourno(publicService.getJourno());
-		Employee user = DataCache.EMPLOYEE.get(userId);
+		Employee user = DataCache.getEmployees().get(userId);
 		record.setPloNum(userId);
 		record.setPassFlag(0);
 		record.setPloName(user.getPloName());
@@ -180,7 +180,7 @@ public class BrushScoreServiceImpl implements BrushScoreService{
 
 		List<BrushScoreHum> list = brushScoreMapper.reportBrushScoreHum(begDate, endDate, orderBy);
 		for (BrushScoreHum record : list) {
-			Employee user = DataCache.EMPLOYEE.get(record.getPloNum());
+			Employee user = DataCache.getEmployees().get(record.getPloNum());
 			if(Util.isNullorEmpty(user)) {
 				record.setPloName("-");
 				record.setDeptNum("-");
@@ -217,8 +217,8 @@ public class BrushScoreServiceImpl implements BrushScoreService{
 		}
 		List<BrushScoreGroup> list = brushScoreMapper.reportBrushScoreGroup(begDate, endDate, orderBy);
 		for (BrushScoreGroup record :list) {
-			String dept_name = Optional.ofNullable(DataCache.DEPARTMENT.get(record.getDeptNum())).map(Department::getDeptName).orElse("-");
-			String group_name = Optional.ofNullable(DataCache.DEPARTMENT.get(record.getDeptGroup())).map(Department::getDeptName).orElse("-");
+			String dept_name = Optional.ofNullable(DataCache.getDepartments().get(record.getDeptNum())).map(Department::getDeptName).orElse("-");
+			String group_name = Optional.ofNullable(DataCache.getDepartments().get(record.getDeptGroup())).map(Department::getDeptName).orElse("-");
 			record.setDeptNum(dept_name);
 			record.setDeptGroup(group_name);
 		}
@@ -242,7 +242,7 @@ public class BrushScoreServiceImpl implements BrushScoreService{
 		}
 		List<BrushScoreDept> list = brushScoreMapper.reportBrushScoreDept(begDate, endDate, orderBy);
 		for (BrushScoreDept record :list) {
-			String dept_name = Optional.ofNullable(DataCache.DEPARTMENT.get(record.getDeptNum())).map(Department::getDeptName).orElse("-");
+			String dept_name = Optional.ofNullable(DataCache.getDepartments().get(record.getDeptNum())).map(Department::getDeptName).orElse("-");
 			record.setDeptNum(dept_name);
 		}
 		return list;

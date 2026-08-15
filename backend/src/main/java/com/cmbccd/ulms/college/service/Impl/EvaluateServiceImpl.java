@@ -34,7 +34,7 @@ public class EvaluateServiceImpl implements EvaluateService {
             if(item.getIfAnon() == 1) {
                 item.setPloNum("匿名");
             } else {
-                item.setPloNum(DataCache.EMPLOYEE.get(item.getPloNum()).getPloName());
+                item.setPloNum(DataCache.getEmployees().get(item.getPloNum()).getPloName());
             }
             item.setEvaluate(evaluateTempleteMapper.selectByJourno(item.getTempId(),item.getJourno()));
         }
@@ -47,7 +47,7 @@ public class EvaluateServiceImpl implements EvaluateService {
         if(evaluate.getIfAnon() == 1) {
             evaluate.setPloNum("匿名");
         } else {
-            evaluate.setPloNum(DataCache.EMPLOYEE.get(evaluate.getPloNum()).getPloName());
+            evaluate.setPloNum(DataCache.getEmployees().get(evaluate.getPloNum()).getPloName());
         }
         evaluate.setEvaluate(evaluateTempleteMapper.selectByJourno(evaluate.getTempId(),evaluate.getJourno()));
         return evaluate;

@@ -140,7 +140,7 @@ public class FlowInfoServiceImpl implements FlowInfoService {
             if (getUserColumn.size() > 0) {
                 getUserColumn.forEach(u -> {
                     String userId = e.get(u) != null ? e.get(u).toString() : "";
-                    Employee user = DataCache.EMPLOYEE.get(userId);
+                    Employee user = DataCache.getEmployees().get(userId);
                     if (user != null) {
                         e.put(u + "_plo_num", user.getPloNum());
                         e.put(u + "_plo_name", user.getPloName());
@@ -154,7 +154,7 @@ public class FlowInfoServiceImpl implements FlowInfoService {
                     String dictName = d.get("dictName").toString();
                     String colName = d.get("colName").toString();
                     String codeVal = Util.isNullorEmpty(e.get(colName)) ? "异常-N/A" : e.get(colName).toString();
-                    List<Dictionary> dicts = DataCache.Dict.stream().filter(item -> item.getName().equals(dictName) && item.getCode().equals(codeVal)).collect(Collectors.toList());
+                    List<Dictionary> dicts = DataCache.getDicts().stream().filter(item -> item.getName().equals(dictName) && item.getCode().equals(codeVal)).collect(Collectors.toList());
                     if (dicts.size() > 0)
                         e.put(colName, dicts.get(0).getCodeval());
                     else e.put(colName, "异常-N/A");

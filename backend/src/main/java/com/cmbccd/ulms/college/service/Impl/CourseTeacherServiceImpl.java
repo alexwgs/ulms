@@ -39,7 +39,7 @@ public class CourseTeacherServiceImpl implements CourseTeacherService {
         List<Teacher> list = teacherMapper.selectByExample(example);
         for (Teacher item : list ) {
             if (Util.isNullorEmpty(item.getPloNum())) continue;
-            Employee employee = DataCache.EMPLOYEE.get(item.getPloNum());
+            Employee employee = DataCache.getEmployees().get(item.getPloNum());
             item.setUser(employee);
         }
         return list;
@@ -51,7 +51,7 @@ public class CourseTeacherServiceImpl implements CourseTeacherService {
         if (Util.isNullorEmpty(teacher)) {
             teacher = new Teacher();
         } else {
-            Employee employee = Optional.ofNullable(DataCache.EMPLOYEE.get(teacher.getPloNum())).orElse(null);
+            Employee employee = Optional.ofNullable(DataCache.getEmployees().get(teacher.getPloNum())).orElse(null);
             teacher.setUser(employee);
         }
         return teacher;
@@ -62,7 +62,7 @@ public class CourseTeacherServiceImpl implements CourseTeacherService {
         List<Teacher> list = teacherMapper.selectTopTeacher();
         for (Teacher item : list ) {
             if (Util.isNullorEmpty(item.getPloNum())) continue;
-            Employee employee = DataCache.EMPLOYEE.get(item.getPloNum());
+            Employee employee = DataCache.getEmployees().get(item.getPloNum());
             item.setUser(employee);
         }
         return list;

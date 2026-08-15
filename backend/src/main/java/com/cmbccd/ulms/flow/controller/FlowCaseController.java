@@ -47,7 +47,7 @@ public class FlowCaseController {
         List<FlowCase> flowCaseList = flowCaseService.list(type, params);
         flowCaseList.forEach(item -> {
             item.setFlowInfo(flowInfoService.get(item.getFlowId()));
-            item.setApplyUser(DataCache.EMPLOYEE.get(item.getApplyNum()));
+            item.setApplyUser(DataCache.getEmployees().get(item.getApplyNum()));
         });
         return Msg.success(new DataPage<FlowCase>(flowCaseList));
     }
@@ -58,7 +58,7 @@ public class FlowCaseController {
         List<FlowCase> flowCaseList = flowCaseService.list(null, params);
         flowCaseList.forEach(item -> {
             item.setFlowInfo(flowInfoService.get(item.getFlowId()));
-            item.setApplyUser(DataCache.EMPLOYEE.get(item.getApplyNum()));
+            item.setApplyUser(DataCache.getEmployees().get(item.getApplyNum()));
         });
         return Msg.success(new DataPage<FlowCase>(flowCaseList));
     }

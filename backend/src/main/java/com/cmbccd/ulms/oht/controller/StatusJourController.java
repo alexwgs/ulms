@@ -99,7 +99,7 @@ public class StatusJourController {
 		for (String userId : userList) {
 			Map<String, Object> row = new HashMap<String, Object>();
 			List<StatusJour> jourList = statusJourService.getUserStatusTotal(userId, begDate, endDate);
-			Employee user = DataCache.EMPLOYEE.get(userId);
+			Employee user = DataCache.getEmployees().get(userId);
 
 			if (Util.isNullorEmpty(user)) {
 				continue;
@@ -146,7 +146,7 @@ public class StatusJourController {
 	@MyLog(title = "[oht-status]主任状态管理", content = "报表下载")
 	public void downloadStatusJourTotal(@PathVariable("begDate") String begDate,
 			@PathVariable("endDate") String endDate, HttpServletResponse response) throws IOException {
-		List<Employee> emps = new ArrayList<Employee>(DataCache.EMPLOYEE.values());
+		List<Employee> emps = new ArrayList<Employee>(DataCache.getEmployees().values());
 		List<Employee> empList = emps.stream()
 				.filter(e -> e.getJobLevel().equals("101") && e.getDeptGroup() != null && e.getPloStatus().equals("00"))
 				.sorted(Comparator.comparing(Employee::getDeptGroup)).collect(Collectors.toList());
@@ -232,7 +232,7 @@ public class StatusJourController {
 		try {
 			excelWriter = EasyExcel.write(response.getOutputStream()).build();
 			for (int i = 0; i < userIds.length; i++) {
-				Employee user = DataCache.EMPLOYEE.get(userIds[i]);
+				Employee user = DataCache.getEmployees().get(userIds[i]);
 
 				List<Map<String, String>> data = statusJourService.getStatusDetailByUserId(userIds[i], dataDate);
 				List<List<String>> dataList = new ArrayList<List<String>>();

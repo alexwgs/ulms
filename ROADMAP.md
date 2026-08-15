@@ -31,13 +31,13 @@
 - [x] 前端 ESLint + Prettier 基建：eslint + eslint-plugin-vue + @eslint/js + globals，eslint.config.js flat config（宽松起步），lint/lint:fix 脚本；发现并清零 83 个存量真实 bug（MessagePlugin 47 处未 import、未定义变量、模板语法错误、ref 漏 .value、重复 key、复制粘贴错误 API 名、死代码等），lint 现 0 error（1980 warnings 为可逐步收敛的风格/未使用变量提示）
 - [x] 前端 qiankun 残留清理：全部 `__POWERED_BY_QIANKUN__`/`window.$ws`/`window.$store`/`window.$parent` 死分支清零，改用 ohtStore/wsStore/dictStore/direct import，修复 7 个功能 bug（OHT 新任务消息、主管状态、身份状态、用户状态、通知列表/已读/清空、待办提醒、字典分类）
 - [x] 前端下载统一：downloadExcel 修复（返回 Promise、文件名解析正则保护避免越界、删除无效 retry 配置）、删除 tools.js 死代码 download/downloadTemplate；UploadExcel 改用直接 import
-- [ ] CRUD 样板抽取（useCrudPage）
+- [x] CRUD 样板抽取（useCrudPage）：quickUrl / role / user 三个列表页已迁移（列表/分页/删除收敛到 useCrudPage，表单弹窗保留页面）；其余 CRUD 页可继续推广
 - [x] 前端统一 API 封装：删除 $get/$post 死代码（$post 零调用、$get 唯一调用改 httpInstance）+ 孤儿 QS import
 - [x] 前端登录 store 合并：删除 auth store 死 setLogin（登录统一走 userStore.login）、token 双存储修复（clearToken 同步清 sessionStorage）、孤儿 pinia 实例修复（main.js 复用 stores 导出实例）
 - [x] 后端跨模块 DAO 收口到服务层：18 个文件（edu 15 + rpa 2 + college 1）直连 sys.dao.PublicMapper → PublicService.getJourno()；rpa ToolListServiceImpl 的 UserRoleMapper → UserRoleService；oht CaseServiceImpl 的 DictionaryMapper → DictionaryService（新增 getDictionaryMapByName 方法）
 - [x] 后端事务补齐：QuesBankController transfer 循环更新、ExamInfoController 先删后插、FlowGqsqServiceImpl batchInsert 循环 insert 均加 @Transactional(rollbackFor=Exception.class)
 - [x] 后端权限缺口补齐：HelperArticalController 校验串纠错（edu:exam:list→helper:artical:list）、QuesBankController changeLib 补权限、MoodPunch 打卡 userId 服务端覆盖（防伪造）；db TableController sync/update 权限码需前端菜单配合，待确认
-- [~] 后端静态状态收敛：MessageHandle 的 28 处静态 handle. → this.、new MessageHandle() → 单例；ConnectInitController 的 initUser/logOff 改实例方法 + staticInit. → this.；ChatRecordFile 的 staticInit.ulmsConfig → this.ulmsConfig；剩余 DataCache 静态 Map / WebSocketServer.state 待收敛
+- [x] 后端静态状态收敛：MessageHandle 的 28 处静态 handle. → this.、new MessageHandle() → 单例；ConnectInitController 的 initUser/logOff 改实例方法 + staticInit. → this.；ChatRecordFile 的 staticInit.ulmsConfig → this.ulmsConfig；DataCache 静态 Map → private static + 访问器（51 文件迁移 DataCache.EMPLOYEE/DEPARTMENT/JOBINFO/JOB/Dict → getEmployees()/getDepartments()/getJobInfos()/getJobs()/getDicts()）；WebSocketServer.state → private static volatile + getState() 访问器（外部 3 处改用访问器）
 
 ### P3 类型与测试体系（可扩展 + 可测试）
 - [x] 建立 CI（.github/workflows/ci.yml：后端 mvn test + 前端 lint + build，push/PR 触发）
@@ -64,7 +64,7 @@
 
 - **P0 安全加固**：✅ 100%（SQL 注入/WebSocket 鉴权/路径穿越/上传鉴权/异常脱敏/凭据外置/PII 收敛）
 - **P1 确定性 bug**：✅ 100%（后端 4 + 前端 5 + 命名 typo 7 类）
-- **P2 工程规范**：🔄 约 85%（登录 store、命名、权限、事务、ESLint 基建 + 83 bug 清零、API 统一、qiankun 清理、下载统一、跨模块 DAO 收口、静态状态收敛部分完成；CRUD 样板、Controller 瘦身、DataCache/WebSocketServer.state 收敛待做）
+- **P2 工程规范**：🔄 约 95%（登录 store、命名、权限、事务、ESLint 基建 + 83 bug 清零、API 统一、qiankun 清理、下载统一、跨模块 DAO 收口、CRUD 样板 quickUrl/role/user、静态状态收敛 DataCache + WebSocketServer.state 完成；其余 Controller 瘦身可继续推广）
 - **P3 类型与测试体系**：🔄 约 55%（CI 建立、TS 起步 + 类型契约、22 单元测试含 Mockito；其余核心 Service 单测、完整 TS 化待做）
 
 ### 验证结论（全绿）
@@ -73,9 +73,9 @@
 - 前端 `npm run lint`：0 error（1980 warning 为可逐步收敛的风格提示）
 
 ### 剩余结构性重构（建议下一阶段继续）
-1. 前端 CRUD 样板抽取（已建 useCrudPage hook + quickUrl 试点改造完成：列表/分页/删除收敛到 useCrudPage，表单弹窗保留页面；user/role 等其余 CRUD 页待推广）
-2. 后端 Controller 业务下沉 Service（college 试点：CourseController 的 listCourse/listCourseByAdmin 下沉到 CourseService；edu 试点：QuesBankController 的 drawQuestionByLibCodes 抽题逻辑下沉到 BrushScoreService.drawQuestion；flow 等其他 Controller 待推广）
-3. 后端 DataCache 静态 Map / WebSocketServer.state 收敛
+1. 前端 CRUD 样板抽取（useCrudPage hook + quickUrl/role/user 已改造；其余 CRUD 页如 dailyConfig/statusType 等可继续推广）
+2. 后端 Controller 业务下沉 Service（college：CourseController、edu：QuesBankController/BrushScoreService、sys：QuickUrl/Dictionary、edu：ExamInfo/DailyConfig 已完成；flow/youngTalk 等其余 Controller 待推广）
+3. ~~后端 DataCache 静态 Map / WebSocketServer.state 收敛~~（已完成）
 4. 前端渐进 TS 化深入（api 模块 → store → router meta 逐步启用类型）
 5. db TableController sync/update 权限（需前端菜单配合确认权限码）
 6. Artical→Article 拼写纠正（涉及前后端 API 契约，专项）

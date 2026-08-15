@@ -35,7 +35,7 @@ public class DailyScoreServiceImpl implements DailyScoreService {
         String userId = Util.userIdByShiro();
         DailyScore dailyScore = dailyScoreMapper.getDailyScore(dailyConfig.getQuesDate(),userId);
         if(Util.isNullorEmpty(dailyScore)) {
-            Employee user = DataCache.EMPLOYEE.get(userId);
+            Employee user = DataCache.getEmployees().get(userId);
             dailyScore = new DailyScore(dailyConfig.getQuesDate(),userId, user.getPloName(),user.getDeptNum(),user.getDeptGroup(),dailyConfig.getQuesCode(),(short)0,(short)0,null, (short)0);
             int count = dailyScoreMapper.insertSelective(dailyScore);
             if( count < 1) return null;
@@ -58,11 +58,11 @@ public class DailyScoreServiceImpl implements DailyScoreService {
             item.setTotalDay(total);
             item.setPunchRate(BigDecimal.valueOf(item.getPunchDays()/(double)total).setScale(4, RoundingMode.HALF_UP));
             item.setSignRate(BigDecimal.valueOf(item.getSignDays()/(double)total).setScale(4, RoundingMode.HALF_UP));
-            item.setDeptNum(DataCache.DEPARTMENT.get(item.getDeptNum()).getDeptName());
+            item.setDeptNum(DataCache.getDepartments().get(item.getDeptNum()).getDeptName());
             if("hum,group".indexOf(groupBy)> -1) {
                 String deptGroup = item.getDeptGroup();
                 if(!Util.isNullorEmpty(deptGroup)) {
-                    item.setDeptGroup(DataCache.DEPARTMENT.get(deptGroup).getDeptName());
+                    item.setDeptGroup(DataCache.getDepartments().get(deptGroup).getDeptName());
                 }
             }else{
                 item.setDeptGroup("");

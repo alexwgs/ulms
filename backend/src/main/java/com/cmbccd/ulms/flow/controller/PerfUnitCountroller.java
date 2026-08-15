@@ -67,7 +67,7 @@ public class PerfUnitCountroller {
         List<PerfUnit> list = new ArrayList<>();
         EasyExcel.read(fileName, PerfUnit.class, new PageReadListener<PerfUnit>(dataList ->{
             for(PerfUnit item: dataList) {
-                item.setUser(DataCache.EMPLOYEE.get(item.getPloNum()));
+                item.setUser(DataCache.getEmployees().get(item.getPloNum()));
                 list.add(item);
                 logger.info("读取到数据:{}", JSON.toJSONString(item));
             }

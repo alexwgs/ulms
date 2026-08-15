@@ -35,7 +35,7 @@ public class OnlineMonitorController {
     @SaCheckPermission("sys:ws:admin")
     @GetMapping("/list")
     public Msg getOnlineUserList() {
-        Collection<Map<String, Object>> users = WebSocketServer.state.getAllUsersLightweight();
+        Collection<Map<String, Object>> users = WebSocketServer.getState().getAllUsersLightweight();
         return Msg.success(users);
     }
 

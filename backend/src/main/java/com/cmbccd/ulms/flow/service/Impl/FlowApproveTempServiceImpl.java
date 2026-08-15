@@ -56,7 +56,7 @@ public class FlowApproveTempServiceImpl implements FlowApproveTempService {
         List<FlowApproveTemp> list = new ArrayList<>();
         String userId = Util.userIdByShiro();
 
-        Employee user = DataCache.EMPLOYEE.get(userId);
+        Employee user = DataCache.getEmployees().get(userId);
         if (user == null) return list;
         base.forEach(item -> {
             if (item.getRequire() == 0) {

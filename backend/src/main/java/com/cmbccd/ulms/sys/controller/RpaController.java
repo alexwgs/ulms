@@ -61,8 +61,8 @@ public class RpaController {
         }
         for (EmployeeForRPA emp:
                 list) {
-            emp.setDeptName(Util.isNullorEmpty(emp.getDeptNum()) ?"": DataCache.DEPARTMENT.get(emp.getDeptNum()).getDeptName());
-            emp.setGroupName(Util.isNullorEmpty(emp.getDeptGroup()) ?"":DataCache.DEPARTMENT.get(emp.getDeptGroup()).getDeptName());
+            emp.setDeptName(Util.isNullorEmpty(emp.getDeptNum()) ?"": DataCache.getDepartments().get(emp.getDeptNum()).getDeptName());
+            emp.setGroupName(Util.isNullorEmpty(emp.getDeptGroup()) ?"":DataCache.getDepartments().get(emp.getDeptGroup()).getDeptName());
         }
         return Msg.success(list);
     }

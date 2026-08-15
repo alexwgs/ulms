@@ -31,7 +31,7 @@ public class BrushConfigListener extends AnalysisEventListener<Map<Integer, Stri
 	public void invoke(Map<Integer, String> data, AnalysisContext context) {
         String ploNum = data.get(ploNumIndex);
         if( Util.isNullorEmpty(ploNum) ) return;
-        Employee user = DataCache.EMPLOYEE.get(ploNum);
+        Employee user = DataCache.getEmployees().get(ploNum);
         List<BrushConfig> groupData = brushConfigList.stream().filter(e -> e.getGroupName().equals(data.get(typeIndex))).collect(Collectors.toList());
         
     	DailyGroup record = new DailyGroup();

@@ -2,19 +2,15 @@ package com.cmbccd.ulms.edu.controller;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.cmbccd.ulms.common.annotation.MyLog;
-import com.cmbccd.ulms.common.util.DataPage;
 import com.cmbccd.ulms.common.util.Util;
 import com.cmbccd.ulms.edu.domain.DailyConfig;
-import com.cmbccd.ulms.edu.domain.DailyConfigExample;
 import com.cmbccd.ulms.edu.domain.DailyScore;
 import com.cmbccd.ulms.edu.service.DailyConfigService;
 import com.cmbccd.ulms.edu.service.DailyScoreService;
 import com.cmbccd.ulms.sys.domain.Msg;
-import com.github.pagehelper.PageHelper;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.annotation.Resource;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -28,15 +24,7 @@ public class DailyConfigController {
 
 	@GetMapping("/config/list")
 	public Msg listDailyConfig(@RequestParam Map<String, String> params) {
-		DailyConfigExample example = new DailyConfigExample();
-		Map<String, Integer> pageParams = Util.innitTablePages(params);
-		// Criteria criteria = example.createCriteria();
-		if (!Util.isNullorEmpty(params.get("order"))) {
-			example.setOrderByClause(Util.buildOrderByClause(params.get("order"), params.get("orderType")));
-		}
-		PageHelper.startPage(pageParams.get("pageNum"), pageParams.get("pageSize"));
-		List<DailyConfig> list = dailyConfigService.list(example);
-		return Msg.success(new DataPage<DailyConfig>(list));
+		return Msg.success(dailyConfigService.listDailyConfig(params));
 	}
 	
 	@DeleteMapping("/config/{id}")

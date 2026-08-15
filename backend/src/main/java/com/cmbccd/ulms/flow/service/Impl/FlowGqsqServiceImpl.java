@@ -38,7 +38,7 @@ public class FlowGqsqServiceImpl implements FLowGqsqService {
         record.setBegTime(Util.fourDigiToTime(record.getBegTime()));
         record.setEndTime(Util.fourDigiToTime(record.getEndTime()));
         // 获取详情
-        Employee user = DataCache.EMPLOYEE.get(record.getPloNum());
+        Employee user = DataCache.getEmployees().get(record.getPloNum());
         record.setDeptNum(user.getDeptNum());
         record.setDeptGroup(user.getDeptGroup());
         return flowGqsqMapper.insert(record);
@@ -57,7 +57,7 @@ public class FlowGqsqServiceImpl implements FLowGqsqService {
             flowGqsq.setInDate(Util.currentDateTime());
             flowGqsq.setBegTime(Util.fourDigiToTime(flowGqsq.getBegTime()));
             flowGqsq.setEndTime(Util.fourDigiToTime(flowGqsq.getEndTime()));
-            Employee user = DataCache.EMPLOYEE.get(flowGqsq.getPloNum());
+            Employee user = DataCache.getEmployees().get(flowGqsq.getPloNum());
             flowGqsq.setDeptNum(user.getDeptNum());
             flowGqsq.setDeptGroup(user.getDeptGroup());
             count += flowGqsqMapper.insert(flowGqsq);

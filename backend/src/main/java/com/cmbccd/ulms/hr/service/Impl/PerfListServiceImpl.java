@@ -79,16 +79,16 @@ public class PerfListServiceImpl implements PerfListService {
         PageHelper.startPage(pageParams.get("pageNum"), pageParams.get("pageSize"));
         List<PerfList> list = perfListMapper.selectByExample(example);
         for (PerfList perfList : list) {
-            perfList.setDeptNum(DataCache.DEPARTMENT.get(perfList.getDeptNum()).getDeptName());
+            perfList.setDeptNum(DataCache.getDepartments().get(perfList.getDeptNum()).getDeptName());
             if (!Util.isNullorEmpty(perfList.getDeptGroup())) {
-                perfList.setDeptGroup(DataCache.DEPARTMENT.get(perfList.getDeptGroup()).getDeptName());
+                perfList.setDeptGroup(DataCache.getDepartments().get(perfList.getDeptGroup()).getDeptName());
             } else {
                 perfList.setDeptGroup("");
             }
-            if (Util.isNullorEmpty(DataCache.JOBINFO.get(perfList.getJobLevel()))) {
+            if (Util.isNullorEmpty(DataCache.getJobInfos().get(perfList.getJobLevel()))) {
                 perfList.setJobLevel("");
             } else {
-                perfList.setJobLevel(DataCache.JOBINFO.get(perfList.getJobLevel()).getJobName());
+                perfList.setJobLevel(DataCache.getJobInfos().get(perfList.getJobLevel()).getJobName());
             }
 
         }
@@ -119,16 +119,16 @@ public class PerfListServiceImpl implements PerfListService {
         }
         List<PerfList> list = perfListMapper.selectByExample(example);
         for (PerfList perfList : list) {
-            perfList.setDeptNum(DataCache.DEPARTMENT.get(perfList.getDeptNum()).getDeptName());
+            perfList.setDeptNum(DataCache.getDepartments().get(perfList.getDeptNum()).getDeptName());
             if (!Util.isNullorEmpty(perfList.getDeptGroup())) {
-                perfList.setDeptGroup(DataCache.DEPARTMENT.get(perfList.getDeptGroup()).getDeptName());
+                perfList.setDeptGroup(DataCache.getDepartments().get(perfList.getDeptGroup()).getDeptName());
             } else {
                 perfList.setDeptGroup("");
             }
-            if (Util.isNullorEmpty(DataCache.JOBINFO.get(perfList.getJobLevel()))) {
+            if (Util.isNullorEmpty(DataCache.getJobInfos().get(perfList.getJobLevel()))) {
                 perfList.setJobLevel("");
             } else {
-                perfList.setJobLevel(DataCache.JOBINFO.get(perfList.getJobLevel()).getJobName());
+                perfList.setJobLevel(DataCache.getJobInfos().get(perfList.getJobLevel()).getJobName());
             }
 
         }

@@ -57,7 +57,7 @@ public class ToolReportServiceImpl implements ToolReportService {
         }
         PageHelper.startPage(pageParams.get("pageNum"), pageParams.get("pageSize"));
         List<ToolReport> list = toolReportMapper.selectByExample(example);
-        list.forEach( item -> item.setUser(DataCache.EMPLOYEE.get(item.getUserId())));
+        list.forEach( item -> item.setUser(DataCache.getEmployees().get(item.getUserId())));
         return list;
     }
 
@@ -108,7 +108,7 @@ public class ToolReportServiceImpl implements ToolReportService {
         List<ToolReportVO> list = new ArrayList<>();
         listResource.forEach( item -> {
             ToolReportVO toolReportVO = new ToolReportVO();
-            Employee user = DataCache.EMPLOYEE.get(item.getUserId());
+            Employee user = DataCache.getEmployees().get(item.getUserId());
             toolReportVO.setDeptName(user.getDeptName());
             toolReportVO.setGroupName(user.getGroupName());
             toolReportVO.setUserName(user.getPloName());
@@ -192,7 +192,7 @@ public class ToolReportServiceImpl implements ToolReportService {
                 .limit(20)
                 .collect(Collectors.toList());
         sortedUserUsageCount.forEach(item -> {
-            row7.add(DataCache.EMPLOYEE.get(item.getKey()).getPloName());
+            row7.add(DataCache.getEmployees().get(item.getKey()).getPloName());
             row8.add(item.getValue());
         });
         map3.put("coloum", row7);

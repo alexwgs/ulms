@@ -22,7 +22,7 @@ public class UserPointServiceImpl implements UserPointService {
     public List<UserPoint> listUserPointRank(int allFlag) {
         List<UserPoint> list = userPointMapper.selectUserStudyPointRank(allFlag);
         for (UserPoint item: list) {
-            Employee user = DataCache.EMPLOYEE.get(item.getPloNum());
+            Employee user = DataCache.getEmployees().get(item.getPloNum());
             item.setUser(user);
         }
         return list;
@@ -31,7 +31,7 @@ public class UserPointServiceImpl implements UserPointService {
     @Override
     public UserPoint getMyPoint() {
         String userId = Util.userIdByShiro();
-        Employee user = DataCache.EMPLOYEE.get(userId);
+        Employee user = DataCache.getEmployees().get(userId);
         UserPoint userPoint =  userPointMapper.selectMyStudyPoint(userId);
         userPoint.setUser(user);
         return userPoint;

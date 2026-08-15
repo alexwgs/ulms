@@ -49,7 +49,7 @@ public class MemberController {
 
 		List<Member> members = memberService.getMemberListByArticalId(articalId);
 		for (Member member : members) {
-			member.setUser(DataCache.EMPLOYEE.get(member.getUserId()));
+			member.setUser(DataCache.getEmployees().get(member.getUserId()));
 		}
 		return Msg.success( members);
 	}

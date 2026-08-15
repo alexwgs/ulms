@@ -28,7 +28,7 @@ public class QuesScoreListener extends AnalysisEventListener<Map<Integer, String
 //        LOG.info("解析到一条数据：{}, currentRowHolder: {}", data.toString(), context.readRowHolder().getRowIndex());
         String ploNum = data.get(ploNumIndex);
         if( Util.isNullorEmpty(ploNum) ) return;
-        Employee user = DataCache.EMPLOYEE.get(ploNum);
+        Employee user = DataCache.getEmployees().get(ploNum);
 	    if(Util.isNullorEmpty(user)) {
 	    	this.msg = Msg.error("工号无法识别！"+ ploNum);
 	    	return;

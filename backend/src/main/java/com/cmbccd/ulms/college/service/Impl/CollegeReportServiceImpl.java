@@ -33,8 +33,8 @@ public class CollegeReportServiceImpl implements CollegeReportService {
     public List<CourseStudyDetail> listCourseStudyDeatilHum(String courseId,String deptNum) {
         List<CourseStudyDetail> list = collegeReportMapper.selectCourseStudyDeatilHum(courseId, deptNum);
         for(CourseStudyDetail item: list) {
-            item.setDeptNum(Optional.ofNullable(DataCache.DEPARTMENT.get(item.getDeptNum())).map(e -> e.getDeptName()).orElse("-"));
-            item.setDeptGroup(Optional.ofNullable(DataCache.DEPARTMENT.get(item.getDeptGroup())).map(e -> e.getDeptName()).orElse("-"));
+            item.setDeptNum(Optional.ofNullable(DataCache.getDepartments().get(item.getDeptNum())).map(e -> e.getDeptName()).orElse("-"));
+            item.setDeptGroup(Optional.ofNullable(DataCache.getDepartments().get(item.getDeptGroup())).map(e -> e.getDeptName()).orElse("-"));
         }
         return list;
     }
@@ -48,7 +48,7 @@ public class CollegeReportServiceImpl implements CollegeReportService {
     public List<CourseExamDetail> listCourseExamDetail(String courseId) {
         List<CourseExamDetail> list = collegeReportMapper.selectCourseExamDetail(courseId);
         for(CourseExamDetail item: list) {
-            Employee user = DataCache.EMPLOYEE.get(item.getPloNum());
+            Employee user = DataCache.getEmployees().get(item.getPloNum());
             item.setPloName(user.getPloName());
             item.setDeptNum(user.getDeptName());
             item.setDeptGroup(user.getGroupName());
@@ -79,7 +79,7 @@ public class CollegeReportServiceImpl implements CollegeReportService {
 
             for(Evaluate item : list) {
                 List<String> row = new ArrayList<>();
-                Employee user = DataCache.EMPLOYEE.get(item.getPloNum());
+                Employee user = DataCache.getEmployees().get(item.getPloNum());
                 row.add(user.getDeptName());
                 row.add(Util.isNullorEmpty(user.getGroupName())?"-":user.getGroupName());
                 row.add(item.getPloNum());
@@ -101,8 +101,8 @@ public class CollegeReportServiceImpl implements CollegeReportService {
     public List<Map<String, String>> viewCourseStudyByDept(String courseId) {
         List<Map<String, String>> listMap = collegeReportMapper.viewCourseStudyByDept(courseId);
         for(Map<String, String> dataMap: listMap){
-            dataMap.put("deptNum", Optional.ofNullable(DataCache.DEPARTMENT.get(dataMap.get("deptNum"))).map(e -> e.getDeptName()).orElse("-"));
-            dataMap.put("deptGroup", Optional.ofNullable(DataCache.DEPARTMENT.get(dataMap.get("deptGroup"))).map(e -> e.getDeptName()).orElse("-"));
+            dataMap.put("deptNum", Optional.ofNullable(DataCache.getDepartments().get(dataMap.get("deptNum"))).map(e -> e.getDeptName()).orElse("-"));
+            dataMap.put("deptGroup", Optional.ofNullable(DataCache.getDepartments().get(dataMap.get("deptGroup"))).map(e -> e.getDeptName()).orElse("-"));
         }
         return listMap;
     }

@@ -26,7 +26,7 @@ public class QuesScoreServiceImpl implements QuesScoreService {
 	
 	@Override
 	public int create(QuesScore record) {
-		Employee user = DataCache.EMPLOYEE.get(record.getPloNum());
+		Employee user = DataCache.getEmployees().get(record.getPloNum());
 		if(Util.isNullorEmpty(user)) return 0;
 		record.setDeptNum(user.getDeptNum());
 		record.setDeptGroup(user.getDeptGroup());
@@ -52,7 +52,7 @@ public class QuesScoreServiceImpl implements QuesScoreService {
 		
 		 List<QuesScore> list = quesScoreMapper.selectByExample(example);
 		 for(QuesScore item : list) {
-			 item.setUser(DataCache.EMPLOYEE.get(item.getPloNum()));
+			 item.setUser(DataCache.getEmployees().get(item.getPloNum()));
 		 }
 		return list;
 	}
@@ -85,7 +85,7 @@ public class QuesScoreServiceImpl implements QuesScoreService {
 		List<QuesScoreHum> list = quesScoreMapper.reportQuesScoreHum(examCode);
 
 		for (QuesScoreHum record : list) {
-			Employee user = DataCache.EMPLOYEE.get(record.getPloNum());
+			Employee user = DataCache.getEmployees().get(record.getPloNum());
 			if (!Util.isNullorEmpty(user)) {
 				record.setDeptNum(user.getDeptName());
 				record.setDeptGroup(user.getGroupName());

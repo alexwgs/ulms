@@ -33,13 +33,33 @@ import java.util.concurrent.ConcurrentHashMap;
 public class DataCache {
 	private static final Logger log = LoggerFactory.getLogger(DataCache.class);
 
-	public static Map<String, Employee> EMPLOYEE = new ConcurrentHashMap<>();
-	public static Map<String, Department> DEPARTMENT = new ConcurrentHashMap<>();
-	public static Map<String, JobInfo> JOBINFO = new ConcurrentHashMap<>();
+	private static final Map<String, Employee> EMPLOYEE = new ConcurrentHashMap<>();
+	private static volatile Map<String, Department> DEPARTMENT = new ConcurrentHashMap<>();
+	private static final Map<String, JobInfo> JOBINFO = new ConcurrentHashMap<>();
 
-    public static List<Dictionary> Dict = new ArrayList<>();
+    private static volatile List<Dictionary> Dict = new ArrayList<>();
 	public static final int BATCH_COUNT = 128;
-	public static List<JobInfo> JOB = null;
+	private static volatile List<JobInfo> JOB = null;
+
+	public static Map<String, Employee> getEmployees() {
+		return EMPLOYEE;
+	}
+
+	public static Map<String, Department> getDepartments() {
+		return DEPARTMENT;
+	}
+
+	public static Map<String, JobInfo> getJobInfos() {
+		return JOBINFO;
+	}
+
+	public static List<Dictionary> getDicts() {
+		return Dict;
+	}
+
+	public static List<JobInfo> getJobs() {
+		return JOB;
+	}
 	@Resource
 	private EmployeeService employeeService;
 	@Resource
@@ -84,8 +104,8 @@ public class DataCache {
 				emp.setAvatar("upload/getFile/avatar/avatar.png");
 			}
 			
-			String dept_name = Optional.ofNullable(DataCache.DEPARTMENT.get(emp.getDeptNum())).map(e -> e.getDeptName()).orElse("-");
-			String group_name = Optional.ofNullable(DataCache.DEPARTMENT.get(emp.getDeptGroup())).map(e -> e.getDeptName()).orElse("-");
+			String dept_name = Optional.ofNullable(DataCache.getDepartments().get(emp.getDeptNum())).map(e -> e.getDeptName()).orElse("-");
+			String group_name = Optional.ofNullable(DataCache.getDepartments().get(emp.getDeptGroup())).map(e -> e.getDeptName()).orElse("-");
 			emp.setDeptName(dept_name);
 			emp.setGroupName(group_name);
 

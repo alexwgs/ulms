@@ -67,7 +67,7 @@ public class PerfFlagController {
         List<PerfFlag> list = new ArrayList<>();
         EasyExcel.read(fileName, PerfFlag.class, new PageReadListener<PerfFlag>(dataList ->{
             for(PerfFlag item: dataList) {
-                item.setUser(DataCache.EMPLOYEE.get(item.getPloNum()));
+                item.setUser(DataCache.getEmployees().get(item.getPloNum()));
                 list.add(item);
                 logger.info("读取到数据:{}", JSON.toJSONString(item));
             }

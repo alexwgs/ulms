@@ -21,9 +21,9 @@ public class FlowProxyController {
     public Msg list(@RequestParam Map<String, String> params){
         List<FlowProxy> list = flowProxyService.list(params);
         list.forEach(e -> {
-            e.setPloUser(DataCache.EMPLOYEE.get(e.getPloNum()));
-            e.setProxyUser(DataCache.EMPLOYEE.get(e.getProxyNum()));
-            e.setHandleUser(DataCache.EMPLOYEE.get(e.getHandlePlo()));
+            e.setPloUser(DataCache.getEmployees().get(e.getPloNum()));
+            e.setProxyUser(DataCache.getEmployees().get(e.getProxyNum()));
+            e.setHandleUser(DataCache.getEmployees().get(e.getHandlePlo()));
         });
         return Msg.success(new DataPage<FlowProxy>(list));
     }

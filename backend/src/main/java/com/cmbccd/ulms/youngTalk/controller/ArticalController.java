@@ -144,7 +144,7 @@ public class ArticalController {
 			if(artical.getAnonFlag() == 1) {
 				artical.setPubUser("匿名");
 			} else {
-				artical.setUser(DataCache.EMPLOYEE.get(artical.getPubUser()));
+				artical.setUser(DataCache.getEmployees().get(artical.getPubUser()));
 			}
 		}
 		return Msg.success(new DataPage<Artical>(articalList));
@@ -208,7 +208,7 @@ public class ArticalController {
 			if(artical.getAnonFlag() == 1) {
 				artical.setPubUser("匿名");
 			} else {
-				artical.setUser(DataCache.EMPLOYEE.get(artical.getPubUser()));
+				artical.setUser(DataCache.getEmployees().get(artical.getPubUser()));
 			}
 		}
 		return Msg.success(new DataPage<Artical>(articalList));
@@ -252,7 +252,7 @@ public class ArticalController {
 		if(artical.getAnonFlag() == 1) {
 			artical.setPubUser("匿名");
 		} else {
-			artical.setUser(DataCache.EMPLOYEE.get(artical.getPubUser()));
+			artical.setUser(DataCache.getEmployees().get(artical.getPubUser()));
 		}
 		// 写入文字发布人对象
 		articalService.increaseViewNum(id);
@@ -286,7 +286,7 @@ public class ArticalController {
 		if(artical.getAnonFlag() == 1) {
 			artical.setPubUser("匿名");
 		} else {
-			artical.setUser(DataCache.EMPLOYEE.get(artical.getPubUser()));
+			artical.setUser(DataCache.getEmployees().get(artical.getPubUser()));
 		}
 		articalService.increaseViewNum(id);
 		return Msg.success(artical);
@@ -423,7 +423,7 @@ public class ArticalController {
 			if(artical.getAnonFlag() == 1) {
 				artical.setPubUser("匿名");
 			} else {
-				artical.setUser(DataCache.EMPLOYEE.get(artical.getPubUser()));
+				artical.setUser(DataCache.getEmployees().get(artical.getPubUser()));
 			}
 		}
 		return Msg.success( new DataPage<Artical>(articalList));

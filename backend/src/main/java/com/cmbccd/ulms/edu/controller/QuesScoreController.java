@@ -57,15 +57,15 @@ public class QuesScoreController {
 			if("ploNum".equals(queryType)) {
 				criteria.andPloNumEqualTo(query);
 			}else if("ploName".equals(queryType)) {
-				List<String> ploNums = DataCache.EMPLOYEE.values().stream().filter(e -> e.getPloName().contains(query)).map(Employee::getPloNum).collect(Collectors.toList());
+				List<String> ploNums = DataCache.getEmployees().values().stream().filter(e -> e.getPloName().contains(query)).map(Employee::getPloNum).collect(Collectors.toList());
 				if(ploNums.isEmpty()) criteria.andPloNumIsNull();
 				else criteria.andPloNumIn(ploNums);
 			}else if("deptNum".equals(queryType)) {
-				List<String> deptNums = DataCache.DEPARTMENT.values().stream().filter(e -> e.getDeptName().contains(query) && Util.isNullorEmpty(e.getUpDept())).map(Department::getDeptNum).collect(Collectors.toList());
+				List<String> deptNums = DataCache.getDepartments().values().stream().filter(e -> e.getDeptName().contains(query) && Util.isNullorEmpty(e.getUpDept())).map(Department::getDeptNum).collect(Collectors.toList());
 				if(deptNums.isEmpty()) criteria.andPloNumIsNull();
 				else criteria.andDeptNumIn(deptNums);
 			}else if("deptGroup".equals(queryType)) {
-				List<String> deptNums = DataCache.DEPARTMENT.values().stream().filter(e -> e.getDeptName().contains(query) && !Util.isNullorEmpty(e.getUpDept()) ).map(Department::getDeptNum).collect(Collectors.toList());
+				List<String> deptNums = DataCache.getDepartments().values().stream().filter(e -> e.getDeptName().contains(query) && !Util.isNullorEmpty(e.getUpDept()) ).map(Department::getDeptNum).collect(Collectors.toList());
 				if(deptNums.isEmpty()) criteria.andPloNumIsNull();
 				else criteria.andDeptGroupIn(deptNums);
 			}
@@ -141,7 +141,7 @@ public class QuesScoreController {
 	@PostMapping("/pre/check")
 	public Msg listMyExamTest(@RequestBody ExamInfo examInfo, HttpServletRequest request) throws ParseException {
 		String userId = Util.userIdByShiro();
-		Employee user = DataCache.EMPLOYEE.get(userId);
+		Employee user = DataCache.getEmployees().get(userId);
 		String ip = Util.getIpAddress(request);
 		QuesScore quesScore = quesScoreService.getUserQuesScore(examInfo.getExamCode(), userId);
 		if(quesScore.getCompStat() != 0) return Msg.error("您的考试已完成，或您在免考名单中！");
