@@ -5,12 +5,16 @@ import com.cmbccd.ulms.college.dao.StudyLogMapper;
 import com.cmbccd.ulms.college.domain.Course;
 import com.cmbccd.ulms.college.domain.StudyLog;
 import com.cmbccd.ulms.college.domain.StudyLogExample;
+import com.cmbccd.ulms.college.domain.StudyLogExample.Criteria;
 import com.cmbccd.ulms.college.service.StudyLogService;
+import com.cmbccd.ulms.common.util.DataPage;
 import com.cmbccd.ulms.common.util.Util;
+import com.github.pagehelper.PageHelper;
 import org.springframework.stereotype.Service;
 
 import jakarta.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class StudyLogServiceImpl implements StudyLogService {
@@ -76,6 +80,35 @@ public class StudyLogServiceImpl implements StudyLogService {
             item.setCourse(courseMapper.selectByPrimaryKey(item.getCourseId()));
         }
         return list;
+    }
+
+    @Override
+    public DataPage<StudyLog> listMyLog(String type, Map<String, String> params, String userId) {
+        String dateRange = params.get("dateRange");
+        String coursePass = params.get("coursePass");
+        Map<String, Integer> pageParams = Util.innitTablePages(params);
+        StudyLogExample example = new StudyLogExample();
+        Criteria criteria = example.createCriteria();
+        criteria.andPloNumEqualTo(userId);
+        if (!Util.isNullorEmpty(params.get("order"))) {
+            example.setOrderByClause(Util.buildOrderByClause(params.get("order"), params.get("orderType")));
+        }
+        if (!Util.isNullorEmpty(dateRange)) {
+            String[] date = dateRange.split(",");
+            criteria.andCompDateBetween(date[0] + " 00:00:00", date[1] + " 23:59:59");
+        }
+        if ("record".equals(type)) {
+            if (!Util.isNullorEmpty(coursePass)) {
+                criteria.andCoursePassEqualTo(Short.parseShort(coursePass));
+            }
+        } else if ("point".equals(type)) {
+            criteria.andCoursePassEqualTo((short) 1);
+        } else if ("hour".equals(type)) {
+            criteria.andStudyCompEqualTo((short) 1);
+        }
+        PageHelper.startPage(pageParams.get("pageNum"), pageParams.get("pageSize"));
+        List<StudyLog> list = listWithCourse(example);
+        return new DataPage<StudyLog>(list);
     }
 
     @Override
