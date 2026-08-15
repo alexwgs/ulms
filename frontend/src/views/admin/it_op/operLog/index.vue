@@ -152,39 +152,35 @@
 import { ref, onMounted } from 'vue'
 import { MessagePlugin } from 'tdesign-vue-next'
 import { operLogApi } from '@/API/admin/operLog'
-import { usePagination } from '@/hooks/usePagination'
+import { useCrudPage } from '@/hooks/useCrudPage'
 
-// 响应式数据
-const tableData = ref([])
-const dataRange = ref([])
-const total = ref(0)
-
-const queryInfo = ref({
-  orderType: ' desc',
-  order: ' id ',
-  status: 0,
-  query: '',
-  queryType: 'ploNum',
-  begDate: '',
-  endDate: '',
-  pageSize: 20,
-  pageNum: 1
+// 列表 + 分页（useCrudPage 样板）
+const {
+  list: tableData,
+  total,
+  query: queryInfo,
+  currentPage,
+  pageSizes,
+  handleCurrentChange,
+  handleSizeChange,
+  load: getOperLogListData
+} = useCrudPage({
+  fetchList: (q) => operLogApi.getOperLogList(q),
+  defaultQuery: {
+    orderType: ' desc',
+    order: ' id ',
+    status: 0,
+    query: '',
+    queryType: 'ploNum',
+    begDate: '',
+    endDate: '',
+    pageSize: 20,
+    pageNum: 1
+  },
+  pageSizes: [20, 100, 500]
 })
 
-// 获取操作日志列表
-const getOperLogListData = async () => {
-  try {
-    const res = await operLogApi.getOperLogList(queryInfo.value)
-    if (res.code !== 200) {
-      MessagePlugin.error(res.msg)
-      return
-    }
-    tableData.value = res.data.list
-    total.value = res.data.total
-  } catch (error) {
-    MessagePlugin.error('获取日志列表失败')
-  }
-}
+const dataRange = ref([])
 
 // 日期范围改变
 const daterangeChange = () => {
@@ -236,7 +232,6 @@ const handleDownload = async () => {
 onMounted(() => {
   getOperLogListData()
 })
-const { currentPage, pageSizes, handleCurrentChange, handleSizeChange } = usePagination({ query: queryInfo, fetch: getOperLogListData, pageSizes: [20, 100, 500] })
 </script>
 
 <style lang="less" scoped>
