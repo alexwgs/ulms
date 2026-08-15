@@ -245,7 +245,7 @@ const defaultAvatar = new URL('@/assets/img/default_avatar.png', import.meta.url
 
 const message = reactive({
   modal: 'oht',
-  theme: 'message',
+  type: 'message',
   content: '',
   avatar: ''
 })

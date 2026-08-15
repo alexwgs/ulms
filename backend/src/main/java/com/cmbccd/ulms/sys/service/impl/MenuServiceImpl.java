@@ -79,45 +79,24 @@ public class MenuServiceImpl implements MenuService {
 	}
 
 	public List<Menu> findMenuChild(Integer id, List<Menu> rootMenus, boolean authFlag) {
-		boolean authCireria = true;
 		List<Menu> childList = new ArrayList<>();
 		// 遍历所有节点，将父菜单id与传过来的id比较
 		for (Menu menu : rootMenus) {
+			boolean authCireria = true;
 			if (authFlag) {
-				authCireria = menu.getStatus() != 0 ? true : false;
+				authCireria = menu.getStatus() != 0;
 			}
 			if (id.equals(menu.getPid())  && authCireria) {
 				menu.setMeta(new MenuMeta(menu.getName(), menu.getIcon()));
+				// 递归构建子树，支持任意层级（不再硬编码二级/三级）
+				List<Menu> children = findMenuChild(menu.getId(), rootMenus, authFlag);
+				if (children != null && !children.isEmpty()) {
+					menu.setChildren(children);
+				}
 				childList.add(menu);
 			}
 		}
-//		List<Menu> permitionMenus = new ArrayList<>();
-//		if (!authFlag) {
-//			MenuExample example = new MenuExample();
-//			Criteria cirteria = example.createCriteria();
-//			cirteria.andMenuTypeEqualTo(1);
-//			permitionMenus = menuMapper.selectByExample(example);
-//		}
 		childList.sort(Comparator.comparing(Menu::getSort));
-		// 把子菜单的子菜单再循环一遍
-
-		// 二级菜单
-		for (Menu menu : childList) {
-			List<Menu> pList = new ArrayList<>();
-			 // 三级权限菜单
-			for (Menu pmenu : rootMenus) {
-				if (pmenu.getPid().equals(menu.getId())) {
-					pmenu.setMeta(new MenuMeta(pmenu.getName(), pmenu.getIcon()));
-					pList.add(pmenu);
-				}
-			}
-
-			if (pList != null && pList.size() != 0) {
-
-				pList.sort(Comparator.comparing(Menu::getSort));
-				menu.setChildren(pList);
-			}
-		}
 		return childList;
 	}
 
