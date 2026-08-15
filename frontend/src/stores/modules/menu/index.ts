@@ -7,7 +7,7 @@ const Layout = () => import('@/layouts/index.vue')
 const modules = import.meta.glob('@/views/**/*.vue')
 
 // 辅助函数：检查组件是否存在
-function getComponent(componentPath) {
+function getComponent(componentPath: string) {
   // componentPath 为 null/undefined/空字符串时，直接返回 not-found 组件
   if (!componentPath) {
     console.warn('菜单组件路径为空，跳转至404页面')
@@ -26,8 +26,8 @@ function getComponent(componentPath) {
   return component
 }
 
-export function mapMenusToRoutes(menuList, basePath = '') {
-  const routes = []
+export function mapMenusToRoutes(menuList: any[], basePath = '') {
+  const routes: any[] = []
 
   menuList.forEach((menu) => {
     if (!menu.path && !menu.children) return
@@ -85,31 +85,31 @@ const useMenuStore = defineStore('menu', {
   }),
 
   getters: {
-    routeMenusGet: (state) => state.routeMenus,
+    routeMenusGet: (state: any) => state.routeMenus,
     // 获取所有一级菜单
-    firstLevelMenus: (state) => state.menuList.filter((menu) => menu.pid === 0),
+    firstLevelMenus: (state: any) => state.menuList.filter((menu: any) => menu.pid === 0),
     // 根据ID获取菜单
-    getMenuById: (state) => (menuId) => {
-      return state.menuList.find((menu) => menu.id === menuId)
+    getMenuById: (state: any) => (menuId: any) => {
+      return state.menuList.find((menu: any) => menu.id === menuId)
     },
     // 获取当前选中一级菜单的子菜单
-    currentSubMenus: (state) => (firstMenuId) => {
-      const firstMenu = state.menuList.find((menu) => menu.id === firstMenuId)
+    currentSubMenus: (state: any) => (firstMenuId: any) => {
+      const firstMenu = state.menuList.find((menu: any) => menu.id === firstMenuId)
       return firstMenu ? firstMenu.children || [] : []
     },
     // 获取当前选中一级菜单的组件类型
-    currentFirstMenuComponent: (state) => (firstMenuId) => {
-      const firstMenu = state.menuList.find((menu) => menu.id === firstMenuId)
+    currentFirstMenuComponent: (state: any) => (firstMenuId: any) => {
+      const firstMenu = state.menuList.find((menu: any) => menu.id === firstMenuId)
       return firstMenu ? firstMenu.component : null
     }
   },
 
   actions: {
-    setMenuList(partial) {
+    setMenuList(partial: any[]) {
       this.menuList = partial || []
     },
 
-    setRouteMounted(value) {
+    setRouteMounted(value: boolean) {
       this.routeHasMounted = value
     },
 
@@ -169,8 +169,8 @@ const useMenuStore = defineStore('menu', {
     },
 
     // 获取菜单路径对应的菜单信息
-    getMenuByPath(path) {
-      const findMenu = (menuList) => {
+    getMenuByPath(path: string) {
+      const findMenu = (menuList: any[]) => {
         for (const menu of menuList) {
           if (menu.path === path) return menu
           if (menu.children && menu.children.length > 0) {

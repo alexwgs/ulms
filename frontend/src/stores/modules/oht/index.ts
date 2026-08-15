@@ -33,9 +33,9 @@ export const useOhtStore = defineStore('oht', {
   }),
 
   getters: {
-    filteredWaitingCase: (state) => {
+    filteredWaitingCase: (state: any) => {
       return state.waittingCase.filter(
-        (caseItem) => !state.refuseCaseIds.includes(caseItem.caseId)
+        (caseItem: any) => !state.refuseCaseIds.includes(caseItem.caseId)
       )
     }
   },

@@ -27,20 +27,20 @@ const useUserStore = defineStore('user', {
   }),
 
   getters: {
-    userInfo(state) {
+    userInfo(state: any) {
       return { ...state }
     }
   },
 
   actions: {
-    switchRoles() {
+    switchRoles(): Promise<string> {
       return new Promise((resolve) => {
         this.role = this.role === 'user' ? 'admin' : 'user'
         resolve(this.role)
       })
     },
     // Set user's information
-    setInfo(partial) {
+    setInfo(partial: Record<string, any>) {
       this.$patch(partial)
     },
 
@@ -56,7 +56,7 @@ const useUserStore = defineStore('user', {
     },
 
     // Login
-    async login(loginForm) {
+    async login(loginForm: Record<string, any>) {
       try {
         loginForm.password = encryptData(loginForm.password)
         const res = await userLogin(loginForm)

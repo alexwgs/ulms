@@ -53,30 +53,30 @@ export const useWsStore = defineStore('websocket', {
 
   getters: {
     // 是否已连接
-    isConnected: (state) => state.connectionStatus === 'connected',
+    isConnected: (state: any) => state.connectionStatus === 'connected',
 
     // 是否正在连接
-    isConnecting: (state) => state.connectionStatus === 'connecting',
+    isConnecting: (state: any) => state.connectionStatus === 'connecting',
 
     // 是否断开
-    isDisconnected: (state) => state.connectionStatus === 'disconnected',
+    isDisconnected: (state: any) => state.connectionStatus === 'disconnected',
 
     // 是否有错误
-    hasError: (state) => state.connectionStatus === 'error',
+    hasError: (state: any) => state.connectionStatus === 'error',
 
     // 获取未读消息数量
-    unreadMessageCount: (state) => {
-      return state.message.filter((msg) => !msg.read).length
+    unreadMessageCount: (state: any) => {
+      return state.message.filter((msg: any) => !msg.read).length
     },
 
     // 获取最新消息
-    latestMessages: (state) => {
+    latestMessages: (state: any) => {
       return state.message.slice(-50)
     },
 
     // 获取连接状态描述
-    connectionStatusText: (state) => {
-      const statusMap = {
+    connectionStatusText: (state: any) => {
+      const statusMap: Record<string, string> = {
         disconnected: '未连接',
         connecting: '连接中',
         connected: '已连接',
