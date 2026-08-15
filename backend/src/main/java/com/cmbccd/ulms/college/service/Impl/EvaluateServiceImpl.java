@@ -4,17 +4,21 @@ import com.cmbccd.ulms.college.dao.EvaluateMapper;
 import com.cmbccd.ulms.college.dao.EvaluateTempleteMapper;
 import com.cmbccd.ulms.college.domain.Evaluate;
 import com.cmbccd.ulms.college.domain.EvaluateExample;
+import com.cmbccd.ulms.college.domain.EvaluateExample.Criteria;
 import com.cmbccd.ulms.college.domain.EvaluateTemplete;
 import com.cmbccd.ulms.college.service.EvaluateService;
 import com.cmbccd.ulms.common.controller.DataCache;
+import com.cmbccd.ulms.common.util.DataPage;
 import com.cmbccd.ulms.common.util.Util;
 import com.cmbccd.ulms.sys.service.PublicService;
 
+import com.github.pagehelper.PageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class EvaluateServiceImpl implements EvaluateService {
@@ -39,6 +43,21 @@ public class EvaluateServiceImpl implements EvaluateService {
             item.setEvaluate(evaluateTempleteMapper.selectByJourno(item.getTempId(),item.getJourno()));
         }
         return list;
+    }
+
+    @Override
+    public DataPage<Evaluate> listEvaluateByQuery(Map<String, String> params) {
+        Map<String, Integer> pageParams = Util.innitTablePages(params);
+        String courseId = params.get("courseId");
+        EvaluateExample example = new EvaluateExample();
+        Criteria criteria = example.createCriteria();
+        if (!Util.isNullorEmpty(params.get("order"))) {
+            example.setOrderByClause(Util.buildOrderByClause(params.get("order"), params.get("orderType")));
+        }
+        if (!Util.isNullorEmpty(courseId)) criteria.andCourseIdEqualTo(courseId);
+        PageHelper.startPage(pageParams.get("pageNum"), pageParams.get("pageSize"));
+        List<Evaluate> list = list(example);
+        return new DataPage<Evaluate>(list);
     }
 
     @Override

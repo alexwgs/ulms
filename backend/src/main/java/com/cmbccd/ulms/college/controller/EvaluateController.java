@@ -1,19 +1,15 @@
 package com.cmbccd.ulms.college.controller;
 
 import com.cmbccd.ulms.college.domain.Evaluate;
-import com.cmbccd.ulms.college.domain.EvaluateExample;
 import com.cmbccd.ulms.college.domain.StudyLog;
 import com.cmbccd.ulms.college.service.EvaluateService;
 import com.cmbccd.ulms.college.service.StudyLogService;
-import com.cmbccd.ulms.common.util.DataPage;
 import com.cmbccd.ulms.common.util.Util;
 import com.cmbccd.ulms.sys.domain.Msg;
-import com.github.pagehelper.PageHelper;
 
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.annotation.Resource;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -31,17 +27,7 @@ public class EvaluateController {
      */
     @GetMapping("/list")
     public Msg listEvaluate(@RequestParam Map<String, String> params) {
-        Map<String, Integer> pageParams = Util.innitTablePages(params);
-        String courseId = params.get("courseId");
-        EvaluateExample example = new EvaluateExample();
-        EvaluateExample.Criteria criteria = example.createCriteria();
-        if (!Util.isNullorEmpty(params.get("order"))) {
-            example.setOrderByClause(Util.buildOrderByClause(params.get("order"), params.get("orderType")));
-        }
-        if(!Util.isNullorEmpty(courseId)) criteria.andCourseIdEqualTo(courseId);
-        PageHelper.startPage(pageParams.get("pageNum"), pageParams.get("pageSize"));
-        List<Evaluate> list = evaluateService.list(example);
-        return Msg.success(new DataPage<Evaluate>(list));
+        return Msg.success(evaluateService.listEvaluateByQuery(params));
     }
 
     /**
