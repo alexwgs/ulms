@@ -5,17 +5,17 @@
         <img src="@/assets/img/edu/studyLogo.png" />
       </div>
       <div class="nav">
-        <t-head-menu style="width: 800px" class="edu-nav-menu">
+        <t-head-menu style="width: 800px" class="edu-nav-menu" router expand-type="popup" :value="activeValue">
           <t-submenu value="1" style="font-size: 18px">
             <template #title>学霸榜 ></template>
-            <t-menu-item to="/edu/rankBoard">个人榜</t-menu-item>
-            <t-menu-item to="/edu/RankBoard2">团队榜</t-menu-item>
+            <t-menu-item to="/edu/rankBoard" value="/edu/rankBoard">个人榜</t-menu-item>
+            <t-menu-item to="/edu/RankBoard2" value="/edu/RankBoard2">团队榜</t-menu-item>
           </t-submenu>
 
-          <t-menu-item to="/edu/brush">刷题入口 ></t-menu-item>
-          <t-menu-item to="/edu/myexam">我的考试 ></t-menu-item>
-          <t-menu-item to="/edu/myquestion">我的题库 ></t-menu-item>
-          <t-menu-item to="/edu/competition">知识竞赛 ></t-menu-item>
+          <t-menu-item to="/edu/brush" value="/edu/brush">刷题入口 ></t-menu-item>
+          <t-menu-item to="/edu/myexam" value="/edu/myexam">我的考试 ></t-menu-item>
+          <t-menu-item to="/edu/myquestion" value="/edu/myquestion">我的题库 ></t-menu-item>
+          <t-menu-item to="/edu/competition" value="/edu/competition">知识竞赛 ></t-menu-item>
         </t-head-menu>
       </div>
       <div class="left-sticks"></div>
@@ -28,7 +28,15 @@
   </t-layout>
 </template>
 
-<script setup></script>
+<script setup>
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
+
+const route = useRoute()
+
+// 用当前路由 path 驱动菜单高亮（TDesign menu 不会自动同步路由）
+const activeValue = computed(() => route.path)
+</script>
 
 <style lang="less" scoped>
 .home-container {
@@ -123,5 +131,22 @@
   border-radius: 12px;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
   z-index: 1;
+}
+
+/* 学霸榜子菜单弹层（teleport 到 body，需 :global），保持深青色风格 */
+:global(.t-popup.t-is-head-menu .t-menu__popup) {
+  background-color: #0c717d;
+}
+
+:global(.t-popup.t-is-head-menu .t-menu__popup .t-menu__item) {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+:global(.t-popup.t-is-head-menu .t-menu__popup .t-menu__item:hover:not(.t-is-active)) {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+:global(.t-popup.t-is-head-menu .t-menu__popup .t-menu__item.t-is-active) {
+  background-color: rgba(255, 255, 255, 0.3);
 }
 </style>
