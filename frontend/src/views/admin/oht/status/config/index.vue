@@ -61,8 +61,8 @@
         </template>
       </TableColumn>
     </CustomTable>
-    <t-pagination @current-change="handleCurrentChange" :current="params.pageNum" :page-size="params.pageSize"
- :total="total">
+    <t-pagination @page-size-change="handleSizeChange" @current-change="handleCurrentChange" :current="currentPage"
+      :page-size-options="pageSizes" :page-size="params.pageSize" :total="total">
     </t-pagination>
   </t-card>
 
@@ -120,24 +120,36 @@
 import { ref, reactive, onMounted } from 'vue'
 import { MessagePlugin } from 'tdesign-vue-next'
 import { httpInstance } from '@/utils/request'
+import { useCrudPage } from '@/hooks/useCrudPage'
 
-const tableData = ref([])
+// 列表 + 分页（useCrudPage 样板）
+const {
+  list: tableData,
+  total,
+  query: params,
+  currentPage,
+  pageSizes,
+  handleCurrentChange,
+  handleSizeChange,
+  load: getStatusType
+} = useCrudPage({
+  fetchList: (q) => httpInstance.get('oht/statusType/list', { params: q }),
+  defaultQuery: {
+    dataType: '',
+    levelGrade: '',
+    status: 1,
+    querytype: '',
+    query: '',
+    pageSize: 20,
+    pageNum: 1
+  },
+  pageSizes: [20, 100, 500]
+})
+
 const statusTypeVisible = ref(false)
 const formLabelWidth = ref('80px')
 const manageType = ref('')
 const statusTypeRef = ref(null)
-
-const params = reactive({
-  dataType: '',
-  levelGrade: '',
-  status: 1,
-  querytype: '',
-  query: '',
-  pageSize: 20,
-  pageNum: 1
-})
-
-const total = ref(0)
 
 const statusTypeForm = reactive({
   id: '',
@@ -162,32 +174,12 @@ const statusTypeFormRules = {
   status: [{ required: true, message: '状态不可为空', trigger: 'change' }]
 }
 
-const getStatusType = async () => {
-  try {
-    const res = await httpInstance.get('oht/statusType/list', { params })
-    if (res.code !== 200) {
-      MessagePlugin.error(res.msg)
-      return
-    }
-    tableData.value = res.data.list
-    total.value = res.data.total
-  } catch (error) {
-    MessagePlugin.error('获取数据失败')
-    console.error(error)
-  }
-}
-
 const dialog = (data, type) => {
   manageType.value = type
   if (type === 'update' && data) {
     Object.assign(statusTypeForm, data)
   }
   statusTypeVisible.value = true
-}
-
-const handleCurrentChange = (page) => {
-  params.pageNum = page
-  getStatusType()
 }
 
 const closeStatusTypeDialog = () => {
