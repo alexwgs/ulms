@@ -220,13 +220,12 @@
 </template>
 
 <script setup>
-import { DialogPlugin } from 'tdesign-vue-next'
 import { MessagePlugin } from 'tdesign-vue-next'
 const uploadHeaders = { Authorization: localStorage.getItem('token') || '' }
 import { ref, reactive, onMounted, computed } from 'vue'
 import { adApi } from '@/api/system/ad'
 import { useDictStore } from '@/stores'
-import { usePagination } from '@/hooks/usePagination'
+import { useCrudPage } from '@/hooks/useCrudPage'
 
 const fsURL = import.meta.env.VITE_FILE_BASE_URL
 // 展示类文件统一走 HTTPS 文件管理地址，避免混合内容被浏览器拦截
@@ -234,17 +233,33 @@ const displayURL = import.meta.env.VITE_FILE_BASE_URL || fsURL
 
 // 数据
 const dictStore = useDictStore()
-const adList = ref([])
-const queryInfo = reactive({
-  orderType: ' desc',
-  order: ' sort ',
-  querytype: '',
-  query: '',
-  status: '-1',
-  pageSize: 20,
-  pageNum: 1
+
+// 列表 + 分页 + 删除（useCrudPage 样板）
+const {
+  list: adList,
+  total,
+  query: queryInfo,
+  currentPage,
+  pageSizes,
+  handleCurrentChange,
+  handleSizeChange,
+  load: getAdList,
+  remove: handleDelete
+} = useCrudPage({
+  fetchList: (q) => adApi.listAd(q),
+  defaultQuery: {
+    orderType: ' desc',
+    order: ' sort ',
+    querytype: '',
+    query: '',
+    status: '-1',
+    pageSize: 20,
+    pageNum: 1
+  },
+  deleteApi: (row) => adApi.deleteAd(row.id),
+  pageSizes: [20, 100, 500]
 })
-const total = ref(0)
+
 const cycleDate = ref([])
 const adForm = ref({
   id: '',
@@ -282,18 +297,6 @@ onMounted(() => {
   getAdList()
 })
 
-// 方法
-const getAdList = async () => {
-  try {
-    const res = await adApi.listAd(queryInfo)
-    if (res.code !== 200) return
-    adList.value = res.data.list
-    total.value = res.data.total
-  } catch (error) {
-    MessagePlugin.error(error.message)
-  }
-}
-
 const handleEdit = (row) => {
   dialogTitle.value = '修改轮播图'
   dialogFormVisible.value = true
@@ -301,24 +304,6 @@ const handleEdit = (row) => {
   adForm.value.cycleDate = [row.begDate, row.endDate]
   // cycleDate.value = [row.begDate, row.endDate]
   urlList.value = row.url ? [{ name: 'image.png', url: displayURL + row.url }] : []
-}
-
-const handleDelete = async (row) => {
-  try {
-    await DialogPlugin.confirm('此操作将永久删除该记录, 是否继续?', '提示', {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning'
-    })
-    const res = await adApi.deleteAd(row.id)
-    if (res.code !== 200) throw new Error(res.msg)
-    MessagePlugin.success(res.msg)
-    getAdList()
-  } catch (error) {
-    if (error !== 'cancel') {
-      MessagePlugin.error(error.message || '取消删除')
-    }
-  }
 }
 
 const addAd = () => {
@@ -390,14 +375,13 @@ const dialogFormSubmit = async () => {
 }
 
 const tableSort = ({ sortBy, descending }) => {
-  queryInfo.orderType = !descending ? ' asc ' : ' desc '
-  queryInfo.order = sortBy
+  queryInfo.value.orderType = !descending ? ' asc ' : ' desc '
+  queryInfo.value.order = sortBy
   getAdList()
 }
 
 const handleDateChange = () => {
 }
-const { currentPage, pageSizes, handleCurrentChange, handleSizeChange } = usePagination({ query: queryInfo, fetch: getAdList, pageSizes: [20, 100, 500] })
 </script>
 
 <style lang="less" scoped>

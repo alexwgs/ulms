@@ -93,27 +93,42 @@ import { MessagePlugin } from 'tdesign-vue-next'
 import { ref, reactive, onMounted } from 'vue'
 import { useDictStore } from '@/stores'
 import { dictionaryApi } from '@/api/system/dictionary'
-import { usePagination } from '@/hooks/usePagination'
-import { useConfirm } from '@/hooks/useConfirm'
+import { useCrudPage } from '@/hooks/useCrudPage'
 
 // 数据定义
 const dictStore = useDictStore()
-const dictionaryTableList = ref([])
+
+// 列表 + 分页 + 删除（useCrudPage 样板）
+const {
+  list: dictionaryTableList,
+  total,
+  query: queryInfo,
+  currentPage,
+  pageSizes,
+  handleCurrentChange,
+  handleSizeChange,
+  load: getDictionaryList,
+  remove: removeDictionary
+} = useCrudPage({
+  fetchList: (q) => dictionaryApi.listDictionary(q),
+  defaultQuery: {
+    orderType: ' asc',
+    order: ' id ',
+    status: '',
+    querytype: '',
+    query: '',
+    pageSize: 20,
+    pageNum: 1
+  },
+  deleteApi: (row) => dictionaryApi.deleteDictionary(row.id),
+  pageSizes: [20, 100, 500]
+})
+
 const dictionaryStatus = ref([])
 const dialogVisible = ref(false)
 const dialogTitle = ref('')
 const formLabelWidth = '120px'
 const dictionaryFormRef = ref(null)
-
-const queryInfo = reactive({
-  orderType: ' asc',
-  order: ' id ',
-  status: '',
-  querytype: '',
-  query: '',
-  pageSize: 20,
-  pageNum: 1
-})
 
 const dictionaryForm = reactive({
   id: '',
@@ -123,8 +138,6 @@ const dictionaryForm = reactive({
   description: '',
   status: 1
 })
-
-const total = ref(0)
 
 // 表单验证规则
 const dictionaryRules = reactive({
@@ -153,22 +166,6 @@ onMounted(() => {
   getDictionaryList()
 })
 
-// 方法
-const getDictionaryList = async () => {
-  try {
-    const res = await dictionaryApi.listDictionary(queryInfo)
-    if (res.code !== 200) throw new Error(res.msg)
-    dictionaryTableList.value = res.data.list
-    total.value = res.data.total
-  } catch (error) {
-    MessagePlugin.error(error.message)
-  }
-}
-
-
-
-
-
 const addDictionary = () => {
   dialogTitle.value = '新增字典信息'
   dialogVisible.value = true
@@ -193,15 +190,6 @@ const editDictionary = (data) => {
     description: data.description,
     status: data.status
   })
-}
-
-const removeDictionary = async (data) => {
-  const ok = await confirm('此操作将永久删除该记录, 是否继续?')
-  if (!ok) return
-  const res = await dictionaryApi.deleteDictionary(data.id)
-  if (res.code !== 200) return MessagePlugin.error(res.msg)
-  MessagePlugin.success(res.msg)
-  getDictionaryList()
 }
 
 const submitForm = async () => {
@@ -233,12 +221,10 @@ const closeDialog = () => {
 }
 
 const tableSort = ({ sortBy, descending }) => {
-  queryInfo.orderType = !descending ? ' asc ' : ' desc '
-  queryInfo.order = sortBy
+  queryInfo.value.orderType = !descending ? ' asc ' : ' desc '
+  queryInfo.value.order = sortBy
   getDictionaryList()
 }
-const { currentPage, pageSizes, handleCurrentChange, handleSizeChange } = usePagination({ query: queryInfo, fetch: getDictionaryList, pageSizes: [20, 100, 500] })
-const { confirm } = useConfirm()
 </script>
 
 <style lang="less" scoped>
