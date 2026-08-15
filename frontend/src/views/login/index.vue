@@ -28,7 +28,7 @@
         </t-form-item>
 
         <t-form-item name="password">
-          <t-input v-model="loginForm.password" type="password" maxlength="10" @keyup.enter="login"
+          <t-input v-model="loginForm.password" type="password" maxlength="10" @enter="login"
             placeholder="同人员成长平台、业务辅助系统密码">
             <template #prefix-icon>
               <DynamicIcon name="lock-on" />

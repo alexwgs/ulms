@@ -45,7 +45,7 @@
             <t-tag :key="tag" v-for="tag in keywords" closable :disable-transitions="false"
               @close="keywordClose(tag)" variant="light">{{ tag }}</t-tag>
             <t-input class="input-new-tag" v-if="inputVisible" v-model="inputValue" ref="saveTagInput" size="small"
-              @keyup.enter="handleInputConfirm" @blur="handleInputConfirm">
+              @enter="handleInputConfirm" @blur="handleInputConfirm">
             </t-input>
             <t-button v-else class="button-new-tag" size="small" @click="showInput">+ 关键词</t-button>
           </t-form-item>

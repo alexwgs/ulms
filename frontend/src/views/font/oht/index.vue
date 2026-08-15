@@ -128,7 +128,7 @@
               <!-- 输入框 -->
               <div class="input-wrapper">
                 <t-textarea v-model="chatContent"  :rows="3" placeholder="请输入消息内容..."
-                  @keyup.enter="handleMessage" resize="none" />
+                  @keyup="handleKeyup" resize="none" />
               </div>
 
               <!-- 发送按钮 -->
@@ -281,6 +281,13 @@ const handleMessage = () => {
   }
 
   setScrollTop()
+}
+
+// TDesign t-textarea 的 keyup 是组件事件，参数为 (value, { e })，不能用 .enter 修饰符
+const handleKeyup = (value, context) => {
+  if (context?.e?.key === 'Enter') {
+    handleMessage()
+  }
 }
 
 const setScrollTop = () => {

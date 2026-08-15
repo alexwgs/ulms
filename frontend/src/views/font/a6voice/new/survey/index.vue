@@ -64,7 +64,7 @@
       " @mouseout="hoverQuestion = false">
         <t-input :ref="`title${i}`" v-if="questionTitleEditing && currentQuestionTitleIndex === `${i}`"
           :placeholder="question.content" v-model="question.content" @blur="questionTitleEditing = false"
-          @keyup.enter="questionTitleEditing = false"></t-input>
+          @enter="questionTitleEditing = false"></t-input>
         <p v-else @click="handleQuestionTitleClick(`${i}`, `title${i}`)">
           题号：{{ question.sort }} |
           {{ question.content === '' ? '请输入调研题目！' : question.content }}
@@ -75,7 +75,7 @@
               @mouseenter="handleMouseEnter(i, j)" @mouseleave="hoverLabel = false">
               <t-input :ref="`DOM${i}${j}`" v-if="radioEditing && currentRadioIndex === `${i}${j}`"
                 :placeholder="label" v-model="question.options[j]" @blur="radioEditing = false"
-                @keyup.enter="radioEditing = false"></t-input>
+                @enter="radioEditing = false"></t-input>
               <t-radio v-else :value="label === '' ? '单选选项-' + (j + 1) : label"
                 @click="handleRadioClick(`${i}${j}`, `DOM${i}${j}`)">{{ label === '' ? '单选选项-' + (j + 1) : label
                 }}</t-radio>
@@ -92,7 +92,7 @@
               @mouseenter="handleMouseEnter(i, j)" @mouseleave="hoverLabel = false">
               <t-input :ref="`DOM${i}${j}`" v-if="checkboxEditing && currentCheckboxIndex === `${i}${j}`"
                 :placeholder="label" v-model="question.options[j]" @blur="checkboxEditing = false"
-                @keyup.enter="checkboxEditing = false"></t-input>
+                @enter="checkboxEditing = false"></t-input>
               <t-checkbox v-else :value="label === '' ? '多选选项-' + (j + 1) : label"
                 @click="handleCheckboxClick(`${i}${j}`, `DOM${i}${j}`)"></t-checkbox>
               <span v-show="hoverLabel && activeLableIndex === `${i}${j}`" class="label-operation">
