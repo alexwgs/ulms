@@ -151,7 +151,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { MessagePlugin } from 'tdesign-vue-next'
-import { operLogApi } from '@/API/admin/operLog'
+import { operLogApi } from '@/api/admin/operLog'
 import { useCrudPage } from '@/hooks/useCrudPage'
 
 // 列表 + 分页（useCrudPage 样板）
