@@ -85,7 +85,7 @@
             <t-checkbox
               v-for="option in item.question.options.split(',')"
               :key="option"
-              :model-value="item.question.answer.split(',')"
+              :checked="item.question.answer.split(',').includes(option)"
               class="ques-option"
               :label="option"
               border
@@ -96,7 +96,7 @@
             <t-radio
               v-for="option in item.question.options.split(',')"
               :key="option"
-              :model-value="item.question.answer"
+              :checked="item.question.answer === option"
               class="ques-option"
               :label="option"
               border
@@ -119,7 +119,7 @@
               <t-checkbox
                 v-for="option in item.question.options.split(',')"
                 :key="option"
-                :model-value="item.userAnswer.split(',')"
+                :checked="item.userAnswer.split(',').includes(option)"
                 class="ques-option"
                 :label="option"
                 border
@@ -130,7 +130,7 @@
               <t-radio
                 v-for="option in item.question.options.split(',')"
                 :key="option"
-                :model-value="item.userAnswer"
+                :checked="item.userAnswer === option"
                 class="ques-option"
                 :label="option"
                 border
