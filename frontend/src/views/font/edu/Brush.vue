@@ -389,52 +389,61 @@ onMounted(() => {
 
   .ques-options {
     margin-top: 18px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
 
-    :deep(.t-radio),
-    :deep(.t-checkbox) {
-      margin: 0;
-      padding: 14px 18px;
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      border-radius: 12px;
+    /* TDesign group 默认 inline-flex + wrap + fit-content，选项会并排且宽度随内容；
+       覆盖为纵向 flex 让每个选项独占一行、宽度一致 */
+    :deep(.t-radio-group),
+    :deep(.t-checkbox-group) {
+      width: 100%;
       display: flex;
-      align-items: flex-start;
-      transition:
-        background 0.25s ease,
-        border-color 0.25s ease,
-        transform 0.25s ease,
-        box-shadow 0.25s ease;
-      cursor: pointer;
+      flex-direction: column;
+      flex-wrap: nowrap;
+      gap: 12px;
+      align-items: stretch;
 
-      &:hover {
-        background: rgba(255, 255, 255, 0.14);
-        border-color: rgba(255, 255, 255, 0.32);
-        transform: translateY(-1px);
-        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+      .t-radio,
+      .t-checkbox {
+        margin: 0;
+        padding: 14px 18px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        border-radius: 12px;
+        display: flex;
+        align-items: flex-start;
+        transition:
+          background 0.25s ease,
+          border-color 0.25s ease,
+          transform 0.25s ease,
+          box-shadow 0.25s ease;
+        cursor: pointer;
+
+        &:hover {
+          background: rgba(255, 255, 255, 0.14);
+          border-color: rgba(255, 255, 255, 0.32);
+          transform: translateY(-1px);
+          box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+        }
+
+        :deep(.t-radio__label),
+        :deep(.t-checkbox__label) {
+          color: rgba(255, 255, 255, 0.92);
+          font-size: 15px;
+          line-height: 1.7;
+          word-break: break-word;
+          white-space: normal;
+        }
       }
 
-      :deep(.t-radio__label),
-      :deep(.t-checkbox__label) {
-        color: rgba(255, 255, 255, 0.92);
-        font-size: 15px;
-        line-height: 1.7;
-        word-break: break-word;
-        white-space: normal;
-      }
-    }
+      .t-radio.t-is-checked,
+      .t-checkbox.t-is-checked {
+        background: rgba(49, 185, 127, 0.18);
+        border-color: #31b97f;
+        box-shadow: 0 0 0 3px rgba(49, 185, 127, 0.18);
 
-    :deep(.t-radio.t-is-checked),
-    :deep(.t-checkbox.t-is-checked) {
-      background: rgba(49, 185, 127, 0.18);
-      border-color: #31b97f;
-      box-shadow: 0 0 0 3px rgba(49, 185, 127, 0.18);
-
-      :deep(.t-radio__label),
-      :deep(.t-checkbox__label) {
-        color: #ffffff;
+        :deep(.t-radio__label),
+        :deep(.t-checkbox__label) {
+          color: #ffffff;
+        }
       }
     }
   }
