@@ -3,13 +3,10 @@ package com.cmbccd.ulms.oht.controller;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.cmbccd.ulms.common.annotation.MyLog;
-import com.cmbccd.ulms.common.util.DataPage;
 import com.cmbccd.ulms.common.util.Util;
 import com.cmbccd.ulms.oht.domain.QuickMemo;
-import com.cmbccd.ulms.oht.domain.QuickMemoExample;
 import com.cmbccd.ulms.oht.service.QuickMemoService;
 import com.cmbccd.ulms.sys.domain.Msg;
-import com.github.pagehelper.PageHelper;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.annotation.Resource;
@@ -31,16 +28,7 @@ public class QuickMemoController {
 	@RequestMapping(value = "list", method = RequestMethod.GET)
 	@SaCheckPermission("oht:quickMemo:list")
 	public Msg getQuickMemoList(@RequestParam Map<String, String> params) {
-
-		Map<String, Integer> pageParams = Util.innitTablePages(params);
-		QuickMemoExample example = new QuickMemoExample();
-		if (!Util.isNullorEmpty(params.get("order"))) {
-			example.setOrderByClause(Util.buildOrderByClause(params.get("order"), params.get("orderType")));
-		}
-		PageHelper.startPage(pageParams.get("pageNum"), pageParams.get("pageSize"));
-		List<QuickMemo> quickMemoList = quickMemoService.getQuickMemoList(example);
-
-		return Msg.success(new DataPage<QuickMemo>(quickMemoList));
+		return Msg.success(quickMemoService.getQuickMemoListByQuery(params));
 	}
 
 	/**

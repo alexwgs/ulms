@@ -1,18 +1,12 @@
 package com.cmbccd.ulms.oht.controller;
 
 import com.cmbccd.ulms.common.annotation.MyLog;
-import com.cmbccd.ulms.common.util.DataPage;
-import com.cmbccd.ulms.common.util.Util;
 import com.cmbccd.ulms.oht.domain.RoleList;
-import com.cmbccd.ulms.oht.domain.RoleListExample;
-import com.cmbccd.ulms.oht.domain.RoleListExample.Criteria;
 import com.cmbccd.ulms.oht.service.RoleListService;
 import com.cmbccd.ulms.sys.domain.Msg;
-import com.github.pagehelper.PageHelper;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.annotation.Resource;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -29,26 +23,7 @@ public class RoleListController {
 	 */
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public Msg getUserRoleListByRoleType(@RequestParam Map<String, String> params) {
-		Map<String, Integer> pageParams = Util.innitTablePages(params);
-		RoleListExample example = new RoleListExample();
-		Criteria criteria = example.createCriteria();
-		if (!Util.isNullorEmpty(params.get("roleType"))) {
-			criteria.andRoleTypeEqualTo(Integer.parseInt(params.get("roleType")));
-		}
-		if (!Util.isNullorEmpty(params.get("roleStat"))) {
-			criteria.andRoleStatEqualTo(Integer.parseInt(params.get("roleStat")));
-		}
-		if (!Util.isNullorEmpty(params.get("ploNum"))) {
-			criteria.andPloNumEqualTo(params.get("ploNum"));
-		}
-
-		if (!Util.isNullorEmpty(params.get("order"))) {
-			example.setOrderByClause(Util.buildOrderByClause(params.get("order"), params.get("orderType")));
-		}
-		PageHelper.startPage(pageParams.get("pageNum"), pageParams.get("pageSize"));
-
-		List<RoleList> roleList = roleListService.getRoleListByExample(example);
-		return Msg.success( new DataPage<RoleList>(roleList));
+		return Msg.success(roleListService.getUserRoleListByQuery(params));
 	}
 
 	/**

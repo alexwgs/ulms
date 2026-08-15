@@ -3,10 +3,12 @@
  */
 package com.cmbccd.ulms.oht.service;
 
+import com.cmbccd.ulms.common.util.DataPage;
 import com.cmbccd.ulms.oht.domain.QuickMemo;
 import com.cmbccd.ulms.oht.domain.QuickMemoExample;
 
 import java.util.List;
+import java.util.Map;
 
 /** 
 * @Author WeiGenSheng
@@ -21,6 +23,8 @@ import java.util.List;
 public interface QuickMemoService {
 	
 	List<QuickMemo> getQuickMemoList (QuickMemoExample example);
+
+	DataPage<QuickMemo> getQuickMemoListByQuery(Map<String, String> params);
 	//前端使用
 	List<QuickMemo> getQuickMemoByRoleType(String roleType);
 	

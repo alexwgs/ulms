@@ -1,5 +1,6 @@
 package com.cmbccd.ulms.oht.service;
 
+import com.cmbccd.ulms.common.util.DataPage;
 import com.cmbccd.ulms.oht.domain.StatusType;
 import com.cmbccd.ulms.oht.domain.StatusTypeExample;
 
@@ -33,6 +34,8 @@ public interface StatusTypeService {
 	public List<StatusType> getAllStatusType();
 	
 	public List<StatusType> getStatusTypeByExample(StatusTypeExample example);
+
+	public DataPage<StatusType> getStatusTypeListByQuery(Map<String, String> params);
 	
 	public int updateStatusTypeByPrimaryId(StatusType record);
 	

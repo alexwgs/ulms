@@ -5,17 +5,12 @@ package com.cmbccd.ulms.oht.controller;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.cmbccd.ulms.common.annotation.MyLog;
-import com.cmbccd.ulms.common.util.DataPage;
-import com.cmbccd.ulms.common.util.Util;
 import com.cmbccd.ulms.oht.domain.OhtRole;
-import com.cmbccd.ulms.oht.domain.OhtRoleExample;
 import com.cmbccd.ulms.oht.service.OhtRoleService;
 import com.cmbccd.ulms.sys.domain.Msg;
-import com.github.pagehelper.PageHelper;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.annotation.Resource;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -33,19 +28,7 @@ public class OhtRoleController {
 	@GetMapping( value = "list")
 	@SaCheckPermission("oht:role:list")
 	public Msg getOhtRoleList(@RequestParam Map<String, String> params) {
-		
-		Map<String, Integer> pageParams = Util.innitTablePages(params);
-		
-		OhtRoleExample example = new OhtRoleExample();
-		if(!Util.isNullorEmpty(params.get("order"))) {
-			example.setOrderByClause( Util.buildOrderByClause(params.get("order"), params.get("orderType")));
-		}
-		PageHelper.startPage(pageParams.get("pageNum"), pageParams.get("pageSize"));
-	
-		
-		List<OhtRole> ohtRoles = ohtRoleService.getOhtRoleList(example);
-		
-		return Msg.success(new DataPage<OhtRole>(ohtRoles));
+		return Msg.success(ohtRoleService.getOhtRoleListByQuery(params));
 	}
 	
 	/**

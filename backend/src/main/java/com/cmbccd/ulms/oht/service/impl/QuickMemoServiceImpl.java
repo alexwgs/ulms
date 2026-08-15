@@ -3,14 +3,18 @@
  */
 package com.cmbccd.ulms.oht.service.impl;
 
+import com.cmbccd.ulms.common.util.DataPage;
+import com.cmbccd.ulms.common.util.Util;
 import com.cmbccd.ulms.oht.dao.QuickMemoMapper;
 import com.cmbccd.ulms.oht.domain.QuickMemo;
 import com.cmbccd.ulms.oht.domain.QuickMemoExample;
 import com.cmbccd.ulms.oht.service.QuickMemoService;
+import com.github.pagehelper.PageHelper;
 import org.springframework.stereotype.Service;
 
 import jakarta.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 
@@ -29,6 +33,18 @@ public class QuickMemoServiceImpl implements QuickMemoService {
 	@Override
 	public List<QuickMemo> getQuickMemoList(QuickMemoExample example) {
 		return quickMemoMapper.selectByExample(example);
+	}
+
+	@Override
+	public DataPage<QuickMemo> getQuickMemoListByQuery(Map<String, String> params) {
+		Map<String, Integer> pageParams = Util.innitTablePages(params);
+		QuickMemoExample example = new QuickMemoExample();
+		if (!Util.isNullorEmpty(params.get("order"))) {
+			example.setOrderByClause(Util.buildOrderByClause(params.get("order"), params.get("orderType")));
+		}
+		PageHelper.startPage(pageParams.get("pageNum"), pageParams.get("pageSize"));
+		List<QuickMemo> quickMemoList = quickMemoMapper.selectByExample(example);
+		return new DataPage<QuickMemo>(quickMemoList);
 	}
 
 	@Override

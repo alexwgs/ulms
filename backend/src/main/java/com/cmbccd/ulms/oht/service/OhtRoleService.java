@@ -3,10 +3,12 @@
  */
 package com.cmbccd.ulms.oht.service;
 
+import com.cmbccd.ulms.common.util.DataPage;
 import com.cmbccd.ulms.oht.domain.OhtRole;
 import com.cmbccd.ulms.oht.domain.OhtRoleExample;
 
 import java.util.List;
+import java.util.Map;
 
 /** 
 * @Author WeiGenSheng
@@ -22,6 +24,9 @@ public interface OhtRoleService {
 
 	//查看举手系统的角色列表
 	public List<OhtRole> getOhtRoleList(OhtRoleExample example);
+
+	//分页查看举手系统的角色列表（管理端查询）
+	public DataPage<OhtRole> getOhtRoleListByQuery(Map<String, String> params);
 	
 	//新增角色
 	public Integer addSelectiveOhtRole(OhtRole record);

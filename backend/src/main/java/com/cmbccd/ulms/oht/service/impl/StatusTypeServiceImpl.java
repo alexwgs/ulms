@@ -1,10 +1,13 @@
 package com.cmbccd.ulms.oht.service.impl;
 
+import com.cmbccd.ulms.common.util.DataPage;
+import com.cmbccd.ulms.common.util.Util;
 import com.cmbccd.ulms.oht.dao.StatusTypeMapper;
 import com.cmbccd.ulms.oht.domain.StatusType;
 import com.cmbccd.ulms.oht.domain.StatusTypeExample;
 import com.cmbccd.ulms.oht.domain.StatusTypeExample.Criteria;
 import com.cmbccd.ulms.oht.service.StatusTypeService;
+import com.github.pagehelper.PageHelper;
 import org.springframework.stereotype.Service;
 
 import jakarta.annotation.Resource;
@@ -109,6 +112,25 @@ public class StatusTypeServiceImpl implements StatusTypeService {
 	@Override
 	public List<StatusType> getStatusTypeByExample(StatusTypeExample example) {
 		return statusTypeMapper.selectByExample(example);
+	}
+
+	@Override
+	public DataPage<StatusType> getStatusTypeListByQuery(Map<String, String> params) {
+		StatusTypeExample example = new StatusTypeExample();
+		Criteria criteria = example.createCriteria();
+		if (!Util.isNullorEmpty(params.get("dataType"))) {
+			criteria.andDataTypeEqualTo(params.get("dataType"));
+		}
+		if (!Util.isNullorEmpty(params.get("levelGrade"))) {
+			criteria.andLevelGradeEqualTo(Integer.parseInt(params.get("levelGrade")));
+		}
+		if (!Util.isNullorEmpty(params.get("status"))) {
+			criteria.andStatusEqualTo(Integer.parseInt(params.get("status")));
+		}
+		Map<String, Integer> pageParams = Util.innitTablePages(params);
+		PageHelper.startPage(pageParams.get("pageNum"), pageParams.get("pageSize"));
+		List<StatusType> statusTypeList = statusTypeMapper.selectByExample(example);
+		return new DataPage<StatusType>(statusTypeList);
 	}
 
 	@Override

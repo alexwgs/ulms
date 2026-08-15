@@ -41,8 +41,8 @@
 
 ### P3 类型与测试体系（可扩展 + 可测试）
 - [x] 建立 CI（.github/workflows/ci.yml：后端 mvn test + 前端 lint + build，push/PR 触发）
-- [~] 前端渐进 TS 化（第一步：tsconfig.json + src/types/api.d.ts 定义 ApiResponse/DataPage/PageQuery/DictionaryItem 类型契约，checkJs 关闭、不破坏存量 JS；后续 api 模块/store 逐步启用类型）
-- [~] 后端 Service 层单元测试：新增 MenuServiceImplTest（4 用例）、DictionaryServiceImplTest + PublicServiceImplTest（Mockito，验证跨模块 DAO 收口正确委托 mapper）、UtilTest buildOrderByClause 边界测试（orderType trim/大小写），总计 22 测试全绿；其余核心 Service（FlowCase/QuesBank/Case）的 Mockito 单测待补
+- [~] 前端渐进 TS 化（第一步：tsconfig.json + src/types/api.d.ts 定义 ApiResponse/DataPage/PageQuery/DictionaryItem 类型契约，checkJs 关闭、不破坏存量 JS；第二步：api/system/role.js → role.ts，带 ApiResponse/DataPage/PageQuery/Role 类型契约；后续 api 模块/store 逐步启用类型）
+- [~] 后端 Service 层单元测试：MenuServiceImplTest（4）、DictionaryServiceImplTest + PublicServiceImplTest（Mockito 委托）、RoleListServiceImplTest（4，验证增删改空值保护）、UtilTest buildOrderByClause 边界测试，总计 26 测试全绿；其余核心 Service（FlowCase/QuesBank/Case）的 Mockito 单测待补
 
 ## 已完成
 - [x] 密码迁移 BCrypt（PasswordUtil + 透明升级）
@@ -65,7 +65,7 @@
 - **P0 安全加固**：✅ 100%（SQL 注入/WebSocket 鉴权/路径穿越/上传鉴权/异常脱敏/凭据外置/PII 收敛）
 - **P1 确定性 bug**：✅ 100%（后端 4 + 前端 5 + 命名 typo 7 类）
 - **P2 工程规范**：🔄 约 95%（登录 store、命名、权限、事务、ESLint 基建 + 83 bug 清零、API 统一、qiankun 清理、下载统一、跨模块 DAO 收口、CRUD 样板 quickUrl/role/user、静态状态收敛 DataCache + WebSocketServer.state 完成；其余 Controller 瘦身可继续推广）
-- **P3 类型与测试体系**：🔄 约 55%（CI 建立、TS 起步 + 类型契约、22 单元测试含 Mockito；其余核心 Service 单测、完整 TS 化待做）
+- **P3 类型与测试体系**：🔄 约 65%（CI 建立、TS 起步 + 类型契约 + 首个 api 模块 role.ts、26 单元测试含 Mockito；其余核心 Service 单测、完整 TS 化待做）
 
 ### 验证结论（全绿）
 - 后端 `mvn test`：22 用例全绿
@@ -74,9 +74,9 @@
 
 ### 剩余结构性重构（建议下一阶段继续）
 1. 前端 CRUD 样板抽取（useCrudPage hook + quickUrl/role/user 已改造；其余 CRUD 页如 dailyConfig/statusType 等可继续推广）
-2. 后端 Controller 业务下沉 Service（college：CourseController、edu：QuesBankController/BrushScoreService、sys：QuickUrl/Dictionary、edu：ExamInfo/DailyConfig 已完成；flow/youngTalk 等其余 Controller 待推广）
+2. 后端 Controller 业务下沉 Service（college：CourseController、edu：QuesBankController/BrushScoreService、sys：QuickUrl/Dictionary、edu：ExamInfo/DailyConfig、oht：StatusType/OhtRole/RoleList/QuickMemo 已完成；flow/youngTalk 等其余 Controller 待推广）
 3. ~~后端 DataCache 静态 Map / WebSocketServer.state 收敛~~（已完成）
-4. 前端渐进 TS 化深入（api 模块 → store → router meta 逐步启用类型）
+4. 前端渐进 TS 化深入（api 模块 role.ts 已启用类型；其余 api 模块 → store → router meta 逐步启用类型）
 5. db TableController sync/update 权限（需前端菜单配合确认权限码）
 6. Artical→Article 拼写纠正（涉及前后端 API 契约，专项）
 7. 其余核心 Service（FlowCase/QuesBank/Case）的 Mockito 单测

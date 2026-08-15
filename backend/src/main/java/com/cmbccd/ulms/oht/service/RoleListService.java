@@ -1,9 +1,11 @@
 package com.cmbccd.ulms.oht.service;
 
+import com.cmbccd.ulms.common.util.DataPage;
 import com.cmbccd.ulms.oht.domain.RoleList;
 import com.cmbccd.ulms.oht.domain.RoleListExample;
 
 import java.util.List;
+import java.util.Map;
 /**
  * 
 * <p>Title: RoleListService.java</p>  
@@ -15,6 +17,8 @@ import java.util.List;
 public interface RoleListService {
 
 	public List<RoleList> getRoleListByExample(RoleListExample example);
+
+	public DataPage<RoleList> getUserRoleListByQuery(Map<String, String> params);
 	
 	public List<RoleList> getUserRoleListByRoleType(Integer roleType ,Integer status);
 
