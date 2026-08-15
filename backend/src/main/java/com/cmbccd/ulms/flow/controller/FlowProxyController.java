@@ -1,14 +1,11 @@
 package com.cmbccd.ulms.flow.controller;
 
-import com.cmbccd.ulms.common.controller.DataCache;
-import com.cmbccd.ulms.common.util.DataPage;
 import com.cmbccd.ulms.flow.domain.FlowProxy;
 import com.cmbccd.ulms.flow.service.FlowProxyService;
 import com.cmbccd.ulms.sys.domain.Msg;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.annotation.Resource;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -19,13 +16,7 @@ public class FlowProxyController {
 
     @GetMapping("/list")
     public Msg list(@RequestParam Map<String, String> params){
-        List<FlowProxy> list = flowProxyService.list(params);
-        list.forEach(e -> {
-            e.setPloUser(DataCache.getEmployees().get(e.getPloNum()));
-            e.setProxyUser(DataCache.getEmployees().get(e.getProxyNum()));
-            e.setHandleUser(DataCache.getEmployees().get(e.getHandlePlo()));
-        });
-        return Msg.success(new DataPage<FlowProxy>(list));
+        return Msg.success(flowProxyService.list(params));
     }
 
     @PostMapping("/add")

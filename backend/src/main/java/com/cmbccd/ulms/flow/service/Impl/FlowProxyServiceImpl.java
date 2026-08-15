@@ -1,5 +1,7 @@
 package com.cmbccd.ulms.flow.service.impl;
 
+import com.cmbccd.ulms.common.controller.DataCache;
+import com.cmbccd.ulms.common.util.DataPage;
 import com.cmbccd.ulms.common.util.Util;
 import com.cmbccd.ulms.flow.dao.FlowProxyMapper;
 import com.cmbccd.ulms.flow.domain.FlowProxy;
@@ -58,7 +60,7 @@ public class FlowProxyServiceImpl implements FlowProxyService {
     }
 
     @Override
-    public List<FlowProxy> list(Map<String, String> params) {
+    public DataPage<FlowProxy> list(Map<String, String> params) {
         String caseStatus = params.get("caseStatus");
         String ploNum = params.get("ploNum");
 
@@ -82,7 +84,13 @@ public class FlowProxyServiceImpl implements FlowProxyService {
             example.setOrderByClause(Util.buildOrderByClause(params.get("order"), params.get("orderType")));
         }
         PageHelper.startPage(pageParams.get("pageNum"), pageParams.get("pageSize"));
-        return flowProxyMapper.selectByExample(example);
+        List<FlowProxy> list = flowProxyMapper.selectByExample(example);
+        list.forEach(e -> {
+            e.setPloUser(DataCache.getEmployees().get(e.getPloNum()));
+            e.setProxyUser(DataCache.getEmployees().get(e.getProxyNum()));
+            e.setHandleUser(DataCache.getEmployees().get(e.getHandlePlo()));
+        });
+        return new DataPage<FlowProxy>(list);
     }
 
     @Override
