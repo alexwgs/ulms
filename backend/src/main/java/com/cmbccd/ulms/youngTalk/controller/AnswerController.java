@@ -4,8 +4,6 @@ import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 import com.cmbccd.ulms.common.annotation.MyLog;
-import com.cmbccd.ulms.common.controller.DataCache;
-import com.cmbccd.ulms.common.util.DataPage;
 import com.cmbccd.ulms.common.util.ExcelUtils;
 import com.cmbccd.ulms.common.util.Util;
 import com.cmbccd.ulms.sys.domain.Msg;
@@ -15,7 +13,6 @@ import com.cmbccd.ulms.youngTalk.domain.Question;
 import com.cmbccd.ulms.youngTalk.service.AnswerService;
 import com.cmbccd.ulms.youngTalk.service.ArticalService;
 import com.cmbccd.ulms.youngTalk.service.QuestionService;
-import com.github.pagehelper.PageHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
@@ -88,13 +85,7 @@ public class AnswerController {
 	@GetMapping(value = "/answer/getUserList/{articalId}")
 	public Msg getSurveyAnswerUserList(@PathVariable("articalId") int articalId,
 			@RequestParam Map<String, String> params) {
-		Map<String, Integer> pageParams = Util.innitTablePages(params);
-		PageHelper.startPage(pageParams.get("pageNum"), pageParams.get("pageSize"));
-		List<Answer> users = answerService.selectSurveyUserIds(articalId);
-		for (Answer user : users) {
-			user.setUser(DataCache.getEmployees().get(user.getUserId()));
-		}
-		return Msg.success(new DataPage<Answer>(users));
+		return Msg.success(answerService.listSurveyAnswerUser(articalId, params));
 	}
 
 	/**

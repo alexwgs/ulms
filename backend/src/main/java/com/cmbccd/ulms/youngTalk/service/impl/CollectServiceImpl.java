@@ -1,14 +1,19 @@
 package com.cmbccd.ulms.youngTalk.service.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import com.cmbccd.ulms.common.util.DataPage;
+import com.cmbccd.ulms.common.util.Util;
 import com.cmbccd.ulms.youngTalk.dao.CollectMapper;
 import com.cmbccd.ulms.youngTalk.domain.Collect;
 import com.cmbccd.ulms.youngTalk.domain.CollectExample;
 import com.cmbccd.ulms.youngTalk.domain.CollectExample.Criteria;
+import com.cmbccd.ulms.youngTalk.service.ArticalService;
 import com.cmbccd.ulms.youngTalk.service.CollectService;
+import com.github.pagehelper.PageHelper;
 
 import jakarta.annotation.Resource;
 
@@ -18,6 +23,9 @@ public class CollectServiceImpl implements CollectService {
 
 	@Resource
 	private CollectMapper collectMapper;
+
+	@Resource
+	private ArticalService articalService;
 
 	@Override
 	public int isUserCollectByArticalId(Integer articalId, String userId) {
@@ -57,6 +65,17 @@ public class CollectServiceImpl implements CollectService {
 		criteria.andUserIdEqualTo(userId);
 		criteria.andStatusEqualTo(1);
 		return collectMapper.selectByExample(example);
+	}
+
+	@Override
+	public DataPage<Collect> listCollectByQuery(Map<String, String> params, String userId) {
+		Map<String, Integer> pageParams = Util.innitTablePages(params);
+		PageHelper.startPage(pageParams.get("pageNum"), pageParams.get("pageSize"));
+		List<Collect> collects = getCollectListByUserId(userId);
+		for (Collect collect : collects) {
+			collect.setArtical(articalService.getArticalByIdWithNoContent(collect.getArticalId()));
+		}
+		return new DataPage<Collect>(collects);
 	}
 
 }

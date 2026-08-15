@@ -1,14 +1,19 @@
 package com.cmbccd.ulms.youngTalk.service.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import com.cmbccd.ulms.common.controller.DataCache;
+import com.cmbccd.ulms.common.util.DataPage;
+import com.cmbccd.ulms.common.util.Util;
 import com.cmbccd.ulms.youngTalk.dao.AnswerMapper;
 import com.cmbccd.ulms.youngTalk.domain.Answer;
 import com.cmbccd.ulms.youngTalk.domain.AnswerExample;
 import com.cmbccd.ulms.youngTalk.domain.AnswerExample.Criteria;
 import com.cmbccd.ulms.youngTalk.service.AnswerService;
+import com.github.pagehelper.PageHelper;
 
 import jakarta.annotation.Resource;
 
@@ -43,6 +48,17 @@ public class AnswerServiceImpl implements AnswerService {
 	@Override
 	public List<Answer> selectSurveyUserIds(int articalId) {
 		return answerMapper.selectSurveyUserIds(articalId);
+	}
+
+	@Override
+	public DataPage<Answer> listSurveyAnswerUser(int articalId, Map<String, String> params) {
+		Map<String, Integer> pageParams = Util.innitTablePages(params);
+		PageHelper.startPage(pageParams.get("pageNum"), pageParams.get("pageSize"));
+		List<Answer> users = answerMapper.selectSurveyUserIds(articalId);
+		for (Answer user : users) {
+			user.setUser(DataCache.getEmployees().get(user.getUserId()));
+		}
+		return new DataPage<Answer>(users);
 	}
 
 }

@@ -1,17 +1,14 @@
 package com.cmbccd.ulms.youngTalk.controller;
 
-import com.cmbccd.ulms.common.util.DataPage;
 import com.cmbccd.ulms.common.util.Util;
 import com.cmbccd.ulms.sys.domain.Msg;
 import com.cmbccd.ulms.youngTalk.domain.Artical;
 import com.cmbccd.ulms.youngTalk.domain.Collect;
 import com.cmbccd.ulms.youngTalk.service.ArticalService;
 import com.cmbccd.ulms.youngTalk.service.CollectService;
-import com.github.pagehelper.PageHelper;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.annotation.Resource;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -67,14 +64,6 @@ public class CollectController {
 		if (userId.equals("0")) {
 			return Msg.error("您无权做此操作！请通过A6广场操作！");
 		}
-
-		Map<String, Integer> pageParams = Util.innitTablePages(params);
-		PageHelper.startPage(pageParams.get("pageNum"), pageParams.get("pageSize"));
-		List<Collect> collects = collectService.getCollectListByUserId(userId);
-
-		for (Collect collect : collects) {
-			collect.setArtical(articalService.getArticalByIdWithNoContent(collect.getArticalId()));
-		}
-		return Msg.success( new DataPage<Collect>(collects));
+		return Msg.success(collectService.listCollectByQuery(params, userId));
 	}
 }
