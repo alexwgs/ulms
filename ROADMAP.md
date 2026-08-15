@@ -64,11 +64,11 @@
 
 - **P0 安全加固**：✅ 100%（SQL 注入/WebSocket 鉴权/路径穿越/上传鉴权/异常脱敏/凭据外置/PII 收敛）
 - **P1 确定性 bug**：✅ 100%（后端 4 + 前端 5 + 命名 typo 7 类）
-- **P2 工程规范**：🔄 约 80%（登录 store、命名、权限、事务、ESLint 基建 + 83 bug 清零、API 统一、qiankun 清理、下载统一、跨模块 DAO 收口、静态状态收敛部分完成；CRUD 样板、Controller 瘦身、DataCache/WebSocketServer.state 收敛待做）
-- **P3 类型与测试体系**：🔄 约 50%（CI 建立、TS 起步 + 类型契约、19 单元测试；其余核心 Service 单测、完整 TS 化待做）
+- **P2 工程规范**：🔄 约 85%（登录 store、命名、权限、事务、ESLint 基建 + 83 bug 清零、API 统一、qiankun 清理、下载统一、跨模块 DAO 收口、静态状态收敛部分完成；CRUD 样板、Controller 瘦身、DataCache/WebSocketServer.state 收敛待做）
+- **P3 类型与测试体系**：🔄 约 55%（CI 建立、TS 起步 + 类型契约、22 单元测试含 Mockito；其余核心 Service 单测、完整 TS 化待做）
 
 ### 验证结论（全绿）
-- 后端 `mvn test`：19 用例全绿
+- 后端 `mvn test`：22 用例全绿
 - 前端 `npm run build:dev`：构建成功
 - 前端 `npm run lint`：0 error（1980 warning 为可逐步收敛的风格提示）
 
