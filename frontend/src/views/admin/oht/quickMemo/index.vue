@@ -78,22 +78,35 @@ import {
   quickMemoApi
 } from '@/api/oht/quickMemo.js'
 import { useDictStore } from '@/stores'
-import { usePagination } from '@/hooks/usePagination'
-import { useConfirm } from '@/hooks/useConfirm'
-const { confirm } = useConfirm()
+import { useCrudPage } from '@/hooks/useCrudPage'
 
 const dictStore = useDictStore()
 
-const quickMemoTableList = ref([])
-const queryInfo = reactive({
-  orderType: ' desc',
-  order: ' journo',
-  querytype: '',
-  query: '',
-  pageSize: 20,
-  pageNum: 1
+// 列表 + 分页 + 删除（useCrudPage 样板）
+const {
+  list: quickMemoTableList,
+  total,
+  query: queryInfo,
+  currentPage,
+  pageSizes,
+  handleCurrentChange,
+  handleSizeChange,
+  load: getquickMemoList,
+  remove: removeQuickMemo
+} = useCrudPage({
+  fetchList: (q) => quickMemoApi.getQuickMemoList(q),
+  defaultQuery: {
+    orderType: ' desc',
+    order: ' journo',
+    querytype: '',
+    query: '',
+    pageSize: 20,
+    pageNum: 1
+  },
+  deleteApi: (row) => quickMemoApi.deleteQuickMemo(row.journo),
+  pageSizes: [20, 100, 500]
 })
-const total = ref(0)
+
 const dialogTitle = ref('')
 const formLabelWidth = '120px'
 const quickMemoAddVisible = ref(false)
@@ -120,40 +133,6 @@ const quickMemoFormRules = {
     }
   ],
   status: [{ required: true, message: '请选择快捷消息状态', trigger: 'change' }]
-}
-
-const getquickMemoList = async () => {
-  try {
-    const res = await quickMemoApi.getQuickMemoList(queryInfo)
-    if (res.code !== 200) {
-      MessagePlugin.error(res.msg)
-      return
-    }
-    quickMemoTableList.value = res.data.list
-    total.value = res.data.total
-  } catch (error) {
-    MessagePlugin.error('获取快捷消息列表失败')
-  }
-}
-
-
-
-
-
-const removeQuickMemo = async (row) => {
-  const ok = await confirm('此操作将永久删除该记录, 是否继续?')
-  if (!ok) return
-  try {
-    const res = await quickMemoApi.deleteQuickMemo(row.journo)
-    if (res.code !== 200) {
-      MessagePlugin.error(res.msg)
-      return
-    }
-    MessagePlugin.success(res.msg)
-    getquickMemoList()
-  } catch (error) {
-    MessagePlugin.error('删除快捷消息失败')
-  }
 }
 
 const addQuickMemo = () => {
@@ -210,16 +189,15 @@ const closeQuickMemoAddDialog = () => {
 }
 
 const tableSort = (data) => {
-  if (!data.descending) queryInfo.orderType = ' asc '
-  else if (data.descending) queryInfo.orderType = ' desc '
-  queryInfo.order = data.sortBy
+  if (!data.descending) queryInfo.value.orderType = ' asc '
+  else if (data.descending) queryInfo.value.orderType = ' desc '
+  queryInfo.value.order = data.sortBy
   getquickMemoList()
 }
 
 onMounted(() => {
   getquickMemoList()
 })
-const { currentPage, pageSizes, handleCurrentChange, handleSizeChange } = usePagination({ query: queryInfo, fetch: getquickMemoList, pageSizes: [20, 100, 500] })
 </script>
 
 <style lang="less" scoped>
