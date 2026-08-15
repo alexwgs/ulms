@@ -90,7 +90,7 @@
       <t-pagination
         @page-size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :current="queryInfo.pageNum"
+        :current="currentPage"
         :page-size-options="pageSizes"
         :page-size="queryInfo.pageSize"
 
@@ -201,22 +201,38 @@ import QuesSelectDialog from './components/QuesSelectDialog.vue'
 import ArticalForm from './components/ArticalForm.vue'
 import { dailyConfigApi } from '@/api/edu/dailyConfig'
 import { useDictStore } from '@/stores'
+import { useCrudPage } from '@/hooks/useCrudPage'
 const dictStore = useDictStore()
-// Reactive data
-const queryInfo = reactive({
-  groupId: '',
-  querytype: '',
-  query: '',
-  orderType: ' desc',
-  order: ' quesDate ',
-  pageSize: 20,
-  pageNum: 1
+
+// 列表 + 分页（useCrudPage 样板，groupId 逗号拆分后处理）
+const {
+  list: tableData,
+  total,
+  query: queryInfo,
+  currentPage,
+  pageSizes,
+  handleCurrentChange,
+  handleSizeChange,
+  load: listDailyConfig
+} = useCrudPage({
+  fetchList: (q) => dailyConfigApi.getDailyConfigList(q),
+  defaultQuery: {
+    groupId: '',
+    querytype: '',
+    query: '',
+    orderType: ' desc',
+    order: ' quesDate ',
+    pageSize: 20,
+    pageNum: 1
+  },
+  transformList: (list) => list.map((item) => {
+    item.groupId = item.groupId ? item.groupId.split(',') : ['']
+    return item
+  }),
+  pageSizes: [20, 100, 500]
 })
 
-const tableData = ref([])
 const groupList = ref([])
-const pageSizes = [20, 100, 500]
-const total = ref(0)
 const dailyConfigVisible = ref(false)
 const quesSelectDialogVisible = ref(false)
 const articalFormVisible = ref(false)
@@ -253,38 +269,16 @@ onMounted(() => {
 })
 
 // Methods
-const listDailyConfig = async () => {
-  const res = await dailyConfigApi.getDailyConfigList(queryInfo)
-  if (res.code !== 200) return MessagePlugin.error(res.msg)
-  total.value = res.data.total
-  tableData.value = res.data.list
-  tableData.value.forEach((item) => {
-    item.groupId
-      ? (item.groupId = item.groupId.split(','))
-      : (item.groupId = [''])
-  })
-}
-
 const listBrushConfig = async () => {
   const res = await dailyConfigApi.getBrushConfigList()
   if (res.code !== 200) return MessagePlugin.error(res.msg)
   groupList.value = res.data.list
 }
 
-const handleSizeChange = (pageSize) => {
-  queryInfo.pageSize = pageSize
-  listDailyConfig()
-}
-
-const handleCurrentChange = (page) => {
-  queryInfo.pageNum = page
-  listDailyConfig()
-}
-
 const tableSort = (data) => {
-  if (!data.descending) queryInfo.orderType = ' asc '
-  else if (data.descending) queryInfo.orderType = ' desc '
-  queryInfo.order = data.sortBy
+  if (!data.descending) queryInfo.value.orderType = ' asc '
+  else if (data.descending) queryInfo.value.orderType = ' desc '
+  queryInfo.value.order = data.sortBy
   listDailyConfig()
 }
 

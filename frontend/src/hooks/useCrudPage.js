@@ -12,6 +12,7 @@ import { useConfirm } from './useConfirm'
  * @param {Object} [options.defaultQuery] 默认查询参数
  * @param {Function} [options.deleteApi] 删除接口（(rowOrId) => Promise<res>）
  * @param {Function} [options.onDeleted] 删除成功后的回调（默认重新 load）
+ * @param {Function} [options.transformList] 列表后处理（(list) => list，可在渲染前对每行做转换）
  * @param {Array<number>} [options.pageSizes] 页大小选项
  */
 export function useCrudPage(options = {}) {
@@ -20,7 +21,8 @@ export function useCrudPage(options = {}) {
     defaultQuery = {},
     deleteApi,
     onDeleted,
-    pageSizes
+    pageSizes,
+    transformList
   } = options
 
   const loading = ref(false)
@@ -38,7 +40,8 @@ export function useCrudPage(options = {}) {
     loading.value = true
     try {
       const res = await fetchList(query.value)
-      list.value = res.data?.list ?? res.list ?? []
+      const rawList = res.data?.list ?? res.list ?? []
+      list.value = typeof transformList === 'function' ? transformList(rawList) : rawList
       total.value = res.data?.total ?? res.total ?? 0
     } finally {
       loading.value = false
