@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -53,5 +54,34 @@ public class UtilTest {
         assertTrue(Util.isNullorEmpty((String) null));
         assertTrue(Util.isNullorEmpty(""));
         assertFalse(Util.isNullorEmpty("a"));
+    }
+
+    @Test
+    void buildOrderByClauseValid() {
+        assertEquals("data_time desc", Util.buildOrderByClause("dataTime", "desc"));
+        assertEquals("data_time asc", Util.buildOrderByClause("dataTime", "asc"));
+        assertEquals("data_time asc", Util.buildOrderByClause("dataTime", null));
+        assertEquals("data_time asc", Util.buildOrderByClause("data_time", "ASC"));
+    }
+
+    @Test
+    void buildOrderByClauseRejectsInjection() {
+        assertNull(Util.buildOrderByClause("dataTime; DROP TABLE X", "desc"));
+        assertNull(Util.buildOrderByClause("dataTime)", "desc"));
+        assertNull(Util.buildOrderByClause("dataTime", "desc; DROP TABLE X"));
+        assertNull(Util.buildOrderByClause("", "desc"));
+        assertNull(Util.buildOrderByClause(null, "desc"));
+        assertNull(Util.buildOrderByClause("data time", "desc"));
+    }
+
+    @Test
+    void isValidSqlIdentifierDetection() {
+        assertTrue(Util.isValidSqlIdentifier("CUS_FLOW_CASE"));
+        assertTrue(Util.isValidSqlIdentifier("case_id"));
+        assertTrue(Util.isValidSqlIdentifier("FLOW_STATUS"));
+        assertFalse(Util.isValidSqlIdentifier("CUS_FLOW_CASE; DROP TABLE X"));
+        assertFalse(Util.isValidSqlIdentifier("case-id"));
+        assertFalse(Util.isValidSqlIdentifier(""));
+        assertFalse(Util.isValidSqlIdentifier(null));
     }
 }

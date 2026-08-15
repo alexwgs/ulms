@@ -1,4 +1,4 @@
-package com.cmbccd.ulms.edu.service.Impl;
+package com.cmbccd.ulms.edu.service.impl;
 
 import com.cmbccd.ulms.common.controller.DataCache;
 import com.cmbccd.ulms.common.util.Util;

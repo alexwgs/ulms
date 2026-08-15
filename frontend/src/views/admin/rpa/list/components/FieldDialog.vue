@@ -101,6 +101,7 @@
 </template>
 
 <script setup>
+import { MessagePlugin } from 'tdesign-vue-next'
 import { ref, computed } from 'vue'
 import TemplateComponent from './TemplateComponent.vue'
 import { addRpaToolTemplete, updateRpaToolTemplete } from '@/api/rpa/rpa.js'

@@ -1,14 +1,14 @@
 package com.cmbccd.ulms.websocket.service;
 
-import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
+
+import cn.dev33.satoken.stp.StpUtil;
 
 import com.alibaba.fastjson.parser.Feature;
 import org.slf4j.Logger;
@@ -163,10 +163,10 @@ public class MessageHandle {
 				int ohtFlag = 0;
 				if (!Util.isNullorEmpty(jsonMsg.getString("content"))) {
 					String[] identitys = jsonMsg.getString("content").split(",");
-					ohtFlag = handle.statusTypeService.identityNameOhtFlag(identitys);
+					ohtFlag = this.statusTypeService.identityNameOhtFlag(identitys);
 				}
 				int userStatus = Integer.parseInt(jsonMsg.getString("userStatus"));
-				Map<String, String> statusType = handle.statusTypeService.getUserStatusAndOhtFlag(userStatus);
+				Map<String, String> statusType = this.statusTypeService.getUserStatusAndOhtFlag(userStatus);
 
 				int isTakeOrder = ohtFlag * Integer.parseInt(statusType.get("ohtFlag"));
 				iUser.setOhtStatus(isTakeOrder);
@@ -183,7 +183,7 @@ public class MessageHandle {
 				record.setStatusId(iUser.getUserStatus());
 				record.setIdentity(jsonMsg.getString("content"));
 				record.setOhtFlag(isTakeOrder);
-				handle.statusJourService.insertNewStatusJour(record);
+				this.statusJourService.insertNewStatusJour(record);
 			} else if ("userStatus".equals(jsonMsg.getString("type"))) {
 				JSONObject userStatus = jsonMsg.getJSONObject("content");
 				int status = 0;
@@ -195,13 +195,13 @@ public class MessageHandle {
 				// 解析出来判断是否可接单的身份，修改OTHSTATUS
 				iUser.setUserStatus(status);
 				iUser.setStatusTime(Util.getCurrentTimestamp());
-				Map<String, String> statusType = handle.statusTypeService.getUserStatusAndOhtFlag(status);
+				Map<String, String> statusType = this.statusTypeService.getUserStatusAndOhtFlag(status);
 				iUser.setStatusName(statusType.get("level1") + "-" + statusType.get("level3"));
 				// 此处需获取身份中是否存在不可接单，若为0则不可接单 无需再获取当前选择的身份，若为1则需要获取当前身份所对应是否可接单
 				int ohtFlag = 1;
 				if (!Util.isNullorEmpty(iUser.getIdentity())) {
 					String[] identitys = iUser.getIdentity().split(",");
-					ohtFlag = handle.statusTypeService.identityNameOhtFlag(identitys);
+					ohtFlag = this.statusTypeService.identityNameOhtFlag(identitys);
 				}
 				int isTakeOrder = ohtFlag * Integer.parseInt(statusType.get("ohtFlag"));
 				iUser.setOhtStatus(isTakeOrder);
@@ -218,15 +218,15 @@ public class MessageHandle {
 				record.setIdentity(iUser.getIdentity());
 				record.setMemo(memo);
 				record.setOhtFlag(isTakeOrder);
-				handle.statusJourService.insertNewStatusJour(record);
+				this.statusJourService.insertNewStatusJour(record);
 			} else if ("command".equals(jsonMsg.getString("type"))) {
 				JSONObject command = jsonMsg.getJSONObject("content");
 				// 当前端用户操作新的求助，则需要告知选择求助类型
 				String action = command.getString("action");
 				if ("build".equals(action)) {
-					Case ohtCase = handle.caseService.insertNewCase(userId, command.getInteger("caseType"),
+					Case ohtCase = this.caseService.insertNewCase(userId, command.getInteger("caseType"),
 							iUser.getStation().getExtnNum());
-					WebSocketServer.state.setWaittingCase(handle.caseService.getHelpWaitCase());
+					WebSocketServer.state.setWaittingCase(this.caseService.getHelpWaitCase());
 					// 设置将用户接单状态修改为1-等待接单
 					// User.setOrderStatus(1);
 					// 返回提示当前已成功建立订单，提示前端变更状态
@@ -238,7 +238,7 @@ public class MessageHandle {
 							null);
 					fileRecord.writeChatRecordFile(ohtCase.getCaseId(),
 							JSON.toJSONString(MsgTemplate.success("oht", "command", "newCase").add("case", ohtCase)));
-					WebSocketServer.state.setWaittingCase(handle.caseService.getHelpWaitCase());
+					WebSocketServer.state.setWaittingCase(this.caseService.getHelpWaitCase());
 					// 将用户所在房间调换至CaseId的房间
 					WebSocketServer.roomChange(userId, ohtCase.getCaseId());
 					// 刷新求助者的未结案件，广播在线列表状态变更
@@ -246,7 +246,7 @@ public class MessageHandle {
 				} else if ("cancel".equals(action)) {
 					// 需先判断当前此订单是否已经被接起，若接起，则返回取消失败数据
 					int count = 0;
-					Case ohtCase = handle.caseService.getCaseByCaseId(command.getString("caseId"));
+					Case ohtCase = this.caseService.getCaseByCaseId(command.getString("caseId"));
 					if (ohtCase == null) {
 						WebSocketServer.sendMessage(MsgTemplate.success("oht", "error", "案件取消失败，请确认此案件是否存在！"), userId);
 						return;
@@ -259,7 +259,7 @@ public class MessageHandle {
 						ohtCase.setBcompType(bcompType);
 						ohtCase.setWaitTime(Integer.parseInt(Util.getCurrentTimestamp()) - ohtCase.getBuildTime());
 						ohtCase.setCaseStatus(1);
-						count = handle.caseService.updateCaseBySelective(ohtCase);
+						count = this.caseService.updateCaseBySelective(ohtCase);
 					}
 
 					if (count > 0) {
@@ -277,7 +277,7 @@ public class MessageHandle {
 						WebSocketServer.sendMessage(MsgTemplate.success("oht", "error", "案件取消失败，请确认此案件是否已经被接起！"),
 								userId);
 					}
-					WebSocketServer.state.setWaittingCase(handle.caseService.getHelpWaitCase());
+					WebSocketServer.state.setWaittingCase(this.caseService.getHelpWaitCase());
 					WebSocketServer.boardcastToDirectors(
 							MsgTemplate.success("oht", "command", "help").add("cases", WebSocketServer.state.getWaittingCase()),
 							null);
@@ -286,7 +286,7 @@ public class MessageHandle {
 				} else if ("takeOrder".equals(action)) {
 					// 需先判断当前此订单是否已经被接起，若接起，则返回取消失败数据
 					int count = 0;
-					Case ohtCase = handle.caseService.getCaseByCaseId(command.getString("caseId"));
+					Case ohtCase = this.caseService.getCaseByCaseId(command.getString("caseId"));
 					if (ohtCase == null) {
 						WebSocketServer.sendMessage(MsgTemplate.success("oht", "error", "案件接起失败，请确认此案件是否存在！"), userId);
 						return;
@@ -301,17 +301,17 @@ public class MessageHandle {
 						ohtCase.setCaseStatus(2);
 						ohtCase.setBuildUser(DataCache.EMPLOYEE.get(ohtCase.getBuildId()));
 						ohtCase.setPickUser(DataCache.EMPLOYEE.get(ohtCase.getPickId()));
-						count = handle.caseService.updateCaseBySelective(ohtCase);
+						count = this.caseService.updateCaseBySelective(ohtCase);
 					}
 					if (count > 0) {
 						// 已经被接起的订单无需发送cancel，直接最后推送当前订单情况
 						// WebSocketServer.boardcastToDirectors(MsgTemplate.success("oht", "command",
 						// "cancel").add("case", ohtCase), userId);
 						// 将TASK案件状态置为
-						int tasksend = handle.caseTaskService.updateTaskCompleteByUserIdAndCaseId(userId,
+						int tasksend = this.caseTaskService.updateTaskCompleteByUserIdAndCaseId(userId,
 								ohtCase.getCaseId());
 						if (tasksend < 1) {
-							handle.caseTaskService.insertNewTask(ohtCase.getCaseId(), userId, ohtCase.getBuildId(), 1);
+							this.caseTaskService.insertNewTask(ohtCase.getCaseId(), userId, ohtCase.getBuildId(), 1);
 						}
 						// 将用户所在房间调换至CaseId的房间
 						WebSocketServer.roomChange(userId, ohtCase.getCaseId());
@@ -329,14 +329,14 @@ public class MessageHandle {
 					}
 					WebSocketServer.boardcastToDirectors(
 							MsgTemplate.success("oht", "command", "cancel").add("caseId", ohtCase.getCaseId()), userId);
-					WebSocketServer.state.setWaittingCase(handle.caseService.getHelpWaitCase());
+					WebSocketServer.state.setWaittingCase(this.caseService.getHelpWaitCase());
 					WebSocketServer.boardcastToDirectors(
 							MsgTemplate.success("oht", "command", "help").add("cases", WebSocketServer.state.getWaittingCase()),
 							null);
 				} else if ("pcompCase".equals(action)) {
 					// 需先判断当前此订单是否已经被接起，若接起，则返回取消失败数据
 					int count = 0;
-					Case ohtCase = handle.caseService.getCaseByCaseId(command.getString("caseId"));
+					Case ohtCase = this.caseService.getCaseByCaseId(command.getString("caseId"));
 					if (ohtCase == null) {
 						WebSocketServer.sendMessage(MsgTemplate.success("oht", "error", "完成结案失败，请确认此案件是否存在！"), userId);
 						return;
@@ -347,12 +347,12 @@ public class MessageHandle {
 						ohtCase.setPcompType(command.getInteger("pcompType"));
 						ohtCase.setPcompMemo(command.getString("pcompMemo"));
 						ohtCase.setCaseStatus(3);
-						count = handle.caseService.updateCaseBySelective(ohtCase);
+						count = this.caseService.updateCaseBySelective(ohtCase);
 					}
 					if (count > 0) {
 						// User.setOrderStatus(0);
 						// 推送给发起人订单已接起，并将发起人状态设置为LINKED
-						WebSocketServer.state.setWaittingCase(handle.caseService.getHelpWaitCase());
+						WebSocketServer.state.setWaittingCase(this.caseService.getHelpWaitCase());
 						WebSocketServer.sendMessageByRoom(MsgTemplate.success("oht", "command", "otherComplete")
 								.add("case", WebSocketServer.state.getWaittingCase()), ohtCase.getCaseId(), userId);
 						WebSocketServer.sendMessageByRoom(MsgTemplate.success("oht", "command", "mineComplete")
@@ -377,7 +377,7 @@ public class MessageHandle {
 				} else if ("bcompCase".equals(action)) {
 					// 需先判断当前此订单是否已经被接起，若接起，则返回取消失败数据
 					int count = 0;
-					Case ohtCase = handle.caseService.getCaseByCaseId(command.getString("caseId"));
+					Case ohtCase = this.caseService.getCaseByCaseId(command.getString("caseId"));
 					if (ohtCase == null) {
 						WebSocketServer.sendMessage(MsgTemplate.success("oht", "error", "案件结案失败，请确认此案件是否存在！"), userId);
 						return;
@@ -387,12 +387,12 @@ public class MessageHandle {
 						ohtCase.setBcompType(command.getInteger("bcompType"));
 						ohtCase.setBcompMemo(command.getString("bcompMemo"));
 						ohtCase.setCaseStatus(3);
-						count = handle.caseService.updateCaseBySelective(ohtCase);
+						count = this.caseService.updateCaseBySelective(ohtCase);
 					}
 					if (count > 0) {
 						// User.setOrderStatus(0);
 						// 推送给发起人订单已接起，并将发起人状态设置为LINKED
-						WebSocketServer.state.setWaittingCase(handle.caseService.getHelpWaitCase());
+						WebSocketServer.state.setWaittingCase(this.caseService.getHelpWaitCase());
 						WebSocketServer.sendMessageByRoom(MsgTemplate.success("oht", "command", "otherComplete")
 								.add("case", WebSocketServer.state.getWaittingCase()), ohtCase.getCaseId(), userId);
 						WebSocketServer.sendMessageByRoom(MsgTemplate.success("oht", "command", "mineComplete")
@@ -410,14 +410,14 @@ public class MessageHandle {
 					new ChatRecordFile().writeChatRecordFile(ohtCase.getCaseId(), JSON
 							.toJSONString(MsgTemplate.success("oht", "command", "otherComplete").add("case", ohtCase)));
 				} else if ("newTask".equals(action)) {
-					handle.caseTaskService.insertNewTask(command.getString("caseId"), userId,
+					this.caseTaskService.insertNewTask(command.getString("caseId"), userId,
 							command.getString("buildId"), 0);
 				} else if ("refuse".equals(action)) {
-					int count = handle.caseTaskService.updateTaskRefuseByUserIdAndCaseId(userId,
+					int count = this.caseTaskService.updateTaskRefuseByUserIdAndCaseId(userId,
 							command.getString("caseId"), command.getString("memo"));
 
 					if (count > 0) {
-						List<Case> waittingCase = handle.caseService.getHelpWaitCase();
+						List<Case> waittingCase = this.caseService.getHelpWaitCase();
 						WebSocketServer.sendMessage(MsgTemplate.success("oht", "command", "refuseCase")
 								.add("caseId", command.getString("caseId")).add("cases", waittingCase), userId);
 					} else {
@@ -429,7 +429,12 @@ public class MessageHandle {
 				}
 			}
 		} else if ("admin".equals(jsonMsg.getString("modal"))) {
-			// 管理员websocket推送管理
+			// 管理员websocket推送管理：校验发送者权限，防止任意用户踢人/广播
+			List<String> permissions = StpUtil.getPermissionList(userId);
+			if (permissions == null || !permissions.contains("sys:ws:admin")) {
+				log.warn("WebSocket admin 操作被拒绝：用户 {} 无 sys:ws:admin 权限", userId);
+				return;
+			}
 			if ("kickOut".equals(jsonMsg.getString("type"))) {
 				if (Util.isNullorEmpty(jsonMsg.getString("content"))) {
 					WebSocketServer.boardcastAsync(MsgTemplate.success("admin", "kickOut", ""), userId);
@@ -457,26 +462,6 @@ public class MessageHandle {
 			roomName = "default";
 		}
 		return roomName;
-	}
-	private void debugMessage(String message) {
-		System.out.println("===== 消息调试信息 =====");
-		System.out.println("原始消息字符串: \"" + message + "\"");
-		System.out.println("消息长度: " + message.length());
-
-		// 打印每个字符的详细信息
-		byte[] bytes = message.getBytes(StandardCharsets.UTF_8);
-		System.out.println("UTF-8字节数组: " + Arrays.toString(bytes));
-
-		for (int i = 0; i < message.length(); i++) {
-			char c = message.charAt(i);
-			System.out.printf("位置 %2d: 字符='%s' (Unicode: U+%04X, int: %d, 是否为控制字符: %b)%n",
-					i,
-					(c >= 32 && c <= 126) ? String.valueOf(c) : "□",
-					(int) c,
-					(int) c,
-					Character.isISOControl(c));
-		}
-		System.out.println("=======================");
 	}
 
 	public JSONObject messageHandle(String message) {

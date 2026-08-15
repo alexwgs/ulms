@@ -81,7 +81,7 @@ public class QuesDisputeController {
 		PageHelper.startPage(pageParams.get("pageNum"), pageParams.get("pageSize"));
 		
 		if (!Util.isNullorEmpty(params.get("order"))) {
-			example.setOrderByClause(Util.camel4underline(params.get("order")) + " " + params.get("orderType"));
+			example.setOrderByClause(Util.buildOrderByClause(params.get("order"), params.get("orderType")));
 		}
 		List<DisputeQuestion> list = quesDisputeService.listDisputeQuestion(example);
 		return Msg.success(new DataPage<DisputeQuestion>(list));

@@ -1,4 +1,4 @@
-package com.cmbccd.ulms.edu.service.Impl;
+package com.cmbccd.ulms.edu.service.impl;
 
 import com.cmbccd.ulms.common.controller.DataCache;
 import com.cmbccd.ulms.common.util.Util;
@@ -8,7 +8,7 @@ import com.cmbccd.ulms.edu.domain.QuesScoreExample;
 import com.cmbccd.ulms.edu.domain.QuesScoreExample.Criteria;
 import com.cmbccd.ulms.edu.domain.report.QuesScoreHum;
 import com.cmbccd.ulms.edu.service.QuesScoreService;
-import com.cmbccd.ulms.sys.dao.PublicMapper;
+import com.cmbccd.ulms.sys.service.PublicService;
 import com.cmbccd.ulms.sys.domain.Employee;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +22,7 @@ public class QuesScoreServiceImpl implements QuesScoreService {
 	private QuesScoreMapper quesScoreMapper;
 	
 	@Resource
-	private PublicMapper publicMapper;
+	private PublicService publicService;
 	
 	@Override
 	public int create(QuesScore record) {
@@ -31,7 +31,7 @@ public class QuesScoreServiceImpl implements QuesScoreService {
 		record.setDeptNum(user.getDeptNum());
 		record.setDeptGroup(user.getDeptGroup());
 		if(Util.isNullorEmpty(record.getCompStat())) record.setCompStat(0);
-		record.setJourno(publicMapper.selectNewJourno());
+		record.setJourno(publicService.getJourno());
 		return quesScoreMapper.insert(record);
 	}
 

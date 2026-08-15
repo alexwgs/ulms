@@ -1,11 +1,11 @@
-package com.cmbccd.ulms.edu.service.Impl;
+package com.cmbccd.ulms.edu.service.impl;
 
 import com.cmbccd.ulms.common.util.Util;
 import com.cmbccd.ulms.edu.dao.QuesBankMapper;
 import com.cmbccd.ulms.edu.dao.QuesLibMapper;
 import com.cmbccd.ulms.edu.domain.QuesLib;
 import com.cmbccd.ulms.edu.service.QuesLibService;
-import com.cmbccd.ulms.sys.dao.PublicMapper;
+import com.cmbccd.ulms.sys.service.PublicService;
 import org.springframework.stereotype.Service;
 
 import jakarta.annotation.Resource;
@@ -21,7 +21,7 @@ public class QuesLibServiceImpl implements QuesLibService {
 	@Resource
 	private QuesBankMapper quesBankMapper;
 	@Resource
-	private PublicMapper publicMapper;
+	private PublicService publicService;
 
 
 	@Override
@@ -74,7 +74,7 @@ public class QuesLibServiceImpl implements QuesLibService {
 
 	@Override
 	public int create(QuesLib record) {
-		record.setLibCode(publicMapper.selectNewJourno());
+		record.setLibCode(publicService.getJourno());
 		return quesLibMapper.insert(record);
 	}
 

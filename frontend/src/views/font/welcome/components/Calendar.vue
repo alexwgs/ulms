@@ -114,17 +114,8 @@ const getDuty = (date) => {
     })
 }
 
-const checkPermission = (permission) => {
-  try {
-    const global = window.__POWERED_BY_QIANKUN__ ? window.$global : null
-    if (global && global.hasPermission) {
-      return global.hasPermission(permission)
-    }
-    return true
-  } catch (error) {
-    return true
-  }
-}
+// 前端权限体系尚未建立，暂时保持放行
+const checkPermission = () => true
 </script>
 
 <style lang="less" scoped>

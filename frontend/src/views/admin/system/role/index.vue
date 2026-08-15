@@ -222,6 +222,8 @@
 </template>
 
 <script setup>
+import { DialogPlugin } from 'tdesign-vue-next'
+import { MessagePlugin } from 'tdesign-vue-next'
 import { ref, onMounted, nextTick } from 'vue'
 import { roleApi } from '@/api/system/role'
 import { menuApi } from '@/api/system/menu'

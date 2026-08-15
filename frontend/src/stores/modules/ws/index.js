@@ -2,7 +2,8 @@
 import { defineStore } from 'pinia'
 import ReconnectingWebSocket from 'reconnecting-websocket'
 import router from '@/router'
-import { useOhtStore } from '@/stores'
+import { useOhtStore, useUserStore } from '@/stores'
+import { clearToken } from '@/utils/auth'
 import { NotifyPlugin } from 'tdesign-vue-next'
 import todoVoice from '@/assets/voice/todoVoice.mp3'
 import ohtVoice from '@/assets/voice/ohtVoice.mp3'
@@ -43,7 +44,11 @@ export const useWsStore = defineStore('websocket', {
     noticeContent: {},
 
     // 通用推送消息列表
-    pushMessages: []
+    pushMessages: [],
+
+    // 弹窗管理
+    windowCounter: 0,
+    openedWindows: {}
   }),
 
   getters: {
@@ -123,7 +128,9 @@ export const useWsStore = defineStore('websocket', {
           ? new URL(import.meta.env.VITE_WS_BASE_URL).host
           : window.location.host
         const pathPart = import.meta.env.BASE_URL
-        const wsUrl = protocol + host + pathPart + 'ws/' + this.userId
+        const token = localStorage.getItem('token')
+        const wsUrl =
+          protocol + host + pathPart + 'ws/' + this.userId + (token ? '?token=' + encodeURIComponent(token) : '')
 
         // 创建WebSocket实例
         this.ws = new ReconnectingWebSocket(wsUrl, null, {
@@ -317,6 +324,7 @@ export const useWsStore = defineStore('websocket', {
           this.message.splice(0, 30)
         }
       } catch (err) {
+        // 忽略错误，不阻塞消息处理
       }
     },
 
@@ -333,7 +341,7 @@ export const useWsStore = defineStore('websocket', {
         case 'leave':
           ohtStore.deleteUserList(msg.data.data)
           break
-        case 'update':
+        case 'update': {
           // 标准化数据格式：确保 roleType 在顶层（兼容轻量列表格式与完整 InitUser 格式）
           const updatedUser = msg.data.data
           if (updatedUser.roleType === undefined && updatedUser.ohtRole) {
@@ -348,6 +356,7 @@ export const useWsStore = defineStore('websocket', {
             ohtStore.ohtCasesToCurrentCase()
           }
           break
+        }
       }
     },
 
@@ -442,6 +451,7 @@ export const useWsStore = defineStore('websocket', {
     // 处理CYT消息
     handleCytMessage(msg) {
       if (msg.type === 'notice') {
+        // 通知消息暂未处理
       }
     },
 
@@ -498,11 +508,19 @@ export const useWsStore = defineStore('websocket', {
       if (msg.type === 'kickOut') {
         this.handleLogout('由于系统维护，您已被强制登出！')
       } else if (msg.type === 'message') {
+        // 管理员消息暂未处理
       }
     },
 
     // 处理登出
     handleLogout(message) {
+      if (message) {
+        NotifyPlugin.warning({ title: '系统提示', content: message })
+      }
+      const userStore = useUserStore()
+      userStore.resetInfo()
+      clearToken()
+      router.push('/login')
     },
 
     // 增加未读计数

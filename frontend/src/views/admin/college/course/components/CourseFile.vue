@@ -33,7 +33,7 @@
         <t-col :span="5">
           <t-upload
             ref="fileUploadRef"
-            :action="fsURL + uploadUrl"
+            :headers="uploadHeaders" :action="fsURL + uploadUrl"
             @success="handleSuccess"
             :before-upload="getFileDuration"
             :auto-upload="false"
@@ -173,6 +173,7 @@
   </div>
 </template>
 <script setup>
+const uploadHeaders = { Authorization: localStorage.getItem('token') || '' }
 import { ref, reactive, watch } from 'vue'
 import { MessagePlugin } from 'tdesign-vue-next'
 import { SearchIcon, UploadIcon } from 'tdesign-icons-vue-next'

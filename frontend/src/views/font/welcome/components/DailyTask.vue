@@ -9,10 +9,10 @@
       <t-step-item title="心情打卡" v-if="tabFlag.mood"><template #icon><DynamicIcon name="star" /></template></t-step-item>
       <t-step-item title="今日身份" v-if="tabFlag.identity"><template #icon><DynamicIcon name="user" /></template></t-step-item>
       <t-step-item
-        title="公布栏学习"v-if="tabFlag.artical"
+        title="公布栏学习" v-if="tabFlag.artical"
       ><template #icon><DynamicIcon name="book-open" /></template></t-step-item>
       <t-step-item
-        title="每日一招"v-if="tabFlag.question"
+        title="每日一招" v-if="tabFlag.question"
       ><template #icon><DynamicIcon name="calendar" /></template></t-step-item>
     </t-steps>
     <div class="main-content">
@@ -153,6 +153,7 @@
 <script setup>
 import { ref, reactive, computed, nextTick } from 'vue'
 import { MessagePlugin, NotifyPlugin } from 'tdesign-vue-next'
+import { useOhtStore, useWsStore } from '@/stores'
 import { StarIcon, UserIcon, BookOpenIcon, CalendarIcon } from 'tdesign-icons-vue-next'
 import {
   getDailyQuestionInit,
@@ -447,56 +448,22 @@ const handleNoIdentityChange = (event) => {
   if (event) identityArry.value = ['']
 }
 
-const hasPermission = (permission) => {
-  try {
-    const global = window.__POWERED_BY_QIANKUN__ ? window.$global : null
-    if (global && global.hasPermission) {
-      return global.hasPermission(permission)
-    }
-    return true
-  } catch (error) {
-    return true
-  }
-}
+// 前端权限体系尚未建立，暂时保持放行
+const hasPermission = () => true
 
-const getStoreIdentity = () => {
-  try {
-    const store = window.__POWERED_BY_QIANKUN__ ? window.$store : null
-    return store?.state?.identity || '0'
-  } catch {
-    return '0'
-  }
-}
+const ohtStore = useOhtStore()
+const wsStore = useWsStore()
+
+const getStoreIdentity = () => ohtStore.identity || '0'
 
 const setStoreIdentity = (value) => {
-  try {
-    const store = window.__POWERED_BY_QIANKUN__ ? window.$store : null
-    if (store) {
-      store.commit('setIdentity', value)
-    }
-  } catch (error) {
-    console.error('设置身份失败', error)
-  }
+  ohtStore.setIdentity(value)
 }
 
-const getStoreUserStatus = () => {
-  try {
-    const store = window.__POWERED_BY_QIANKUN__ ? window.$store : null
-    return store?.state?.userStatus || 0
-  } catch {
-    return 0
-  }
-}
+const getStoreUserStatus = () => ohtStore.userStatus || 0
 
 const sendWebSocketMessage = (data) => {
-  try {
-    const ws = window.__POWERED_BY_QIANKUN__ ? window.$ws?.ws : null
-    if (ws) {
-      ws.send(JSON.stringify(data))
-    }
-  } catch (error) {
-    console.error('发送WebSocket消息失败', error)
-  }
+  wsStore.sendMessage(data)
 }
 
 const formatDateTime = () => {

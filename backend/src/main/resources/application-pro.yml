@@ -1,7 +1,7 @@
 server:
   ssl:
     key-store: classpath:server.p12
-    key-store-password: wqqlxr6130
+    key-store-password: ${ULMS_SSL_KEYSTORE_PASSWORD:wqqlxr6130}
     keyStoreType: PKCS12
     key-alias: selfsigned
   http:
@@ -9,8 +9,8 @@ server:
   port: 8443
 ulms:
   uploadPath: d:/var/uploaded_files/
-  username: admin
-  password: 111111
+  username: ${ULMS_ADMIN_USERNAME:admin}
+  password: ${ULMS_ADMIN_PASSWORD:111111}
   # 生产环境未配置 Redis（下方 redis 配置被注释），因此 WebSocket 采用单机内存模式，
   # 覆盖全局 application.yml 中的 multi-instance: true，避免启动后依赖不存在的 Redis。
   ws:
@@ -27,9 +27,9 @@ spring:
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: oracle.jdbc.driver.OracleDriver
-    url: jdbc:oracle:thin:@10.47.4.71:1521:city
-    username: auxsusr
-    password: auxsusr
+    url: "${ULMS_DB_URL:jdbc:oracle:thin:@10.47.4.71:1521:city}"
+    username: ${ULMS_DB_USERNAME:auxsusr}
+    password: ${ULMS_DB_PASSWORD:auxsusr}
     druid:
       initial-size: 5
       min-idle: 5
@@ -48,8 +48,8 @@ spring:
       stat-view-servlet:
         enabled: true
         url-pattern: /druid/*
-        login-username: wei6130
-        login-password: wei6130
+        login-username: ${ULMS_DRUID_USERNAME:wei6130}
+        login-password: ${ULMS_DRUID_PASSWORD:wei6130}
         reset-enable: false
       web-stat-filter:
         enabled: true

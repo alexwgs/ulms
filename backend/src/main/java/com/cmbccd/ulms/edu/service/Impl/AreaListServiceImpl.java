@@ -1,11 +1,11 @@
-package com.cmbccd.ulms.edu.service.Impl;
+package com.cmbccd.ulms.edu.service.impl;
 
 import com.cmbccd.ulms.edu.dao.AreaListMapper;
 import com.cmbccd.ulms.edu.domain.AreaList;
 import com.cmbccd.ulms.edu.domain.AreaListExample;
 import com.cmbccd.ulms.edu.domain.AreaListExample.Criteria;
 import com.cmbccd.ulms.edu.service.AreaListService;
-import com.cmbccd.ulms.sys.dao.PublicMapper;
+import com.cmbccd.ulms.sys.service.PublicService;
 import org.springframework.stereotype.Service;
 
 import jakarta.annotation.Resource;
@@ -19,7 +19,7 @@ public class AreaListServiceImpl implements AreaListService {
 	private AreaListMapper areaListMapper;
 	
 	@Resource
-	private PublicMapper publicMapper;
+	private PublicService publicService;
 	
 	@Override
 	public List<AreaList> listAreaList(AreaListExample example) {
@@ -29,7 +29,7 @@ public class AreaListServiceImpl implements AreaListService {
 	@Override
 	public int create(AreaList record) {
 		
-		record.setJourno(publicMapper.selectNewJourno());
+		record.setJourno(publicService.getJourno());
 		return areaListMapper.insertSelective(record);
 	}
 

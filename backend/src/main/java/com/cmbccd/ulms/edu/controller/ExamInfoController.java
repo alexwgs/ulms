@@ -15,6 +15,7 @@ import com.cmbccd.ulms.edu.service.ExamInfoService;
 import com.cmbccd.ulms.edu.service.QuesTempService;
 import com.cmbccd.ulms.sys.domain.Msg;
 import com.github.pagehelper.PageHelper;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.annotation.Resource;
@@ -43,7 +44,7 @@ public class ExamInfoController {
 		ExamInfoExample example = new ExamInfoExample();
 		Criteria criteria = example.createCriteria();
 		if (!Util.isNullorEmpty(params.get("order"))) {
-			example.setOrderByClause(Util.camel4underline(params.get("order")) + " " + params.get("orderType"));
+			example.setOrderByClause(Util.buildOrderByClause(params.get("order"), params.get("orderType")));
 		}
 
 		if(!Util.isNullorEmpty(examStat))
@@ -95,6 +96,7 @@ public class ExamInfoController {
 	}
 	
 	@PostMapping("/config/ques/temp/{examCode}")
+	@Transactional(rollbackFor = Exception.class)
 	public Msg createExamTemp(@PathVariable("examCode") String examCode,@RequestBody List<QuesTemp> list) {
 		quesTempService.delete(examCode);
 		int quesNum = quesTempService.create(list);

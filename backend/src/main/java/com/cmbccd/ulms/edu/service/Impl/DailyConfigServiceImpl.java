@@ -1,11 +1,11 @@
-package com.cmbccd.ulms.edu.service.Impl;
+package com.cmbccd.ulms.edu.service.impl;
 
 import com.cmbccd.ulms.common.util.Util;
 import com.cmbccd.ulms.edu.dao.DailyConfigMapper;
 import com.cmbccd.ulms.edu.domain.DailyConfig;
 import com.cmbccd.ulms.edu.domain.DailyConfigExample;
 import com.cmbccd.ulms.edu.service.DailyConfigService;
-import com.cmbccd.ulms.sys.dao.PublicMapper;
+import com.cmbccd.ulms.sys.service.PublicService;
 import org.springframework.stereotype.Service;
 
 import jakarta.annotation.Resource;
@@ -17,7 +17,7 @@ public class DailyConfigServiceImpl implements DailyConfigService {
 	@Resource
 	private DailyConfigMapper dailyConfigMapper;
 	@Resource
-	private PublicMapper publicMapper;
+	private PublicService publicService;
 	@Override
 	public List<DailyConfig> list(DailyConfigExample example) {
 		
@@ -38,7 +38,7 @@ public class DailyConfigServiceImpl implements DailyConfigService {
 
 	@Override
 	public int create(DailyConfig record) {
-		record.setId(publicMapper.selectNewJourno());
+		record.setId(publicService.getJourno());
 		return dailyConfigMapper.insert(record);
 	}
 

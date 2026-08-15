@@ -116,11 +116,10 @@ const handleToggleTheme = () => {
   // 切换暗黑/亮色主题
   if (isDark.value) {
     document.documentElement.classList.add('dark')
-    appStore.toggleTheme('light')
   } else {
     document.documentElement.classList.remove('dark')
-    appStore.toggleTheme('dark')
   }
+  appStore.toggleTheme(isDark.value)
 
   // 保存主题设置到本地存储
   localStorage.setItem('theme', isDark.value ? 'dark' : 'light')

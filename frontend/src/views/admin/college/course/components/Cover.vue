@@ -15,7 +15,7 @@
     </div>
     <t-upload
       ref="fileUploadRef"
-      :action="fsURL + 'upload/file/college-cover'"
+      :headers="uploadHeaders" :action="fsURL + 'upload/file/college-cover'"
       @success="handleSuccess"
       @remove="handleRemove"
       :file-list="fileList"
@@ -39,6 +39,7 @@
   </t-dialog>
 </template>
 <script setup>
+const uploadHeaders = { Authorization: localStorage.getItem('token') || '' }
 import { ref, reactive } from 'vue'
 import { MessagePlugin } from 'tdesign-vue-next'
 import { courseApi } from '@/api/college/course.js'

@@ -144,8 +144,6 @@ import { brushReportApi } from '@/api/edu/brushReport'
 import { downloadExcel } from '@/utils/request'
 import { MessagePlugin } from 'tdesign-vue-next'
 
-const global = window.__POWERED_BY_QIANKUN__ ? window.$global : null
-
 const formatDate = (date) => {
   return new Date(date).toISOString().split('T')[0]
 }

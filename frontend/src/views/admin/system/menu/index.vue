@@ -523,7 +523,7 @@ const add = () => {
     useage: 0,
     menuType: 0,
     resourse: '',
-    system: queryInfo.system
+    system: queryInfo.value.system
   }
   dialogFormVisible.value = true
 }
@@ -556,7 +556,7 @@ const addResourse = (data) => {
     pid: data.id,
     useage: data.useage,
     menuType: 1,
-    system: queryInfo.system
+    system: queryInfo.value.system
   }
   resourseFormVisible.value = true
 }

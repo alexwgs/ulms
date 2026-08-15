@@ -5,11 +5,9 @@
       <CustomTable rowKey="id" :data="disputeData" size="small">
         <TableColumn property="userAnswer" label="用户答案">
           <template #default="scope">
-            <p
-              v-if="scope.row.userAnswer"
-              v-for="(userSelection, index) in scope.row.userAnswer.split(',')"
-              :key="index"
-            >{{ index + 1 }}. {{ userSelection }}</p>
+            <template v-for="(userSelection, index) in scope.row.userAnswer.split(',')" :key="index">
+              <p v-if="scope.row.userAnswer">{{ index + 1 }}. {{ userSelection }}</p>
+            </template>
           </template>
         </TableColumn>
         <TableColumn

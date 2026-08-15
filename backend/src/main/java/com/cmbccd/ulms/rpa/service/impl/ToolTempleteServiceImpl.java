@@ -4,7 +4,7 @@ import com.cmbccd.ulms.rpa.dao.ToolTempleteMapper;
 import com.cmbccd.ulms.rpa.domain.ToolTemplete;
 import com.cmbccd.ulms.rpa.domain.ToolTempleteExample;
 import com.cmbccd.ulms.rpa.service.ToolTempleteService;
-import com.cmbccd.ulms.sys.dao.PublicMapper;
+import com.cmbccd.ulms.sys.service.PublicService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +16,7 @@ public class ToolTempleteServiceImpl implements ToolTempleteService {
     private ToolTempleteMapper toolTempleteMapper;
 
     @Autowired
-    private PublicMapper publicMapper;
+    private PublicService publicService;
 
     @Override
     public List<ToolTemplete> getToolTemplete(String templeteId) {
@@ -34,7 +34,7 @@ public class ToolTempleteServiceImpl implements ToolTempleteService {
 
     @Override
     public int addToolTemplete(ToolTemplete toolTemplete) {
-        String id = publicMapper.selectNewJourno();
+        String id = publicService.getJourno();
         toolTemplete.setId(id);
         return toolTempleteMapper.insertSelective(toolTemplete);
     }

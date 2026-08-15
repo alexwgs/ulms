@@ -313,6 +313,7 @@ onMounted(() => {
     videoRef.value.addEventListener('timeupdate', function () {
       const timeDIff = this.currentTime - currentVideo.currTime
       if (timeDIff < 0) {
+        // 已过期，不处理
       } else if (timeDIff < 2) {
         updateCont++
         if (updateCont >= 40) {

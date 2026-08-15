@@ -40,7 +40,7 @@ public class DictionaryController {
 			example.or().andDescriptionLike('%' + params.get("query") + '%');
 		}
 		if (!Util.isNullorEmpty(params.get("order"))) {
-			example.setOrderByClause(Util.camel4underline(params.get("order")) + " " + params.get("orderType"));
+			example.setOrderByClause(Util.buildOrderByClause(params.get("order"), params.get("orderType")));
 		}
 		PageHelper.startPage(pageParams.get("pageNum"), pageParams.get("pageSize"));
 		List<Dictionary> dictionaryList = dictionaryService.getDictionaryList(example);

@@ -2,7 +2,6 @@
  * 请求拦截、相应拦截、错误统一处理
  */
 import axios from 'axios'
-import QS from 'qs'
 import router from '../router/index'
 import axiosRetry from 'axios-retry'
 import { MessagePlugin } from 'tdesign-vue-next'
@@ -105,37 +104,12 @@ httpInstance.interceptors.response.use(
     return Promise.reject(error)
   }
 )
-/**
- * get方法，对应get请求
- * @param {String} url [请求的url地址]
- * @param {Object} params [请求时携带的参数]
- */
-const $get = (url, params) => {
-  return httpInstance
-    .get(url, { params })
-    .then((res) => res)
-    .catch((err) => Promise.reject(err))
-}
-/**
- * post方法，对应post请求
- * @param {String} url [请求的url地址]
- * @param {Object} params [请求时携带的参数]
- */
-const $post = (url, params) => {
-  return httpInstance
-    .post(url, QS.stringify(params))
-    .then((res) => res)
-    .catch((err) => Promise.reject(err))
-}
-
 //q:下面是vue3必须加的，vue2不需要，只需要暴露出去get，post方法就可以
 
 const downloadAxios = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
-  timeout: 5000, //响应时间
-  retry: 3, //设置全局重试请求次数（最多重试几次请求）
-  withCredentials: true, // default
-  retryDelay: 1000 //设置全局请求间隔
+  timeout: 5000,
+  withCredentials: true
 })
 downloadAxios.interceptors.request.use(
   //响应拦截
@@ -154,45 +128,41 @@ const downloadExcel = (url, params, fileName) => {
   downloadAxios.defaults.headers.get['Content-Type'] =
     'application/x-www-form-urlencoded'
   downloadAxios.defaults.responseType = 'blob'
-  downloadAxios
-    .get(url, {
-      params: params
-    })
+  return downloadAxios
+    .get(url, { params })
     .then((res) => {
       const blob = new Blob([res.data], { type: 'application/vnd.ms-excel' })
-      let contentDisposition = ''
-      if (res.headers['content-disposition'])
-        contentDisposition = res.headers['content-disposition']
-      if (res.headers['Content-Disposition'])
-        contentDisposition = res.headers['Content-Disposition']
-      if (fileName == undefined || fileName == '') fileName = '文件下载.xlsx'
-      if (contentDisposition == undefined || contentDisposition == '') {
-      } else {
-        fileName = decodeURI(
-          contentDisposition.substring(
-            contentDisposition.indexOf('filename=') + 9
-          )
-        )
+      const contentDisposition =
+        res.headers['content-disposition'] || res.headers['Content-Disposition'] || ''
+      // 从响应头解析文件名（正则匹配带保护，避免 indexOf 越界）
+      const match = /filename\*=UTF-8''([^;]+)|filename="?([^";]+)"?/i.exec(contentDisposition)
+      if (match) {
+        const raw = match[1] || match[2]
+        try {
+          fileName = decodeURIComponent(raw)
+        } catch (e) {
+          fileName = raw
+        }
       }
+      if (!fileName) fileName = '文件下载.xlsx'
       if ('download' in document.createElement('a')) {
-        // 非IE下载
         const elink = document.createElement('a')
         elink.download = fileName
         elink.style.display = 'none'
         elink.href = URL.createObjectURL(blob)
         document.body.appendChild(elink)
         elink.click()
-        URL.revokeObjectURL(elink.href) // 释放URL 对象
+        URL.revokeObjectURL(elink.href)
         document.body.removeChild(elink)
       } else {
-        // IE10+下载
         navigator.msSaveBlob(blob, fileName)
       }
     })
     .catch((err) => {
-      console.error(err)
+      console.error('文件下载失败', err)
+      throw err
     })
 }
 
 // 请求工具函数
-export { httpInstance, $get, $post, downloadExcel }
+export { httpInstance, downloadExcel }

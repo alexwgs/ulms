@@ -781,11 +781,6 @@ const tableSort = (data) => {
   getExamInfoList()
 }
 
-// 获取是/否文本
-const getYesOrNoText = (code) => {
-  const item = yesOrNoOptions.value.find((e) => parseInt(e.code) === code)
-  return item ? item.codeval : code
-}
 const { currentPage, pageSizes, handleCurrentChange, handleSizeChange } = usePagination({ query: queryInfo, fetch: getExamInfoList, pageSizes: [20, 100, 500] })
 </script>
 <style lang="less" scoped>

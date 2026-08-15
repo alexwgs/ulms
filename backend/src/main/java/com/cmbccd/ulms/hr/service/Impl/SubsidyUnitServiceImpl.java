@@ -1,4 +1,4 @@
-package com.cmbccd.ulms.hr.service.Impl;
+package com.cmbccd.ulms.hr.service.impl;
 
 import com.cmbccd.ulms.common.util.Util;
 import com.cmbccd.ulms.hr.dao.SubsidyUnitMapper;
@@ -34,7 +34,7 @@ public class SubsidyUnitServiceImpl implements SubsidyUnitService {
         if (Util.isNullorEmpty(params.get("order"))) {
             example.setOrderByClause(" sort, subsidy_name ");
         }else {
-            example.setOrderByClause(Util.camel4underline(params.get("order")) + " " + params.get("orderType"));
+            example.setOrderByClause(Util.buildOrderByClause(params.get("order"), params.get("orderType")));
         }
         PageHelper.startPage(pageParams.get("pageNum"), pageParams.get("pageSize"));
         List<SubsidyUnit> list = subsidyUnitMapper.selectByExample(example);

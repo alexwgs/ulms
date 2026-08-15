@@ -1,4 +1,4 @@
-package com.cmbccd.ulms.college.service.Impl;
+package com.cmbccd.ulms.college.service.impl;
 
 import com.cmbccd.ulms.college.dao.EvaluateTempleteMapper;
 import com.cmbccd.ulms.college.domain.EvaluateTemplete;

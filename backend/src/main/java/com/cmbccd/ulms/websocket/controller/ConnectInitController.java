@@ -64,7 +64,7 @@ public class ConnectInitController {
 		staticInit = this;
 	}
 
-	public static InitUser initUser(String userId, String ip) {
+	public InitUser initUser(String userId, String ip) {
 
 		InitUser user = new InitUser();
 		user.setUserId(userId);
@@ -73,7 +73,7 @@ public class ConnectInitController {
 
 		user.setUser(DataCache.EMPLOYEE.get(userId));
 				
-		List<RoleList> roleList = staticInit.roleListService.getUserRoleListByUserId(userId, 1);
+		List<RoleList> roleList = this.roleListService.getUserRoleListByUserId(userId, 1);
 
 
 		RoleList ohtRoles = new RoleList();
@@ -88,7 +88,7 @@ public class ConnectInitController {
 		// 如果用户是金普卡业务主任则需要初始化当前状态 及 当日是否有身份！
 		if (DIRECTOR_NUM.equals(user.getUser().getJobLevel())) {
 			WebSocketServer.state.addDirector(userId);
-			StatusJour statusJour = staticInit.statusJourService.getUserLatestStatusJour(Util.getDateToday(), userId);
+			StatusJour statusJour = this.statusJourService.getUserLatestStatusJour(Util.getDateToday(), userId);
 			if (Util.isNullorEmpty(statusJour)) {
 				user.setIdentity("");
 				user.setUserStatus(0);
@@ -99,7 +99,7 @@ public class ConnectInitController {
 //				if(Util.isNullorEmpty(statusJour.getIdentity())) ohtFlag = 1;
 //				else {
 //					String [] identitys = statusJour.getIdentity().split(",");
-//					ohtFlag = staticInit.statusTypeService.identityNameOhtFlag(identitys);
+//					ohtFlag = this.statusTypeService.identityNameOhtFlag(identitys);
 //				}
 //				// user.setUserStatus(statusJour.getStatusId());
 //				// 目前若当日已有状态选择，则刷新后重置状态为 准备中
@@ -116,8 +116,8 @@ public class ConnectInitController {
 			record.setStatusId(user.getUserStatus());
 			record.setIdentity(user.getIdentity());
 			record.setOhtFlag(0);
-			staticInit.statusJourService.insertNewStatusJour(record);
-			Map<String, Integer> taskCaseNum = staticInit.caseTaskService.selectTsakCountTodayByUserId(userId);
+			this.statusJourService.insertNewStatusJour(record);
+			Map<String, Integer> taskCaseNum = this.caseTaskService.selectTsakCountTodayByUserId(userId);
 			// 初始化今日举手案件数据
 			user.add("taskCaseNum", taskCaseNum);
 		} else {
@@ -130,9 +130,9 @@ public class ConnectInitController {
 		Case unfinishCase = new Case();
 		if (!Util.isNullorEmpty(ohtRoles.getRoleType())) {
 			if (ohtRoles.getRoleType() == 0) {
-				unfinishCase = staticInit.caseService.getUnfinishCaseByHelper(userId);
+				unfinishCase = this.caseService.getUnfinishCaseByHelper(userId);
 			} else if (ohtRoles.getRoleType() == 1) {
-				unfinishCase = staticInit.caseService.getUnfinishCaseByListener(userId);
+				unfinishCase = this.caseService.getUnfinishCaseByListener(userId);
 			}
 			if (!Util.isNullorEmpty(unfinishCase)) {
 				if (unfinishCase.getBuildId() != null) {
@@ -146,7 +146,7 @@ public class ConnectInitController {
 		}
 		Station station = new Station();
 		if (!Util.isNullorEmpty(ip)) {
-			Station s = staticInit.stationService.selectByIpNoMemo(ip);
+			Station s = this.stationService.selectByIpNoMemo(ip);
 			if (Util.isNullorEmpty(s)) {
 				station.setExtnIp("");
 				station.setExtnNum("");
@@ -160,17 +160,17 @@ public class ConnectInitController {
 		return user;
 	}
 
-	public static void logOff(InitUser user) {
+	public void logOff(InitUser user) {
 		if (Util.isNullorEmpty(user) || Util.isNullorEmpty(user.getUser())) {
 			return;
 		}
 		if (DIRECTOR_NUM.equals(user.getUser().getJobLevel())) {
-			staticInit.statusJourService.updateLastStatusJour(user.getUserId(), Util.getTime());
+			this.statusJourService.updateLastStatusJour(user.getUserId(), Util.getTime());
 		} else {
 			// 需要判定当前是否存已发起的求助但尚未结案的求助，若有则需要将案件置为异常断线，切广播该案件删除。
-			int count = staticInit.caseService.updateDisconnectCaseStatus(user.getUserId());
+			int count = this.caseService.updateDisconnectCaseStatus(user.getUserId());
 //			if (count > 0) {
-//				List<Case> waittingCase = staticInit.caseService.getHelpWaitCase();
+//				List<Case> waittingCase = this.caseService.getHelpWaitCase();
 //				WebSocketServer.boardcastToDirectors(
 //						MsgTemplate.success("oht", "command", "help").add("cases", waittingCase), null);
 //			}

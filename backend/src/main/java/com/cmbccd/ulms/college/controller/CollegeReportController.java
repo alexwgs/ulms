@@ -21,7 +21,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/college/report")
-public class CollegeReportConroller {
+public class CollegeReportController {
 
     @Resource
     private CollegeReportService collegeReportService;

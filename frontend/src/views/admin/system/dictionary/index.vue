@@ -89,6 +89,7 @@
 </template>
 
 <script setup>
+import { MessagePlugin } from 'tdesign-vue-next'
 import { ref, reactive, onMounted } from 'vue'
 import { useDictStore } from '@/stores'
 import { dictionaryApi } from '@/api/system/dictionary'

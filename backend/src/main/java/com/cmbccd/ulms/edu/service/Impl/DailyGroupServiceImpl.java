@@ -1,4 +1,4 @@
-package com.cmbccd.ulms.edu.service.Impl;
+package com.cmbccd.ulms.edu.service.impl;
 
 import com.cmbccd.ulms.edu.dao.DailyGroupMapper;
 import com.cmbccd.ulms.edu.domain.DailyGroup;

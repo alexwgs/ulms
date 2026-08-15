@@ -222,16 +222,6 @@ const setLike = async (type, targetId, index) => {
     if (type === 1) {
       isLike.value = 1
       artical.likeNum++
-    } else if (type === 2 && comments.value[index]) {
-      comments.value[index].likeNum++
-      comments.value[index].likes.push({
-        id: '',
-        likeType: 2,
-        articalId: id.value,
-        userId: user.value.ploNum,
-        dateTime: '',
-        status: 1
-      })
     }
     MessagePlugin.success(res.msg)
   } catch (error) {
@@ -244,7 +234,7 @@ const onCommentSubmitted = () => {
 }
 
 onMounted(() => {
-  const dict = JSON.parse(window.localStorage.getItem('dict') || '{}')
+  const dict = JSON.parse(window.localStorage.getItem('dictCache') || '{}')
   categorys.value = dictStore.getDict('cyt_artical_category') || []
   getArtical()
 })

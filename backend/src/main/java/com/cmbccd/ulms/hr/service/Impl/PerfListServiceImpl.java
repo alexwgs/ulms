@@ -1,4 +1,4 @@
-package com.cmbccd.ulms.hr.service.Impl;
+package com.cmbccd.ulms.hr.service.impl;
 
 import com.cmbccd.ulms.common.controller.DataCache;
 import com.cmbccd.ulms.common.util.Util;
@@ -74,7 +74,7 @@ public class PerfListServiceImpl implements PerfListService {
         if (Util.isNullorEmpty(params.get("order"))) {
             example.setOrderByClause(" dept_num,dept_group,job_level ");
         }else if (ALLOWED_ORDER_COLUMNS.contains(params.get("order"))) {
-            example.setOrderByClause(Util.camel4underline(params.get("order")) + " " + params.get("orderType"));
+            example.setOrderByClause(Util.buildOrderByClause(params.get("order"), params.get("orderType")));
         }
         PageHelper.startPage(pageParams.get("pageNum"), pageParams.get("pageSize"));
         List<PerfList> list = perfListMapper.selectByExample(example);
@@ -115,7 +115,7 @@ public class PerfListServiceImpl implements PerfListService {
         if (Util.isNullorEmpty(params.get("order"))) {
             example.setOrderByClause(" dept_num,dept_group,job_level ");
         }else if (ALLOWED_ORDER_COLUMNS.contains(params.get("order"))) {
-            example.setOrderByClause(Util.camel4underline(params.get("order")) + " " + params.get("orderType"));
+            example.setOrderByClause(Util.buildOrderByClause(params.get("order"), params.get("orderType")));
         }
         List<PerfList> list = perfListMapper.selectByExample(example);
         for (PerfList perfList : list) {

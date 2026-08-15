@@ -76,7 +76,7 @@ public class QuesScoreController {
 		PageHelper.startPage(pageParams.get("pageNum"), pageParams.get("pageSize"));
 		
 		if (!Util.isNullorEmpty(params.get("order"))) {
-			example.setOrderByClause(Util.camel4underline(params.get("order")) + " " + params.get("orderType"));
+			example.setOrderByClause(Util.buildOrderByClause(params.get("order"), params.get("orderType")));
 		}
 		List<QuesScore> list = quesScoreService.list(example);
 		return Msg.success(new DataPage<QuesScore>(list));

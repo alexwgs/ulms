@@ -294,8 +294,4 @@
     where beg_date &lt;= concat(#{perfMonth},'-25')
       and end_date &gt; TO_CHAR(ADD_MONTHS(to_date(concat(#{perfMonth},'-26'),'yyyy-MM-dd'), -1), 'yyyy-MM-dd')
   </select>
-
-  <update id="sqlUpdate" parameterType="java.lang.String">
-    ${sql}
-  </update>
 </mapper>

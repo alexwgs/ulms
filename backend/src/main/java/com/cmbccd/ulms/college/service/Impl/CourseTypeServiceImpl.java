@@ -1,4 +1,4 @@
-package com.cmbccd.ulms.college.service.Impl;
+package com.cmbccd.ulms.college.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;

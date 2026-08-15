@@ -82,7 +82,7 @@
             <t-button
               variant="outline"
               theme="primary"
-              size="small":disabled="
+              size="small" :disabled="
                 scope.row.fileSuffix !== 'jpg' && scope.row.fileSuffix !== 'png'
               "
               @click="

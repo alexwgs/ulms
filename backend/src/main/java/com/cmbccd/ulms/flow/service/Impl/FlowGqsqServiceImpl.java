@@ -1,4 +1,4 @@
-package com.cmbccd.ulms.flow.service.Impl;
+package com.cmbccd.ulms.flow.service.impl;
 
 import com.cmbccd.ulms.common.controller.DataCache;
 import com.cmbccd.ulms.common.util.Util;
@@ -11,6 +11,7 @@ import com.cmbccd.ulms.sys.domain.Msg;
 import com.cmbccd.ulms.sys.service.PublicService;
 import com.github.pagehelper.PageHelper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.annotation.Resource;
 import java.util.ArrayList;
@@ -44,6 +45,7 @@ public class FlowGqsqServiceImpl implements FLowGqsqService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Msg batchInsert(List<FlowGqsq> list, String caseId) {
         int count = 0;
         for (FlowGqsq flowGqsq : list) {

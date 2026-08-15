@@ -298,6 +298,7 @@
 </template>
 
 <script setup>
+import { MessagePlugin } from 'tdesign-vue-next'
 import { ref, watch, onMounted } from 'vue'
 
 const props = defineProps({
@@ -380,7 +381,7 @@ const validate = async () => {
       try {
         JSON.parse(formData.value.options)
       } catch (e) {
-        throw new Error('选项配置必须是有效的JSON格式')
+        throw new Error('选项配置必须是有效的JSON格式', { cause: e })
       }
     }
 

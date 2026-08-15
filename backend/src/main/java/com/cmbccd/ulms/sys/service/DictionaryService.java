@@ -7,6 +7,7 @@ import com.cmbccd.ulms.sys.domain.Dictionary;
 import com.cmbccd.ulms.sys.domain.DictionaryExample;
 
 import java.util.List;
+import java.util.Map;
 
 /** 
 * @Author WeiGenSheng
@@ -27,6 +28,8 @@ public interface DictionaryService {
 	
 	//获取Dictionary列表
 	public List<Dictionary> getDictionaryList(DictionaryExample example);
+	//通过字典名获取字典Map（key为code）
+	public Map<String, Dictionary> getDictionaryMapByName(String name);
 	//修改
 	public int updateDictionary(Dictionary record);
 	//删除

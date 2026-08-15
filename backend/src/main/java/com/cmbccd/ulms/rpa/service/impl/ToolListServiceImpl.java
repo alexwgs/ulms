@@ -5,8 +5,8 @@ import com.cmbccd.ulms.rpa.dao.ToolListMapper;
 import com.cmbccd.ulms.rpa.domain.ToolList;
 import com.cmbccd.ulms.rpa.domain.ToolListExample;
 import com.cmbccd.ulms.rpa.service.ToolListService;
-import com.cmbccd.ulms.sys.dao.PublicMapper;
-import com.cmbccd.ulms.sys.dao.UserRoleMapper;
+import com.cmbccd.ulms.sys.service.PublicService;
+import com.cmbccd.ulms.sys.service.UserRoleService;
 import com.cmbccd.ulms.sys.domain.UserRole;
 import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,14 +23,14 @@ public class ToolListServiceImpl implements ToolListService {
 
     private final ToolListMapper toolListMapper;
 
-    private final PublicMapper publicMapper;
+    private final PublicService publicService;
 
-    private final UserRoleMapper userRoleMapper;
+    private final UserRoleService userRoleService;
 
-    public ToolListServiceImpl(ToolListMapper toolListMapper, PublicMapper publicMapper, UserRoleMapper userRoleMapper) {
+    public ToolListServiceImpl(ToolListMapper toolListMapper, PublicService publicService, UserRoleService userRoleService) {
         this.toolListMapper = toolListMapper;
-        this.publicMapper = publicMapper;
-        this.userRoleMapper = userRoleMapper;
+        this.publicService = publicService;
+        this.userRoleService = userRoleService;
     }
 
     @Override
@@ -54,7 +54,7 @@ public class ToolListServiceImpl implements ToolListService {
         }
 
         if (!Util.isNullorEmpty(params.get("order"))) {
-            example.setOrderByClause(Util.camel4underline(params.get("order")) + " " + params.get("orderType"));
+            example.setOrderByClause(Util.buildOrderByClause(params.get("order"), params.get("orderType")));
         }
         PageHelper.startPage(pageParams.get("pageNum"), pageParams.get("pageSize"));
         return toolListMapper.selectByExample(example);
@@ -62,7 +62,7 @@ public class ToolListServiceImpl implements ToolListService {
 
     @Override
     public int addToolList(ToolList toolList) {
-        String id = publicMapper.selectNewJourno();
+        String id = publicService.getJourno();
         toolList.setId(id);
         toolList.setCreateTime(Util.currentDateTime());
         toolList.setCreateUser(Util.userIdByShiro());
@@ -88,10 +88,10 @@ public class ToolListServiceImpl implements ToolListService {
             criteria.andNameLike("%"+params.get("query")+"%");
         }
         if (!Util.isNullorEmpty(params.get("order"))) {
-            example.setOrderByClause(Util.camel4underline(params.get("order")) + " " + params.get("orderType"));
+            example.setOrderByClause(Util.buildOrderByClause(params.get("order"), params.get("orderType")));
         }
         List<ToolList> list = toolListMapper.selectByExample(example);
-        UserRole userRole = userRoleMapper.selectByPrimaryKey(Util.userIdByShiro());
+        UserRole userRole = userRoleService.getUserRolesByPrimaryKey(Util.userIdByShiro());
         List<String> userRoles = Arrays.asList(userRole.getRoles().split(","));
         // 判断两个string数组是否存在交集
         list.removeIf(toolList -> !Util.isNullorEmpty(toolList.getRoles()) &&

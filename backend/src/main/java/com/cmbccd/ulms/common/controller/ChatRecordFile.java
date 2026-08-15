@@ -45,7 +45,7 @@ public class ChatRecordFile {
 	  {
 	    FileWriter fw = null;
 
-	    String path = staticInit.ulmsConfig.getUploadPath() + "chatRecord/"+Util.getMonth()+"/";
+	    String path = this.ulmsConfig.getUploadPath() + "chatRecord/"+Util.getMonth()+"/";
 
         //文件夹不存在则新建
         File fileDir = new File(path);

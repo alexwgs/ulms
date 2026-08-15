@@ -323,7 +323,7 @@ const onCommentSubmitted = () => {
 }
 
 onMounted(() => {
-  const dict = JSON.parse(window.localStorage.getItem('dict') || '{}')
+  const dict = JSON.parse(window.localStorage.getItem('dictCache') || '{}')
   categorys.value = dict.cyt_artical_category || []
   getArtical()
   getQuestions()

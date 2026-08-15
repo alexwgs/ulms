@@ -1,4 +1,4 @@
-package com.cmbccd.ulms.flow.service.Impl;
+package com.cmbccd.ulms.flow.service.impl;
 
 import com.cmbccd.ulms.common.util.Util;
 import com.cmbccd.ulms.flow.dao.FlowProxyMapper;
@@ -79,7 +79,7 @@ public class FlowProxyServiceImpl implements FlowProxyService {
         if (Util.isNullorEmpty(params.get("order"))) {
             example.setOrderByClause(" handle_date desc ");
         }else {
-            example.setOrderByClause(Util.camel4underline(params.get("order")) + " " + params.get("orderType"));
+            example.setOrderByClause(Util.buildOrderByClause(params.get("order"), params.get("orderType")));
         }
         PageHelper.startPage(pageParams.get("pageNum"), pageParams.get("pageSize"));
         return flowProxyMapper.selectByExample(example);

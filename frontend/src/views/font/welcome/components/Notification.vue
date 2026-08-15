@@ -60,20 +60,15 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { CheckCircleFilledIcon, CloseCircleFilledIcon } from 'tdesign-icons-vue-next'
+import { useOhtStore } from '@/stores'
 
 const notificationCardRef = ref(null)
 const activeName = ref('first')
 const visiable = ref(false)
 const activeNames = ref([])
 
-const noticeMessage = computed(() => {
-  try {
-    const store = window.__POWERED_BY_QIANKUN__ ? window.$store : null
-    return store?.state?.noticeMessage || []
-  } catch {
-    return []
-  }
-})
+const ohtStore = useOhtStore()
+const noticeMessage = computed(() => ohtStore.noticeMessage || [])
 
 const show = () => {
   visiable.value = !visiable.value
@@ -86,25 +81,11 @@ const handleChange = (e) => {
 }
 
 const commitReadNoticeMessage = (id) => {
-  try {
-    const store = window.__POWERED_BY_QIANKUN__ ? window.$store : null
-    if (store) {
-      store.commit('readNoticeMessage', id)
-    }
-  } catch (error) {
-    console.error('标记已读失败', error)
-  }
+  ohtStore.readNoticeMessage(id)
 }
 
 const cleanAll = () => {
-  try {
-    const store = window.__POWERED_BY_QIANKUN__ ? window.$store : null
-    if (store) {
-      store.commit('setNoticeMessage', [])
-    }
-  } catch (error) {
-    console.error('清空消息失败', error)
-  }
+  ohtStore.setNoticeMessage([])
 }
 
 const handleClick = (tab) => {

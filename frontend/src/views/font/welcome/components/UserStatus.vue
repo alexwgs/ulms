@@ -59,6 +59,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useOhtStore } from '@/stores'
 import { ChatIcon } from 'tdesign-icons-vue-next'
 import Identity from './Identity.vue'
 import DirectorStatus from './DirectorStatus.vue'
@@ -75,23 +76,12 @@ const userStatus = ref('准备中')
 const unreadNum = ref(0)
 const notificationRef = ref(null)
 
-const ohtDirStatus = computed(() => {
-  try {
-    const store = window.__POWERED_BY_QIANKUN__ ? window.$store : null
-    return store?.state?.ohtDirStatus || 0
-  } catch {
-    return 0
-  }
-})
+const ohtStore = useOhtStore()
+const ohtDirStatus = computed(() => ohtStore.ohtDirStatus)
 
 const unreadCount = computed(() => {
-  try {
-    const store = window.__POWERED_BY_QIANKUN__ ? window.$store : null
-    const messages = store?.state?.noticeMessage || []
-    return messages.filter((e) => e.ifRead === false).length
-  } catch {
-    return 0
-  }
+  const messages = ohtStore.noticeMessage || []
+  return messages.filter((e) => e.ifRead === false).length
 })
 
 onMounted(() => {
@@ -102,14 +92,6 @@ onMounted(() => {
 })
 
 const logout = () => {
-  try {
-    const ws = window.__POWERED_BY_QIANKUN__ ? window.$ws?.ws : null
-    if (ws) {
-      ws.close()
-    }
-  } catch (error) {
-    console.error('关闭WebSocket失败', error)
-  }
   window.localStorage.clear()
   router.push('/login')
 }
@@ -119,17 +101,8 @@ const profile = () => {
   router.push({ path: '/profile' })
 }
 
-const hasPermission = (permission) => {
-  try {
-    const global = window.__POWERED_BY_QIANKUN__ ? window.$global : null
-    if (global && global.hasPermission) {
-      return global.hasPermission(permission)
-    }
-    return true
-  } catch (error) {
-    return true
-  }
-}
+// 前端权限体系尚未建立，暂时保持放行
+const hasPermission = () => true
 </script>
 
 <style lang="less" scoped>

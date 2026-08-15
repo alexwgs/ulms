@@ -53,6 +53,7 @@
 </template>
 
 <script setup>
+import { MessagePlugin } from 'tdesign-vue-next'
 import { ref, reactive, onMounted } from 'vue'
 import ConfigManage from './components/ConfigManage.vue'
 import { jobinfoApi } from '@/api/system/jobinfo'

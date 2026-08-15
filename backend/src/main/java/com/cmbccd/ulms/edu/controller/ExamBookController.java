@@ -19,7 +19,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("edu/book/config")
-public class ExamBookConfig {
+public class ExamBookController {
 
 	@Resource
 	private BookConfigService bookConfigService;

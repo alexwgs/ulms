@@ -9,49 +9,6 @@ export function sanitizeHtml(dirty) {
   return DOMPurify.sanitize(dirty)
 }
 
-/**
- * 下载模板
- * @param {String} fileName 模板文件名带上扩展名
- */
-export function downloadTemplate(url, fileName) {
-  let a = document.createElement('a')
-  a.href = '' + url
-  a.download = fileName
-  a.style.display = 'none'
-  document.body.appendChild(a)
-  a.click()
-  a.remove()
-}
-
-// 下载文件
-export const download = (res) => {
-  const data = res.data
-
-  // 设置下载文件名称，使用正则取出名称
-  const pat = new RegExp('(?<=filename=).*')
-  let contentDisposition = ''
-  //浏览器问题可能会出现 content-disposition 匹配不到
-  if (res.headers['content-disposition'])
-    contentDisposition = res.headers['content-disposition']
-  if (res.headers['Content-Disposition'])
-    contentDisposition = res.headers['Content-Disposition']
-  const result = pat.exec(contentDisposition)
-  let fileName = result && result[0]
-  if (fileName == undefined) {
-    fileName = '测试下载.xlsx'
-  } else {
-    fileName = decodeURIComponent(fileName)
-  }
-
-  let url = window.URL.createObjectURL(new Blob([data]))
-  let link = document.createElement('a')
-  link.style.display = 'none'
-  link.href = url
-  link.setAttribute('download', fileName)
-  document.body.appendChild(link)
-  link.click()
-}
-
 // 新增获取客户端本地IP地址（通过WebRTC获取内网IP）
 export function getLocalIp() {
   return new Promise((resolve, reject) => {

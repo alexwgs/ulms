@@ -108,6 +108,8 @@
 </template>
 
 <script setup>
+import { DialogPlugin } from 'tdesign-vue-next'
+import { MessagePlugin } from 'tdesign-vue-next'
 import { ref, reactive, onMounted } from 'vue'
 import { departmentApi } from '@/api/system/department'
 

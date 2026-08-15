@@ -1,4 +1,4 @@
-package com.cmbccd.ulms.edu.service.Impl;
+package com.cmbccd.ulms.edu.service.impl;
 
 import com.cmbccd.ulms.common.controller.DataCache;
 import com.cmbccd.ulms.common.util.Util;
@@ -14,7 +14,7 @@ import com.cmbccd.ulms.edu.domain.report.CategoryInfo;
 import com.cmbccd.ulms.edu.service.BrushConfigService;
 import com.cmbccd.ulms.edu.service.BrushScoreService;
 import com.cmbccd.ulms.edu.service.QuesBankService;
-import com.cmbccd.ulms.sys.dao.PublicMapper;
+import com.cmbccd.ulms.sys.service.PublicService;
 import com.cmbccd.ulms.sys.domain.Department;
 import com.cmbccd.ulms.sys.domain.Employee;
 import org.springframework.stereotype.Service;
@@ -37,7 +37,7 @@ public class BrushScoreServiceImpl implements BrushScoreService{
 	private QuesBankService quesBankService;
 	
 	@Resource
-	private PublicMapper publicMapper;
+	private PublicService publicService;
 	
 	@Override
 	public List<BrushScore> list(BrushScoreExample example) {
@@ -63,7 +63,7 @@ public class BrushScoreServiceImpl implements BrushScoreService{
 			return 0;
 		}
 		String dateTime = Util.currentDateTime();
-		record.setJourno(publicMapper.selectNewJourno());
+		record.setJourno(publicService.getJourno());
 		Employee user = DataCache.EMPLOYEE.get(userId);
 		record.setPloNum(userId);
 		record.setPassFlag(0);
@@ -98,7 +98,7 @@ public class BrushScoreServiceImpl implements BrushScoreService{
 			return null;
 		}
 		String dateTime = Util.currentDateTime();
-		record.setJourno(publicMapper.selectNewJourno());
+		record.setJourno(publicService.getJourno());
 		Employee user = DataCache.EMPLOYEE.get(userId);
 		record.setPloNum(userId);
 		record.setPassFlag(0);

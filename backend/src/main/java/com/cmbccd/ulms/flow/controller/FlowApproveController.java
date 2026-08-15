@@ -31,13 +31,15 @@ public class FlowApproveController {
     @MyLog(title = "[flow-approve]审批管理", content = "放行列表")
     public Msg submitApprove(@RequestBody List<FlowApproveLog> flowApproveLogs){
         Msg msg = flowApproveLogService.submitApprove(flowApproveLogs);
-        String result = msg.get("result").toString();
-        if ("agree".equals(result)) {
-            String caseId = flowApproveLogs.stream().findFirst().get().getCaseId();
-            FlowCase flowCase = flowCaseService.get(caseId);
-            // 需要更新各个电子流的案件明细状态
-            int count = flowInfoService.updateDetailStatus(flowCase.getFlowId(), flowCase.getId(), flowCase.getApproveStatus());
-            msg.get("msg").toString().concat("，更新了" + count + "条电子流明细状态。");
+        if ("agree".equals(msg.get("result"))) {
+            FlowApproveLog first = (flowApproveLogs == null || flowApproveLogs.isEmpty()) ? null : flowApproveLogs.get(0);
+            if (first != null && first.getCaseId() != null) {
+                FlowCase flowCase = flowCaseService.get(first.getCaseId());
+                // 需要更新各个电子流的案件明细状态
+                int count = flowInfoService.updateDetailStatus(flowCase.getFlowId(), flowCase.getId(), flowCase.getApproveStatus());
+                String baseMsg = msg.get("msg") != null ? msg.get("msg").toString() : "";
+                msg.put("msg", baseMsg + "，更新了" + count + "条电子流明细状态。");
+            }
         }
         return msg;
     }

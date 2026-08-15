@@ -36,7 +36,7 @@ public class EvaluateController {
         EvaluateExample example = new EvaluateExample();
         EvaluateExample.Criteria criteria = example.createCriteria();
         if (!Util.isNullorEmpty(params.get("order"))) {
-            example.setOrderByClause(Util.camel4underline(params.get("order")) + " " + params.get("orderType"));
+            example.setOrderByClause(Util.buildOrderByClause(params.get("order"), params.get("orderType")));
         }
         if(!Util.isNullorEmpty(courseId)) criteria.andCourseIdEqualTo(courseId);
         PageHelper.startPage(pageParams.get("pageNum"), pageParams.get("pageSize"));

@@ -23,8 +23,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/perf-flag")
-public class PerfFlagCountroller {
-    Logger logger = LoggerFactory.getLogger(PerfFlagCountroller.class);
+public class PerfFlagController {
+    Logger logger = LoggerFactory.getLogger(PerfFlagController.class);
     @Resource
     private PerfFlagFlowService perfFlagFlowService;
 

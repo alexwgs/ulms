@@ -189,6 +189,7 @@
 <script setup>
 import { ref, reactive, computed, onMounted, nextTick } from 'vue'
 import { MessagePlugin, DialogPlugin } from 'tdesign-vue-next'
+import { useOhtStore } from '@/stores'
 import { AddIcon, EditIcon, DeleteIcon, CheckIcon, RefreshIcon } from 'tdesign-icons-vue-next'
 import {
   getTodoList as apiGetTodoList,
@@ -264,42 +265,14 @@ const getTodoListData = () => {
         commitTodoAlert(alertLists)
       }
     })
-    .then(() => {
-      try {
-        const parent = window.__POWERED_BY_QIANKUN__ ? window.$parent : null
-        if (
-          parent &&
-          parent.taskData &&
-          parent.taskData.filter((e) => e.event === '').length > 0
-        ) {
-          calendarDialogVisible.value = true
-          if (currentDate.value >= selectDay.value) {
-            activeName.value = 'task'
-          }
-          nextTick(() => {
-            if (dailyTaskRef.value) {
-              dailyTaskRef.value.init()
-            }
-          })
-        }
-      } catch (error) {
-        console.error('检查任务数据失败', error)
-      }
-    })
     .catch((err) => {
       console.error('获取待办列表失败', err)
     })
 }
 
+const ohtStore = useOhtStore()
 const commitTodoAlert = (alertLists) => {
-  try {
-    const store = window.__POWERED_BY_QIANKUN__ ? window.$store : null
-    if (store) {
-      store.commit('setTodoAlert', alertLists)
-    }
-  } catch (error) {
-    console.error('设置待办提醒失败', error)
-  }
+  ohtStore.setTodoAlert(alertLists)
 }
 
 const getStatusJourData = async () => {
@@ -468,17 +441,8 @@ const durationFormatter = (second) => {
   )
 }
 
-const hasPermission = (permission) => {
-  try {
-    const global = window.__POWERED_BY_QIANKUN__ ? window.$global : null
-    if (global && global.hasPermission) {
-      return global.hasPermission(permission)
-    }
-    return true
-  } catch (error) {
-    return true
-  }
-}
+// 前端权限体系尚未建立，暂时保持放行
+const hasPermission = () => true
 
 defineExpose({
   calendarDialogVisible,

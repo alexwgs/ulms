@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
+
 import com.cmbccd.ulms.sys.domain.Msg;
 import com.cmbccd.ulms.websocket.service.PushService;
 import com.cmbccd.ulms.websocket.service.WebSocketServer;
@@ -30,6 +32,7 @@ public class OnlineMonitorController {
     /**
      * 获取所有在线用户（轻量级数据）
      */
+    @SaCheckPermission("sys:ws:admin")
     @GetMapping("/list")
     public Msg getOnlineUserList() {
         Collection<Map<String, Object>> users = WebSocketServer.state.getAllUsersLightweight();
@@ -41,6 +44,7 @@ public class OnlineMonitorController {
      * 请求体: { userIds: ["u1","u2"], module: "sys", type: "notice", title: "标题", content: "内容" }
      * userIds 为空或 null 时广播给所有在线用户。
      */
+    @SaCheckPermission("sys:ws:admin")
     @SuppressWarnings("unchecked")
     @PostMapping("/push")
     public Msg pushMessage(@RequestBody Map<String, Object> body) {

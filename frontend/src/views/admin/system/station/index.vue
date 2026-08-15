@@ -168,6 +168,7 @@
 </template>
 
 <script setup>
+import { MessagePlugin } from 'tdesign-vue-next'
 import { ref, reactive, onMounted } from 'vue'
 import { stationApi } from '@/api/system/station'
 import { usePagination } from '@/hooks/usePagination'

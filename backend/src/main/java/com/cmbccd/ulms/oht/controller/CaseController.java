@@ -74,7 +74,7 @@ public class CaseController {
 		Map<String, Integer> pageParams = Util.innitTablePages(params);
 		CaseExample example = new CaseExample();
 		if (!Util.isNullorEmpty(params.get("order"))) {
-			example.setOrderByClause(Util.camel4underline(params.get("order")) + " " + params.get("orderType"));
+			example.setOrderByClause(Util.buildOrderByClause(params.get("order"), params.get("orderType")));
 		}
 		PageHelper.startPage(pageParams.get("pageNum"), pageParams.get("pageSize"));
 
@@ -141,8 +141,17 @@ public class CaseController {
 	@GetMapping(value = "/record")
 	@MyLog(title = "[oht-case]案件管理-聊天记录")
 	public Msg getOhtChatRecord(@RequestParam Map<String, String> params) {
-		String fileName = params.get("id")+".txt";
-		String path= ulmsConfig.getUploadPath() + "//chatRecord//" + params.get("month") + "//" ;
+		String id = params.get("id");
+		String month = params.get("month");
+		// 路径穿越防护：id/month 仅允许字母数字、下划线、连字符，杜绝 ../ 与路径分隔符
+		if (Util.isNullorEmpty(id) || !id.matches("[0-9a-zA-Z_-]+")) {
+			return Msg.error("非法的记录ID");
+		}
+		if (Util.isNullorEmpty(month) || !month.matches("[0-9a-zA-Z_-]+")) {
+			return Msg.error("非法的月份参数");
+		}
+		String fileName = id + ".txt";
+		String path = ulmsConfig.getUploadPath() + "//chatRecord//" + month + "//";
 		List<JSONObject> list = FileUtils.readerChatRecordFile(path , fileName);
 		return Msg.success( list);
 	}

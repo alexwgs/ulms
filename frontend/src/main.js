@@ -1,7 +1,7 @@
 import { createApp } from 'vue'
-import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
+import pinia from '@/stores'
 import 'tdesign-vue-next/dist/tdesign.css'
 // 全局样式放在 tdesign.css 之后引入，保证覆盖规则（间距、卡片、表格等）真正生效
 import './assets/css/global.css'
@@ -40,6 +40,6 @@ window.$global = $global
 app.config.errorHandler = (err, instance, info) => {
   console.error('[ULMS Vue error]', info, err)
 }
-app.use(createPinia())
+app.use(pinia)
 app.use(router)
 app.mount('#app')

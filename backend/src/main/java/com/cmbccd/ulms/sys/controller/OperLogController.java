@@ -55,7 +55,7 @@ public class OperLogController {
             }
         }
         if (!Util.isNullorEmpty(params.get("order"))) {
-            example.setOrderByClause(Util.camel4underline(params.get("order")) + " " + params.get("orderType"));
+            example.setOrderByClause(Util.buildOrderByClause(params.get("order"), params.get("orderType")));
         }
         PageHelper.startPage(pageParams.get("pageNum"), pageParams.get("pageSize"));
         List<OperLog> list = operLogService.list(example);
@@ -90,7 +90,7 @@ public class OperLogController {
             }
         }
         if (!Util.isNullorEmpty(params.get("order"))) {
-            example.setOrderByClause(Util.camel4underline(params.get("order")) + " " + params.get("orderType"));
+            example.setOrderByClause(Util.buildOrderByClause(params.get("order"), params.get("orderType")));
         }
         List<OperLog> list = operLogService.list(example);
         String fileName = "应用操作日志";

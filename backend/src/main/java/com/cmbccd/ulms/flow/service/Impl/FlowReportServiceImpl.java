@@ -1,7 +1,8 @@
-package com.cmbccd.ulms.flow.service.Impl;
+package com.cmbccd.ulms.flow.service.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.cmbccd.ulms.common.controller.DataCache;
+import com.cmbccd.ulms.common.util.Util;
 import com.cmbccd.ulms.flow.dao.FlowInfoMapper;
 import com.cmbccd.ulms.flow.domain.FlowInfo;
 import com.cmbccd.ulms.flow.domain.FlowTable;
@@ -24,6 +25,10 @@ public class FlowReportServiceImpl implements FlowReportService {
         String json = flowInfo.getTableInfo();
         List<FlowTable> tableConfig = JSONArray.parseArray(json, FlowTable.class);
         String tableName = flowInfo.getTableName();
+        // 动态表名白名单校验，防止 SQL 注入
+        if (!Util.isValidSqlIdentifier(tableName)) {
+            return new ArrayList<>();
+        }
         StringBuilder sqlColumnBuilder = new StringBuilder();
         Boolean isGqsq = tableName.equals("CUS_FLOW_GQSQ");
         List<List<Object>> result = new ArrayList<>();
@@ -41,6 +46,10 @@ public class FlowReportServiceImpl implements FlowReportService {
                 header.add("组别");
             } else {
                 header.add(item.getTitle());
+            }
+            // 动态列名白名单校验，防止 SQL 注入
+            if (item.getColName() == null || !Util.isValidSqlIdentifier(item.getColName())) {
+                continue;
             }
             sqlColumnBuilder.append(item.getColName()).append(",");
         }

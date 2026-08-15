@@ -80,7 +80,7 @@ public class StudyLogController {
         StudyLogExample.Criteria criteria = example.createCriteria();
         criteria.andPloNumEqualTo(userId);
         if (!Util.isNullorEmpty(params.get("order"))) {
-            example.setOrderByClause(Util.camel4underline(params.get("order")) + " " + params.get("orderType"));
+            example.setOrderByClause(Util.buildOrderByClause(params.get("order"), params.get("orderType")));
         }
         if (!Util.isNullorEmpty(coursePass)) {
             criteria.andCoursePassEqualTo(Short.parseShort(coursePass));
@@ -132,7 +132,7 @@ public class StudyLogController {
             criteria.andCompDateBetween(date[0] + " 00:00:00",date[1] + " 23:59:59");
         }
         if (!Util.isNullorEmpty(params.get("order"))) {
-            example.setOrderByClause(Util.camel4underline(params.get("order")) + " " + params.get("orderType"));
+            example.setOrderByClause(Util.buildOrderByClause(params.get("order"), params.get("orderType")));
         }
 
         criteria.andCoursePassEqualTo((short) 1);
@@ -161,7 +161,7 @@ public class StudyLogController {
             criteria.andCompDateBetween(date[0] + " 00:00:00",date[1] + " 23:59:59");
         }
         if (!Util.isNullorEmpty(params.get("order"))) {
-            example.setOrderByClause(Util.camel4underline(params.get("order")) + " " + params.get("orderType"));
+            example.setOrderByClause(Util.buildOrderByClause(params.get("order"), params.get("orderType")));
         }
 
         criteria.andStudyCompEqualTo((short)1);

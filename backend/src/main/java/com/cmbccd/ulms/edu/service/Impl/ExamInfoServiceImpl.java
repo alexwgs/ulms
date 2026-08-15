@@ -1,4 +1,4 @@
-package com.cmbccd.ulms.edu.service.Impl;
+package com.cmbccd.ulms.edu.service.impl;
 
 import com.cmbccd.ulms.common.util.Util;
 import com.cmbccd.ulms.edu.dao.ExamInfoMapper;
@@ -7,7 +7,7 @@ import com.cmbccd.ulms.edu.domain.ExamInfo;
 import com.cmbccd.ulms.edu.domain.ExamInfoExample;
 import com.cmbccd.ulms.edu.service.AreaConfigService;
 import com.cmbccd.ulms.edu.service.ExamInfoService;
-import com.cmbccd.ulms.sys.dao.PublicMapper;
+import com.cmbccd.ulms.sys.service.PublicService;
 import org.springframework.stereotype.Service;
 
 import jakarta.annotation.Resource;
@@ -23,7 +23,7 @@ public class ExamInfoServiceImpl implements ExamInfoService {
 	private AreaConfigService areaConfigService;
 	
 	@Resource
-	private PublicMapper publicMapper;
+	private PublicService publicService;
 	
 	
 	@Override
@@ -34,7 +34,7 @@ public class ExamInfoServiceImpl implements ExamInfoService {
 		}
 		record.setHandlePlo(userId);
 		record.setHandleDate(Util.currentDateTime());
-		record.setExamCode(publicMapper.selectNewJourno());
+		record.setExamCode(publicService.getJourno());
 		return examInfoMapper.insertSelective(record);
 	}
 

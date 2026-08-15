@@ -30,14 +30,14 @@
         </t-select>
       </t-form-item>
       <t-form-item label="封面图片" name="cover">
-        <t-upload class="avatar-upload" :action="fsURL + 'upload/cytCover'" :show-file-list="false"
+        <t-upload class="avatar-upload" :headers="uploadHeaders" :action="fsURL + 'upload/cytCover'" :show-file-list="false"
           @success="handleCoverSuccess" :before-upload="beforeCoverUpload">
           <img v-if="form.cover" :src="fsURL + form.cover" class="avatar" />
           <i v-else class="avatar-uploader-icon"></i>
         </t-upload>
       </t-form-item>
       <t-form-item label="其他附件" name="files">
-        <t-upload class="upload-demo" :action="fsURL + 'upload/file/cytFile'" @success="uploadFileSuccess"
+        <t-upload class="upload-demo" :headers="uploadHeaders" :action="fsURL + 'upload/file/cytFile'" @success="uploadFileSuccess"
           @remove="handleRemove" :before-remove="beforeRemove" multiple :limit="3" @exceed="handleExceed"
           :file-list="fileList">
           <t-button size="small" theme="primary">点击上传</t-button>
@@ -62,6 +62,7 @@
 </template>
 
 <script setup>
+const uploadHeaders = { Authorization: localStorage.getItem('token') || '' }
 import { ref, reactive, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { MessagePlugin, DialogPlugin } from 'tdesign-vue-next'

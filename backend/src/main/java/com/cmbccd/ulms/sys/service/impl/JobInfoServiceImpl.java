@@ -29,7 +29,7 @@ public class JobInfoServiceImpl implements JobInfoService {
             criteria.andJobStatusEqualTo(params.get("jobStatus"));
         }
         if (!Util.isNullorEmpty(params.get("order"))) {
-            example.setOrderByClause(Util.camel4underline(params.get("order")) + " " + params.get("orderType"));
+            example.setOrderByClause(Util.buildOrderByClause(params.get("order"), params.get("orderType")));
         }
 
         Map<String, Integer> pageParams = Util.innitTablePages(params);

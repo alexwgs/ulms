@@ -1,11 +1,11 @@
-package com.cmbccd.ulms.edu.service.Impl;
+package com.cmbccd.ulms.edu.service.impl;
 
 import com.cmbccd.ulms.common.util.Util;
 import com.cmbccd.ulms.edu.dao.AreaConfigMapper;
 import com.cmbccd.ulms.edu.domain.AreaConfig;
 import com.cmbccd.ulms.edu.domain.AreaConfigExample;
 import com.cmbccd.ulms.edu.service.AreaConfigService;
-import com.cmbccd.ulms.sys.dao.PublicMapper;
+import com.cmbccd.ulms.sys.service.PublicService;
 import org.springframework.stereotype.Service;
 
 import jakarta.annotation.Resource;
@@ -18,7 +18,7 @@ public class AreaConfigServiceImpl implements AreaConfigService {
 	private AreaConfigMapper areaConfigMapper;
 	
 	@Resource
-	private PublicMapper publicMapper;
+	private PublicService publicService;
 	
 	@Override
 	public List<AreaConfig> listAreaConfig(AreaConfigExample example) {
@@ -31,7 +31,7 @@ public class AreaConfigServiceImpl implements AreaConfigService {
 		if(Util.isNullorEmpty(userId)) return 0;
 		record.setHandlePlo(userId);
 		record.setHandleDate(Util.currentDateTime());
-		record.setAreaCode(publicMapper.selectNewJourno());
+		record.setAreaCode(publicService.getJourno());
 		return areaConfigMapper.insertSelective(record);
 	}
 

@@ -1,4 +1,4 @@
-package com.cmbccd.ulms.helper.service.Impl;
+package com.cmbccd.ulms.helper.service.impl;
 
 import com.cmbccd.ulms.common.util.Util;
 import com.cmbccd.ulms.helper.dao.HelperArticalMapper;
@@ -37,7 +37,7 @@ public class HelperArticalServiceImpl implements HelperArticalService {
         HelperArticalExample example = new HelperArticalExample();
         HelperArticalExample.Criteria criteria = example.createCriteria();
         if (!Util.isNullorEmpty(params.get("order"))) {
-            example.setOrderByClause(Util.camel4underline(params.get("order")) + " " + params.get("orderType"));
+            example.setOrderByClause(Util.buildOrderByClause(params.get("order"), params.get("orderType")));
         }
         example.setOrderByClause(" SORTING asc, CLICKS desc");
         if(!Util.isNullorEmpty(routeId)) {

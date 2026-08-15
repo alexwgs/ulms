@@ -38,7 +38,7 @@
         </t-form-item>
         <t-form-item label="附件" :label-width="formLabelWidth">
           <t-upload
-            :action="fsURL + 'upload/file/edu'"
+            :headers="uploadHeaders" :action="fsURL + 'upload/file/edu'"
             @success="handleSuccess"
             :before-upload="getFileDuration"
             @remove="handleRemove"
@@ -176,6 +176,7 @@
   </div>
 </template>
 <script setup>
+const uploadHeaders = { Authorization: localStorage.getItem('token') || '' }
 import { ref, reactive } from 'vue'
 import { MessagePlugin } from 'tdesign-vue-next'
 import { questionBankApi } from '@/api/edu/questionBank.js'

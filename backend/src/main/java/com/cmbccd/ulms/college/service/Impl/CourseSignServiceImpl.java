@@ -1,4 +1,4 @@
-package com.cmbccd.ulms.college.service.Impl;
+package com.cmbccd.ulms.college.service.impl;
 
 import com.cmbccd.ulms.college.dao.CourseSignMapper;
 import com.cmbccd.ulms.college.domain.CourseSign;

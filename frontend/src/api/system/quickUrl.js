@@ -19,12 +19,6 @@ export const quickUrlApi = {
       method: 'put',
       data: form
     }),
-  updateQuickUrlByArea: (area) =>
-    httpInstance({
-      url: `quickUrl/${area}`,
-      method: 'put',
-      data: form
-    }),
   deleteQuickUrl: () =>
     httpInstance({
       url: 'quickUrl/record',

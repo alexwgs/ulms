@@ -119,10 +119,10 @@ public class LoginController {
 	}
 
 	@GetMapping("/logout")
-	public String logout() {
+	public Msg logout() {
 		StpUtil.logout();
 		logger.info("用户选择退出注销账号！");
-		return "index.html";
+		return Msg.success("退出登录成功");
 	}
 
 	@GetMapping("/unauth")

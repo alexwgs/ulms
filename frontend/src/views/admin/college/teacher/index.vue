@@ -246,7 +246,7 @@
         <t-form-item label="上传" name="avatar">
           <t-upload
             ref="avatar"
-            :action="fsURL + 'upload/file/college-avatar'"
+            :headers="uploadHeaders" :action="fsURL + 'upload/file/college-avatar'"
             :file-list="fileList"
             @success="handleSuccess"
             :multiple="false"
@@ -282,6 +282,7 @@
 </template>
 
 <script setup>
+const uploadHeaders = { Authorization: localStorage.getItem('token') || '' }
 import { ref, reactive, onMounted } from 'vue'
 import { AddIcon } from 'tdesign-icons-vue-next'
 import { MessagePlugin } from 'tdesign-vue-next'

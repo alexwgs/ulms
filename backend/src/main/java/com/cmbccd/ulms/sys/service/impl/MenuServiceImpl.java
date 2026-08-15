@@ -13,6 +13,7 @@ import jakarta.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -181,7 +182,7 @@ public class MenuServiceImpl implements MenuService {
 			if (authFlag) {
 				authCireria = menu.getStatus() != 0 ? true : false;
 			}
-			if (id == menu.getPid() && authCireria) {
+			if (Objects.equals(id, menu.getPid()) && authCireria) {
 				childList.add(menu);
 			}
 		}
@@ -192,7 +193,7 @@ public class MenuServiceImpl implements MenuService {
 			List<Menu> pList = new ArrayList<>();
 			 // 三级权限菜单
 			for (Menu pmenu : rootMenus) {
-				if (menu.getId() == pmenu.getPid() && pmenu.getMenuType() == 1) {
+				if (Objects.equals(menu.getId(), pmenu.getPid()) && pmenu.getMenuType() == 1) {
 					pList.add(pmenu);
 				}
 			}

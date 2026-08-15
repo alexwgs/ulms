@@ -27,12 +27,6 @@ export const bookInfoApi = {
       method: 'put',
       data
     }),
-  listBookList: (params) =>
-    httpInstance({
-      url: 'edu/book/list',
-      method: 'get',
-      params
-    }),
   getExamBookTimeInfo: (examCode) =>
     httpInstance({
       url: `edu/book/info/list/${examCode}`,

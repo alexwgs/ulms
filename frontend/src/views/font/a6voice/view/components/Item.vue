@@ -329,7 +329,7 @@ const user = ref({})
 
 onMounted(() => {
   user.value = JSON.parse(window.localStorage.getItem('user') || '{}')
-  dict.value = JSON.parse(window.localStorage.getItem('dict') || '{}')
+  dict.value = JSON.parse(window.localStorage.getItem('dictCache') || '{}')
   categorys.value = dict.value.cyt_artical_category || []
   getArtical()
   getItemMember()

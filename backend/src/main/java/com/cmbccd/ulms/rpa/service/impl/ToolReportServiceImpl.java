@@ -53,7 +53,7 @@ public class ToolReportServiceImpl implements ToolReportService {
         }
 
         if (!Util.isNullorEmpty(params.get("order"))) {
-            example.setOrderByClause(Util.camel4underline(params.get("order")) + " " + params.get("orderType"));
+            example.setOrderByClause(Util.buildOrderByClause(params.get("order"), params.get("orderType")));
         }
         PageHelper.startPage(pageParams.get("pageNum"), pageParams.get("pageSize"));
         List<ToolReport> list = toolReportMapper.selectByExample(example);
@@ -102,7 +102,7 @@ public class ToolReportServiceImpl implements ToolReportService {
         }
 
         if (!Util.isNullorEmpty(params.get("order"))) {
-            example.setOrderByClause(Util.camel4underline(params.get("order")) + " " + params.get("orderType"));
+            example.setOrderByClause(Util.buildOrderByClause(params.get("order"), params.get("orderType")));
         }
         List<ToolReport> listResource = toolReportMapper.selectByExample(example);
         List<ToolReportVO> list = new ArrayList<>();
@@ -137,7 +137,7 @@ public class ToolReportServiceImpl implements ToolReportService {
         }
 
         if (!Util.isNullorEmpty(params.get("order"))) {
-            example.setOrderByClause(Util.camel4underline(params.get("order")) + " " + params.get("orderType"));
+            example.setOrderByClause(Util.buildOrderByClause(params.get("order"), params.get("orderType")));
         }
         List<ToolReport> list = toolReportMapper.selectByExample(example);
 

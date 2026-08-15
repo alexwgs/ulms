@@ -9,7 +9,9 @@
     "prod": "vite --mode prod",
     "build:dev": "vite build --mode dev",
     "build:uat": "vite build --mode uat",
-    "build:prod": "vite build --mode prod"
+    "build:prod": "vite build --mode prod",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "dependencies": {
     "@tato30/vue-pdf": "^2.0.1",
@@ -38,8 +40,12 @@
     "vue3-emoji-picker": "^1.1.8"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@tdesign-vue-next/auto-import-resolver": "^0.1.6",
     "@vitejs/plugin-vue": "^5.2.1",
+    "eslint": "^10.8.1",
+    "eslint-plugin-vue": "^10.10.0",
+    "globals": "^17.11.0",
     "less": "^4.2.2",
     "sass-embedded": "^1.97.3",
     "unplugin-auto-import": "^19.1.2",

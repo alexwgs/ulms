@@ -13,6 +13,7 @@ const isLogin = () => {
   
   const clearToken = () => {
     localStorage.removeItem('token');
+    sessionStorage.removeItem('token');
   };
   
   export { isLogin, getToken, setToken, clearToken };

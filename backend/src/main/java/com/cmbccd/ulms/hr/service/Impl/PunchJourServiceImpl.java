@@ -1,4 +1,4 @@
-package com.cmbccd.ulms.hr.service.Impl;
+package com.cmbccd.ulms.hr.service.impl;
 
 import com.cmbccd.ulms.hr.dao.PunchJourMapper;
 import com.cmbccd.ulms.hr.domain.PunchJour;

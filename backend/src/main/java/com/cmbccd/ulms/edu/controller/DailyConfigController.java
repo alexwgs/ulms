@@ -19,7 +19,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("edu/daily")
-public class DailyConifgController {
+public class DailyConfigController {
 
 	@Resource
 	private DailyConfigService dailyConfigService;
@@ -32,7 +32,7 @@ public class DailyConifgController {
 		Map<String, Integer> pageParams = Util.innitTablePages(params);
 		// Criteria criteria = example.createCriteria();
 		if (!Util.isNullorEmpty(params.get("order"))) {
-			example.setOrderByClause(Util.camel4underline(params.get("order")) + " " + params.get("orderType"));
+			example.setOrderByClause(Util.buildOrderByClause(params.get("order"), params.get("orderType")));
 		}
 		PageHelper.startPage(pageParams.get("pageNum"), pageParams.get("pageSize"));
 		List<DailyConfig> list = dailyConfigService.list(example);

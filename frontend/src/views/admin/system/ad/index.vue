@@ -164,7 +164,7 @@
         ></t-input>
         <t-upload
           class="upload-demo"
-          :action="fsURL + 'upload/file/AD'"
+          :headers="uploadHeaders" :action="fsURL + 'upload/file/AD'"
           @success="handleSuccess"
           :file-list="urlList"
           :multiple="false"
@@ -220,6 +220,9 @@
 </template>
 
 <script setup>
+import { DialogPlugin } from 'tdesign-vue-next'
+import { MessagePlugin } from 'tdesign-vue-next'
+const uploadHeaders = { Authorization: localStorage.getItem('token') || '' }
 import { ref, reactive, onMounted, computed } from 'vue'
 import { adApi } from '@/api/system/ad'
 import { useDictStore } from '@/stores'

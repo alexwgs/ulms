@@ -11,7 +11,7 @@
       </div>
       <div class="profile-main">
         <div class="profile-name">{{ userStore.ploName }} · {{ userStore.ploNum }}</div>
-        <div class="profile-dept">科室：{{ userStore.deptName }}　组别：{{ userStore.groupName }}</div>
+        <div class="profile-dept">科室：{{ userStore.deptName }} 组别：{{ userStore.groupName }}</div>
         <div class="profile-stats" v-if="myPoint">
           <div class="profile-stat">
             <span class="stat-num">{{ myPoint.coin }}</span>

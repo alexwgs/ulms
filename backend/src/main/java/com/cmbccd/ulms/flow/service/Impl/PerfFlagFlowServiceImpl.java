@@ -1,4 +1,4 @@
-package com.cmbccd.ulms.flow.service.Impl;
+package com.cmbccd.ulms.flow.service.impl;
 
 import com.cmbccd.ulms.common.util.Util;
 import com.cmbccd.ulms.flow.dao.PerfFlagMapper;

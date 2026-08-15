@@ -10,7 +10,7 @@ import com.cmbccd.ulms.oht.dao.StatusJourMapper;
 import com.cmbccd.ulms.oht.domain.*;
 import com.cmbccd.ulms.oht.domain.CaseExample.Criteria;
 import com.cmbccd.ulms.oht.service.CaseService;
-import com.cmbccd.ulms.sys.dao.DictionaryMapper;
+import com.cmbccd.ulms.sys.service.DictionaryService;
 import com.cmbccd.ulms.sys.domain.Dictionary;
 import com.cmbccd.ulms.sys.domain.Employee;
 import org.springframework.stereotype.Service;
@@ -40,7 +40,7 @@ public class CaseServiceImpl implements CaseService {
 	private StatusJourMapper statusJourMapper;
 
 	@Resource
-	private DictionaryMapper dictionaryMapper;
+	private DictionaryService dictionaryService;
 
 	@Override
 	public List<Case> getCaseList(CaseExample example) {
@@ -264,10 +264,10 @@ public class CaseServiceImpl implements CaseService {
 	@Override
 	public List<CaseReport> getCaseReport(CaseExample example) {
 		List<CaseReport> cases = caseMapper.selectByExampleReport(example);
-		Map<String, Dictionary> status = dictionaryMapper.selectDictinaryMapByName("oht_case_status");
-		Map<String, Dictionary> type = dictionaryMapper.selectDictinaryMapByName("oht_case_type");
-		Map<String, Dictionary> bcompType = dictionaryMapper.selectDictinaryMapByName("oht_case_bcompType");
-		Map<String, Dictionary> pcompType = dictionaryMapper.selectDictinaryMapByName("oht_case_pcompType");
+		Map<String, Dictionary> status = dictionaryService.getDictionaryMapByName("oht_case_status");
+		Map<String, Dictionary> type = dictionaryService.getDictionaryMapByName("oht_case_type");
+		Map<String, Dictionary> bcompType = dictionaryService.getDictionaryMapByName("oht_case_bcompType");
+		Map<String, Dictionary> pcompType = dictionaryService.getDictionaryMapByName("oht_case_pcompType");
 
 		for (CaseReport item : cases) {
 			if (Util.isNullorEmpty(item.getPickTime())) {

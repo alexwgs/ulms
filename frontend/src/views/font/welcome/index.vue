@@ -134,8 +134,6 @@ const noticeList = ref([])
 const myPunchJourRef = ref(null)
 const todolistRef = ref(null)
 
-const global = ref(window.__POWERED_BY_QIANKUN__ ? window.$global : null)
-
 const handleOpenTodolist = (day) => {
   if (todolistRef.value) {
     todolistRef.value.calendarDialogVisible = true
@@ -165,16 +163,8 @@ const getSystemNoticeList = async () => {
   }
 }
 
-const hasPermission = (permission) => {
-  try {
-    if (global.value && global.value.hasPermission) {
-      return global.value.hasPermission(permission)
-    }
-    return true
-  } catch (error) {
-    return true
-  }
-}
+// 前端权限体系尚未建立，暂时保持放行（待接入后端权限码后收紧）
+const hasPermission = () => true
 
 const location = (system) => {
   if (system === 'ifms') {

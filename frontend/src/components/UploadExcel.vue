@@ -12,7 +12,7 @@
     <t-card class="upload-box">
       <t-upload
         ref="uploadRef"
-        :action="baseURL + 'upload/file/excel/'"
+        :headers="uploadHeaders" :action="baseURL + 'upload/file/excel/'"
         accept=".xls,.xlsx"
         @preview="handlePreview"
         @remove="handleRemove"
@@ -21,9 +21,9 @@
         :auto-upload="false"
         @success="fileUploadSuccess"
       >
-        <t-button theme="primary" size="small" slot="trigger"
-          >选取文件</t-button
-        >
+        <template #trigger>
+          <t-button theme="primary" size="small">选取文件</t-button>
+        </template>
         <t-button
           style="margin-left: 10px"
           theme="success"
@@ -44,9 +44,10 @@
   </t-dialog>
 </template>
 <script setup>
+const uploadHeaders = { Authorization: localStorage.getItem('token') || '' }
 import { ref, onMounted } from 'vue'
 import { MessagePlugin } from 'tdesign-vue-next'
-import { httpInstance } from '@/utils/request.js'
+import { httpInstance, downloadExcel as downloadExcelFile } from '@/utils/request.js'
 
 // Props
 const props = defineProps({
@@ -80,13 +81,7 @@ const show = (queryInfoData) => {
 
 // 下载Excel文件
 const downloadExcel = () => {
-  // 这里需要根据项目实际情况实现下载功能
-  // 假设项目中有全局的下载方法
-  if (window.$global && window.$global.downloadExcel) {
-    window.$global.downloadExcel('employee/report', null, '人员在职名单.xlsx')
-  } else {
-    MessagePlugin.warning('下载功能暂未实现')
-  }
+  downloadExcelFile('employee/report', null, '人员在职名单.xlsx')
 }
 
 // 文件预览

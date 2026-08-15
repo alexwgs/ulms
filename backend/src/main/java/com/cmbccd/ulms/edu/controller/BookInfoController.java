@@ -70,7 +70,7 @@ public class BookInfoController {
 		}
 
 		if (!Util.isNullorEmpty(params.get("order"))) {
-			example.setOrderByClause(Util.camel4underline(params.get("order")) + " " + params.get("orderType"));
+			example.setOrderByClause(Util.buildOrderByClause(params.get("order"), params.get("orderType")));
 		}
 		List<BookList> list = bookListService.list(example);
 		return Msg.success( new DataPage<BookList>(list));

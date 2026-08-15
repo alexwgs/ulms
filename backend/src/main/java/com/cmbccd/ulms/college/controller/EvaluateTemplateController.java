@@ -14,7 +14,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("college/evaluate/templete")
-public class EvaluateTempleteController {
+public class EvaluateTemplateController {
 
     @Resource
     private EvaluateTempleteService evaluateTempleteService;

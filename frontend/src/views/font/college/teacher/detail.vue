@@ -124,7 +124,7 @@ import { ref, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { MessagePlugin } from 'tdesign-vue-next'
 import { CalendarIcon, BookmarkIcon, TimeIcon, StarIcon } from 'tdesign-icons-vue-next'
-import { $get } from '@/utils/request'
+import { httpInstance } from '@/utils/request'
 import { cleanDisplayText } from '@/utils/sanitize'
 
 const router = useRouter()
@@ -161,7 +161,7 @@ const total = ref(0)
 
 const getTeacherCourse = async () => {
   queryInfo.query = teacher.value.ploNum
-  const res = await $get('college/course', queryInfo)
+  const res = await httpInstance.get('college/course', { params: queryInfo })
   if (res.code !== 200) {
     MessagePlugin.error(res.msg)
     return

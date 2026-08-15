@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import jakarta.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 
@@ -38,6 +39,11 @@ public class DictionaryServiceImpl implements DictionaryService {
 	@Override
 	public List<Dictionary> getDictionaryList(DictionaryExample example) {
 		return dictionaryMapper.selectByExample(example);
+	}
+
+	@Override
+	public Map<String, Dictionary> getDictionaryMapByName(String name) {
+		return dictionaryMapper.selectDictinaryMapByName(name);
 	}
 
 	@Override

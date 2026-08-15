@@ -1,4 +1,4 @@
-package com.cmbccd.ulms.edu.service.Impl;
+package com.cmbccd.ulms.edu.service.impl;
 
 import com.cmbccd.ulms.edu.dao.QuesTempMapper;
 import com.cmbccd.ulms.edu.domain.QuesTemp;

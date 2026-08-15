@@ -38,7 +38,7 @@ import { getSurveyChartData } from '@/api/cyt/index.js'
 const props = defineProps({
   articalId: {
     type: Number,
-    default: ''
+    default: 0
   }
 })
 

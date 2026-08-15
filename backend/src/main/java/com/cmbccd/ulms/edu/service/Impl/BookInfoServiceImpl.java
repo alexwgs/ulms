@@ -1,10 +1,10 @@
-package com.cmbccd.ulms.edu.service.Impl;
+package com.cmbccd.ulms.edu.service.impl;
 
 import com.cmbccd.ulms.edu.dao.BookInfoMapper;
 import com.cmbccd.ulms.edu.domain.BookInfo;
 import com.cmbccd.ulms.edu.domain.BookInfoExample;
 import com.cmbccd.ulms.edu.service.BookInfoService;
-import com.cmbccd.ulms.sys.dao.PublicMapper;
+import com.cmbccd.ulms.sys.service.PublicService;
 import org.springframework.stereotype.Service;
 
 import jakarta.annotation.Resource;
@@ -17,7 +17,7 @@ public class BookInfoServiceImpl implements BookInfoService {
 	private BookInfoMapper bookInfoMapper;
 	
 	@Resource
-	private PublicMapper publicMapper;
+	private PublicService publicService;
 	
 	@Override
 	public List<BookInfo> listBookInfo(BookInfoExample example) {
@@ -26,7 +26,7 @@ public class BookInfoServiceImpl implements BookInfoService {
 
 	@Override
 	public int create(BookInfo record) {
-		record.setInfoCode(publicMapper.selectNewJourno());
+		record.setInfoCode(publicService.getJourno());
 		return bookInfoMapper.insert(record);
 	}
 

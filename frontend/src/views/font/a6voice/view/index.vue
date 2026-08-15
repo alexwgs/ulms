@@ -181,8 +181,6 @@ const hasAnswered = ref(false)
 const relatedList = ref([])
 const commentRef = ref(null)
 
-const global = window.__POWERED_BY_QIANKUN__ ? window.$global : null
-
 const typeName = computed(() => {
   const typeMap = {
     view: '讨论',
@@ -259,11 +257,7 @@ const parseFiles = (filesStr) => {
 }
 
 const downloadFile = (file) => {
-  if (global.value?.downloadFile) {
-    global.value.downloadFile(fsURL + file.path)
-  } else {
-    window.open(fsURL + file.path)
-  }
+  window.open(fsURL + file.path)
 }
 
 const fetchartical = async () => {

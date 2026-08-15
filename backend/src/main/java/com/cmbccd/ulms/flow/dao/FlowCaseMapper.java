@@ -30,10 +30,6 @@ public interface FlowCaseMapper {
 
     int updateByPrimaryKey(FlowCase record);
 
-    List<Map<String, Object>> testSqlSelect(@Param("sql") String sql);
-
-    int sqlUpdate(@Param("sql") String sql);
-
     int cancelCaseDetail(@Param("tableName") String tableName, @Param("statusColumn") String statusColumn,
                          @Param("idColumn") String idColumn, @Param("caseId") String caseId);
 

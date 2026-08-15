@@ -128,6 +128,37 @@ public class Util {
 		return builder.toString();
 	}
 
+	/**
+	 * 安全构建排序子句，防止 SQL 注入（ORDER BY 拼接）。
+	 * order 仅允许字母/数字/下划线（列名），orderType 仅允许 asc/desc；非法输入返回 null（表示不排序）。
+	 *
+	 * @param order     排序字段（camelCase 或下划线形式）
+	 * @param orderType 排序方向（asc/desc，不区分大小写，为空默认 asc）
+	 * @return 安全的 order by 子句，或 null 表示非法/未指定
+	 */
+	public static String buildOrderByClause(String order, String orderType) {
+		if (isNullorEmpty(order) || !order.matches("[a-zA-Z0-9_]+")) {
+			return null;
+		}
+		String direction = "asc";
+		if (!isNullorEmpty(orderType)) {
+			String t = orderType.trim().toLowerCase();
+			if ("desc".equals(t) || "asc".equals(t)) {
+				direction = t;
+			} else {
+				return null;
+			}
+		}
+		return camel4underline(order) + " " + direction;
+	}
+
+	/**
+	 * 校验 SQL 标识符（表名/列名）是否安全：仅允许字母、数字、下划线，防止动态表/列名注入。
+	 */
+	public static boolean isValidSqlIdentifier(String identifier) {
+		return identifier != null && identifier.matches("[A-Za-z0-9_]+");
+	}
+
 	public static String underlineToCamel(String param) {
 		if (param == null || "".equals(param.trim())) {
 			return "";

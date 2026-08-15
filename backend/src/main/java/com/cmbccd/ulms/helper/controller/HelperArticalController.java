@@ -45,7 +45,7 @@ public class HelperArticalController {
             criteria2.andUpdatePloEqualTo(Util.userIdByShiro());
         }
         if (!Util.isNullorEmpty(params.get("order"))) {
-            example.setOrderByClause(Util.camel4underline(params.get("order")) + " " + params.get("orderType"));
+            example.setOrderByClause(Util.buildOrderByClause(params.get("order"), params.get("orderType")));
         }
         if(!Util.isNullorEmpty(routeId)) {
             criteria.andRouteIdEqualTo(Integer.parseInt(routeId));
@@ -98,7 +98,7 @@ public class HelperArticalController {
     @SaCheckPermission("helper:artical:update")
     @MyLog(title = "[helper-artical]文章管理")
     public Msg Update(@RequestBody HelperArtical record){
-        if(!StpUtil.hasPermission("edu:exam:list")) {
+        if(!StpUtil.hasPermission("helper:artical:list")) {
             if(!record.getInsertPlo().equals(StpUtil.getLoginIdAsString())) {
                 return Msg.error("");
             }

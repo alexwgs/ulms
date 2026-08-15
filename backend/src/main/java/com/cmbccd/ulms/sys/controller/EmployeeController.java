@@ -161,10 +161,10 @@ public class EmployeeController {
 		String status = params.get("status");
 		if(Util.isNullorEmpty(status)){
 			List<Employee> emps = DataCache.EMPLOYEE.values().stream().filter(e -> e.getPloName().indexOf(value)>-1 || e.getPloNum().indexOf(value)>-1  || e.getGroupName().indexOf(value)>-1 || e.getDeptName().indexOf(value)>-1).collect(Collectors.toList());
-			return Msg.success(emps);
+			return Msg.success(sanitizeForPicker(emps));
 		}else {
 			List<Employee> emps = DataCache.EMPLOYEE.values().stream().filter(e -> e.getPloStatus().equals(status) && (e.getPloName().indexOf(value)>-1 || e.getPloNum().indexOf(value)>-1  || e.getGroupName().indexOf(value)>-1 || e.getDeptName().indexOf(value)>-1)).collect(Collectors.toList());
-			return Msg.success(emps);
+			return Msg.success(sanitizeForPicker(emps));
 		}
 	}
 
@@ -172,7 +172,35 @@ public class EmployeeController {
 	public Msg getEmployeeListByJobLevel(@PathVariable("jobLevels") String jobLevels) {
 		if(Util.isNullorEmpty(jobLevels) || jobLevels.length()<3) return Msg.success(null);
 		List<Employee> emps = DataCache.EMPLOYEE.values().stream().filter(e -> jobLevels.indexOf(e.getJobLevel())>-1 && e.getPloStatus().equals("00")).collect(Collectors.toList());
-		return Msg.success(emps);
+		return Msg.success(sanitizeForPicker(emps));
+	}
+
+	/**
+	 * 选人控件脱敏：仅复制选人所需的非敏感字段，清空手机号/住址等 PII，且不修改 DataCache 缓存对象。
+	 */
+	private List<Employee> sanitizeForPicker(List<Employee> emps) {
+		if (emps == null) {
+			return null;
+		}
+		List<Employee> result = new ArrayList<>();
+		for (Employee src : emps) {
+			Employee e = new Employee();
+			e.setPloNum(src.getPloNum());
+			e.setPloName(src.getPloName());
+			e.setDeptName(src.getDeptName());
+			e.setGroupName(src.getGroupName());
+			e.setDeptNum(src.getDeptNum());
+			e.setDeptGroup(src.getDeptGroup());
+			e.setBatchGroup(src.getBatchGroup());
+			e.setJobLevel(src.getJobLevel());
+			e.setPloStatus(src.getPloStatus());
+			e.setInDate(src.getInDate());
+			e.setOutDate(src.getOutDate());
+			e.setJobStatus(src.getJobStatus());
+			e.setAvatar(src.getAvatar());
+			result.add(e);
+		}
+		return result;
 	}
 	/**
 	 * 人力资源控件TREE
@@ -304,6 +332,7 @@ public class EmployeeController {
 	}
 	
 	//		报表模块
+	@SaCheckPermission("employee:report")
 	@GetMapping("/report")
 	@MyLog(title = "[sys-user]员工信息", content = "导出报表")
 	public void reportExamScoreHum(HttpServletResponse response,@RequestParam Map<String, String> params) throws IOException {

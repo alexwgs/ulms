@@ -138,8 +138,6 @@ import { downloadExcel } from '@/utils/request'
 import { MessagePlugin } from 'tdesign-vue-next'
 import * as echarts from 'echarts'
 
-const global = window.__POWERED_BY_QIANKUN__ ? window.$global : null
-
 const formatDate = (date) => {
   return new Date(date).toISOString().split('T')[0]
 }

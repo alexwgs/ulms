@@ -11,7 +11,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("edu/ques/collect")
-public class QuesCollectContorller {
+public class QuesCollectController {
 
 	@Resource
 	private QuesCollectService quesCollectService;

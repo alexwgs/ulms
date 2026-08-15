@@ -73,7 +73,7 @@
     <t-pagination @current-change="handleCurrentChange" v-model="currentPage"
       :page-size="queryInfo.pageSize" :total="total">
     </t-pagination>
-    <ExamBook ref="examBookRef"></ExamBook>
+    <ExamBook ref="examBookRef" @refresh="getCurrentExam"></ExamBook>
   </div>
 </template>
 

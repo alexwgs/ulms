@@ -71,7 +71,7 @@
         </t-col>
         <t-col :span="12">
           <t-form-item label="其他附件" name="files">
-            <t-upload :action="fsURL + 'upload/file/cytFile'" @success="uploadFileSuccess" @remove="handleRemove"
+            <t-upload :headers="uploadHeaders" :action="fsURL + 'upload/file/cytFile'" @success="uploadFileSuccess" @remove="handleRemove"
               :before-remove="beforeRemove" multiple :limit="10" @exceed="handleExceed" :file-list="fileList">
               <t-button size="small" theme="primary">点击上传</t-button>
               <template #tip>
@@ -91,6 +91,7 @@
   </t-dialog>
 </template>
 <script setup>
+const uploadHeaders = { Authorization: localStorage.getItem('token') || '' }
 import { ref, reactive, onMounted, nextTick } from 'vue'
 import { MessagePlugin, DialogPlugin } from 'tdesign-vue-next'
 import WangEditor from '@/components/WangEditor.vue'

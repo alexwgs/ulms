@@ -93,7 +93,7 @@
       </t-form-item>
       <t-form-item label="图像" :label-width="formLabelWidth" name="iconUrl">
         <t-input size="small" v-model="quickUrlForm.iconUrl" autocomplete="off"></t-input>
-        <t-upload class="upload-demo" :action="fsURL + 'upload/file/icon'" @success="handleSuccess"
+        <t-upload class="upload-demo" :headers="uploadHeaders" :action="fsURL + 'upload/file/icon'" @success="handleSuccess"
           :file-list="iconUrlList" :multiple="false" list-type="picture">
           <t-button variant="outline" size="small" theme="primary">点击上传</t-button>
           <template #tip>
@@ -140,6 +140,8 @@
 </template>
 
 <script setup>
+import { MessagePlugin } from 'tdesign-vue-next'
+const uploadHeaders = { Authorization: localStorage.getItem('token') || '' }
 import { ref, reactive, onMounted } from 'vue'
 import { quickUrlApi } from '@/api/system/quickUrl'
 import { useDictStore } from '@/stores'

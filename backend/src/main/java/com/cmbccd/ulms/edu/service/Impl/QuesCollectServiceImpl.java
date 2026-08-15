@@ -1,4 +1,4 @@
-package com.cmbccd.ulms.edu.service.Impl;
+package com.cmbccd.ulms.edu.service.impl;
 
 import com.cmbccd.ulms.common.util.Util;
 import com.cmbccd.ulms.edu.dao.QuesCollectMapper;
@@ -10,7 +10,7 @@ import com.cmbccd.ulms.edu.domain.QuesCollectExample.Criteria;
 import com.cmbccd.ulms.edu.service.BrushConfigService;
 import com.cmbccd.ulms.edu.service.QuesBankService;
 import com.cmbccd.ulms.edu.service.QuesCollectService;
-import com.cmbccd.ulms.sys.dao.PublicMapper;
+import com.cmbccd.ulms.sys.service.PublicService;
 import org.springframework.stereotype.Service;
 
 import jakarta.annotation.Resource;
@@ -26,7 +26,7 @@ import java.util.List;
 	@Resource
 	private QuesBankService quesBankService;
 	@Resource
-	private PublicMapper publicMapper;
+	private PublicService publicService;
 	
 	@Override
 	public int collect(String quesCode) {
@@ -53,7 +53,7 @@ import java.util.List;
 		record.setDataDate(Util.currentDateTime());
 		record.setPloNum(userId);
 		record.setStatus((short)1);
-		record.setJourno(publicMapper.selectNewJourno());
+		record.setJourno(publicService.getJourno());
 		quesCollectMapper.insert(record);
 		return collectNumber+1;
 	}

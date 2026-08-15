@@ -44,7 +44,7 @@ public class PunchJourController {
 		if (Util.isNullorEmpty(params.get("order"))) {
 			example.setOrderByClause(" work_date desc,pun_status ");
 		}else {
-			example.setOrderByClause(Util.camel4underline(params.get("order")) + " " + params.get("orderType"));
+			example.setOrderByClause(Util.buildOrderByClause(params.get("order"), params.get("orderType")));
 		}
 
 		PageHelper.startPage(pageParams.get("pageNum"), pageParams.get("pageSize"));

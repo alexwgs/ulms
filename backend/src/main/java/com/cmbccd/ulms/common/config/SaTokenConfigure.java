@@ -25,7 +25,6 @@ public class SaTokenConfigure implements WebMvcConfigurer  {
                         "/static/**",       // 前端构建产物 (JS/CSS/字体/图片)
                         "/index.html",      // SPA 入口
                         "/favicon.ico",     // 浏览器图标
-                        "/api/upload/**",   // 上传文件（头像等，接口统一加 /api 前缀）
                         "/error",           // 错误处理端点
                         "/api/login",       // 登录接口
                         "/api/getPw"        // 获取加密密钥

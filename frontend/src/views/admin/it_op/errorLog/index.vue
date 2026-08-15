@@ -95,6 +95,7 @@
 </template>
 
 <script setup>
+import { MessagePlugin } from 'tdesign-vue-next'
 import { ref, reactive, onMounted } from 'vue'
 import { errorLogApi } from '@/api/admin/errorLog'
 import { usePagination } from '@/hooks/usePagination'

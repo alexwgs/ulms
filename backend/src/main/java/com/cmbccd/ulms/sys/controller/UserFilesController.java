@@ -41,7 +41,7 @@ public class UserFilesController {
 		}
 
 		if (!Util.isNullorEmpty(params.get("order"))) {
-			example.setOrderByClause(Util.camel4underline(params.get("order")) + " " + params.get("orderType"));
+			example.setOrderByClause(Util.buildOrderByClause(params.get("order"), params.get("orderType")));
 		}
 		Map<String, Integer> pageParams = Util.innitTablePages(params);
 		PageHelper.startPage(pageParams.get("pageNum"), pageParams.get("pageSize"));

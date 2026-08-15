@@ -1,4 +1,4 @@
-package com.cmbccd.ulms.edu.service.Impl;
+package com.cmbccd.ulms.edu.service.impl;
 
 import com.cmbccd.ulms.common.util.Util;
 import com.cmbccd.ulms.edu.dao.QuesDisputeMapper;
@@ -7,7 +7,7 @@ import com.cmbccd.ulms.edu.domain.QuesDispute;
 import com.cmbccd.ulms.edu.domain.QuesDisputeExample;
 import com.cmbccd.ulms.edu.domain.QuesDisputeExample.Criteria;
 import com.cmbccd.ulms.edu.service.QuesDisputeService;
-import com.cmbccd.ulms.sys.dao.PublicMapper;
+import com.cmbccd.ulms.sys.service.PublicService;
 import org.springframework.stereotype.Service;
 
 import jakarta.annotation.Resource;
@@ -20,12 +20,12 @@ public class QuesDisputeServiceImpl implements QuesDisputeService {
 	private QuesDisputeMapper quesDisputeMapper;
 	
 	@Resource
-	private PublicMapper publicMapper;
+	private PublicService publicService;
 	
 	@Override
 	public int create(QuesDispute record) {
 		String userId = Util.userIdByShiro();
-		record.setJourno(publicMapper.selectNewJourno());
+		record.setJourno(publicService.getJourno());
 		record.setDataDate(Util.currentDateTime());
 		record.setPloNum(userId);
 		record.setDisputeResult((short)2);

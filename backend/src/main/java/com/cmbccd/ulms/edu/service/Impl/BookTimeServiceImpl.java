@@ -1,11 +1,11 @@
-package com.cmbccd.ulms.edu.service.Impl;
+package com.cmbccd.ulms.edu.service.impl;
 
 import com.cmbccd.ulms.edu.dao.BookTimeMapper;
 import com.cmbccd.ulms.edu.domain.BookTime;
 import com.cmbccd.ulms.edu.domain.BookTimeExample;
 import com.cmbccd.ulms.edu.domain.BookTimeExample.Criteria;
 import com.cmbccd.ulms.edu.service.BookTimeService;
-import com.cmbccd.ulms.sys.dao.PublicMapper;
+import com.cmbccd.ulms.sys.service.PublicService;
 import org.springframework.stereotype.Service;
 
 import jakarta.annotation.Resource;
@@ -18,7 +18,7 @@ public class BookTimeServiceImpl implements BookTimeService {
 	private BookTimeMapper bookTimeMapper;
 	
 	@Resource
-	private PublicMapper publicMapper;
+	private PublicService publicService;
 	
 	@Override
 	public List<BookTime> listBookTime(BookTimeExample example) {
@@ -31,7 +31,7 @@ public class BookTimeServiceImpl implements BookTimeService {
 	}
 	@Override
 	public int create(BookTime record) {
-		record.setJourno(publicMapper.selectNewJourno());
+		record.setJourno(publicService.getJourno());
 		return bookTimeMapper.insertSelective(record);
 	}
 

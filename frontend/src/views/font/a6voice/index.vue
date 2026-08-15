@@ -87,20 +87,6 @@
             <Convention></Convention>
           </div>
         </t-card>
-        <t-card class="rank-list" v-if="false">
-          <template #header>
-            <span>回帖榜</span>
-          </template>
-          <t-col :span="3" v-for="item in commentRanks" :key="item.userid">
-            <div style="display: inline-block">
-              <div class="avartar-box-big">
-                <img :src="fsURL + item.user.avatar" />
-              </div>
-              <div class="rank-avatar-info">发帖量:{{ item.count }}</div>
-              <div class="rank-avatar-user">{{ item.user.ploName }}</div>
-            </div>
-          </t-col>
-        </t-card>
         <t-card class="rank-list">
           <template #header>
             <span>本周热榜</span>
@@ -137,6 +123,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { MessagePlugin } from 'tdesign-vue-next'
+import { useDictStore } from '@/stores'
 import {
   getWeeklyHot,
   getArticalList,
@@ -149,7 +136,6 @@ const router = useRouter()
 
 const fsURL = import.meta.env.VITE_FILE_BASE_URL || ''
 const weeklyHotList = ref([])
-const commentRanks = ref({})
 const currentPage = ref(1)
 const total = ref(0)
 const queryInfo = ref({
@@ -165,43 +151,29 @@ const articalList = ref([])
 const unreadCount = ref('')
 const screenWidth = ref(document.documentElement.clientWidth)
 
-const global = ref(window.__POWERED_BY_QIANKUN__ ? window.$global : null)
+const dictStore = useDictStore()
 
 const articalCategoryList = computed(() => {
-  if (!global.value?.dict?.cyt_artical_category) return []
-  return global.value.dict.cyt_artical_category.filter(
+  if (!dictStore.dictList?.cyt_artical_category) return []
+  return dictStore.dictList.cyt_artical_category.filter(
     (item) => item.status == 1
   )
 })
 
 const itemCategoryList = computed(() => {
-  if (!global.value?.dict?.cyt_item_category) return []
-  return global.value.dict.cyt_item_category.filter((item) => item.status == 1)
+  if (!dictStore.dictList?.cyt_item_category) return []
+  return dictStore.dictList.cyt_item_category.filter((item) => item.status == 1)
 })
 
-const hasPermission = (permission) => {
-  if (!global.value?.hasPermission) return true
-  return global.value.hasPermission(permission)
-}
+// 前端权限体系尚未建立，暂时保持放行（待接入后端权限码后收紧）
+const hasPermission = () => true
 
 onMounted(() => {
+  dictStore.getDictList()
   getWeeklyHotData()
   getArticalListData()
   getUnreadCountData()
 })
-
-const getCommentRank = async () => {
-  try {
-    const res = await getCommentRank()
-    if (res.code !== 200) {
-      MessagePlugin.error(res.msg)
-      return
-    }
-    commentRanks.value = res.data
-  } catch (error) {
-    console.error(error)
-  }
-}
 
 const getWeeklyHotData = async () => {
   try {

@@ -1,5 +1,6 @@
 package com.cmbccd.ulms.common.controller;
 
+import cn.dev33.satoken.annotation.SaIgnore;
 import com.cmbccd.ulms.common.config.UlmsConfig;
 import com.cmbccd.ulms.common.domain.FileObject;
 import com.cmbccd.ulms.common.util.Util;
@@ -54,13 +55,19 @@ public class FileUpload {
 		}
 		Path filePath = Paths.get(uploadFilePath);
 		String fileName = filePath.getFileName().toString();
-		String realFileName = fileName.substring(0, fileName.lastIndexOf('.'));
+
+		String uploadFileSuffix = "";
+		if (uploadFilePath.contains(".")) {
+			uploadFileSuffix = uploadFilePath.substring(uploadFilePath.lastIndexOf('.') + 1).toLowerCase();
+		}
+		// 服务端安全校验：禁止上传脚本/可执行类文件，防止存储型 XSS 与脚本执行
+		if (!isAllowedUploadSuffix(uploadFileSuffix)) {
+			return Msg.error("不支持的文件格式：" + uploadFileSuffix);
+		}
+		// 无扩展名时回退为完整文件名，避免 substring 越界
+		String realFileName = uploadFileSuffix.isEmpty() ? fileName : fileName.substring(0, fileName.lastIndexOf('.'));
 
 		String uploadFileName = Util.getCurrentTimestamp() + ((new Random().nextInt(1000)) + 1000);
-		String uploadFileSuffix = "";
-		if (uploadFilePath != null && uploadFilePath.contains(".")) {
-			uploadFileSuffix = uploadFilePath.substring(uploadFilePath.lastIndexOf('.') + 1);
-		}
 
 		FileOutputStream fos = null;
 		InputStream fis = null;
@@ -201,8 +208,17 @@ public class FileUpload {
 	private static final java.util.Set<String> ALLOWED_IMAGE_SUFFIXES =
 			java.util.Set.of("jpg", "jpeg", "png", "gif", "bmp", "webp");
 
+	/** 通用上传禁止的脚本/可执行后缀（小写黑名单） */
+	private static final java.util.Set<String> FORBIDDEN_UPLOAD_SUFFIXES =
+			java.util.Set.of("html", "htm", "svg", "js", "mjs", "jsp", "jspx", "xml", "xhtml",
+					"sh", "bat", "cmd", "exe", "dll", "war", "jar", "php", "asp", "aspx");
+
 	private boolean isAllowedImageSuffix(String suffix) {
 		return suffix != null && ALLOWED_IMAGE_SUFFIXES.contains(suffix);
+	}
+
+	private boolean isAllowedUploadSuffix(String suffix) {
+		return suffix != null && !FORBIDDEN_UPLOAD_SUFFIXES.contains(suffix);
 	}
 
 	/**
@@ -234,6 +250,7 @@ public class FileUpload {
 		return false;
 	}
 
+	@SaIgnore
 	@RequestMapping(value = "/getFile/{filePath}/{fileName}", method = RequestMethod.GET)
 	public void testDownload(HttpServletResponse res, @PathVariable("filePath") String filePath,
 			@PathVariable("fileName") String fileName) {
@@ -275,12 +292,6 @@ public class FileUpload {
 			}
 		}
 //	    return Msg.success("成功获取文件");
-	}
-
-	@RequestMapping(value = "/getFile/{filePath}/{fileName}", method = RequestMethod.DELETE)
-	public Msg deleteFile(HttpServletRequest req, MultipartHttpServletRequest multiReq,
-			@PathVariable("path") String path) {
-		return Msg.success();
 	}
 
 }

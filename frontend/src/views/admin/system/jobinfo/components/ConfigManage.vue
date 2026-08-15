@@ -60,6 +60,7 @@
 </template>
 
 <script setup>
+import { MessagePlugin } from 'tdesign-vue-next'
 import { ref, computed } from 'vue'
 import { useDictStore } from '@/stores'
 import { jobinfoApi } from '@/api/system/jobinfo'

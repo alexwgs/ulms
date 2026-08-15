@@ -45,12 +45,12 @@
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { MessagePlugin, DialogPlugin } from 'tdesign-vue-next'
+import { useOhtStore, useWsStore } from '@/stores'
 import { MapAimingIcon, LocationIcon } from 'tdesign-icons-vue-next'
 import { getStatusTree } from '@/api/welcome/index.js'
 
 const emit = defineEmits(['editIdentity', 'changeUserStatus'])
 
-const rws = ref({})
 const identityUpdateFlag = ref(false)
 const userStatus = ref('准备中')
 const statusType = ref([])
@@ -62,18 +62,11 @@ const statusChangeMsg = ref({
   content: ''
 })
 
-const getIdentity = computed(() => {
-  try {
-    const store = window.__POWERED_BY_QIANKUN__ ? window.$store : null
-    return store?.state?.identity || '无身份'
-  } catch {
-    return '无身份'
-  }
-})
+const ohtStore = useOhtStore()
+const getIdentity = computed(() => ohtStore.identity || '无身份')
 
 onMounted(() => {
   userStatusTimer()
-  initWebSocket()
   getStatusType()
 })
 
@@ -82,14 +75,6 @@ onBeforeUnmount(() => {
     clearInterval(statusTimer.value)
   }
 })
-
-const initWebSocket = () => {
-  try {
-    rws.value = window.__POWERED_BY_QIANKUN__ ? window.$ws?.ws : null
-  } catch (error) {
-    console.error('初始化WebSocket失败', error)
-  }
-}
 
 const editIdentity = () => {
   identityUpdateFlag.value = !identityUpdateFlag.value
@@ -140,14 +125,9 @@ const statusChange = (e, data) => {
   }
 }
 
+const wsStore = useWsStore()
 const sendWebSocketMessage = (data) => {
-  try {
-    if (rws.value) {
-      rws.value.send(JSON.stringify(data))
-    }
-  } catch (error) {
-    console.error('发送WebSocket消息失败', error)
-  }
+  wsStore.sendMessage(data)
 }
 
 const userStatusTimer = () => {

@@ -248,7 +248,7 @@ export const useOhtStore = defineStore('oht', {
         this.ohtStatusInfo === 'default1'
       ) {
         const currentCase = this.waittingCase[0]
-        const dict = JSON.parse(window.localStorage.getItem('dict') || '{}')
+        const dict = JSON.parse(window.localStorage.getItem('dictCache') || '{}')
         const caseTypes = dict.oht_case_type || []
         const caseType = caseTypes.find(
           (item) => parseInt(item.code) === currentCase.caseType
@@ -283,22 +283,19 @@ export const useOhtStore = defineStore('oht', {
       this.ohtStatusInfo = 'task'
       this.orderStatus = 1
 
-      // 发送WebSocket消息
-      if (window.$ws?.ws) {
-        window.$ws.ws.send(
-          JSON.stringify({
-            modal: 'oht',
-            type: 'command',
-            content: {
-              action: 'newTask',
-              caseId: currentCase.caseId,
-              buildId: currentCase.buildId
-            }
-          })
-        )
-      }
-
       const wsStore = useWsStore()
+
+      // 发送WebSocket消息
+      wsStore.sendMessage({
+        modal: 'oht',
+        type: 'command',
+        content: {
+          action: 'newTask',
+          caseId: currentCase.caseId,
+          buildId: currentCase.buildId
+        }
+      })
+
       const message = `当前收到[${currentCase.dataTime}]求助类型为[${caseTypeName}]的求助，请尽快接单！`
 
       wsStore.setDesktopNotification('[举手系统]新的举手订单', message, 'oht')

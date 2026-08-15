@@ -1,4 +1,4 @@
-package com.cmbccd.ulms.edu.service.Impl;
+package com.cmbccd.ulms.edu.service.impl;
 
 import com.cmbccd.ulms.common.controller.DataCache;
 import com.cmbccd.ulms.common.util.Util;
@@ -11,7 +11,7 @@ import com.cmbccd.ulms.edu.service.QuesBankService;
 import com.cmbccd.ulms.edu.service.QuesScoreService;
 import com.cmbccd.ulms.edu.service.QuesTempService;
 import com.cmbccd.ulms.edu.service.QuesTestService;
-import com.cmbccd.ulms.sys.dao.PublicMapper;
+import com.cmbccd.ulms.sys.service.PublicService;
 import com.cmbccd.ulms.sys.domain.Employee;
 import org.springframework.stereotype.Service;
 
@@ -40,14 +40,14 @@ public class QuesTestServiceImpl implements QuesTestService {
 	private QuesScoreService examScoreService;
 
 	@Resource
-	private PublicMapper publicMapper;
+	private PublicService publicService;
 
 	@Resource
 	private QuesBankMapper quesBankMapper;
 
 	@Override
 	public int create(QuesTest record) {
-		record.setJourno(publicMapper.selectNewJourno());
+		record.setJourno(publicService.getJourno());
 		return quesTestMapper.insert(record);
 	}
 

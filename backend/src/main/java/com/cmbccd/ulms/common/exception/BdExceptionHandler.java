@@ -34,8 +34,6 @@ public class BdExceptionHandler {
     
     @Resource
     ErrorLogService errorLogService;
-    
-	ErrorLog errorLog = new ErrorLog();
 
     /**
      * @param e
@@ -77,7 +75,7 @@ public class BdExceptionHandler {
     }
     
     @ExceptionHandler(NumberFormatException.class)
-    public Msg numberFormatExceptionHandler(NullPointerException e) {
+    public Msg numberFormatExceptionHandler(NumberFormatException e) {
         errorLogService.insertNewErrorLog(ErrorLog.warning("Controller", "NumberFormatException（数字类型异常）", e.getMessage()));
         logger.warn(e.getMessage(), e);
         return Msg.error("数字类型异常！");
@@ -132,11 +130,11 @@ public class BdExceptionHandler {
         return Msg.error(e.getMessage());
     }
 
-    // 拦截：其它所有异常
+    // 拦截：其它所有异常（不向前端回传内部异常细节，完整堆栈记录到日志与 ErrorLog）
     @ExceptionHandler(Exception.class)
     public Msg handlerException(Exception e) {
-        logger.error(e.getMessage(), e);
+        logger.error("未捕获异常", e);
         errorLogService.insertNewErrorLog(ErrorLog.error("Controller", "Exception（其它异常）", e.getMessage()));
-        return Msg.error(e.getMessage());
+        return Msg.error("系统异常，请稍后重试或联系管理员");
     }
 }

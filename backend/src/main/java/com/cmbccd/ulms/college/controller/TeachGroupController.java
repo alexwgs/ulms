@@ -46,7 +46,7 @@ public class TeachGroupController {
         TeachGroupExample.Criteria criteria = example.createCriteria();
         criteria.andGroupNameEqualTo(groupName);
         if (!Util.isNullorEmpty(params.get("order"))) {
-            example.setOrderByClause(Util.camel4underline(params.get("order")) + " " + params.get("orderType"));
+            example.setOrderByClause(Util.buildOrderByClause(params.get("order"), params.get("orderType")));
         }
         if(!Util.isNullorEmpty(query)) {
             if("ploNum".equals(queryType)) {

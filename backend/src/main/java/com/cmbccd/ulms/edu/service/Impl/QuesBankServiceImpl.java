@@ -1,4 +1,4 @@
-package com.cmbccd.ulms.edu.service.Impl;
+package com.cmbccd.ulms.edu.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
 import com.cmbccd.ulms.common.util.Util;
@@ -7,7 +7,7 @@ import com.cmbccd.ulms.edu.domain.QuesBank;
 import com.cmbccd.ulms.edu.domain.QuesBankExample;
 import com.cmbccd.ulms.edu.domain.QuesBankExample.Criteria;
 import com.cmbccd.ulms.edu.service.QuesBankService;
-import com.cmbccd.ulms.sys.dao.PublicMapper;
+import com.cmbccd.ulms.sys.service.PublicService;
 import com.github.pagehelper.PageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +31,7 @@ public class QuesBankServiceImpl implements QuesBankService{
 	private QuesBankMapper quesBankMapper;
 
 	@Resource
-	private PublicMapper publicMapper;
+	private PublicService publicService;
 
 	@Override
 	public List<QuesBank> list(Map<String, String> params, Boolean isPageHelper) {
@@ -43,7 +43,7 @@ public class QuesBankServiceImpl implements QuesBankService{
 		QuesBankExample example = new QuesBankExample();
 
 		if (!Util.isNullorEmpty(params.get("order")) && ALLOWED_ORDER_COLUMNS.contains(params.get("order"))) {
-			example.setOrderByClause(Util.camel4underline(params.get("order")) + " " + params.get("orderType"));
+			example.setOrderByClause(Util.buildOrderByClause(params.get("order"), params.get("orderType")));
 		}
 		Criteria criteria = example.createCriteria();
 		if (!Util.isNullorEmpty(libCode)) criteria.andLibCodeEqualTo(libCode);
@@ -85,7 +85,7 @@ public class QuesBankServiceImpl implements QuesBankService{
 		} else {
 			oQuesBank.setQuesCode(record.getQuesCode());
 			oQuesBank.setQuesStat(0);
-			record.setQuesCode(publicMapper.selectNewJourno());
+			record.setQuesCode(publicService.getJourno());
 			this.create(record);
 		}
 		int count = quesBankMapper.updateByPrimaryKey(oQuesBank);
@@ -105,7 +105,7 @@ public class QuesBankServiceImpl implements QuesBankService{
 	@Transactional(rollbackFor = Exception.class)
 	public int create(QuesBank record) {
 		String userId = Util.userIdByShiro();
-		record.setQuesCode(publicMapper.selectNewJourno());
+		record.setQuesCode(publicService.getJourno());
 		record.setHandlePlo(userId);
 		record.setHandleDate(Util.currentDateTime());
 		int count = quesBankMapper.insertSelective(record);
@@ -146,7 +146,7 @@ public class QuesBankServiceImpl implements QuesBankService{
 		QuesBankExample example = new QuesBankExample();
 
 		if (!Util.isNullorEmpty(params.get("order")) && ALLOWED_ORDER_COLUMNS.contains(params.get("order"))) {
-			example.setOrderByClause(Util.camel4underline(params.get("order")) + " " + params.get("orderType"));
+			example.setOrderByClause(Util.buildOrderByClause(params.get("order"), params.get("orderType")));
 		}
 		Criteria criteria = example.createCriteria();
 		if (!Util.isNullorEmpty(libCode)) criteria.andLibCodeEqualTo(libCode);

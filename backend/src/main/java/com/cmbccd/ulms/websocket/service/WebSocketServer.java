@@ -2,8 +2,10 @@ package com.cmbccd.ulms.websocket.service;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.net.URI;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,6 +23,8 @@ import jakarta.websocket.server.ServerEndpointConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+
+import cn.dev33.satoken.stp.StpUtil;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
@@ -54,6 +58,23 @@ public class WebSocketServer {
     public static class IpConfigurator extends ServerEndpointConfig.Configurator {
         @Override
         public void modifyHandshake(ServerEndpointConfig sec, HandshakeRequest request, HandshakeResponse response) {
+            // 鉴权：校验 token 与 URL userId 一致，防止任意人伪装任意用户连接
+            String token = getQueryParam(request, "token");
+            String uriUserId = extractUserIdFromUri(request.getRequestURI());
+            if (Util.isNullorEmpty(token) || Util.isNullorEmpty(uriUserId)) {
+                throw new RuntimeException("WebSocket 鉴权失败：缺少 token 或 userId");
+            }
+            String loginId;
+            try {
+                loginId = StpUtil.getLoginIdByToken(token).toString();
+            } catch (Exception e) {
+                LOG.error("WebSocket 握手 token 校验失败", e);
+                throw new RuntimeException("WebSocket 鉴权失败：token 无效或已过期");
+            }
+            if (!loginId.equals(uriUserId)) {
+                throw new RuntimeException("WebSocket 鉴权失败：token 与 userId 不匹配");
+            }
+
             String ip = null;
             List<String> forwarded = request.getHeaders().get("x-forwarded-for");
             if (forwarded != null && !forwarded.isEmpty()) {
@@ -75,6 +96,24 @@ public class WebSocketServer {
                 }
             }
             sec.getUserProperties().put("client.ip", ip);
+        }
+
+        private static String getQueryParam(HandshakeRequest request, String name) {
+            Map<String, List<String>> params = request.getParameterMap();
+            if (params == null) {
+                return null;
+            }
+            List<String> values = params.get(name);
+            return (values != null && !values.isEmpty()) ? values.get(0) : null;
+        }
+
+        private static String extractUserIdFromUri(URI uri) {
+            if (uri == null || uri.getPath() == null) {
+                return null;
+            }
+            String path = uri.getPath();
+            int idx = path.lastIndexOf('/');
+            return idx >= 0 ? path.substring(idx + 1) : null;
         }
     }
 
@@ -104,7 +143,7 @@ public class WebSocketServer {
 
         String ip = getClientIp(session);
         LOG.info("Client IP: {}", ip);
-        InitUser user = ConnectInitController.initUser(userId, ip);
+        InitUser user = ConnectInitController.staticInit.initUser(userId, ip);
         this.userId = userId;
         this.session = session;
 
@@ -174,7 +213,11 @@ public class WebSocketServer {
 
     @OnMessage
     public void onMessage(String chatmsg, Session session) {
-        new MessageHandle().messageHandle(chatmsg, userId);
+        if (MessageHandle.handle != null) {
+            MessageHandle.handle.messageHandle(chatmsg, userId);
+        } else {
+            LOG.error("MessageHandle 未初始化，丢弃消息, userId: {}", userId);
+        }
     }
 
     @OnError
@@ -195,7 +238,7 @@ public class WebSocketServer {
             LOG.warn("logoff: 无法确定 userId, session 可能已失效");
         }
 
-        ConnectInitController.logOff(state.getUser(userId));
+        ConnectInitController.staticInit.logOff(state.getUser(userId));
 
         if (session != null && state.hasSession(userId)) {
             state.removeSession(userId);

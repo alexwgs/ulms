@@ -1,4 +1,4 @@
-package com.cmbccd.ulms.college.service.Impl;
+package com.cmbccd.ulms.college.service.impl;
 
 import com.cmbccd.ulms.college.dao.CourseMapper;
 import com.cmbccd.ulms.college.domain.Course;
@@ -9,7 +9,7 @@ import com.cmbccd.ulms.college.service.CourseFileService;
 import com.cmbccd.ulms.college.service.CourseService;
 import com.cmbccd.ulms.college.service.CourseTeacherService;
 import com.cmbccd.ulms.common.util.Util;
-import com.cmbccd.ulms.sys.dao.PublicMapper;
+import com.cmbccd.ulms.sys.service.PublicService;
 import org.springframework.stereotype.Service;
 
 import jakarta.annotation.Resource;
@@ -28,7 +28,7 @@ public class CourseServiceImpl implements CourseService {
     private CourseFileService courseFileService;
 
     @Resource
-    private PublicMapper publicMapper;
+    private PublicService publicService;
 
     @Override
     public List<Course> list(CourseExample example) {
@@ -77,7 +77,7 @@ public class CourseServiceImpl implements CourseService {
         String userId = Util.userIdByShiro();
         record.setHandleDate(Util.currentDateTime());
         record.setHandlePlo(userId);
-        record.setCourseId(publicMapper.selectNewJourno());
+        record.setCourseId(publicService.getJourno());
         return courseMapper.insertSelective(record);
     }
 

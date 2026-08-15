@@ -1,10 +1,10 @@
-package com.cmbccd.ulms.edu.service.Impl;
+package com.cmbccd.ulms.edu.service.impl;
 
 import com.cmbccd.ulms.edu.dao.BrushConfigMapper;
 import com.cmbccd.ulms.edu.domain.BrushConfig;
 import com.cmbccd.ulms.edu.domain.BrushConfigExample;
 import com.cmbccd.ulms.edu.service.BrushConfigService;
-import com.cmbccd.ulms.sys.dao.PublicMapper;
+import com.cmbccd.ulms.sys.service.PublicService;
 import org.springframework.stereotype.Service;
 
 import jakarta.annotation.Resource;
@@ -17,7 +17,7 @@ public class BrushConfigServiceImpl implements BrushConfigService {
 	private BrushConfigMapper brushConfigMapper;
 	
 	@Resource
-	private PublicMapper publicMapper;
+	private PublicService publicService;
 	
 	@Override
 	public List<BrushConfig> list(BrushConfigExample example) {
@@ -26,7 +26,7 @@ public class BrushConfigServiceImpl implements BrushConfigService {
 
 	@Override
 	public int create(BrushConfig record) {
-		record.setBrushCode(publicMapper.selectNewJourno());
+		record.setBrushCode(publicService.getJourno());
 		return brushConfigMapper.insert(record);
 	}
 

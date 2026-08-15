@@ -1,4 +1,4 @@
-package com.cmbccd.ulms.flow.service.Impl;
+package com.cmbccd.ulms.flow.service.impl;
 
 import com.cmbccd.ulms.common.controller.DataCache;
 import com.cmbccd.ulms.common.util.Util;
@@ -103,7 +103,7 @@ public class FlowCaseServiceImpl implements FlowCaseService {
         if (Util.isNullorEmpty(params.get("order"))) {
             example.setOrderByClause(" DATA_TIME desc ");
         }else if (ALLOWED_ORDER_COLUMNS.contains(params.get("order"))) {
-            example.setOrderByClause(Util.camel4underline(params.get("order")) + " " + params.get("orderType"));
+            example.setOrderByClause(Util.buildOrderByClause(params.get("order"), params.get("orderType")));
         }
         PageHelper.startPage(pageParams.get("pageNum"), pageParams.get("pageSize"));
         List<FlowCase> list = flowCaseMapper.selectByExample(example);
@@ -236,6 +236,10 @@ public class FlowCaseServiceImpl implements FlowCaseService {
         FlowInfo flowInfo = flowInfoService.get(flowCase.getFlowId());
         if (flowInfo.getCancel() == 0) return false;
         String table = flowInfo.getTableName();
+        // 动态表名白名单校验，防止 SQL 注入
+        if (!Util.isValidSqlIdentifier(table)) {
+            return false;
+        }
         String statusColumn;
         String idColumn;
         if ("CUS_FLOW_GQSQ".equals(table)) {

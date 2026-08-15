@@ -1,4 +1,4 @@
-package com.cmbccd.ulms.helper.service.Impl;
+package com.cmbccd.ulms.helper.service.impl;
 
 import com.cmbccd.ulms.common.util.Util;
 import com.cmbccd.ulms.helper.dao.HelperTreeMapper;

@@ -97,6 +97,9 @@
 import { ref, reactive } from 'vue'
 import { bookInfoApi } from '@/api/edu/bookInfo'
 import { MessagePlugin } from 'tdesign-vue-next'
+import dayjs from 'dayjs'
+
+const emit = defineEmits(['refresh'])
 
 const fsURL = import.meta.env.VITE_FILE_BASE_URL
 const dialogFormVisible = ref(false)
@@ -163,12 +166,6 @@ const listBookedDetail = () => {
     })
 }
 
-const returnBookName = (bookCode) => {
-  const list = timeConfig.value.filter((e) => e.bookCode === bookCode)
-  if (list.length < 1) return bookCode
-  return list[0].bookName
-}
-
 const bookExam = (row) => {
   form.bookCode = currentBookInfo.value.bookCode
   form.examCode = currentBookInfo.value.examCode
@@ -184,17 +181,15 @@ const bookExam = (row) => {
     })
     .then(() => {
       listBookedDetail()
-      // 调用父组件方法
-      if (typeof getCurrentExam === 'function') {
-        getCurrentExam()
-      }
+      // 通知父组件刷新考试列表
+      emit('refresh')
     })
 }
 
 const timeSelectValid = (time) => {
   return (
-    moment(currentBookInfo.value.bookDate + ' ' + time).format('X') -
-      moment(nowDate).format('X') <=
+    dayjs(currentBookInfo.value.bookDate + ' ' + time).format('X') -
+      dayjs().format('X') <=
     0
   )
 }

@@ -13,6 +13,7 @@ import com.cmbccd.ulms.edu.domain.QuesBank;
 import com.cmbccd.ulms.edu.service.BrushScoreService;
 import com.cmbccd.ulms.edu.service.QuesBankService;
 import com.cmbccd.ulms.sys.domain.Msg;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.annotation.Resource;
@@ -67,11 +68,12 @@ public class QuesBankController {
 	@SaCheckPermission("edu:question:delete")
 	public Msg deleteTableTree(@PathVariable("quesCode") String quesCode) {
 		int count = questionService.deleteByQuesCode(quesCode);
-		if (count == 0)  Msg.error();
+		if (count == 0) return Msg.error();
 		return Msg.success();
 	}
 
 	@PutMapping("/changeLib")
+	@SaCheckPermission("edu:question:transfer")
 	public Msg updateQuesLib(@RequestBody QuesBank record) {
 		int count = questionService.updateByQuesCodeWithNew(record);
 		if (count == 0)
@@ -113,6 +115,7 @@ public class QuesBankController {
 
 	@PutMapping("/transfer/{libCode}")
 	@SaCheckPermission("edu:question:transfer")
+	@Transactional(rollbackFor = Exception.class)
 	public Msg updateTableTree(@PathVariable("libCode") String libCode, @RequestBody String[] questCodes) {
 		for (String quesCode : questCodes) {
 			QuesBank record = new QuesBank();

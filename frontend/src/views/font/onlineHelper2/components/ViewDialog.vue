@@ -61,7 +61,6 @@ import { MessagePlugin } from 'tdesign-vue-next'
 import { articalApi } from '@/api/helper/artical'
 
 const fsURL = import.meta.env.VITE_FILE_BASE_URL || 'http://localhost:8080'
-const global = window.__POWERED_BY_QIANKUN__ ? window.$global : null
 
 const articalDialogVisible = ref(false)
 const keyword = ref([])
@@ -92,11 +91,7 @@ const handleClose = () => {
 }
 
 const downloadFile = (path) => {
-  if (global && global.downloadFile) {
-    global.downloadFile(fsURL + path)
-  } else {
-    window.open(fsURL + path)
-  }
+  window.open(fsURL + path)
 }
 
 function escapeHtml(str) {

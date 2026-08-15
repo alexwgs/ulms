@@ -43,15 +43,10 @@ import { useRouter } from 'vue-router'
 import { MessagePlugin } from 'tdesign-vue-next'
 import WangEditor from '@/components/WangEditor.vue'
 import { manageNoticeApi } from '@/api/admin/manageNotice'
-import { getArticalDetail } from '@/api/a6voice/index.js'
+import { getArticalDetail, updateArtical, addArtical } from '@/api/a6voice/index.js'
 import { useDictStore } from '@/stores'
 
 const dictStore = useDictStore()
-// 获取全局字典数据
-const globalDict = computed(() => {
-  // 假设全局字典存储在全局状态中，这里根据实际情况调整
-  return window.$global?.dict || {}
-})
 
 // 路由
 const router = useRouter()
@@ -125,9 +120,9 @@ const onSubmit = async (status) => {
 
       let res
       if (props.id !== 'new') {
-        res = await updateArticalApi('cyt/artical', form)
+        res = await updateArtical(form)
       } else {
-        res = await saveArticalApi('cyt/artical', form)
+        res = await addArtical(form)
       }
 
       if (res.code !== 200) {

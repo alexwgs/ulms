@@ -1,4 +1,4 @@
-package com.cmbccd.ulms.flow.service.Impl;
+package com.cmbccd.ulms.flow.service.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -38,7 +38,7 @@ public class FlowInfoServiceImpl implements FlowInfoService {
         }
         example.setOrderByClause(" SORT ");
         if (!Util.isNullorEmpty(params.get("order"))) {
-            example.setOrderByClause(Util.camel4underline(params.get("order")) + " " + params.get("orderType"));
+            example.setOrderByClause(Util.buildOrderByClause(params.get("order"), params.get("orderType")));
         }
         PageHelper.startPage(pageParams.get("pageNum"), pageParams.get("pageSize"));
         List<FlowInfo> list = flowInfoMapper.selectByExample(example);
@@ -80,7 +80,12 @@ public class FlowInfoServiceImpl implements FlowInfoService {
     @Override
     public int updateDetailStatus(String flowId, String caseId, Short approveResult) {
         FlowInfo flowInfo = flowInfoMapper.selectByPrimaryKey(flowId);
-        String tableName = flowInfo.getTableName().toUpperCase();
+        String tableName = flowInfo.getTableName();
+        // 动态表名白名单校验，防止 SQL 注入
+        if (!Util.isValidSqlIdentifier(tableName)) {
+            return 0;
+        }
+        tableName = tableName.toUpperCase();
         List<String> columnNames = Arrays.asList("CASE_ID", "FLOW_STATUS");
         int columnCount = flowInfoMapper.countTableColume(tableName, columnNames);
         String statusColumn;
@@ -100,6 +105,10 @@ public class FlowInfoServiceImpl implements FlowInfoService {
         FlowInfo flowInfo = flowInfoMapper.selectByPrimaryKey(flowId);
         JSONArray json = JSONArray.parseArray(flowInfo.getTableInfo());
         String tableName = flowInfo.getTableName();
+        // 动态表名白名单校验，防止 SQL 注入
+        if (!Util.isValidSqlIdentifier(tableName)) {
+            return null;
+        }
         // 判断ID列名
         String idColumn = tableName.equals("CUS_FLOW_GQSQ") ? "BATCH_NUM" : "CASE_ID";
         StringBuilder sqlColumnBuilder = new StringBuilder();
@@ -108,10 +117,15 @@ public class FlowInfoServiceImpl implements FlowInfoService {
         for (Object o : json) {
             JSONObject obj = (JSONObject) o;
             if ("0".equals(obj.get("status").toString())) continue;
-            sqlColumnBuilder.append(obj.get("colName")).append(",");
+            String colName = obj.get("colName") != null ? obj.get("colName").toString() : "";
+            // 动态列名白名单校验，防止 SQL 注入
+            if (!Util.isValidSqlIdentifier(colName)) {
+                continue;
+            }
+            sqlColumnBuilder.append(colName).append(",");
 
             if ("1".equals(obj.get("dictType").toString())) {
-                getUserColumn.add(obj.get("colName").toString());
+                getUserColumn.add(colName);
             }
             if ("2".equals(obj.get("dictType").toString())) {
                 getDictColumn.add(obj);

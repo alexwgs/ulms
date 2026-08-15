@@ -122,7 +122,7 @@
             <TableColumn label="操作" width="60">
               <template #default="scope">
                 <t-button variant="outline"
-                  size="small"theme="primary"
+                  size="small" theme="primary"
                   @click="updateColumn(scope.row)"
                  
                 >编辑</t-button>

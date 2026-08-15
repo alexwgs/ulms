@@ -1,5 +1,6 @@
 package com.cmbccd.ulms.hr.controller;
 
+import com.cmbccd.ulms.common.util.Util;
 import com.cmbccd.ulms.hr.domain.MoodConfig;
 import com.cmbccd.ulms.hr.domain.MoodRecord;
 import com.cmbccd.ulms.hr.service.MoodConfigService;
@@ -12,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("hr/mood")
-public class MoodPunchControlle {
+public class MoodPunchController {
 
     @Resource
     private MoodConfigService moodConfigService;
@@ -28,6 +29,8 @@ public class MoodPunchControlle {
 
     @PostMapping("/submit")
     public Msg insertMoodRecord(@RequestBody MoodRecord record){
+        // 服务端确认当前登录用户，防止客户端伪造 userId 替他人打卡
+        record.setUserId(Util.userIdByShiro());
         int count = moodRecordService.create(record);
         return  Msg.success("成功提交【"+count+"】条信息！");
     }

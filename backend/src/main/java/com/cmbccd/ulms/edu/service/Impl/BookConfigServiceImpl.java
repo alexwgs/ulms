@@ -1,11 +1,11 @@
-package com.cmbccd.ulms.edu.service.Impl;
+package com.cmbccd.ulms.edu.service.impl;
 
 import com.cmbccd.ulms.common.util.Util;
 import com.cmbccd.ulms.edu.dao.BookConfigMapper;
 import com.cmbccd.ulms.edu.domain.BookConfig;
 import com.cmbccd.ulms.edu.domain.BookConfigExample;
 import com.cmbccd.ulms.edu.service.BookConfigService;
-import com.cmbccd.ulms.sys.dao.PublicMapper;
+import com.cmbccd.ulms.sys.service.PublicService;
 import org.springframework.stereotype.Service;
 
 import jakarta.annotation.Resource;
@@ -18,7 +18,7 @@ public class BookConfigServiceImpl implements BookConfigService {
 	private BookConfigMapper bookConfigMapper;
 	
 	@Resource
-	private PublicMapper publicMapper;
+	private PublicService publicService;
 	@Override
 	public List<BookConfig> listBookConfig(BookConfigExample example) {
 		
@@ -31,7 +31,7 @@ public class BookConfigServiceImpl implements BookConfigService {
 		if(Util.isNullorEmpty(userId)) return 0;
 		record.setHandlePlo(userId);
 		record.setHandleDate(Util.currentDateTime());
-		record.setBookCode(publicMapper.selectNewJourno());
+		record.setBookCode(publicService.getJourno());
 		return bookConfigMapper.insertSelective(record);
 	}
 
