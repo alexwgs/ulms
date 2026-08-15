@@ -183,6 +183,10 @@ export default {
         if (colDef.prop && !colDef.colKey) {
           colDef.colKey = colDef.prop
         }
+        // Element Plus property -> TDesign colKey（兼容旧属性名写法）
+        if (colDef.property && !colDef.colKey && !colDef.prop) {
+          colDef.colKey = colDef.property
+        }
         // Element Plus label -> TDesign title
         if (colDef.label && !colDef.title) {
           colDef.title = colDef.label

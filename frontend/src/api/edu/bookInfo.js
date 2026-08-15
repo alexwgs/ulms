@@ -17,8 +17,8 @@ export const bookInfoApi = {
 
   deleteBookList: (data) =>
     httpInstance({
-      url: 'edu/book/list',
-      method: 'delete',
+      url: 'edu/book/list/delete',
+      method: 'put',
       data
     }),
   forceExamBookList: (data) =>
