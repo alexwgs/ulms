@@ -3,13 +3,13 @@ package com.cmbccd.ulms.flow.service.Impl;
 import com.cmbccd.ulms.common.controller.DataCache;
 import com.cmbccd.ulms.common.util.Util;
 import com.cmbccd.ulms.flow.dao.FlowApproveLogMapper;
+import com.cmbccd.ulms.flow.dao.FlowCaseMapper;
 import com.cmbccd.ulms.flow.domain.FlowApproveLog;
 import com.cmbccd.ulms.flow.domain.FlowApproveLogExample;
 import com.cmbccd.ulms.flow.domain.FlowApproveTemp;
 import com.cmbccd.ulms.flow.domain.FlowCase;
 import com.cmbccd.ulms.flow.service.FlowApproveLogService;
 import com.cmbccd.ulms.flow.service.FlowApproveTempService;
-import com.cmbccd.ulms.flow.service.FlowCaseService;
 import com.cmbccd.ulms.flow.service.FlowProxyService;
 import com.cmbccd.ulms.sys.domain.Employee;
 import com.cmbccd.ulms.sys.domain.Msg;
@@ -35,7 +35,7 @@ public class FlowApproveLogServiceImpl implements FlowApproveLogService {
     private FlowProxyService flowProxyService;
 
     @Resource
-    private FlowCaseService flowCaseService;
+    private FlowCaseMapper flowCaseMapper;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -50,7 +50,7 @@ public class FlowApproveLogServiceImpl implements FlowApproveLogService {
             this.submitApproveLog(updateApproveLogs);
 
             // 更新案件状态
-            flowCaseService.completeCase(updateApproveLogs.get(0).getCaseId(), (short) 1, (short) 2);
+            this.completeCase(updateApproveLogs.get(0).getCaseId(), (short) 1, (short) 2);
             return Msg.success("[s001]审批不通过！").put("result", "disagree");
         }
 
@@ -64,7 +64,7 @@ public class FlowApproveLogServiceImpl implements FlowApproveLogService {
             List<FlowApproveLog> nextApproveLogs = flowApproveLogs.stream().filter(e -> e.getApproveLevel() == curApproveLevel + 1 ).collect(Collectors.toList());
             if(nextApproveLogs.size() < 1) {
                 // 更新案件状态
-                flowCaseService.completeCase(updateApproveLogs.get(0).getCaseId(), (short) 1, (short) 1);
+                this.completeCase(updateApproveLogs.get(0).getCaseId(), (short) 1, (short) 1);
                 // 更新审批日志
                 this.submitApproveLog(updateApproveLogs);
                 return Msg.success("[s002]审批通过，案件完成！").put("result", "agree");
@@ -80,7 +80,7 @@ public class FlowApproveLogServiceImpl implements FlowApproveLogService {
             FlowCase flowCase = new FlowCase();
             flowCase.setId(updateApproveLogs.get(0).getCaseId());
             flowCase.setApproveLevel((short) (curApproveLevel + 1));
-            flowCaseService.update(flowCase);
+            flowCaseMapper.updateByPrimaryKeySelective(flowCase);
             return Msg.success("[s003]审批通过，案件进入下一级审批！").put("result", "continue");
         }
     } else {
@@ -185,5 +185,14 @@ public class FlowApproveLogServiceImpl implements FlowApproveLogService {
         return logList;
     }
 
+    // 案件状态更新（原 FlowCaseService.completeCase 逻辑内联，用于打破与 FlowCaseService 的循环依赖）
+    private int completeCase(String caseId, short caseStatus, short approveStatus) {
+        FlowCase record = new FlowCase();
+        record.setId(caseId);
+        record.setCaseStatus(caseStatus);
+        record.setApproveStatus(approveStatus);
+        record.setEndDate(Util.currentDateTime());
+        return flowCaseMapper.updateByPrimaryKeySelective(record);
+    }
 
 }

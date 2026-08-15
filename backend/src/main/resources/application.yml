@@ -4,8 +4,8 @@ server:
     context-path: /ulms
 spring:
   main:
-    # TODO: 存在循环依赖，需要重构消除。暂时禁用Spring校验
-    allow-circular-references: true
+    # 循环依赖默认禁用（Spring Boot 2.6+ 默认 false）。已确认当前无循环依赖，无需放开。
+    allow-circular-references: false
   web:
     resources:
       # 禁用默认静态资源映射，由 SpaConfiguration 接管（支持 SPA 路由回退）

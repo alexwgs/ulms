@@ -94,7 +94,10 @@ public class Util {
 	 * @return boolean 是整数返回true,否则返回false
 	 */
 	public static boolean isInteger(String str) {
-		Pattern pattern = Pattern.compile("^[-\\+]?[\\d]*$");
+		if (str == null) {
+			return false;
+		}
+		Pattern pattern = Pattern.compile("^[-\\+]?[\\d]+$");
 		return pattern.matcher(str).matches();
 	}
 

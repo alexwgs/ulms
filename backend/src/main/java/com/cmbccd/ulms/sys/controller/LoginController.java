@@ -5,6 +5,7 @@ import cn.dev33.satoken.stp.StpUtil;
 import com.cmbccd.ulms.common.annotation.MyLog;
 import com.cmbccd.ulms.common.controller.DataCache;
 import com.cmbccd.ulms.common.util.AESUtil;
+import com.cmbccd.ulms.common.util.PasswordUtil;
 import com.cmbccd.ulms.common.util.Util;
 import com.cmbccd.ulms.sys.domain.Msg;
 import com.cmbccd.ulms.sys.domain.OperateLog;
@@ -46,8 +47,19 @@ public class LoginController {
 		if (Util.isNullorEmpty(user0.getPassword())) {
 			return new Msg(401, "账户未设置密码，请联系管理员");
 		}
-		if (decryptPassword.equals(Util.getdesecret(user0.getPassword()))) {
+		if (PasswordUtil.matches(decryptPassword, user0.getPassword())) {
 			StpUtil.login(user.getCzyCode());
+			// 旧算法存储的密码在登录成功后透明升级为 BCrypt（升级失败不影响本次登录）
+			if (PasswordUtil.needsRehash(user0.getPassword())) {
+				try {
+					User upgrade = new User();
+					upgrade.setCzyCode(user0.getCzyCode());
+					upgrade.setPassword(PasswordUtil.encode(decryptPassword));
+					userService.updatePasswordByCzyCode(upgrade);
+				} catch (Exception e) {
+					logger.warn("密码升级为 BCrypt 失败, czyCode={}", user0.getCzyCode(), e);
+				}
+			}
 		} else {
 			return new Msg(401, "密码错误");
 		}
@@ -87,9 +99,7 @@ public class LoginController {
 //		if (Util.isNullorEmpty(user.getPassword())) {
 //			return Msg.error("账户未设置密码，无法修改");
 //		}
-		String sysPassword = Util.getdesecret(user.getPassword());
-
-		if (!oPassword.equals(sysPassword)) {
+		if (!PasswordUtil.matches(oPassword, user.getPassword())) {
 			return Msg.error("密码验证错误！");
 		}
 
@@ -98,7 +108,7 @@ public class LoginController {
 		}
 		User newUser = new User();
 		newUser.setCzyCode(czyCode);
-		String secPassword = Util.getsecret(cPassword);
+		String secPassword = PasswordUtil.encode(cPassword);
 		newUser.setPassword(secPassword);
 
 		int count = userService.updatePasswordByCzyCode(newUser);

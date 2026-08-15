@@ -11,6 +11,10 @@ ulms:
   uploadPath: d:/var/uploaded_files/
   username: admin
   password: 111111
+  # 生产环境未配置 Redis（下方 redis 配置被注释），因此 WebSocket 采用单机内存模式，
+  # 覆盖全局 application.yml 中的 multi-instance: true，避免启动后依赖不存在的 Redis。
+  ws:
+    multi-instance: false
 #netty-websocket:
 #  host: 10.47.81.182
 #  path: /ulms/ws
