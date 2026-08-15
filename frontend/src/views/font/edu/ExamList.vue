@@ -176,17 +176,17 @@ onMounted(() => {
 
   /*最外层透明*/
   :deep(.t-table) {
--colorbackground: rgba(224, 224, 224, 0.25);
+    background-color: rgba(224, 224, 224, 0.25);
 
     &__expanded-cell {
--colorbackground: rgba(224, 224, 224, 0.25);
+      background-color: rgba(224, 224, 224, 0.25);
     }
 
     /* 表格内背景颜色 */
     th,
     tr,
     td {
--colorbackground: rgba(224, 224, 224, 0.25);
+      background-color: rgba(224, 224, 224, 0.25);
       color: #000;
     }
   }

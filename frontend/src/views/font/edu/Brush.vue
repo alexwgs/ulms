@@ -361,7 +361,14 @@ onMounted(() => {
   text-align: right;
   font-weight: 700;
   position: sticky;
+  top: 0;
+  z-index: 10;
   color: #fff;
+  background: rgba(12, 113, 125, 0.85);
+  backdrop-filter: blur(6px);
+  padding: 10px 16px;
+  border-radius: 10px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
 }
 
 .main-container {
@@ -373,58 +380,74 @@ onMounted(() => {
     color: #fff;
     font-weight: 500;
     line-height: 1.7;
+    background: rgba(255, 255, 255, 0.08);
+    border-left: 4px solid #31b97f;
+    border-radius: 10px;
+    padding: 16px 20px;
+    word-break: break-word;
   }
 
   .ques-options {
-    .ques-option {
-      margin: 10px 0 0 0;
-      text-overflow: ellipsis;
-      white-space: normal;
-      line-height: 1.6;
-      display: block;
-      font-size: 15px;
-    }
+    margin-top: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 
-    .t-radio.is-bordered.is-checked,
-    .t-checkbox.is-bordered.is-checked {
-      border: 1px solid var(--td-brand-color);
+    :deep(.t-radio),
+    :deep(.t-checkbox) {
+      margin: 0;
+      padding: 14px 18px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 12px;
+      display: flex;
+      align-items: flex-start;
+      transition:
+        background 0.25s ease,
+        border-color 0.25s ease,
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+      cursor: pointer;
 
-      :deep(.t-radio__label) {
-        color: #fff;
+      &:hover {
+        background: rgba(255, 255, 255, 0.14);
+        border-color: rgba(255, 255, 255, 0.32);
+        transform: translateY(-1px);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+      }
+
+      :deep(.t-radio__label),
+      :deep(.t-checkbox__label) {
+        color: rgba(255, 255, 255, 0.92);
+        font-size: 15px;
+        line-height: 1.7;
+        word-break: break-word;
+        white-space: normal;
       }
     }
 
-    .t-radio,
-    .t-checkbox {
-      color: #000;
-    }
+    :deep(.t-radio.t-is-checked),
+    :deep(.t-checkbox.t-is-checked) {
+      background: rgba(49, 185, 127, 0.18);
+      border-color: #31b97f;
+      box-shadow: 0 0 0 3px rgba(49, 185, 127, 0.18);
 
-    :deep(.t-checkbox__label),
-    :deep(.t-radio__label) {
-      display: inline;
-      font-size: 15px;
-      color: #fff;
-    }
-
-    .t-radio.is-bordered,
-    .t-checkbox.is-bordered {
-      padding: 8px 20px 8px 10px;
-      border-radius: 4px;
-      border: 1px solid #dcdfe6;
-      box-sizing: border-box;
-      height: 100%;
-    }
-
-    :deep(.t-checkbox__input.is-checked + .t-checkbox__label) {
-      color: #fff;
+      :deep(.t-radio__label),
+      :deep(.t-checkbox__label) {
+        color: #ffffff;
+      }
     }
   }
 }
 
 .ques-footer {
-  height: 30px;
+  margin-top: 20px;
   width: 100%;
   text-align: center;
+
+  :deep(.t-button) {
+    margin: 0 4px;
+  }
 }
 
 .slogan {
@@ -446,21 +469,35 @@ onMounted(() => {
 }
 
 .answer-area {
-  padding-top: 20px;
-  width: 100%;
-  height: 200px;
+  margin-top: 20px;
+  padding: 24px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  display: flex;
+  align-items: center;
+  gap: 24px;
 
   .result-icon {
-    height: 200px;
-    padding-top: 20px;
-    float: left;
+    flex: 0 0 auto;
+    text-align: center;
+    padding-top: 0;
+
+    img {
+      display: block;
+    }
   }
 
   .result-info {
-    width: calc(100% - 120px);
-    padding-left: 20px;
-    height: 200px;
-    display: inline-block;
+    flex: 1;
+    min-width: 0;
+    font-size: 15px;
+    line-height: 1.9;
+    color: rgba(255, 255, 255, 0.92);
+
+    h2 {
+      margin: 0 0 10px 0;
+    }
   }
 }
 
