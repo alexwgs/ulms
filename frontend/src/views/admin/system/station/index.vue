@@ -91,7 +91,7 @@
            >编辑</t-button>
           <t-button variant="outline"
             size="small" theme="danger"
-            @click="handleDelete(scope.$index, scope.row)"
+            @click="handleDelete(scope.row)"
            >删除</t-button>
         </template>
       </TableColumn>
@@ -99,7 +99,7 @@
     <t-pagination
       @page-size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-      :current="queryInfo.pageNum"
+      :current="currentPage"
       :page-size-options="pageSizes"
       :page-size="queryInfo.pageSize"
 
@@ -171,19 +171,33 @@
 import { MessagePlugin } from 'tdesign-vue-next'
 import { ref, reactive, onMounted } from 'vue'
 import { stationApi } from '@/api/system/station'
-import { usePagination } from '@/hooks/usePagination'
-import { useConfirm } from '@/hooks/useConfirm'
+import { useCrudPage } from '@/hooks/useCrudPage'
 
-const stationList = ref([])
-const queryInfo = reactive({
-  orderType: 'asc',
-  order: 'extnNum',
-  queryType: 'pcIp',
-  query: '',
-  pageSize: 20,
-  pageNum: 1
+// 列表 + 分页 + 删除（useCrudPage 样板）
+const {
+  list: stationList,
+  total,
+  query: queryInfo,
+  currentPage,
+  pageSizes,
+  handleCurrentChange,
+  handleSizeChange,
+  load: getStationList,
+  remove: handleDelete
+} = useCrudPage({
+  fetchList: (q) => stationApi.listStation(q),
+  defaultQuery: {
+    orderType: 'asc',
+    order: 'extnNum',
+    queryType: 'pcIp',
+    query: '',
+    pageSize: 20,
+    pageNum: 1
+  },
+  deleteApi: (row) => stationApi.deleteStation(row.pcIp),
+  pageSizes: [20, 100, 500]
 })
-const total = ref(0)
+
 const pcIpDisabled = ref(true)
 const stationForm = reactive({
   extnNum: '',
@@ -222,27 +236,11 @@ onMounted(() => {
   getStationList()
 })
 
-const getStationList = async () => {
-  const res = await stationApi.listStation(queryInfo)
-  if (res.code !== 200) return MessagePlugin.error(res.msg)
-  stationList.value = res.data.list
-  total.value = res.data.total
-}
-
 const handleEdit = (index, row) => {
   dialogTitle.value = '修改信息点'
   pcIpDisabled.value = true
   dialogFormVisible.value = true
   Object.assign(stationForm, row)
-}
-
-const handleDelete = async (index, row) => {
-  const ok = await confirm('此操作将永久删除该记录, 是否继续?')
-  if (!ok) return
-  const res = await stationApi.deleteStation(row.pcIp)
-  if (res.code !== 200) return MessagePlugin.error(res.msg)
-  MessagePlugin.success(res.msg)
-  getStationList()
 }
 
 const addStation = () => {
@@ -257,14 +255,6 @@ const addStation = () => {
     memo: ''
   })
 }
-
-const { pageSizes, handleCurrentChange, handleSizeChange } = usePagination({
-  query: queryInfo,
-  fetch: getStationList,
-  pageSizes: [20, 100, 500],
-  resetToFirstOnSizeChange: false
-})
-const { confirm } = useConfirm()
 
 const dialogFormSubmit = async () => {
   const valid = await stationFormRef.value.validate()
@@ -285,8 +275,8 @@ const dialogFormSubmit = async () => {
 }
 
 const tableSort = ({ sortBy, descending }) => {
-  queryInfo.orderType = !descending ? ' asc ' : ' desc '
-  queryInfo.order = sortBy
+  queryInfo.value.orderType = !descending ? ' asc ' : ' desc '
+  queryInfo.value.order = sortBy
   getStationList()
 }
 </script>
