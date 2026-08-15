@@ -86,7 +86,8 @@ public class MessageHandle {
 		handle = this;
 	}
 
-	ChatRecordFile fileRecord = new ChatRecordFile();
+	@Resource
+	private ChatRecordFile chatRecordFile;
 
 	/**
 	 * 刷新用户的未结案件缓存并广播用户更新。
@@ -156,7 +157,7 @@ public class MessageHandle {
 					ohtMsg.setCtime(dateFormatThreadLocal.get().format(new Date()));
 					WebSocketServer.ohtSendMessage(MsgTemplate.success(modal, type).add("data", ohtMsg), revUserId);
 				}
-				fileRecord.writeChatRecordFile(roomName,
+				chatRecordFile.writeChatRecordFile(roomName,
 						JSON.toJSONString(MsgTemplate.success(modal, type).add("data", ohtMsg)));
 
 			} else if ("identity".equals(jsonMsg.getString("type"))) {
@@ -236,7 +237,7 @@ public class MessageHandle {
 					WebSocketServer.boardcastToDirectors(
 							MsgTemplate.success("oht", "command", "help").add("cases", WebSocketServer.getState().getWaittingCase()),
 							null);
-					fileRecord.writeChatRecordFile(ohtCase.getCaseId(),
+					chatRecordFile.writeChatRecordFile(ohtCase.getCaseId(),
 							JSON.toJSONString(MsgTemplate.success("oht", "command", "newCase").add("case", ohtCase)));
 					WebSocketServer.getState().setWaittingCase(this.caseService.getHelpWaitCase());
 					// 将用户所在房间调换至CaseId的房间
@@ -271,7 +272,7 @@ public class MessageHandle {
 						WebSocketServer.boardcastToDirectors(
 								MsgTemplate.success("oht", "command", "cancel").add("caseId", ohtCase.getCaseId()),
 								userId);
-						fileRecord.writeChatRecordFile(ohtCase.getCaseId(),
+						chatRecordFile.writeChatRecordFile(ohtCase.getCaseId(),
 								JSON.toJSONString(MsgTemplate.success("oht", "command", "cancelSuccess")));
 					} else {
 						WebSocketServer.sendMessage(MsgTemplate.success("oht", "error", "案件取消失败，请确认此案件是否已经被接起！"),
@@ -318,7 +319,7 @@ public class MessageHandle {
 						WebSocketServer.sendMessageByRoom(
 								MsgTemplate.success("oht", "command", "linked").add("case", ohtCase),
 								WebSocketServer.getState().getUserRoom(userId), null);
-						new ChatRecordFile().writeChatRecordFile(ohtCase.getCaseId(), JSON
+						chatRecordFile.writeChatRecordFile(ohtCase.getCaseId(), JSON
 								.toJSONString(MsgTemplate.success("oht", "command", "linked").add("case", ohtCase)));
 						// 接单成功后刷新接单者和求助者的未结案件，广播在线列表状态变更
 						refreshUserCaseAndBroadcast(userId);
@@ -372,7 +373,7 @@ public class MessageHandle {
 					if (!userId.equals(ohtCase.getBuildId())) {
 						refreshUserCaseAndBroadcast(ohtCase.getBuildId());
 					}
-					fileRecord.writeChatRecordFile(ohtCase.getCaseId(), JSON
+					chatRecordFile.writeChatRecordFile(ohtCase.getCaseId(), JSON
 							.toJSONString(MsgTemplate.success("oht", "command", "otherComplete").add("case", ohtCase)));
 				} else if ("bcompCase".equals(action)) {
 					// 需先判断当前此订单是否已经被接起，若接起，则返回取消失败数据
@@ -407,7 +408,7 @@ public class MessageHandle {
 					}
 					// WebSocketServer.boardcastToDirectors(MsgTemplate.success("oht", "command",
 					// "help").add("cases", WebSocketServer.getState().getWaittingCase()), null);
-					new ChatRecordFile().writeChatRecordFile(ohtCase.getCaseId(), JSON
+					chatRecordFile.writeChatRecordFile(ohtCase.getCaseId(), JSON
 							.toJSONString(MsgTemplate.success("oht", "command", "otherComplete").add("case", ohtCase)));
 				} else if ("newTask".equals(action)) {
 					this.caseTaskService.insertNewTask(command.getString("caseId"), userId,

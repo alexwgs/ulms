@@ -363,7 +363,8 @@ public class RedisWsStateService implements WsStateService {
     // ========== 内部方法 ==========
 
     /**
-     * 异步投递预序列化的 JSON 到本机 Session。成功返回 true。
+     * 投递预序列化的 JSON 到本机 Session。成功返回 true。
+     * 使用同步 sendText，避免异步发送重叠触发 TEXT_FULL_WRITING 导致连接被关闭。
      */
     private boolean sendToLocal(String userId, String json) {
         if (Util.isNullorEmpty(userId)) {
@@ -371,8 +372,13 @@ public class RedisWsStateService implements WsStateService {
         }
         Session s = sessionMap.get(userId);
         if (s != null && s.isOpen()) {
-            s.getAsyncRemote().sendText(json);
-            return true;
+            try {
+                s.getBasicRemote().sendText(json);
+                return true;
+            } catch (Exception e) {
+                LOG.warn("发送消息到用户 {} 失败", userId, e);
+                return false;
+            }
         }
         return false;
     }
