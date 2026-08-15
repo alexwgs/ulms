@@ -140,36 +140,44 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { MessagePlugin } from 'tdesign-vue-next'
 import { ImageIcon, DownloadIcon } from 'tdesign-icons-vue-next'
 import { userFileApi } from '@/api/admin/userFiles' // 导入API函数
-import { usePagination } from '@/hooks/usePagination'
+import { useCrudPage } from '@/hooks/useCrudPage'
 
 // 环境变量
 const fsURL = ref(import.meta.env.VITE_FILE_BASE_URL)
 
-// 表格数据
-const tableData = ref([])
-const suffix = ref([])
-const dataRange = ref([])
-
-// 查询参数
-const queryInfo = reactive({
-  orderType: ' desc',
-  order: ' id ',
-  fileSuffix: '',
-  fileName: '',
-  begDate: '',
-  endDate: '',
-  querytype: '',
-  query: '',
-  pageSize: 20,
-  pageNum: 1
+// 列表 + 分页（useCrudPage 样板）
+const {
+  list: tableData,
+  total,
+  query: queryInfo,
+  currentPage,
+  pageSizes,
+  handleCurrentChange,
+  handleSizeChange,
+  load: getTableList
+} = useCrudPage({
+  fetchList: (q) => userFileApi.getFileList(q),
+  defaultQuery: {
+    orderType: ' desc',
+    order: ' id ',
+    fileSuffix: '',
+    fileName: '',
+    begDate: '',
+    endDate: '',
+    querytype: '',
+    query: '',
+    pageSize: 20,
+    pageNum: 1
+  },
+  pageSizes: [20, 100, 500]
 })
 
-// 分页参数
-const total = ref(0)
+const suffix = ref([])
+const dataRange = ref([])
 
 // 图片预览
 const imageViewDialog = ref(false)
@@ -190,30 +198,14 @@ const getSuffixList = async () => {
   }
 }
 
-// 获取表格数据
-const getTableList = async () => {
-  try {
-    const res = await userFileApi.getFileList(queryInfo)
-    if (res.code !== 200) {
-      MessagePlugin.error(res.msg)
-      return
-    }
-    tableData.value = res.data.list
-    total.value = res.data.total
-  } catch (error) {
-    MessagePlugin.error('获取文件列表失败')
-    console.error(error)
-  }
-}
-
 // 日期范围变化
 const daterangeChange = () => {
   if (dataRange.value && dataRange.value.length === 2) {
-    queryInfo.begDate = dataRange.value[0]
-    queryInfo.endDate = dataRange.value[1]
+    queryInfo.value.begDate = dataRange.value[0]
+    queryInfo.value.endDate = dataRange.value[1]
   } else {
-    queryInfo.begDate = ''
-    queryInfo.endDate = ''
+    queryInfo.value.begDate = ''
+    queryInfo.value.endDate = ''
   }
   getTableList()
 }
@@ -226,9 +218,9 @@ const daterangeChange = () => {
 
 // 表格排序
 const tableSort = (data) => {
-  if (!data.descending) queryInfo.orderType = ' asc '
-  else if (data.descending) queryInfo.orderType = ' desc '
-  queryInfo.order = data.sortBy
+  if (!data.descending) queryInfo.value.orderType = ' asc '
+  else if (data.descending) queryInfo.value.orderType = ' desc '
+  queryInfo.value.order = data.sortBy
   getTableList()
 }
 
@@ -249,7 +241,6 @@ onMounted(() => {
   getSuffixList()
   getTableList()
 })
-const { currentPage, pageSizes, handleCurrentChange, handleSizeChange } = usePagination({ query: queryInfo, fetch: getTableList, pageSizes: [20, 100, 500] })
 </script>
 
 <style scoped>

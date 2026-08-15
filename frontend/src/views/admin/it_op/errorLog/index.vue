@@ -95,28 +95,38 @@
 </template>
 
 <script setup>
-import { MessagePlugin } from 'tdesign-vue-next'
-import { ref, reactive, onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { errorLogApi } from '@/api/admin/errorLog'
-import { usePagination } from '@/hooks/usePagination'
+import { useCrudPage } from '@/hooks/useCrudPage'
 
 // 数据定义
-const tableData = ref([])
-const dataRange = ref([])
-const total = ref(0)
-
-const queryInfo = reactive({
-  orderType: ' desc',
-  order: ' id ',
-  priority: '',
-  dataType: '',
-  begDate: '',
-  endDate: '',
-  querytype: '',
-  query: '',
-  pageSize: 20,
-  pageNum: 1
+const {
+  list: tableData,
+  total,
+  query: queryInfo,
+  currentPage,
+  pageSizes,
+  handleCurrentChange,
+  handleSizeChange,
+  load: getErrorLogList
+} = useCrudPage({
+  fetchList: (q) => errorLogApi.listErrorLog(q),
+  defaultQuery: {
+    orderType: ' desc',
+    order: ' id ',
+    priority: '',
+    dataType: '',
+    begDate: '',
+    endDate: '',
+    querytype: '',
+    query: '',
+    pageSize: 20,
+    pageNum: 1
+  },
+  pageSizes: [20, 100, 500]
 })
+
+const dataRange = ref([])
 
 // 方法
 const getPriorityTagType = (priority) => {
@@ -132,32 +142,17 @@ const getPriorityTagType = (priority) => {
   }
 }
 
-const getErrorLogList = async () => {
-  try {
-    const res = await errorLogApi.listErrorLog(queryInfo)
-    if (res.code !== 200) return
-    tableData.value = res.data.list
-    total.value = res.data.total
-  } catch (error) {
-    MessagePlugin.error(error.message)
-  }
-}
-
 const daterangeChange = () => {
   if (dataRange.value && dataRange.value.length === 2) {
-    queryInfo.begDate = dataRange.value[0]
-    queryInfo.endDate = dataRange.value[1]
+    queryInfo.value.begDate = dataRange.value[0]
+    queryInfo.value.endDate = dataRange.value[1]
     getErrorLogList()
   }
 }
 
-
-
-
-
 const tableSort = ({ sortBy, descending }) => {
-  queryInfo.orderType = !descending ? ' asc ' : ' desc '
-  queryInfo.order = sortBy
+  queryInfo.value.orderType = !descending ? ' asc ' : ' desc '
+  queryInfo.value.order = sortBy
   getErrorLogList()
 }
 
@@ -165,7 +160,6 @@ const tableSort = ({ sortBy, descending }) => {
 onMounted(() => {
   getErrorLogList()
 })
-const { currentPage, pageSizes, handleCurrentChange, handleSizeChange } = usePagination({ query: queryInfo, fetch: getErrorLogList, pageSizes: [20, 100, 500] })
 </script>
 
 <style lang="less" scoped>
