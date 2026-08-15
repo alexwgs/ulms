@@ -2,14 +2,23 @@ package com.cmbccd.ulms.youngTalk.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import com.cmbccd.ulms.common.controller.DataCache;
+import com.cmbccd.ulms.common.util.DataPage;
+import com.cmbccd.ulms.common.util.Util;
 import com.cmbccd.ulms.youngTalk.dao.CommentMapper;
 import com.cmbccd.ulms.youngTalk.domain.Comment;
 import com.cmbccd.ulms.youngTalk.domain.CommentExample;
 import com.cmbccd.ulms.youngTalk.domain.CommentExample.Criteria;
+import com.cmbccd.ulms.youngTalk.domain.Like;
+import com.cmbccd.ulms.youngTalk.domain.Reply;
 import com.cmbccd.ulms.youngTalk.service.CommentService;
+import com.cmbccd.ulms.youngTalk.service.LikeService;
+import com.cmbccd.ulms.youngTalk.service.ReplyService;
+import com.github.pagehelper.PageHelper;
 
 import jakarta.annotation.Resource;
 
@@ -19,6 +28,12 @@ public class CommentServiceImpl implements CommentService {
 	@Resource
 	private CommentMapper commentMapper;
 
+	@Resource
+	private ReplyService replyService;
+
+	@Resource
+	private LikeService likeService;
+
 	@Override
 	public List<Comment> getCommentByArticalId(int articalId) {
 		CommentExample example = new CommentExample();
@@ -27,6 +42,40 @@ public class CommentServiceImpl implements CommentService {
 		criteria.andStatusEqualTo(1);
 		example.setOrderByClause(" DATE_TIME DESC");
 		return commentMapper.selectByExample(example);
+	}
+
+	@Override
+	public DataPage<Comment> listCommentByQuery(int articalId, Map<String, String> params, String userId) {
+		Map<String, Integer> pageParams = Util.innitTablePages(params);
+		PageHelper.startPage(pageParams.get("pageNum"), pageParams.get("pageSize"));
+		List<Comment> comments = getCommentByArticalId(articalId);
+		for (Comment comment : comments) {
+			if (comment.getAnonFlag() == 1) {
+				comment.setUserid("匿名");
+			} else {
+				comment.setUser(DataCache.getEmployees().get(comment.getUserid()));
+			}
+			comment.setUser(DataCache.getEmployees().get(comment.getUserid()));
+			List<Reply> replys = replyService.getReplyByCommentId(comment.getId());
+			List<Like> likes = likeService.getCommentLikeById(comment.getId(), userId);
+			if (Util.isNullorEmpty(replys)) {
+				continue;
+			}
+			for (Reply reply : replys) {
+				if (reply.getAnonFlag() == 1) {
+					reply.setUserid("匿名");
+				} else {
+					reply.setUser(DataCache.getEmployees().get(reply.getUserid()));
+				}
+			}
+			if (!Util.isNullorEmpty(replys)) {
+				comment.setReplys(replys);
+			}
+			if (!Util.isNullorEmpty(likes)) {
+				comment.setLikes(likes);
+			}
+		}
+		return new DataPage<Comment>(comments);
 	}
 
 	@Override

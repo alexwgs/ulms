@@ -2,7 +2,6 @@ package com.cmbccd.ulms.youngTalk.controller;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.cmbccd.ulms.common.controller.DataCache;
-import com.cmbccd.ulms.common.util.DataPage;
 import com.cmbccd.ulms.common.util.Util;
 import com.cmbccd.ulms.sys.domain.Msg;
 import com.cmbccd.ulms.websocket.domain.MsgTemplate;
@@ -52,34 +51,7 @@ public class CommentController {
 	@GetMapping(value = "comment/list/{articalId}")
 	public Msg getCommentList(@PathVariable ("articalId") int articalId ,@RequestParam Map<String, String> params) {
 		String userId = Util.userIdByShiro();
-		Map<String, Integer> pageParams = Util.innitTablePages(params);
-		
-		PageHelper.startPage(pageParams.get("pageNum"), pageParams.get("pageSize"));
-		List<Comment> comments = commentService.getCommentByArticalId(articalId);
-		//设置是否存在评论到回复并写入评论
-		for (Comment comment: comments) {
-			comment.getArticalId();
-			if (comment.getAnonFlag() == 1) {
-				comment.setUserid("匿名");
-			}else{
-				comment.setUser(DataCache.getEmployees().get(comment.getUserid()));
-			}
-			comment.setUser(DataCache.getEmployees().get(comment.getUserid()));
-			List<Reply> replys = replyService.getReplyByCommentId(comment.getId());
-			List<Like> likes = likeService.getCommentLikeById(comment.getId(),userId);
-			if(Util.isNullorEmpty(replys)) { continue;}
-			for (Reply reply :replys) {
-				if (reply.getAnonFlag() == 1) {
-					reply.setUserid("匿名");
-				}else{
-					reply.setUser(DataCache.getEmployees().get(reply.getUserid()));
-				}
-			}
-			
-			if(!Util.isNullorEmpty(replys)) { comment.setReplys(replys);}
-			if(!Util.isNullorEmpty(likes)) {comment.setLikes(likes);}
-
-		}return Msg.success(new DataPage<Comment>(comments));
+		return Msg.success(commentService.listCommentByQuery(articalId, params, userId));
 	}
 
 	/**
