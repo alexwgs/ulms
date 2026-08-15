@@ -11,7 +11,7 @@ const CONTROL_SIZES = ['small', 'medium', 'large']
  */
 const useUiStore = defineStore('ui', {
   state: () => ({
-    controlSize: 'small'
+    controlSize: 'small' as string
   }),
 
   actions: {
@@ -27,7 +27,7 @@ const useUiStore = defineStore('ui', {
       this.applyControlSize()
     },
 
-    setControlSize(size) {
+    setControlSize(size: string) {
       if (!CONTROL_SIZES.includes(size)) return
       this.controlSize = size
       this.applyControlSize()
