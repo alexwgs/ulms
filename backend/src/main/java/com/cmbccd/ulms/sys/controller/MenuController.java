@@ -132,7 +132,7 @@ public class MenuController {
 	 * @return
 	 */
 
-	@PostMapping(value = "")
+	@PostMapping(value = "/menus")
 	@SaCheckPermission("menu:add")
 	@MyLog(title = "[sys-menu]菜单管理")
 	public Msg menuAdd(@RequestBody Menu menu) {
