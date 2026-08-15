@@ -38,6 +38,20 @@
   min-height: 600px;
   margin: 0;
   z-index: 1;
+
+  /* TDesign t-header 默认白色背景，需透明透出深青色背景 */
+  :deep(.t-layout__header) {
+    background: transparent;
+  }
+
+  :deep(.t-menu--horizontal) {
+    border-bottom: solid 0;
+  }
+
+  :deep(.t-menu--horizontal > .t-menu-item),
+  :deep(.t-sub-menu > .t-sub-menu__title) {
+    font-size: 18px;
+  }
 }
 
 .logo {
@@ -66,6 +80,11 @@
   :deep(.t-submenu__title.t-is-active) {
     color: #ffffff;
     background-color: rgba(255, 255, 255, 0.15);
+  }
+
+  /* TDesign 子菜单弹层默认白色背景，改为深青色 */
+  :deep(.t-head-menu__submenu) {
+    background: transparent;
   }
 }
 
@@ -104,17 +123,5 @@
   border-radius: 12px;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
   z-index: 1;
-}
-
-.t-menu.t-menu--horizontal {
-  border-bottom: solid 0;
-}
-
-.t-menu--horizontal>.t-menu-item {
-  font-size: 18px;
-}
-
-:deep(.t-sub-menu > .t-sub-menu__title) {
-  font-size: 18px;
 }
 </style>
