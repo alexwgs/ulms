@@ -1,11 +1,14 @@
 package com.cmbccd.ulms.sys.service.impl;
 
 
+import com.cmbccd.ulms.common.util.DataPage;
 import com.cmbccd.ulms.common.util.Util;
 import com.cmbccd.ulms.sys.dao.OperLogMapper;
 import com.cmbccd.ulms.sys.domain.OperLog;
 import com.cmbccd.ulms.sys.domain.OperLogExample;
+import com.cmbccd.ulms.sys.domain.OperLogExample.Criteria;
 import com.cmbccd.ulms.sys.service.OperLogService;
+import com.github.pagehelper.PageHelper;
 import org.springframework.stereotype.Service;
 
 import jakarta.annotation.Resource;
@@ -37,6 +40,43 @@ public class OperLogServiceImpl implements OperLogService {
     @Override
     public List<OperLog> list(OperLogExample example) {
         return operLogMapper.selectByExample(example);
+    }
+
+    @Override
+    public DataPage<OperLog> listOperLogByQuery(Map<String, String> params) {
+        Map<String, Integer> pageParams = Util.innitTablePages(params);
+        PageHelper.startPage(pageParams.get("pageNum"), pageParams.get("pageSize"));
+        List<OperLog> list = operLogMapper.selectByExample(buildExample(params));
+        return new DataPage<OperLog>(list);
+    }
+
+    @Override
+    public List<OperLog> listOperLogForReport(Map<String, String> params) {
+        return operLogMapper.selectByExample(buildExample(params));
+    }
+
+    private OperLogExample buildExample(Map<String, String> params) {
+        OperLogExample example = new OperLogExample();
+        Criteria criteria = example.createCriteria();
+        if (!Util.isNullorEmpty(params.get("status"))) {
+            criteria.andStatusEqualTo(Integer.parseInt(params.get("status")));
+        }
+        if (!Util.isNullorEmpty(params.get("begDate")) && !Util.isNullorEmpty(params.get("endDate"))) {
+            criteria.andOperTimeBetween(params.get("begDate") + " 00:00:00", params.get("endDate") + " 23:59:59");
+        } else {
+            criteria.andOperTimeBetween(Util.getDateToday() + " 00:00:00", Util.getDateToday() + " 23:59:59");
+        }
+        if (!Util.isNullorEmpty(params.get("query"))) {
+            if ("ploNum".equals(params.get("queryType"))) {
+                criteria.andPloNumLike('%' + params.get("query") + '%');
+            } else if ("title".equals(params.get("queryType"))) {
+                criteria.andTitleLike('%' + params.get("query") + '%');
+            }
+        }
+        if (!Util.isNullorEmpty(params.get("order"))) {
+            example.setOrderByClause(Util.buildOrderByClause(params.get("order"), params.get("orderType")));
+        }
+        return example;
     }
 
     // ==================== Dashboard 统计方法实现 ====================
