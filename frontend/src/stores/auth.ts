@@ -6,12 +6,13 @@ import {
   modifyPassword,
   getIndexImg
 } from '@/api/auth'
+
 export const useAuthStore = defineStore('auth', () => {
   const serverStatus = ref(true)
   const disableLoginTitle = ref('数据服务器连接失败，请联系管理员！')
-  const indexImgs = ref([])
+  const indexImgs = ref<any[]>([])
 
-  const resetPassword = async (resetForm) => {
+  const resetPassword = async (resetForm: Record<string, any>) => {
     if (resetForm.nPassword !== resetForm.cPassword) {
       throw new Error('两次输入的密码不一致！')
     }
