@@ -3,16 +3,16 @@ import { getDictionary } from '@/api/auth.js'
 
 const useDictStore = defineStore('dict', {
   state: () => ({
-    dictList: {}
+    dictList: {} as Record<string, any>
   }),
 
   getters: {
-    dict(state) {
+    dict(state: any) {
       return { ...state.dictList }
     }
   },
   actions: {
-    setDict(partial) {
+    setDict(partial: Record<string, any>) {
       this.dictList = partial || {}
     },
     async getDictList() {
@@ -44,14 +44,7 @@ const useDictStore = defineStore('dict', {
         this._dictLoading = false
       }
     },
-    /**
-     * 获取指定字典的列表
-     * @param {*} dictName 获取字典名称
-     * @param { 0| 1| null} status 0- 失效 1- 有效 空值-全部
-     * @returns {Array}
-     */
-    getDictByNames(dictName, status) {
-      // 0- 失效 1- 有效 空值-全部
+    getDictByNames(dictName: string, status: number | null) {
       // 判断当前dict存不存在，若不存在从服务器获取
       if (!this.dictList || !Object.keys(this.dictList).length) {
         this.getDictList()
@@ -59,31 +52,23 @@ const useDictStore = defineStore('dict', {
       if (dictName == null || dictName == undefined || dictName == '') return []
       const dicts = this.dictList?.[dictName]
       if (!Array.isArray(dicts)) return []
-      if (status) return dicts.filter((item) => item.status == 1)
+      if (status) return dicts.filter((item: any) => item.status == 1)
       return dicts
     },
-    /**
-     * 通过指定的字典名称和值匹配中文名称
-     * @param {String} dictName 字典名称
-     * @param {*} val 字典值
-     * @returns {String}
-     */
-    getDictName(dictName, val) {
-      // 判断当前dict存不存在，若不存在从服务器获取
+    getDictName(dictName: string, val: any) {
       if (!this.dictList || !Object.keys(this.dictList).length) {
         this.getDictList()
       }
       const dicts = this.dictList?.[dictName]
-      let value = dicts?.find((element) => element.code == val)
+      const value = dicts?.find((element: any) => element.code == val)
       return value ? value.codeval : '未定义'
     },
-    getDictLabel(dictName, val) {
-      // 判断当前dict存不存在，若不存在从服务器获取
+    getDictLabel(dictName: string, val: any) {
       if (!this.dictList || !Object.keys(this.dictList).length) {
         this.getDictList()
       }
       const dicts = this.dictList?.[dictName]
-      let value = dicts?.find((element) => element.code == val)
+      const value = dicts?.find((element: any) => element.code == val)
       return value ? value.codeval : '未定义'
     }
   }
