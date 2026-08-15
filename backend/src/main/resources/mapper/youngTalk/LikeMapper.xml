@@ -4,7 +4,7 @@
   <resultMap id="BaseResultMap" type="com.cmbccd.ulms.youngTalk.domain.Like">
     <id column="ID" jdbcType="DECIMAL" property="id" />
     <result column="LIKE_TYPE" jdbcType="DECIMAL" property="likeType" />
-    <result column="ARTICAL_ID" jdbcType="DECIMAL" property="articalId" />
+    <result column="ARTICAL_ID" jdbcType="DECIMAL" property="articleId" />
     <result column="USER_ID" jdbcType="VARCHAR" property="userId" />
     <result column="DATE_TIME" jdbcType="VARCHAR" property="dateTime" />
     <result column="STATUS" jdbcType="DECIMAL" property="status" />
@@ -104,7 +104,7 @@
     insert into CYT_ARTICAL_LIKE (ID, LIKE_TYPE, ARTICAL_ID, 
       USER_ID, DATE_TIME, STATUS
       )
-    values (#{id,jdbcType=DECIMAL}, #{likeType,jdbcType=DECIMAL}, #{articalId,jdbcType=DECIMAL}, 
+    values (#{id,jdbcType=DECIMAL}, #{likeType,jdbcType=DECIMAL}, #{articleId,jdbcType=DECIMAL}, 
       #{userId,jdbcType=VARCHAR}, #{dateTime,jdbcType=VARCHAR}, #{status,jdbcType=DECIMAL}
       )
   </insert>
@@ -117,7 +117,7 @@
       <if test="likeType != null">
         LIKE_TYPE,
       </if>
-      <if test="articalId != null">
+      <if test="articleId != null">
         ARTICAL_ID,
       </if>
       <if test="userId != null">
@@ -137,8 +137,8 @@
       <if test="likeType != null">
         #{likeType,jdbcType=DECIMAL},
       </if>
-      <if test="articalId != null">
-        #{articalId,jdbcType=DECIMAL},
+      <if test="articleId != null">
+        #{articleId,jdbcType=DECIMAL},
       </if>
       <if test="userId != null">
         #{userId,jdbcType=VARCHAR},
@@ -166,8 +166,8 @@
       <if test="record.likeType != null">
         LIKE_TYPE = #{record.likeType,jdbcType=DECIMAL},
       </if>
-      <if test="record.articalId != null">
-        ARTICAL_ID = #{record.articalId,jdbcType=DECIMAL},
+      <if test="record.articleId != null">
+        ARTICAL_ID = #{record.articleId,jdbcType=DECIMAL},
       </if>
       <if test="record.userId != null">
         USER_ID = #{record.userId,jdbcType=VARCHAR},
@@ -187,7 +187,7 @@
     update CYT_ARTICAL_LIKE
     set ID = #{record.id,jdbcType=DECIMAL},
       LIKE_TYPE = #{record.likeType,jdbcType=DECIMAL},
-      ARTICAL_ID = #{record.articalId,jdbcType=DECIMAL},
+      ARTICAL_ID = #{record.articleId,jdbcType=DECIMAL},
       USER_ID = #{record.userId,jdbcType=VARCHAR},
       DATE_TIME = #{record.dateTime,jdbcType=VARCHAR},
       STATUS = #{record.status,jdbcType=DECIMAL}
@@ -201,8 +201,8 @@
       <if test="likeType != null">
         LIKE_TYPE = #{likeType,jdbcType=DECIMAL},
       </if>
-      <if test="articalId != null">
-        ARTICAL_ID = #{articalId,jdbcType=DECIMAL},
+      <if test="articleId != null">
+        ARTICAL_ID = #{articleId,jdbcType=DECIMAL},
       </if>
       <if test="userId != null">
         USER_ID = #{userId,jdbcType=VARCHAR},
@@ -219,7 +219,7 @@
   <update id="updateByPrimaryKey" parameterType="com.cmbccd.ulms.youngTalk.domain.Like">
     update CYT_ARTICAL_LIKE
     set LIKE_TYPE = #{likeType,jdbcType=DECIMAL},
-      ARTICAL_ID = #{articalId,jdbcType=DECIMAL},
+      ARTICAL_ID = #{articleId,jdbcType=DECIMAL},
       USER_ID = #{userId,jdbcType=VARCHAR},
       DATE_TIME = #{dateTime,jdbcType=VARCHAR},
       STATUS = #{status,jdbcType=DECIMAL}

@@ -9,13 +9,13 @@ import java.util.Map;
 public interface CollectService {
 
 	public int newId();
-	public int isUserCollectByArticalId(Integer articalId , String userId);
+	public int isUserCollectByArticleId(Integer articleId , String userId);
 	
 	public int insertCollect(Collect record);
 	
 	public int updateByPrimaryKey(Collect record);
 	
-	public int updateStatusByUserAndArtical (Collect record);
+	public int updateStatusByUserAndArticle (Collect record);
 	
 	public List<Collect> getCollectListByUserId(String userId);
 

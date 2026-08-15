@@ -29,10 +29,10 @@ public class AnswerServiceImpl implements AnswerService {
 	}
 	
 	@Override
-	public List<Answer> getAnswerByUserId(int articalId,String userId) {
+	public List<Answer> getAnswerByUserId(int articleId,String userId) {
 		AnswerExample example = new AnswerExample();
 		Criteria criteria = example.createCriteria();
-		criteria.andArticalIdEqualTo(articalId);
+		criteria.andArticleIdEqualTo(articleId);
 		criteria.andUserIdEqualTo(userId);
 		example.setOrderByClause(" Question_Id ");
 		return answerMapper.selectByExample(example);
@@ -46,15 +46,15 @@ public class AnswerServiceImpl implements AnswerService {
 	}
 
 	@Override
-	public List<Answer> selectSurveyUserIds(int articalId) {
-		return answerMapper.selectSurveyUserIds(articalId);
+	public List<Answer> selectSurveyUserIds(int articleId) {
+		return answerMapper.selectSurveyUserIds(articleId);
 	}
 
 	@Override
-	public DataPage<Answer> listSurveyAnswerUser(int articalId, Map<String, String> params) {
+	public DataPage<Answer> listSurveyAnswerUser(int articleId, Map<String, String> params) {
 		Map<String, Integer> pageParams = Util.innitTablePages(params);
 		PageHelper.startPage(pageParams.get("pageNum"), pageParams.get("pageSize"));
-		List<Answer> users = answerMapper.selectSurveyUserIds(articalId);
+		List<Answer> users = answerMapper.selectSurveyUserIds(articleId);
 		for (Answer user : users) {
 			user.setUser(DataCache.getEmployees().get(user.getUserId()));
 		}

@@ -62,15 +62,15 @@
             }}</text>
           </template>
         </TableColumn>
-        <TableColumn colKey="articalId" label="公布栏配置">
+        <TableColumn colKey="articleId" label="公布栏配置">
           <template #default="scope">
             <t-button
-              :theme="scope.row.articalId ? 'success' : 'danger'"
+              :theme="scope.row.articleId ? 'success' : 'danger'"
               size="small"
-              @click="manageArticalBtn(scope.row)"
+              @click="manageArticleBtn(scope.row)"
               link
               >{{
-                scope.row.articalId ? '已配置[修改]' : '未配置[新增]'
+                scope.row.articleId ? '已配置[修改]' : '未配置[新增]'
               }}</t-button
             >
           </template>
@@ -158,12 +158,12 @@
             ></t-option>
           </t-select>
         </t-form-item>
-        <t-form-item label="公布栏配置" name="quesCode" v-if="form.articalId">
+        <t-form-item label="公布栏配置" name="quesCode" v-if="form.articleId">
           <t-input-adornment>
             <template #append>
-              <t-button variant="outline" theme="danger" @click="() => (form.articalId = null)">清除</t-button>
+              <t-button variant="outline" theme="danger" @click="() => (form.articleId = null)">清除</t-button>
             </template>
-            <t-input v-model="form.articalId" readonly></t-input>
+            <t-input v-model="form.articleId" readonly></t-input>
           </t-input-adornment>
         </t-form-item>
       </t-form>
@@ -186,10 +186,10 @@
     />
 
     <!-- 公布栏文章配置对话框 -->
-    <ArticalForm
-      v-model:visible="articalFormVisible"
-      :articalData="articalForm"
-      @success="handleArticalSuccess"
+    <ArticleForm
+      v-model:visible="articleFormVisible"
+      :articleData="articleForm"
+      @success="handleArticleSuccess"
     />
   </div>
 </template>
@@ -198,7 +198,7 @@
 import { ref, reactive, onMounted, computed } from 'vue'
 import { MessagePlugin } from 'tdesign-vue-next'
 import QuesSelectDialog from './components/QuesSelectDialog.vue'
-import ArticalForm from './components/ArticalForm.vue'
+import ArticleForm from './components/ArticleForm.vue'
 import { dailyConfigApi } from '@/api/edu/dailyConfig'
 import { useDictStore } from '@/stores'
 import { useCrudPage } from '@/hooks/useCrudPage'
@@ -235,12 +235,12 @@ const {
 const groupList = ref([])
 const dailyConfigVisible = ref(false)
 const quesSelectDialogVisible = ref(false)
-const articalFormVisible = ref(false)
+const articleFormVisible = ref(false)
 
 const formRef = ref(null)
 const form = reactive({
   groupId: '',
-  articalId: null,
+  articleId: null,
   quesDate: '',
   quesCode: '',
   optionRand: ''
@@ -253,9 +253,9 @@ const rules = reactive({
 
 const curentOperateType = ref('')
 
-const articalForm = reactive({
+const articleForm = reactive({
   id: null,
-  articalType: 9,
+  articleType: 9,
   category: 2,
   title: '',
   content: '',
@@ -286,7 +286,7 @@ const manageDailyConfig = (row) => {
   if (row == null) {
     Object.assign(form, {
       groupId: '',
-      articalId: null,
+      articleId: null,
       quesDate: '',
       quesCode: '',
       optionRand: ''
@@ -337,15 +337,15 @@ const handleDeleteDailyConfig = async (id) => {
   listDailyConfig()
 }
 
-const manageArticalBtn = async (row) => {
-  if (row.articalId) {
-    const res = await dailyConfigApi.getArticalDetail(row.articalId)
+const manageArticleBtn = async (row) => {
+  if (row.articleId) {
+    const res = await dailyConfigApi.getArticleDetail(row.articleId)
     if (res.code !== 200) return MessagePlugin.error(res.msg)
-    Object.assign(articalForm, res.data)
+    Object.assign(articleForm, res.data)
   } else {
-    Object.assign(articalForm, {
+    Object.assign(articleForm, {
       id: null,
-      articalType: 9,
+      articleType: 9,
       category: 2,
       title: '',
       content: '',
@@ -353,12 +353,12 @@ const manageArticalBtn = async (row) => {
     })
     Object.assign(form, row)
   }
-  articalFormVisible.value = true
+  articleFormVisible.value = true
 }
 
-const handleArticalSuccess = async (articalId) => {
+const handleArticleSuccess = async (articleId) => {
   if (!form.id) return
-  form.articalId = articalId
+  form.articleId = articleId
   const res = await dailyConfigApi.updateDailyConfig(form)
   if (res.code !== 200) return MessagePlugin.error(res.msg)
   MessagePlugin.success(res.msg)

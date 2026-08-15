@@ -3,7 +3,7 @@
 <mapper namespace="com.cmbccd.ulms.youngTalk.dao.CommentMapper">
   <resultMap id="BaseResultMap" type="com.cmbccd.ulms.youngTalk.domain.Comment">
     <id column="ID" jdbcType="DECIMAL" property="id" />
-    <result column="ARTICAL_ID" jdbcType="DECIMAL" property="articalId" />
+    <result column="ARTICAL_ID" jdbcType="DECIMAL" property="articleId" />
     <result column="CONTENT" jdbcType="VARCHAR" property="content" />
     <result column="LIKE_NUM" jdbcType="DECIMAL" property="likeNum" />
     <result column="USERID" jdbcType="VARCHAR" property="userid" />
@@ -106,7 +106,7 @@
     insert into CYT_ARTICAL_COMMENT (ID, ARTICAL_ID, CONTENT, 
       LIKE_NUM, USERID, DATE_TIME, 
       STATUS, ANON_FLAG)
-    values (#{id,jdbcType=DECIMAL}, #{articalId,jdbcType=DECIMAL}, #{content,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=DECIMAL}, #{articleId,jdbcType=DECIMAL}, #{content,jdbcType=VARCHAR}, 
       #{likeNum,jdbcType=DECIMAL}, #{userid,jdbcType=VARCHAR}, #{dateTime,jdbcType=VARCHAR}, 
       #{status,jdbcType=DECIMAL}, #{anonFlag,jdbcType=DECIMAL})
   </insert>
@@ -116,7 +116,7 @@
       <if test="id != null">
         ID,
       </if>
-      <if test="articalId != null">
+      <if test="articleId != null">
         ARTICAL_ID,
       </if>
       <if test="content != null">
@@ -142,8 +142,8 @@
       <if test="id != null">
         #{id,jdbcType=DECIMAL},
       </if>
-      <if test="articalId != null">
-        #{articalId,jdbcType=DECIMAL},
+      <if test="articleId != null">
+        #{articleId,jdbcType=DECIMAL},
       </if>
       <if test="content != null">
         #{content,jdbcType=VARCHAR},
@@ -177,8 +177,8 @@
       <if test="record.id != null">
         ID = #{record.id,jdbcType=DECIMAL},
       </if>
-      <if test="record.articalId != null">
-        ARTICAL_ID = #{record.articalId,jdbcType=DECIMAL},
+      <if test="record.articleId != null">
+        ARTICAL_ID = #{record.articleId,jdbcType=DECIMAL},
       </if>
       <if test="record.content != null">
         CONTENT = #{record.content,jdbcType=VARCHAR},
@@ -206,7 +206,7 @@
   <update id="updateByExample" parameterType="map">
     update CYT_ARTICAL_COMMENT
     set ID = #{record.id,jdbcType=DECIMAL},
-      ARTICAL_ID = #{record.articalId,jdbcType=DECIMAL},
+      ARTICAL_ID = #{record.articleId,jdbcType=DECIMAL},
       CONTENT = #{record.content,jdbcType=VARCHAR},
       LIKE_NUM = #{record.likeNum,jdbcType=DECIMAL},
       USERID = #{record.userid,jdbcType=VARCHAR},
@@ -220,8 +220,8 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.cmbccd.ulms.youngTalk.domain.Comment">
     update CYT_ARTICAL_COMMENT
     <set>
-      <if test="articalId != null">
-        ARTICAL_ID = #{articalId,jdbcType=DECIMAL},
+      <if test="articleId != null">
+        ARTICAL_ID = #{articleId,jdbcType=DECIMAL},
       </if>
       <if test="content != null">
         CONTENT = #{content,jdbcType=VARCHAR},
@@ -246,7 +246,7 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.cmbccd.ulms.youngTalk.domain.Comment">
     update CYT_ARTICAL_COMMENT
-    set ARTICAL_ID = #{articalId,jdbcType=DECIMAL},
+    set ARTICAL_ID = #{articleId,jdbcType=DECIMAL},
       CONTENT = #{content,jdbcType=VARCHAR},
       LIKE_NUM = #{likeNum,jdbcType=DECIMAL},
       USERID = #{userid,jdbcType=VARCHAR},

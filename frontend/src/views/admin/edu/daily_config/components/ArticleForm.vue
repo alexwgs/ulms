@@ -6,18 +6,18 @@
     :close-on-overlay-click="false"
   >
     <t-form
-      ref="articalFormRef"
-      :data="articalForm"
+      ref="articleFormRef"
+      :data="articleForm"
       size="small"
       label-width="80px"
-      :rules="articalFormRules"
+      :rules="articleFormRules"
     >
       <t-form-item label="标题" name="title">
-        <t-input v-model="articalForm.title"></t-input>
+        <t-input v-model="articleForm.title"></t-input>
       </t-form-item>
       <t-form-item label="正文" name="content">
         <WangEditor
-          v-model="articalForm.content"
+          v-model="articleForm.content"
           :height="400"
           :placeholder="'请输入文章内容...'"
         ></WangEditor>
@@ -27,7 +27,7 @@
       <span class="dialog-footer">
         <t-button size="small" @click="dialogVisible = false">取 消</t-button>
         <t-button theme="primary" size="small" @click="handleSubmit">
-          {{ articalForm.id ? '修改' : '新增' }}
+          {{ articleForm.id ? '修改' : '新增' }}
         </t-button>
       </span>
     </template>
@@ -46,11 +46,11 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
-  articalData: {
+  articleData: {
     type: Object,
     default: () => ({
       id: null,
-      articalType: 9,
+      articleType: 9,
       category: 2,
       title: '',
       content: '',
@@ -69,41 +69,41 @@ const dialogVisible = computed({
 })
 
 // Reactive data
-const articalFormRef = ref(null)
-const articalForm = reactive({
+const articleFormRef = ref(null)
+const articleForm = reactive({
   id: null,
-  articalType: 9,
+  articleType: 9,
   category: 2,
   title: '',
   content: '',
   status: 1
 })
 
-const articalFormRules = reactive({
+const articleFormRules = reactive({
   title: [{ required: true, message: '标题不能为空', trigger: 'blur' }],
   content: [{ required: true, message: '正文不能为空', trigger: 'blur' }]
 })
 
 // Watch
 watch(
-  () => props.articalData,
+  () => props.articleData,
   (newData) => {
-    Object.assign(articalForm, newData)
+    Object.assign(articleForm, newData)
   },
   { deep: true, immediate: true }
 )
 
 // Methods
 const handleSubmit = async () => {
-  const valid = await articalFormRef.value.validate()
+  const valid = await articleFormRef.value.validate()
   if (valid !== true) return
 
   try {
     let res
-    if (articalForm.id) {
-      res = await dailyConfigApi.updateArtical(articalForm)
+    if (articleForm.id) {
+      res = await dailyConfigApi.updateArticle(articleForm)
     } else {
-      res = await dailyConfigApi.addArtical(articalForm)
+      res = await dailyConfigApi.addArticle(articleForm)
     }
 
     if (res.code !== 200) {

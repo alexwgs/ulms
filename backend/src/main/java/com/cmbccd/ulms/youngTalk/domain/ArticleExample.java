@@ -3,14 +3,14 @@ package com.cmbccd.ulms.youngTalk.domain;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ArticalExample {
+public class ArticleExample {
     protected String orderByClause;
 
     protected boolean distinct;
 
     protected List<Criteria> oredCriteria;
 
-    public ArticalExample() {
+    public ArticleExample() {
         oredCriteria = new ArrayList<>();
     }
 
@@ -164,63 +164,63 @@ public class ArticalExample {
             return (Criteria) this;
         }
 
-        public Criteria andArticalTypeIsNull() {
+        public Criteria andArticleTypeIsNull() {
             addCriterion("ARTICAL_TYPE is null");
             return (Criteria) this;
         }
 
-        public Criteria andArticalTypeIsNotNull() {
+        public Criteria andArticleTypeIsNotNull() {
             addCriterion("ARTICAL_TYPE is not null");
             return (Criteria) this;
         }
 
-        public Criteria andArticalTypeEqualTo(Integer value) {
-            addCriterion("ARTICAL_TYPE =", value, "articalType");
+        public Criteria andArticleTypeEqualTo(Integer value) {
+            addCriterion("ARTICAL_TYPE =", value, "articleType");
             return (Criteria) this;
         }
 
-        public Criteria andArticalTypeNotEqualTo(Integer value) {
-            addCriterion("ARTICAL_TYPE <>", value, "articalType");
+        public Criteria andArticleTypeNotEqualTo(Integer value) {
+            addCriterion("ARTICAL_TYPE <>", value, "articleType");
             return (Criteria) this;
         }
 
-        public Criteria andArticalTypeGreaterThan(Integer value) {
-            addCriterion("ARTICAL_TYPE >", value, "articalType");
+        public Criteria andArticleTypeGreaterThan(Integer value) {
+            addCriterion("ARTICAL_TYPE >", value, "articleType");
             return (Criteria) this;
         }
 
-        public Criteria andArticalTypeGreaterThanOrEqualTo(Integer value) {
-            addCriterion("ARTICAL_TYPE >=", value, "articalType");
+        public Criteria andArticleTypeGreaterThanOrEqualTo(Integer value) {
+            addCriterion("ARTICAL_TYPE >=", value, "articleType");
             return (Criteria) this;
         }
 
-        public Criteria andArticalTypeLessThan(Integer value) {
-            addCriterion("ARTICAL_TYPE <", value, "articalType");
+        public Criteria andArticleTypeLessThan(Integer value) {
+            addCriterion("ARTICAL_TYPE <", value, "articleType");
             return (Criteria) this;
         }
 
-        public Criteria andArticalTypeLessThanOrEqualTo(Integer value) {
-            addCriterion("ARTICAL_TYPE <=", value, "articalType");
+        public Criteria andArticleTypeLessThanOrEqualTo(Integer value) {
+            addCriterion("ARTICAL_TYPE <=", value, "articleType");
             return (Criteria) this;
         }
 
-        public Criteria andArticalTypeIn(List<Integer> values) {
-            addCriterion("ARTICAL_TYPE in", values, "articalType");
+        public Criteria andArticleTypeIn(List<Integer> values) {
+            addCriterion("ARTICAL_TYPE in", values, "articleType");
             return (Criteria) this;
         }
 
-        public Criteria andArticalTypeNotIn(List<Integer> values) {
-            addCriterion("ARTICAL_TYPE not in", values, "articalType");
+        public Criteria andArticleTypeNotIn(List<Integer> values) {
+            addCriterion("ARTICAL_TYPE not in", values, "articleType");
             return (Criteria) this;
         }
 
-        public Criteria andArticalTypeBetween(Integer value1, Integer value2) {
-            addCriterion("ARTICAL_TYPE between", value1, value2, "articalType");
+        public Criteria andArticleTypeBetween(Integer value1, Integer value2) {
+            addCriterion("ARTICAL_TYPE between", value1, value2, "articleType");
             return (Criteria) this;
         }
 
-        public Criteria andArticalTypeNotBetween(Integer value1, Integer value2) {
-            addCriterion("ARTICAL_TYPE not between", value1, value2, "articalType");
+        public Criteria andArticleTypeNotBetween(Integer value1, Integer value2) {
+            addCriterion("ARTICAL_TYPE not between", value1, value2, "articleType");
             return (Criteria) this;
         }
 

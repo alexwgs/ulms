@@ -11,7 +11,7 @@ public class DailyConfig {
 
     private Short optionRand;
 
-    private Long articalId;
+    private Long articleId;
 
     private String valid;
 
@@ -55,12 +55,12 @@ public class DailyConfig {
         this.optionRand = optionRand;
     }
 
-    public Long getArticalId() {
-        return articalId;
+    public Long getArticleId() {
+        return articleId;
     }
 
-    public void setArticalId(Long articalId) {
-        this.articalId = articalId;
+    public void setArticleId(Long articleId) {
+        this.articleId = articleId;
     }
 
     public String getValid() {

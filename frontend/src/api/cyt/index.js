@@ -18,34 +18,34 @@ export const addDictionary = (data) => {
 
 // 文章相关API
 // 获取文章列表
-export const getArticalList = (category, params) => {
-  return httpInstance.get(`/cyt/articalList/2/${category}`, { params })
+export const getArticleList = (category, params) => {
+  return httpInstance.get(`/cyt/articleList/2/${category}`, { params })
 }
 
 // 设置文章置顶/精华/广场状态
-export const setArticalStatus = (type, id, val) => {
-  return httpInstance.put(`/cyt/artical/on/${type}/${id}/${val}`)
+export const setArticleStatus = (type, id, val) => {
+  return httpInstance.put(`/cyt/article/on/${type}/${id}/${val}`)
 }
 
 // 审核文章
-export const examineArtical = (data) => {
-  return httpInstance.put('/cyt/artical/on/examine', data)
+export const examineArticle = (data) => {
+  return httpInstance.put('/cyt/article/on/examine', data)
 }
 
 // 移动文章分类
-export const updateArticalCategory = (data) => {
-  return httpInstance.put('/cyt/artical/category', data)
+export const updateArticleCategory = (data) => {
+  return httpInstance.put('/cyt/article/category', data)
 }
 
 // 项目相关API
 // 获取项目列表
 export const getItemList = (category, params) => {
-  return httpInstance.get(`/cyt/articalList/1/${category}`, { params })
+  return httpInstance.get(`/cyt/articleList/1/${category}`, { params })
 }
 
 // 项目结案
 export const completeItem = (data) => {
-  return httpInstance.put('/cyt/artical/on/comp', data)
+  return httpInstance.put('/cyt/article/on/comp', data)
 }
 
 // 获取项目成员
@@ -55,7 +55,7 @@ export const getItemMembers = (id) => {
 
 // 获取项目详情
 export const getItemDetail = (id) => {
-  return httpInstance.get(`/cyt/artical/manage/${id}`)
+  return httpInstance.get(`/cyt/article/manage/${id}`)
 }
 
 // 获取项目进度
@@ -82,10 +82,10 @@ export const deleteReply = (id) => {
 // 调研相关API
 // 获取调研列表
 export const getSurveyList = (category, params) => {
-  return httpInstance.get(`/cyt/articalList/3/${category}`, { params })
+  return httpInstance.get(`/cyt/articleList/3/${category}`, { params })
 }
 
 // 获取调研图表数据
-export const getSurveyChartData = (articalId) => {
-  return httpInstance.get(`/cyt/survey/chart/${articalId}`)
+export const getSurveyChartData = (articleId) => {
+  return httpInstance.get(`/cyt/survey/chart/${articleId}`)
 }

@@ -40,5 +40,5 @@ public interface DailyScoreService {
 
     DailyScore submitMood(DailyScore dailyScore);
 
-    DailyScore submitArticalStudy(DailyScore dailyScore);
+    DailyScore submitArticleStudy(DailyScore dailyScore);
 }

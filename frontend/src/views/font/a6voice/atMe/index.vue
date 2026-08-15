@@ -45,7 +45,7 @@
             </t-tag>
           </template>
         </TableColumn>
-        <TableColumn colKey="artical.title" label="标题"></TableColumn>
+        <TableColumn colKey="article.title" label="标题"></TableColumn>
         <TableColumn colKey="fUser.ploName" label="来自" width="150">
           <template #default="scope">
             {{
@@ -134,7 +134,7 @@ const queryInfo = reactive({
 
 const answerForm = reactive({
   messageType: '',
-  articalId: '',
+  articleId: '',
   commentId: '',
   toUser: '',
   anonFlag: 0,
@@ -176,7 +176,7 @@ const handleCurrentChange = (page) => {
 const answerComment = async (index, row) => {
   fUser.value = row.fUser
   answerForm.messageType = row.messageType
-  answerForm.articalId = row.articalId
+  answerForm.articleId = row.articleId
   answerForm.commentId = row.messageId
   answerForm.toUser = row.fromUser
   answerForm.anonFlag = anonFlag.value ? 1 : 0
@@ -245,7 +245,7 @@ const readAll = async () => {
 const answerHandleClose = () => {
   comment.value = {
     messageType: '',
-    articalId: '',
+    articleId: '',
     commentId: '',
     toUser: '',
     anonFlag: 0,

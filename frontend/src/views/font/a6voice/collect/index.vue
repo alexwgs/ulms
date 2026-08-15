@@ -9,19 +9,19 @@
     <t-divider></t-divider>
     <div class="text item">
       <CustomTable rowKey="id" :data="collects" size="small" stripe style="width: 100%" height="calc(100vh - 280px)">
-        <TableColumn colKey="artical.articalType" label="类型" width="100">
+        <TableColumn colKey="article.articleType" label="类型" width="100">
           <template #default="scope">
-            <t-tag v-if="scope.row.artical && 'articalType' in scope.row.artical" size="small"
-              :theme="scope.row.artical.articalType == 1 ? 'danger' : 'default'" variant="light">{{
-                dictStore.getDictName('cyt_artical_type', scope.row.artical.articalType) }}</t-tag>
+            <t-tag v-if="scope.row.article && 'articleType' in scope.row.article" size="small"
+              :theme="scope.row.article.articleType == 1 ? 'danger' : 'default'" variant="light">{{
+                dictStore.getDictName('cyt_artical_type', scope.row.article.articleType) }}</t-tag>
           </template>
         </TableColumn>
-        <TableColumn colKey="artical.title" label="标题"></TableColumn>
-        <TableColumn colKey="artical.pubDate" label="发布日期" width="180"></TableColumn>
+        <TableColumn colKey="article.title" label="标题"></TableColumn>
+        <TableColumn colKey="article.pubDate" label="发布日期" width="180"></TableColumn>
         <TableColumn colKey="dateTime" label="收藏日期" width="180"></TableColumn>
         <TableColumn label="操作" width="200">
           <template #default="scope">
-            <t-button theme="primary" size="small" @click="viewArtical(scope.$index, scope.row)">查看</t-button>
+            <t-button theme="primary" size="small" @click="viewArticle(scope.$index, scope.row)">查看</t-button>
             <t-button theme="danger" size="small" @click="cancelCollect(scope.$index, scope.row)">取消收藏</t-button>
           </template>
         </TableColumn>
@@ -82,15 +82,15 @@ const getCollectList = async () => {
   }
 }
 
-const viewArtical = (index, row) => {
-  if (row.artical.articalType === 1) {
+const viewArticle = (index, row) => {
+  if (row.article.articleType === 1) {
     const url = router.resolve({
-      path: '/artical/item/' + row.artical.id
+      path: '/article/item/' + row.article.id
     })
     window.open(url.href, '_blank')
   } else {
     const url = router.resolve({
-      path: '/artical/view/' + row.artical.id
+      path: '/article/view/' + row.article.id
     })
     window.open(url.href, '_blank')
   }
@@ -98,7 +98,7 @@ const viewArtical = (index, row) => {
 
 const cancelCollect = async (index, row) => {
   try {
-    const res = await httpInstance.post(`cyt/collect/${row.artical.id}/1`)
+    const res = await httpInstance.post(`cyt/collect/${row.article.id}/1`)
     if (res.code !== 200) {
       MessagePlugin.error(res.msg)
       return

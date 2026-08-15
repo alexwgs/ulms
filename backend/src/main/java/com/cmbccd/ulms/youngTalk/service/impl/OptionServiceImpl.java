@@ -27,22 +27,22 @@ public class OptionServiceImpl implements OptionService {
 		return optionMapper.insert(record);
 	}
 	@Override
-	public List<Option> getOptionsByQuestionId(int articalId,int questionId) {
+	public List<Option> getOptionsByQuestionId(int articleId,int questionId) {
 		OptionExample example = new OptionExample();
 		Criteria criteria = example.createCriteria();
 		criteria.andQuestionIdEqualTo(questionId);
-		criteria.andArticalIdEqualTo(articalId);
+		criteria.andArticleIdEqualTo(articleId);
 		example.setOrderByClause(" SORT ASC ");
 		return optionMapper.selectByExample(example);
 	}
 	@Override
-	public List<Map<String, Object>> selectRadioNumGroupByQuestionId(Integer articalId, Integer questionId) {
-		return optionMapper.selectRadioNumGroupByQuestionId(articalId, questionId);
+	public List<Map<String, Object>> selectRadioNumGroupByQuestionId(Integer articleId, Integer questionId) {
+		return optionMapper.selectRadioNumGroupByQuestionId(articleId, questionId);
 	}
 	@Override
-	public int selectCheckboxNumGroupByOptionId(Integer articalId, Integer questionId, String option) {
+	public int selectCheckboxNumGroupByOptionId(Integer articleId, Integer questionId, String option) {
 		
-		return optionMapper.selectCheckboxNumGroupByOptionId(articalId, questionId, option);
+		return optionMapper.selectCheckboxNumGroupByOptionId(articleId, questionId, option);
 	}
 
 }

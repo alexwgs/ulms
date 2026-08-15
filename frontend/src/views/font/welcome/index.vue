@@ -20,7 +20,7 @@
                 <template #default="scope">
                   <div v-if="scope.row.topFlag === 1">
                     <router-link class="link" style="color: red" tag="a" target="_blank"
-                      :to="{ path: '/artical/view/' + scope.row.id }" rel="opener">{{ scope.row.title }}</router-link>
+                      :to="{ path: '/article/view/' + scope.row.id }" rel="opener">{{ scope.row.title }}</router-link>
                   </div>
                   <div v-else>
                     <router-link class="link" tag="a" target="_blank" :to="{ path: '/system/view/' + scope.row.id }"

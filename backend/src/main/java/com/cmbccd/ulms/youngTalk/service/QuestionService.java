@@ -10,8 +10,8 @@ public interface QuestionService {
 	
 	int insertNewQuestion(Question record);
 	
-	List<Question> selectUserQuestionByArticalId (int articalId, String userId);
+	List<Question> selectUserQuestionByArticleId (int articleId, String userId);
 	
-	List<Question> selectQuestionByArticalId(int articalId);
+	List<Question> selectQuestionByArticleId(int articleId);
 
 }

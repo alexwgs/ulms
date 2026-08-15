@@ -43,7 +43,7 @@ import { useRouter } from 'vue-router'
 import { MessagePlugin } from 'tdesign-vue-next'
 import WangEditor from '@/components/WangEditor.vue'
 import { manageNoticeApi } from '@/api/admin/manageNotice'
-import { getArticalDetail, updateArtical, addArtical } from '@/api/a6voice/index.js'
+import { getArticleDetail, updateArticle, addArticle } from '@/api/a6voice/index.js'
 import { useDictStore } from '@/stores'
 
 const dictStore = useDictStore()
@@ -62,7 +62,7 @@ const formRef = ref(null)
 // 表单数据
 const form = reactive({
   category: '',
-  articalType: 9,
+  articleType: 9,
   title: '',
   content: '',
   status: 2
@@ -85,10 +85,10 @@ const formRules = reactive({
 const submitStat = ref(false)
 
 // 初始化文章
-const initArtical = async () => {
+const initArticle = async () => {
   if (props.id !== 'new') {
     try {
-      const res = await getArticalDetail(props.id)
+      const res = await getArticleDetail(props.id)
       if (res.code !== 200) {
         MessagePlugin.error(res.msg)
         return
@@ -120,9 +120,9 @@ const onSubmit = async (status) => {
 
       let res
       if (props.id !== 'new') {
-        res = await updateArtical(form)
+        res = await updateArticle(form)
       } else {
-        res = await addArtical(form)
+        res = await addArticle(form)
       }
 
       if (res.code !== 200) {
@@ -149,14 +149,14 @@ watch(
   () => props.id,
   (newVal, oldVal) => {
     if (newVal !== oldVal) {
-      initArtical()
+      initArticle()
     }
   }
 )
 
 // 组件挂载时初始化
 onMounted(() => {
-  initArtical()
+  initArticle()
 })
 </script>
 

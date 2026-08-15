@@ -14,7 +14,7 @@
           <t-form-item label="关键字" name="query">
             <t-input-adornment style="width: 260px">
               <template #append>
-                <t-button variant="outline" theme="primary" @click="getArticals">搜索</t-button>
+                <t-button variant="outline" theme="primary" @click="getArticles">搜索</t-button>
               </template>
               <t-input placeholder="模糊搜索" size="small" v-model="queryInfo.query"></t-input>
             </t-input-adornment>
@@ -37,7 +37,7 @@
               size="small"
               placeholder="全部"
               style="width: 140px"
-              @change="getArticals"
+              @change="getArticles"
             >
               <t-option label="全部" value=""></t-option>
               <t-option label="有效" :value="1"></t-option>
@@ -46,10 +46,10 @@
           </t-form-item>
         </t-form>
         <div class="operation-container">
-          <t-button variant="outline" theme="primary" size="small" @click="articalManager('add', null)">新建文章</t-button>
+          <t-button variant="outline" theme="primary" size="small" @click="articleManager('add', null)">新建文章</t-button>
         </div>
       </div>
-      <CustomTable rowKey="id" :data="articals" size="small" height="calc(100vh - 400px)" stripe @sort-change="tableSort"
+      <CustomTable rowKey="id" :data="articles" size="small" height="calc(100vh - 400px)" stripe @sort-change="tableSort"
         style="width: 100%">
         <!-- <TableColumn colKey="routeId" label="路径" sortable="custom" ellipsis></TableColumn> -->
         <TableColumn colKey="title" label="标题" sortable="custom" ellipsis></TableColumn>
@@ -72,9 +72,9 @@
         <TableColumn colKey="updateDate" label="操作时间" sortable="custom" width="140px"></TableColumn>
         <TableColumn label="操作" width="100px">
           <template #default="scope">
-            <t-button variant="outline" size="small" theme="default" @click="articalManager('update', scope.row.journo)"
+            <t-button variant="outline" size="small" theme="default" @click="articleManager('update', scope.row.journo)"
              >编辑</t-button>
-            <t-button variant="outline" size="small" theme="danger" @click="deleteArtical(scope.row.journo)"
+            <t-button variant="outline" size="small" theme="danger" @click="deleteArticle(scope.row.journo)"
              >删除</t-button>
           </template>
         </TableColumn>
@@ -83,14 +83,14 @@
         :current="queryInfo.pageNum" :page-size-options="[20, 40, 100, 200]" :page-size="queryInfo.pageSize"
  :total="total"></t-pagination>
     </t-card>
-    <HelperArtical ref="helperArticalRef" @refresh-list="getArticals"></HelperArtical>
+    <HelperArticle ref="helperArticleRef" @refresh-list="getArticles"></HelperArticle>
   </div>
 </template>
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
 import { MessagePlugin } from 'tdesign-vue-next'
-import HelperArtical from './components/artical.vue'
-import { articalApi } from '@/api/helper/artical'
+import HelperArticle from './components/article.vue'
+import { articleApi } from '@/api/helper/article'
 import { treeApi } from '@/api/helper/tree'
 
 // 响应式数据
@@ -106,7 +106,7 @@ const queryInfo = reactive({
   pageSize: 20,
   pageNum: 1
 })
-const articals = ref([])
+const articles = ref([])
 const arealist = ref([
   { label: '全部', value: '0' },
   { label: '上海', value: '1' },
@@ -121,12 +121,12 @@ const ownerlist = ref([
 const tree = ref([])
 
 // 引用
-const helperArticalRef = ref(null)
+const helperArticleRef = ref(null)
 
 // 生命周期钩子
 onMounted(() => {
   getTree()
-  getArticals()
+  getArticles()
 })
 
 // 获取路径树数据
@@ -141,11 +141,11 @@ const getTree = async () => {
 }
 
 // 获取文章列表
-const getArticals = async () => {
+const getArticles = async () => {
   try {
-    const res = await articalApi.getArticals(queryInfo)
+    const res = await articleApi.getArticles(queryInfo)
     if (res.code !== 200) return MessagePlugin.error(res.msg)
-    articals.value = res.data.list
+    articles.value = res.data.list
     total.value = res.data.total
   } catch (error) {
     MessagePlugin.error('获取文章列表失败')
@@ -153,12 +153,12 @@ const getArticals = async () => {
 }
 
 // 删除文章
-const deleteArtical = async (journo) => {
+const deleteArticle = async (journo) => {
   try {
-    const res = await articalApi.deleteArtical(journo)
+    const res = await articleApi.deleteArticle(journo)
     if (res.code !== 200) return MessagePlugin.error(res.msg)
     MessagePlugin.success(res.msg)
-    getArticals()
+    getArticles()
   } catch (error) {
     MessagePlugin.error('删除文章失败')
   }
@@ -167,13 +167,13 @@ const deleteArtical = async (journo) => {
 // 页面大小变化
 const handleSizeChange = (pageSize) => {
   queryInfo.pageSize = pageSize
-  getArticals()
+  getArticles()
 }
 
 // 当前页变化
 const handleCurrentChange = (page) => {
   queryInfo.pageNum = page
-  getArticals()
+  getArticles()
 }
 
 // 表格排序
@@ -181,12 +181,12 @@ const tableSort = (data) => {
   if (!data.descending) queryInfo.orderType = ' asc '
   else if (data.descending) queryInfo.orderType = ' desc '
   queryInfo.order = data.sortBy
-  getArticals()
+  getArticles()
 }
 
 // 文章管理
-const articalManager = (opType, journo) => {
-  helperArticalRef.value?.getArtical(opType, journo)
+const articleManager = (opType, journo) => {
+  helperArticleRef.value?.getArticle(opType, journo)
 }
 
 // 路径变化处理
@@ -196,7 +196,7 @@ const routerChange = () => {
   } else {
     queryInfo.routeId = ''
   }
-  getArticals()
+  getArticles()
 }
 </script>
 <style lang="less" scoped>

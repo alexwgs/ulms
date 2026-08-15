@@ -2,19 +2,19 @@
   <div class="view-container">
     <div class="mian-container">
       <t-row>
-        <div class="artical-content">
+        <div class="article-content">
           <t-breadcrumb separator="/">
             <t-breadcrumb-item :to="{ path: '/' }">A6有声</t-breadcrumb-item>
             <t-breadcrumb-item>讨论</t-breadcrumb-item>
             <t-breadcrumb-item>{{ categoryName }}</t-breadcrumb-item>
-            <t-breadcrumb-item>{{ artical.title }}</t-breadcrumb-item>
+            <t-breadcrumb-item>{{ article.title }}</t-breadcrumb-item>
           </t-breadcrumb>
-          <h3>{{ artical.title }}</h3>
+          <h3>{{ article.title }}</h3>
           <div>
             标签：
             <span v-for="item in labelItems" :key="item.label">
               <t-tag
-                v-if="artical[item.field] == item.val"
+                v-if="article[item.field] == item.val"
                 :theme="item.type"
                 variant="light"
                 size="small"
@@ -22,33 +22,33 @@
                 {{ item.label }}
               </t-tag>
             </span>
-            <div class="artical-icon">
+            <div class="article-icon">
               <span style="color: var(--td-text-color-placeholder); font-size: 14px; padding-right: 10px"
                 >发布人：{{
-                  artical.user ? artical.user.ploName : '匿名'
+                  article.user ? article.user.ploName : '匿名'
                 }}
-                &emsp;|&emsp;发布时间：{{ artical.pubDate }}</span
+                &emsp;|&emsp;发布时间：{{ article.pubDate }}</span
               >
               <i class="iconfont iconfaxian"
-                ><font>{{ artical.viewNum + 1 }}</font></i
+                ><font>{{ article.viewNum + 1 }}</font></i
               >
               <i class="iconfont iconshoucang1"
-                ><font>{{ artical.collectNum }}</font></i
+                ><font>{{ article.collectNum }}</font></i
               >
               <i class="iconfont iconzan1"
-                ><font>{{ artical.likeNum }}</font></i
+                ><font>{{ article.likeNum }}</font></i
               >
               <i class="iconfont iconxiaoxi"
-                ><font>{{ artical.replyNum }}</font></i
+                ><font>{{ article.replyNum }}</font></i
               >
             </div>
           </div>
           <t-divider></t-divider>
-          <div class="artical-text" v-html="artical.content"></div>
+          <div class="article-text" v-html="article.content"></div>
           <t-divider></t-divider>
-          <p v-if="artical.hasOwnProperty('files') && artical.files">
+          <p v-if="article.hasOwnProperty('files') && article.files">
             附件下载：<t-button
-              v-for="(file, index) in parseFiles(artical.files)"
+              v-for="(file, index) in parseFiles(article.files)"
               :key="index"
               size="small"
               @click="downloadFile(file.path)"
@@ -57,16 +57,16 @@
               >{{ file.name }}</t-button
             >
           </p>
-          <div class="artical-operations">
+          <div class="article-operations">
             <t-button
               size="small"
               :theme="isLike == 0 ? 'default' : 'primary'"
               :disabled="isLike == 1 ? true : false"
-              @click="setLike(1, artical.id)"
+              @click="setLike(1, article.id)"
               shape="round"
             >
               <template #icon><i class="iconfont iconzan1"></i></template>
-              &emsp;点 赞&emsp;{{ artical.likeNum }}
+              &emsp;点 赞&emsp;{{ article.likeNum }}
             </t-button>
             <t-button
               size="small"
@@ -75,8 +75,8 @@
               shape="round"
             >
               <template #icon><i class="iconfont iconshoucang1"></i></template>
-              &emsp;{{ artical.isCollect == 0 ? '' : '已' }} 收 藏&emsp;{{
-                artical.collectNum
+              &emsp;{{ article.isCollect == 0 ? '' : '已' }} 收 藏&emsp;{{
+                article.collectNum
               }}
             </t-button>
           </div>
@@ -86,8 +86,8 @@
         <t-card class="comment" v-if="flags.commentFlag">
           <Comment
             ref="commentRef"
-            :artical-id="id"
-            :pub-user="artical.pubUser"
+            :article-id="id"
+            :pub-user="article.pubUser"
             :show-anon-option="flags.anonFlag"
             :show-comment-form="true"
             @comment-submitted="onCommentSubmitted"
@@ -112,7 +112,7 @@ const route = useRoute()
 const fsURL = import.meta.env.VITE_FILE_BASE_URL
 const dictStore = useDictStore()
 const commentRef = ref(null)
-const artical = reactive({
+const article = reactive({
   title: '',
   category: '',
   content: '',
@@ -141,9 +141,9 @@ const categorys = ref([])
 const id = computed(() => route.params.id)
 
 const categoryName = computed(() => {
-  if (categorys.value.length > 0 && artical.category) {
+  if (categorys.value.length > 0 && article.category) {
     const item = categorys.value.find(
-      (item) => parseInt(item.code) === parseInt(artical.category)
+      (item) => parseInt(item.code) === parseInt(article.category)
     )
     return item ? item.codeval : ''
   }
@@ -151,9 +151,9 @@ const categoryName = computed(() => {
 })
 
 const flags = computed(() => {
-  if (categorys.value.length > 0 && artical.category) {
+  if (categorys.value.length > 0 && article.category) {
     const item = categorys.value.find(
-      (item) => parseInt(item.code) === parseInt(artical.category)
+      (item) => parseInt(item.code) === parseInt(article.category)
     )
     if (item && item.description) {
       return JSON.parse(item.description)
@@ -174,17 +174,17 @@ const downloadFile = (path) => {
   window.open(fsURL + path)
 }
 
-const getArtical = async () => {
+const getArticle = async () => {
   try {
-    const res = await httpInstance.get(`cyt/artical/${id.value}`)
+    const res = await httpInstance.get(`cyt/article/${id.value}`)
     if (res.code !== 200) {
       MessagePlugin.error(res.msg)
       return
     }
-    Object.assign(artical, res.data)
+    Object.assign(article, res.data)
     isCollect.value = res.data.isCollect
     isLike.value = res.data.isLike
-    document.title = '[A6有声]' + artical.title
+    document.title = '[A6有声]' + article.title
   } catch (error) {
     MessagePlugin.error(error.message || '获取文章失败')
   }
@@ -201,10 +201,10 @@ const setCollect = async () => {
     }
     if (isCollect.value === 0) {
       isCollect.value = 1
-      artical.collectNum++
+      article.collectNum++
     } else {
       isCollect.value = 0
-      artical.collectNum--
+      article.collectNum--
     }
     MessagePlugin.success(res.msg)
   } catch (error) {
@@ -221,7 +221,7 @@ const setLike = async (type, targetId, index) => {
     }
     if (type === 1) {
       isLike.value = 1
-      artical.likeNum++
+      article.likeNum++
     }
     MessagePlugin.success(res.msg)
   } catch (error) {
@@ -230,13 +230,13 @@ const setLike = async (type, targetId, index) => {
 }
 
 const onCommentSubmitted = () => {
-  artical.replyNum++
+  article.replyNum++
 }
 
 onMounted(() => {
   const dict = JSON.parse(window.localStorage.getItem('dictCache') || '{}')
   categorys.value = dictStore.getDict('cyt_artical_category') || []
-  getArtical()
+  getArticle()
 })
 </script>
 
@@ -250,17 +250,17 @@ background-color: var(--td-bg-color-page);
     max-width: 1400px;
   }
 }
-.artical-header {
+.article-header {
   height: 80px !important;
   padding-left: 40px;
 }
-.artical-content {
+.article-content {
   width: 100%;
   padding: 20px;
   background-color: #fff;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
-.artical-icon {
+.article-icon {
   float: right;
   i {
     margin-right: 20px;
@@ -270,7 +270,7 @@ background-color: var(--td-bg-color-page);
     }
   }
 }
-.artical-text {
+.article-text {
   padding-left: 10px;
   min-height: 300px;
   width: 100%;
@@ -279,7 +279,7 @@ background-color: var(--td-bg-color-page);
     max-width: 900px;
   }
 }
-.artical-operations {
+.article-operations {
   margin-top: 20px;
   text-align: center;
 }

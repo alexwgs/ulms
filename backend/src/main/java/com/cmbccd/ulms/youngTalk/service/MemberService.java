@@ -9,13 +9,13 @@ public interface MemberService {
 
 	public int newId();
 	
-	public List<Integer> getArticalIdByUserId(String userId);
+	public List<Integer> getArticleIdByUserId(String userId);
 	
-	public int invalidByArticalId(int articalId);
+	public int invalidByArticleId(int articleId);
 	
 	public int insertRecord(Member record);
 	
-	public List<Member> getMemberListByArticalId(int articalId);
+	public List<Member> getMemberListByArticleId(int articleId);
 	
 	public List<Member> listMember(MemberExample example);
 }

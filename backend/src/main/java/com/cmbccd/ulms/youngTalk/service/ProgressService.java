@@ -7,7 +7,7 @@ import java.util.List;
 public interface ProgressService {
 	public int newId();
 	
-	public List<Progress> getProgressByArticalId(int articalId);
+	public List<Progress> getProgressByArticleId(int articleId);
 	
 	public int insertNewProgress(Progress record);
 	

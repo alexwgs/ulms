@@ -2,13 +2,13 @@
   <t-layout class="view-container">
     <t-layout>
       <t-content>
-        <div class="artical-content">
-          <h3>{{ artical.title }}</h3>
+        <div class="article-content">
+          <h3>{{ article.title }}</h3>
           <div>
             标签：
             <span v-for="item in labelItems" :key="item.label">
               <t-tag
-                v-if="artical[item.field] == item.val"
+                v-if="article[item.field] == item.val"
                 :theme="item.type"
                 variant="light"
                 size="small"
@@ -16,28 +16,28 @@
                 {{ item.label }}
               </t-tag>
             </span>
-            <div class="artical-icon" v-if="artical.user != undefined">
+            <div class="article-icon" v-if="article.user != undefined">
               <span style="color: var(--td-text-color-placeholder); font-size: 14px; padding-right: 10px"
-                >发布人：{{ artical.user.ploName }} &emsp;|&emsp;发布时间：{{
-                  artical.pubDate
+                >发布人：{{ article.user.ploName }} &emsp;|&emsp;发布时间：{{
+                  article.pubDate
                 }}</span
               >
               <i class="iconfont iconfaxian"
-                ><font>{{ artical.viewNum + 1 }}</font></i
+                ><font>{{ article.viewNum + 1 }}</font></i
               >
               <i class="iconfont iconshoucang1"
-                ><font>{{ artical.collectNum }}</font></i
+                ><font>{{ article.collectNum }}</font></i
               >
               <i class="iconfont iconzan1"
-                ><font>{{ artical.likeNum }}</font></i
+                ><font>{{ article.likeNum }}</font></i
               >
               <i class="iconfont iconxiaoxi"
-                ><font>{{ artical.replyNum }}</font></i
+                ><font>{{ article.replyNum }}</font></i
               >
             </div>
           </div>
           <t-divider></t-divider>
-          <div v-if="artical.compType !== 6">
+          <div v-if="article.compType !== 6">
             <div class="author" v-for="member in members" :key="member.id">
               <t-avatar
                 shape="round"
@@ -61,11 +61,11 @@
               >待认领</t-button
             >
           </div>
-          <div class="artical-text" v-html="artical.content"></div>
+          <div class="article-text" v-html="article.content"></div>
           <t-divider></t-divider>
-          <p v-if="artical.hasOwnProperty('files') && artical.files != null">
+          <p v-if="article.hasOwnProperty('files') && article.files != null">
             附件下载：<t-button
-              v-for="(file, index) in JSON.parse(artical.files)"
+              v-for="(file, index) in JSON.parse(article.files)"
               :key="index"
               size="medium"
               @click="downloadFile(fsURL + file.path)"
@@ -73,17 +73,17 @@
               >{{ file.name }}</t-button
             >
           </p>
-          <div class="artical-operations">
+          <div class="article-operations">
             <t-button theme="primary" disabled shape="round"
               ><template #icon><i class="iconfont iconzan1"></i></template
-              >&emsp;点 赞&emsp;{{ artical.likeNum }}</t-button
+              >&emsp;点 赞&emsp;{{ article.likeNum }}</t-button
             >
             <t-button
               theme="primary"
               disabled
               shape="round"
               ><template #icon><i class="iconfont iconshoucang1"></i></template
-              >&emsp; 收 藏&emsp;{{ artical.collectNum }}</t-button
+              >&emsp; 收 藏&emsp;{{ article.collectNum }}</t-button
             >
           </div>
           <div class="block" v-if="progresses.length">
@@ -248,7 +248,7 @@ const fsURL = import.meta.env.VITE_FILE_BASE_URL
 
 const id = ref(route.params.id) // 获取传递的参数
 const replyId = ref(-1)
-const artical = ref({})
+const article = ref({})
 const isLike = ref(0)
 const isCollect = ref(0)
 const comments = ref({})
@@ -285,14 +285,14 @@ const downloadFile = (url) => {
   window.open(url, '_blank')
 }
 
-const getArtical = async () => {
+const getArticle = async () => {
   try {
     const res = await getItemDetail(id.value)
     if (res.code !== 200) {
       MessagePlugin.error(res.msg)
       return
     }
-    artical.value = res.data
+    article.value = res.data
     isCollect.value = res.data.isCollect
     isLike.value = res.data.isLike
   } catch (error) {
@@ -384,7 +384,7 @@ const handleCurrentChange = (page) => {
 }
 
 onMounted(() => {
-  getArtical()
+  getArticle()
   getComment()
   getItemMember()
 })
@@ -396,13 +396,13 @@ onMounted(() => {
 background-color: var(--td-bg-color-page);
 }
 
-.artical-content {
+.article-content {
   padding: 20px;
 background-color: #fff;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
 
-.artical-icon {
+.article-icon {
   float: right;
 
   i {
@@ -415,12 +415,12 @@ background-color: #fff;
   }
 }
 
-.artical-text {
+.article-text {
   // 文章正文的样式
   padding-left: 10px;
 }
 
-.artical-operations {
+.article-operations {
   margin-top: 20px;
   text-align: center;
 }

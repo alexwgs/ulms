@@ -3,7 +3,7 @@
 <mapper namespace="com.cmbccd.ulms.youngTalk.dao.MemberMapper">
   <resultMap id="BaseResultMap" type="com.cmbccd.ulms.youngTalk.domain.Member">
     <result column="ID" jdbcType="DECIMAL" property="id" />
-    <result column="ARTICAL_ID" jdbcType="DECIMAL" property="articalId" />
+    <result column="ARTICAL_ID" jdbcType="DECIMAL" property="articleId" />
     <result column="USER_ID" jdbcType="VARCHAR" property="userId" />
     <result column="ROLE" jdbcType="DECIMAL" property="role" />
     <result column="DESCRIBE" jdbcType="VARCHAR" property="describe" />
@@ -95,7 +95,7 @@
     insert into CYT_ITEM_MEMBER (ID, ARTICAL_ID, USER_ID, 
       ROLE, DESCRIBE, SCORE_RATE, 
       STATUS)
-    values (#{id,jdbcType=DECIMAL}, #{articalId,jdbcType=DECIMAL}, #{userId,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=DECIMAL}, #{articleId,jdbcType=DECIMAL}, #{userId,jdbcType=VARCHAR}, 
       #{role,jdbcType=DECIMAL}, #{describe,jdbcType=VARCHAR}, #{scoreRate,jdbcType=DECIMAL}, 
       #{status,jdbcType=DECIMAL})
   </insert>
@@ -105,7 +105,7 @@
       <if test="id != null">
         ID,
       </if>
-      <if test="articalId != null">
+      <if test="articleId != null">
         ARTICAL_ID,
       </if>
       <if test="userId != null">
@@ -128,8 +128,8 @@
       <if test="id != null">
         #{id,jdbcType=DECIMAL},
       </if>
-      <if test="articalId != null">
-        #{articalId,jdbcType=DECIMAL},
+      <if test="articleId != null">
+        #{articleId,jdbcType=DECIMAL},
       </if>
       <if test="userId != null">
         #{userId,jdbcType=VARCHAR},
@@ -160,8 +160,8 @@
       <if test="record.id != null">
         ID = #{record.id,jdbcType=DECIMAL},
       </if>
-      <if test="record.articalId != null">
-        ARTICAL_ID = #{record.articalId,jdbcType=DECIMAL},
+      <if test="record.articleId != null">
+        ARTICAL_ID = #{record.articleId,jdbcType=DECIMAL},
       </if>
       <if test="record.userId != null">
         USER_ID = #{record.userId,jdbcType=VARCHAR},
@@ -186,7 +186,7 @@
   <update id="updateByExample" parameterType="map">
     update CYT_ITEM_MEMBER
     set ID = #{record.id,jdbcType=DECIMAL},
-      ARTICAL_ID = #{record.articalId,jdbcType=DECIMAL},
+      ARTICAL_ID = #{record.articleId,jdbcType=DECIMAL},
       USER_ID = #{record.userId,jdbcType=VARCHAR},
       ROLE = #{record.role,jdbcType=DECIMAL},
       DESCRIBE = #{record.describe,jdbcType=VARCHAR},
@@ -201,15 +201,15 @@
   	select case when count(*) = 0 then 1 else  max(id)+1 end from CYT_ITEM_MEMBER
   </select>
   
-  <select id="selectArticalIdByUserId" parameterType="java.lang.String" resultType="java.lang.Integer">
+  <select id="selectArticleIdByUserId" parameterType="java.lang.String" resultType="java.lang.Integer">
     SELECT ARTICAL_ID FROM CYT_ITEM_MEMBER
 	WHERE STATUS=1 and USER_ID = #{userId,jdbcType=VARCHAR}
   </select>
   
-  <update id="invalidStatusByArticalId" parameterType="java.lang.Integer">
+  <update id="invalidStatusByArticleId" parameterType="java.lang.Integer">
     update CYT_ITEM_MEMBER
     set STATUS = 0
-    where ARTICAL_ID = #{articalId,jdbcType=DECIMAL}
+    where ARTICAL_ID = #{articleId,jdbcType=DECIMAL}
   </update>
   
 </mapper>

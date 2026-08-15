@@ -28,14 +28,14 @@ public class ProgressController {
 	/**
 	 * 拉取进度情况
 	 * 
-	 * @param articalId
+	 * @param articleId
 	 * @return
 	 */
-	@GetMapping(value = "progress/{articalId}")
-	public Msg getProgressByArticalId(@PathVariable("articalId") int articalId) {
+	@GetMapping(value = "progress/{articleId}")
+	public Msg getProgressByArticleId(@PathVariable("articleId") int articleId) {
 		// String userId = Util.userIdByShiro();
 
-		List<Progress> progresses = progressService.getProgressByArticalId(articalId);
+		List<Progress> progresses = progressService.getProgressByArticleId(articleId);
 		for (Progress progress : progresses) {
 			progress.setUser(DataCache.getEmployees().get(progress.getUserId()));
 		}

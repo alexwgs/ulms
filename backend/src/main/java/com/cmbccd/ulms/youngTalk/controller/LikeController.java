@@ -6,7 +6,7 @@ import com.cmbccd.ulms.sys.domain.Msg;
 import com.cmbccd.ulms.youngTalk.domain.Like;
 import com.cmbccd.ulms.youngTalk.domain.LikeExample;
 import com.cmbccd.ulms.youngTalk.domain.LikeExample.Criteria;
-import com.cmbccd.ulms.youngTalk.service.ArticalService;
+import com.cmbccd.ulms.youngTalk.service.ArticleService;
 import com.cmbccd.ulms.youngTalk.service.CommentService;
 import com.cmbccd.ulms.youngTalk.service.LikeService;
 import com.cmbccd.ulms.youngTalk.service.ReplyService;
@@ -24,7 +24,7 @@ public class LikeController {
 	@Resource
 	private LikeService likeService;
 	@Resource
-	private ArticalService articalService;
+	private ArticleService articleService;
 	@Resource
 	private CommentService commentService;
 	@Resource
@@ -39,7 +39,7 @@ public class LikeController {
 
 		LikeExample example = new LikeExample();
 		Criteria criteria = example.createCriteria();
-		criteria.andArticalIdEqualTo(id);
+		criteria.andArticleIdEqualTo(id);
 		criteria.andLikeTypeEqualTo(likeType);
 		criteria.andUserIdEqualTo(userId);
 		criteria.andStatusEqualTo(1);
@@ -51,7 +51,7 @@ public class LikeController {
 		Like like = new Like();
 		like.setId(likeService.newId());
 		like.setLikeType(likeType);
-		like.setArticalId(id);
+		like.setArticleId(id);
 		like.setUserId(userId);
 		like.setStatus(1);
 		like.setDateTime(Util.currentDateTime());
@@ -62,7 +62,7 @@ public class LikeController {
 
 		// 修改文章的点赞数量
 		if (likeType == 1) {
-			articalService.increaseLikeNum(id);
+			articleService.increaseLikeNum(id);
 		} else if (likeType == 2) {
 			commentService.increaseLikeNum(id);
 		} else if (likeType == 3) {

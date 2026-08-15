@@ -24,10 +24,10 @@ public class ProgressServiceImpl implements ProgressService {
 	}
 
 	@Override
-	public List<Progress> getProgressByArticalId(int articalId) {
+	public List<Progress> getProgressByArticleId(int articleId) {
 		ProgressExample example = new ProgressExample();
 		Criteria criteria = example.createCriteria();
-		criteria.andArticalIdEqualTo(articalId);
+		criteria.andArticleIdEqualTo(articleId);
 		criteria.andStatusEqualTo(1);
 		example.setOrderByClause(" ID DESC ");
 		return progressMapper.selectByExample(example);

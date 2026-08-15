@@ -74,9 +74,9 @@
 
 ### 剩余结构性重构（建议下一阶段继续）
 1. 前端 CRUD 样板抽取（useCrudPage hook + quickUrl/role/user/quickMemo/dictionary/ad/station/errorLog/userFiles/statusType/operLog/dailyConfig 已改造，useCrudPage 新增 transformList 列表后处理 hook；其余 CRUD 页可继续推广）
-2. 后端 Controller 业务下沉 Service（college：CourseController/TeachGroup/CourseTeacher/Evaluate/StudyLog、edu：QuesBankController/BrushScoreService/ExamInfo/DailyConfig/BrushConfig/QuesScore/DailyScore、sys：QuickUrl/Dictionary/Ad/ErrorLog/UserFiles/OperLog、oht：StatusType/OhtRole/RoleList/QuickMemo、helper：HelperArtical、flow：FlowProxy、youngTalk：Message/Collect/Answer/Comment/Artical 已完成；其余复杂查询可继续推广）
+2. 后端 Controller 业务下沉 Service（college：CourseController/TeachGroup/CourseTeacher/Evaluate/StudyLog、edu：QuesBankController/BrushScoreService/ExamInfo/DailyConfig/BrushConfig/QuesScore/DailyScore、sys：QuickUrl/Dictionary/Ad/ErrorLog/UserFiles/OperLog、oht：StatusType/OhtRole/RoleList/QuickMemo、helper：HelperArticle、flow：FlowProxy、youngTalk：Message/Collect/Answer/Comment/Article 已完成；其余复杂查询可继续推广）
 3. ~~后端 DataCache 静态 Map / WebSocketServer.state 收敛~~（已完成）
 4. 前端渐进 TS 化深入（api 模块 role/dictionary/quickMemo/ad/jobinfo/station/menu/operLog/errorLog/userFiles/dashboard/manageNotice/onlineMonitor 共 13 个已转 .ts，store 全部已转 auth.ts、ui.ts、app.ts、dict.ts、user.ts、menu.ts、ws.ts、oht.ts + stores/index.ts；其余 api 模块 → router meta 逐步启用类型）
-5. db TableController sync/update 权限（需前端菜单配合确认权限码）
-6. Artical→Article 拼写纠正（涉及前后端 API 契约，专项）
+5. [x] db TableController/ColumnController/TableTreeController 权限（补齐 @SaCheckPermission：db:table:list/sync/update、db:column:list/update、db:tree:list/update/insert/delete；需前端菜单配置对应权限码）
+6. [x] Artical→Article 拼写纠正（前后端完整契约：Java 类/方法/字段/JSON key/URL 路径/前端 api 与组件全改，保留 DB 列名 ARTICAL_*/表名 CYT_ARTICAL_*/PDA_HELPER_ARTICAL 及权限码 :artical:/字典码 _artical_ 不变）
 7. 其余核心 Service（FlowCase/QuesBank/Case）的 Mockito 单测

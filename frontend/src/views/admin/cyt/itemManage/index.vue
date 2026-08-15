@@ -116,7 +116,7 @@
         </t-row>
       </t-form>
       <CustomTable rowKey="id"
-        :data="articals"
+        :data="articles"
         size="small"
         stripe
         height="calc(100vh - 360px)"
@@ -136,7 +136,7 @@
         </TableColumn>
         <TableColumn colKey="title" label="标题">
           <template #default="scope">
-            <t-link theme="primary" size="small" @click="viewArtical(scope.row)">{{
+            <t-link theme="primary" size="small" @click="viewArticle(scope.row)">{{
               scope.row.title
             }}</t-link>
           </template>
@@ -363,16 +363,16 @@ import { useRouter } from 'vue-router'
 import {
   getItemList as fetchItemList,
   completeItem,
-  examineArtical,
-  setArticalStatus,
-  updateArticalCategory,
+  examineArticle,
+  setArticleStatus,
+  updateArticleCategory,
   getItemMembers
 } from '@/api/cyt/index.js'
 
 const dictStore = useDictStore()
 const router = useRouter()
 
-const articals = ref([])
+const articles = ref([])
 const loading = ref(false)
 const currentPage = ref(1)
 const total = ref(0)
@@ -428,7 +428,7 @@ const getItemList = async () => {
       MessagePlugin.error(res.msg)
       return
     }
-    articals.value = res.data.list
+    articles.value = res.data.list
     total.value = res.data.total
   } catch (error) {
     console.error('获取项目列表失败:', error)
@@ -438,7 +438,7 @@ const getItemList = async () => {
   }
 }
 
-const viewArtical = (row) => {
+const viewArticle = (row) => {
   const url = router.resolve({ path: '/cyt/item/' + row.id })
   window.open(url.href, '_blank')
 }
@@ -483,7 +483,7 @@ const examineItem = (row) => {
 
 const examineSubmit = async () => {
   try {
-    const res = await examineArtical(examineForm)
+    const res = await examineArticle(examineForm)
     if (res.code !== 200) {
       MessagePlugin.error(res.msg)
       return
@@ -512,7 +512,7 @@ const handleCurrentChange = (page) => {
 const setTopAndSoOn = async (type, id, val) => {
   try {
     let newVal = val === 1 ? 0 : 1
-    const res = await setArticalStatus(type, id, newVal)
+    const res = await setArticleStatus(type, id, newVal)
     if (res.code !== 200) {
       MessagePlugin.error(res.msg)
       return
@@ -533,7 +533,7 @@ const updateCategory = (row) => {
 
 const categorySubmit = async () => {
   try {
-    const res = await updateArticalCategory(categoryForm)
+    const res = await updateArticleCategory(categoryForm)
     if (res.code !== 200) {
       MessagePlugin.error(res.msg)
       return

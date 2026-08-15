@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface LikeService {
 	
-    public int isUserLikeByArticalId(int articalId, String userId);
+    public int isUserLikeByArticleId(int articleId, String userId);
     
     public int countByExample(LikeExample example);
     

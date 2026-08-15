@@ -2,57 +2,57 @@
   <t-layout class="view-container">
     <t-layout>
       <t-content>
-        <div class="artical-content">
+        <div class="article-content">
           <t-breadcrumb separator="/">
             <t-breadcrumb-item :to="{ path: '/' }">系统</t-breadcrumb-item>
             <t-breadcrumb-item>{{ categoryName }}</t-breadcrumb-item>
-            <t-breadcrumb-item>{{ artical.title }}</t-breadcrumb-item>
+            <t-breadcrumb-item>{{ article.title }}</t-breadcrumb-item>
           </t-breadcrumb>
-          <h3>{{ artical.title }}</h3>
+          <h3>{{ article.title }}</h3>
           <div>
             标签：
             <span v-for="item in labelItems" :key="item.label">
-              <t-tag v-if="artical[item.field] == item.val" :theme="item.type" variant="light" size="small">
+              <t-tag v-if="article[item.field] == item.val" :theme="item.type" variant="light" size="small">
                 {{ item.label }}
               </t-tag>
             </span>
-            <div class="artical-icon">
-              <span v-if="artical.user" style="color: var(--td-text-color-placeholder); font-size: 14px; padding-right: 10px">发布人：{{
-                artical.user.ploName }} &emsp;|&emsp;发布时间：{{
-                  artical.pubDate
+            <div class="article-icon">
+              <span v-if="article.user" style="color: var(--td-text-color-placeholder); font-size: 14px; padding-right: 10px">发布人：{{
+                article.user.ploName }} &emsp;|&emsp;发布时间：{{
+                  article.pubDate
                 }}</span>
               <i class="iconfont iconfaxian">
-                <font>{{ artical.viewNum + 1 }}</font>
+                <font>{{ article.viewNum + 1 }}</font>
               </i>
               <i class="iconfont iconshoucang1">
-                <font>{{ artical.collectNum }}</font>
+                <font>{{ article.collectNum }}</font>
               </i>
               <i class="iconfont iconzan1">
-                <font>{{ artical.likeNum }}</font>
+                <font>{{ article.likeNum }}</font>
               </i>
               <i class="iconfont iconxiaoxi">
-                <font>{{ artical.replyNum }}</font>
+                <font>{{ article.replyNum }}</font>
               </i>
             </div>
           </div>
           <t-divider></t-divider>
-          <div class="artical-text" v-html="artical.content"></div>
+          <div class="article-text" v-html="article.content"></div>
           <t-divider></t-divider>
-          <p v-if="artical.hasOwnProperty('files') && artical.files != null">
-            附件下载：<t-button v-for="(file, index) in parseFiles(artical.files)" :key="index" size="medium"
+          <p v-if="article.hasOwnProperty('files') && article.files != null">
+            附件下载：<t-button v-for="(file, index) in parseFiles(article.files)" :key="index" size="medium"
               @click="downloadFile(file.path)" theme="primary" variant="outline">{{ file.name }}</t-button>
           </p>
-          <div class="artical-operations">
+          <div class="article-operations">
             <t-button :theme="isLike == 0 ? 'default' : 'primary'" :disabled="isLike == 1 ? true : false"
-              @click="setLike(1, artical.id)" shape="round">
+              @click="setLike(1, article.id)" shape="round">
               <template #icon><i class="iconfont iconzan1"></i></template>
-              &emsp;点 赞&emsp;{{ artical.likeNum }}
+              &emsp;点 赞&emsp;{{ article.likeNum }}
             </t-button>
             <t-button :theme="isCollect == 0 ? 'default' : 'primary'" @click="setCollect"
               shape="round">
               <template #icon><i class="iconfont iconshoucang1"></i></template>
-              &emsp;{{ artical.isCollect == 0 ? '' : '已' }} 收 藏&emsp;{{
-                artical.collectNum
+              &emsp;{{ article.isCollect == 0 ? '' : '已' }} 收 藏&emsp;{{
+                article.collectNum
               }}
             </t-button>
           </div>
@@ -138,7 +138,7 @@
               &emsp;<t-button theme="primary" :disabled="commentForm.content.length < 1 || commentBtnFlag
                 ? true
                 : false
-                " @click="submitComment(artical.pubUser)">提交评论</t-button>
+                " @click="submitComment(article.pubUser)">提交评论</t-button>
             </div>
           </div>
         </t-card>
@@ -161,7 +161,7 @@ const dictStore = useDictStore()
 const user = ref({})
 const id = computed(() => route.params.id)
 const replyId = ref(-1)
-const artical = reactive({
+const article = reactive({
   title: '',
   category: '',
   content: '',
@@ -188,7 +188,7 @@ const labelItems = [
 ]
 
 const commentForm = reactive({
-  articalId: 0,
+  articleId: 0,
   toUser: '',
   content: '',
   anonFlag: false
@@ -196,7 +196,7 @@ const commentForm = reactive({
 
 const replyForm = reactive({
   commentId: 0,
-  articalId: 0,
+  articleId: 0,
   toUser: '',
   content: '',
   anonFlag: false
@@ -217,9 +217,9 @@ const replyBtnFlag = ref(false)
 const categoryList = ref([])
 
 const categoryName = computed(() => {
-  if (categoryList.value.length > 0 && artical.category) {
+  if (categoryList.value.length > 0 && article.category) {
     const item = categoryList.value.find(
-      (item) => parseInt(item.code) === parseInt(artical.category)
+      (item) => parseInt(item.code) === parseInt(article.category)
     )
     return item ? item.codeval : ''
   }
@@ -227,9 +227,9 @@ const categoryName = computed(() => {
 })
 
 const flags = computed(() => {
-  if (categoryList.value.length > 0 && artical.category) {
+  if (categoryList.value.length > 0 && article.category) {
     const item = categoryList.value.find(
-      (item) => parseInt(item.code) === parseInt(artical.category)
+      (item) => parseInt(item.code) === parseInt(article.category)
     )
     if (item && item.description) {
       return JSON.parse(item.description)
@@ -250,14 +250,14 @@ const downloadFile = (path) => {
   window.open(fsURL + path)
 }
 
-const getArtical = async () => {
+const getArticle = async () => {
   try {
-    const res = await httpInstance.get(`cyt/artical/${id.value}`)
+    const res = await httpInstance.get(`cyt/article/${id.value}`)
     if (res.code !== 200) {
       MessagePlugin.error(res.msg)
       return
     }
-    Object.assign(artical, res.data)
+    Object.assign(article, res.data)
     isCollect.value = res.data.isCollect
     isLike.value = res.data.isLike
   } catch (error) {
@@ -276,10 +276,10 @@ const setCollect = async () => {
     }
     if (isCollect.value === 0) {
       isCollect.value = 1
-      artical.collectNum++
+      article.collectNum++
     } else {
       isCollect.value = 0
-      artical.collectNum--
+      article.collectNum--
     }
     MessagePlugin.success(res.msg)
   } catch (error) {
@@ -296,13 +296,13 @@ const setLike = async (type, targetId, index) => {
     }
     if (type === 1) {
       isLike.value = 1
-      artical.likeNum++
+      article.likeNum++
     } else if (type === 2 && comments.value[index]) {
       comments.value[index].likeNum++
       comments.value[index].likes.push({
         id: '',
         likeType: 2,
-        articalId: id.value,
+        articleId: id.value,
         userId: user.value.ploNum,
         dateTime: '',
         status: 1
@@ -342,7 +342,7 @@ const submitComment = async (toUser) => {
     MessagePlugin.error('文本字数过多，最多可输入1000个字符！')
     return
   }
-  commentForm.articalId = id.value
+  commentForm.articleId = id.value
   commentBtnFlag.value = true
   try {
     const res = await httpInstance.post('cyt/comment/', commentForm)
@@ -355,7 +355,7 @@ const submitComment = async (toUser) => {
     MessagePlugin.success(res.msg)
     getComment()
     commentForm.content = ''
-    artical.replyNum++
+    article.replyNum++
   } catch (error) {
     commentBtnFlag.value = false
     MessagePlugin.error(error.message || '提交失败')
@@ -368,7 +368,7 @@ const submitReply = async (commentId, toUser) => {
     MessagePlugin.error('文本字数过多，最多可输入1000个字符！')
     return
   }
-  replyForm.articalId = id.value
+  replyForm.articleId = id.value
   replyForm.commentId = commentId
   replyForm.toUser = toUser
   replyBtnFlag.value = true
@@ -384,7 +384,7 @@ const submitReply = async (commentId, toUser) => {
     getComment()
     replyForm.content = ''
     replyId.value = -1
-    artical.replyNum++
+    article.replyNum++
   } catch (error) {
     replyBtnFlag.value = false
     MessagePlugin.error(error.message || '提交失败')
@@ -399,7 +399,7 @@ const handleCurrentChange = (page) => {
 onMounted(() => {
   user.value = JSON.parse(window.localStorage.getItem('user') || '{}')
   categoryList.value = dictStore.getDict('cyt_system_category') || []
-  getArtical()
+  getArticle()
   getComment()
 })
 </script>
@@ -410,18 +410,18 @@ onMounted(() => {
 background-color: var(--td-bg-color-page);
 }
 
-.artical-header {
+.article-header {
   height: 80px !important;
   padding-left: 40px;
 }
 
-.artical-content {
+.article-content {
   padding: 20px;
 background-color: #fff;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
 
-.artical-icon {
+.article-icon {
   float: right;
 
   i {
@@ -434,7 +434,7 @@ background-color: #fff;
   }
 }
 
-.artical-text {
+.article-text {
   padding-left: 10px;
   min-height: 300px;
   max-width: 1000px;
@@ -445,7 +445,7 @@ background-color: #fff;
   }
 }
 
-.artical-operations {
+.article-operations {
   margin-top: 20px;
   text-align: center;
 }

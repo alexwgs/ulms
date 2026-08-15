@@ -179,7 +179,7 @@ public class DailyScoreServiceImpl implements DailyScoreService {
     }
 
     @Override
-    public DailyScore submitArticalStudy(DailyScore dailyScore) {
+    public DailyScore submitArticleStudy(DailyScore dailyScore) {
         return this.updateSelective(dailyScore)>0?dailyScore:null;
     }
 }

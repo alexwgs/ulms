@@ -4,6 +4,7 @@
  */
 package com.cmbccd.ulms.db.controller;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.cmbccd.ulms.common.annotation.MyLog;
 import com.cmbccd.ulms.common.util.Util;
 import com.cmbccd.ulms.db.domain.Table;
@@ -28,6 +29,7 @@ public class TableController {
 	 * @return 包含Table对象的成功消息
 	 */
 	@GetMapping("/{id}")
+	@SaCheckPermission("db:table:list")
 	public Msg getTableInfoById(@PathVariable("id") int id) {
 		Table table = tableService.getTableInfoById(id);
 		return Msg.success(table);
@@ -39,6 +41,7 @@ public class TableController {
 	 * @return 包含Table列表的成功消息或错误消息
 	 */
 	@GetMapping("/sort")
+	@SaCheckPermission("db:table:list")
 	public Msg listTables(@RequestParam Map<String, String> params) {
 		String flag = params.get("flag");
 		String keyWord = params.get("keyWord");
@@ -54,6 +57,7 @@ public class TableController {
 	// 一键同步数据库中所有表及字段信息
 	@GetMapping("sync")
 	@MyLog(title = "[db-table]表管理")
+	@SaCheckPermission("db:table:sync")
 	public Msg listTables() {
 		String msg = tableService.syncTableInfo();
 		return Msg.success(msg);
@@ -65,6 +69,7 @@ public class TableController {
 	 * @return 成功消息
 	 */
 	@PostMapping("/update")
+	@SaCheckPermission("db:table:update")
 	public Msg updateTable(@RequestBody Table record) {
 		tableService.updateSelective(record);
 		return Msg.success();

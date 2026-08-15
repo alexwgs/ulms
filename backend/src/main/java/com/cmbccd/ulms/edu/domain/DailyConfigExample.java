@@ -444,63 +444,63 @@ public class DailyConfigExample {
             return (Criteria) this;
         }
 
-        public Criteria andArticalIdIsNull() {
+        public Criteria andArticleIdIsNull() {
             addCriterion("ARTICAL_ID is null");
             return (Criteria) this;
         }
 
-        public Criteria andArticalIdIsNotNull() {
+        public Criteria andArticleIdIsNotNull() {
             addCriterion("ARTICAL_ID is not null");
             return (Criteria) this;
         }
 
-        public Criteria andArticalIdEqualTo(Long value) {
-            addCriterion("ARTICAL_ID =", value, "articalId");
+        public Criteria andArticleIdEqualTo(Long value) {
+            addCriterion("ARTICAL_ID =", value, "articleId");
             return (Criteria) this;
         }
 
-        public Criteria andArticalIdNotEqualTo(Long value) {
-            addCriterion("ARTICAL_ID <>", value, "articalId");
+        public Criteria andArticleIdNotEqualTo(Long value) {
+            addCriterion("ARTICAL_ID <>", value, "articleId");
             return (Criteria) this;
         }
 
-        public Criteria andArticalIdGreaterThan(Long value) {
-            addCriterion("ARTICAL_ID >", value, "articalId");
+        public Criteria andArticleIdGreaterThan(Long value) {
+            addCriterion("ARTICAL_ID >", value, "articleId");
             return (Criteria) this;
         }
 
-        public Criteria andArticalIdGreaterThanOrEqualTo(Long value) {
-            addCriterion("ARTICAL_ID >=", value, "articalId");
+        public Criteria andArticleIdGreaterThanOrEqualTo(Long value) {
+            addCriterion("ARTICAL_ID >=", value, "articleId");
             return (Criteria) this;
         }
 
-        public Criteria andArticalIdLessThan(Long value) {
-            addCriterion("ARTICAL_ID <", value, "articalId");
+        public Criteria andArticleIdLessThan(Long value) {
+            addCriterion("ARTICAL_ID <", value, "articleId");
             return (Criteria) this;
         }
 
-        public Criteria andArticalIdLessThanOrEqualTo(Long value) {
-            addCriterion("ARTICAL_ID <=", value, "articalId");
+        public Criteria andArticleIdLessThanOrEqualTo(Long value) {
+            addCriterion("ARTICAL_ID <=", value, "articleId");
             return (Criteria) this;
         }
 
-        public Criteria andArticalIdIn(List<Long> values) {
-            addCriterion("ARTICAL_ID in", values, "articalId");
+        public Criteria andArticleIdIn(List<Long> values) {
+            addCriterion("ARTICAL_ID in", values, "articleId");
             return (Criteria) this;
         }
 
-        public Criteria andArticalIdNotIn(List<Long> values) {
-            addCriterion("ARTICAL_ID not in", values, "articalId");
+        public Criteria andArticleIdNotIn(List<Long> values) {
+            addCriterion("ARTICAL_ID not in", values, "articleId");
             return (Criteria) this;
         }
 
-        public Criteria andArticalIdBetween(Long value1, Long value2) {
-            addCriterion("ARTICAL_ID between", value1, value2, "articalId");
+        public Criteria andArticleIdBetween(Long value1, Long value2) {
+            addCriterion("ARTICAL_ID between", value1, value2, "articleId");
             return (Criteria) this;
         }
 
-        public Criteria andArticalIdNotBetween(Long value1, Long value2) {
-            addCriterion("ARTICAL_ID not between", value1, value2, "articalId");
+        public Criteria andArticleIdNotBetween(Long value1, Long value2) {
+            addCriterion("ARTICAL_ID not between", value1, value2, "articleId");
             return (Criteria) this;
         }
     }

@@ -3,7 +3,7 @@
 <mapper namespace="com.cmbccd.ulms.youngTalk.dao.MessageMapper">
   <resultMap id="BaseResultMap" type="com.cmbccd.ulms.youngTalk.domain.Message">
     <id column="ID" jdbcType="DECIMAL" property="id" />
-    <result column="ARTICAL_ID" jdbcType="DECIMAL" property="articalId" />
+    <result column="ARTICAL_ID" jdbcType="DECIMAL" property="articleId" />
     <result column="MESSAGE_TYPE" jdbcType="DECIMAL" property="messageType" />
     <result column="MESSAGE_ID" jdbcType="DECIMAL" property="messageId" />
     <result column="FROM_USER" jdbcType="VARCHAR" property="fromUser" />
@@ -106,7 +106,7 @@
     insert into CYT_MESSAGE (ID, ARTICAL_ID, MESSAGE_TYPE, 
       MESSAGE_ID, FROM_USER, TO_USER, 
       IS_READ, DATE_TIME)
-    values (#{id,jdbcType=DECIMAL}, #{articalId,jdbcType=DECIMAL}, #{messageType,jdbcType=DECIMAL}, 
+    values (#{id,jdbcType=DECIMAL}, #{articleId,jdbcType=DECIMAL}, #{messageType,jdbcType=DECIMAL}, 
       #{messageId,jdbcType=DECIMAL}, #{fromUser,jdbcType=VARCHAR}, #{toUser,jdbcType=VARCHAR}, 
       #{isRead,jdbcType=DECIMAL}, #{dateTime,jdbcType=VARCHAR})
   </insert>
@@ -116,7 +116,7 @@
       <if test="id != null">
         ID,
       </if>
-      <if test="articalId != null">
+      <if test="articleId != null">
         ARTICAL_ID,
       </if>
       <if test="messageType != null">
@@ -142,8 +142,8 @@
       <if test="id != null">
         #{id,jdbcType=DECIMAL},
       </if>
-      <if test="articalId != null">
-        #{articalId,jdbcType=DECIMAL},
+      <if test="articleId != null">
+        #{articleId,jdbcType=DECIMAL},
       </if>
       <if test="messageType != null">
         #{messageType,jdbcType=DECIMAL},
@@ -177,8 +177,8 @@
       <if test="record.id != null">
         ID = #{record.id,jdbcType=DECIMAL},
       </if>
-      <if test="record.articalId != null">
-        ARTICAL_ID = #{record.articalId,jdbcType=DECIMAL},
+      <if test="record.articleId != null">
+        ARTICAL_ID = #{record.articleId,jdbcType=DECIMAL},
       </if>
       <if test="record.messageType != null">
         MESSAGE_TYPE = #{record.messageType,jdbcType=DECIMAL},
@@ -206,7 +206,7 @@
   <update id="updateByExample" parameterType="map">
     update CYT_MESSAGE
     set ID = #{record.id,jdbcType=DECIMAL},
-      ARTICAL_ID = #{record.articalId,jdbcType=DECIMAL},
+      ARTICAL_ID = #{record.articleId,jdbcType=DECIMAL},
       MESSAGE_TYPE = #{record.messageType,jdbcType=DECIMAL},
       MESSAGE_ID = #{record.messageId,jdbcType=DECIMAL},
       FROM_USER = #{record.fromUser,jdbcType=VARCHAR},
@@ -220,8 +220,8 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.cmbccd.ulms.youngTalk.domain.Message">
     update CYT_MESSAGE
     <set>
-      <if test="articalId != null">
-        ARTICAL_ID = #{articalId,jdbcType=DECIMAL},
+      <if test="articleId != null">
+        ARTICAL_ID = #{articleId,jdbcType=DECIMAL},
       </if>
       <if test="messageType != null">
         MESSAGE_TYPE = #{messageType,jdbcType=DECIMAL},
@@ -246,7 +246,7 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.cmbccd.ulms.youngTalk.domain.Message">
     update CYT_MESSAGE
-    set ARTICAL_ID = #{articalId,jdbcType=DECIMAL},
+    set ARTICAL_ID = #{articleId,jdbcType=DECIMAL},
       MESSAGE_TYPE = #{messageType,jdbcType=DECIMAL},
       MESSAGE_ID = #{messageId,jdbcType=DECIMAL},
       FROM_USER = #{fromUser,jdbcType=VARCHAR},

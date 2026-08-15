@@ -177,7 +177,7 @@ const fsURL = import.meta.env.VITE_FILE_BASE_URL
 
 const editFlag = ref(true)
 const items = ref([])
-const currentArticalId = ref('')
+const currentArticleId = ref('')
 const status = ref('')
 const itemYear = ref(new Date())
 const currentPage = ref(1)
@@ -207,7 +207,7 @@ const memberForm = reactive([
 ])
 
 const progressForm = reactive({
-  articalId: '',
+  articleId: '',
   rate: 0,
   content: '',
   files: '',
@@ -244,7 +244,7 @@ onMounted(() => {
 })
 
 const viewItem = (index, row) => {
-  const url = router.resolve({ path: '/artical/item/' + row.id })
+  const url = router.resolve({ path: '/article/item/' + row.id })
   window.open(url.href, '_blank')
 }
 
@@ -266,9 +266,9 @@ const getItemList = async () => {
 const memberEdit = async (index, row) => {
   editFlag.value = true
   memberForm.length = 0
-  currentArticalId.value = row.id
+  currentArticleId.value = row.id
   try {
-    const res = await httpInstance.get(`cyt/member/${currentArticalId.value}`)
+    const res = await httpInstance.get(`cyt/member/${currentArticleId.value}`)
     if (res.code !== 200) {
       MessagePlugin.error(res.msg)
       return
@@ -282,7 +282,7 @@ const memberEdit = async (index, row) => {
 }
 
 const progressEdit = (index, row) => {
-  currentArticalId.value = row.id
+  currentArticleId.value = row.id
   progressVisible.value = true
   getProgress()
 }
@@ -350,7 +350,7 @@ const submitMemberForm = async () => {
     return
   }
   try {
-    const res = await httpInstance.post(`cyt/member/${currentArticalId.value}`, memberForm)
+    const res = await httpInstance.post(`cyt/member/${currentArticleId.value}`, memberForm)
     if (res.code !== 200) {
       MessagePlugin.error(res.msg)
       return
@@ -365,7 +365,7 @@ const submitMemberForm = async () => {
 
 const getProgress = async () => {
   try {
-    const res = await httpInstance.get(`cyt/progress/${currentArticalId.value}`)
+    const res = await httpInstance.get(`cyt/progress/${currentArticleId.value}`)
     if (res.code !== 200) {
       MessagePlugin.error(res.msg)
       return
@@ -390,7 +390,7 @@ const updateProgress = async () => {
   if (files.value !== null && files.value.length !== 0) {
     progressForm.files = '[' + files.value.join(',') + ']'
   }
-  progressForm.articalId = currentArticalId.value
+  progressForm.articleId = currentArticleId.value
 
   const valid = await progressFormRef.value?.validate()
   if (valid === true) {
@@ -403,7 +403,7 @@ const updateProgress = async () => {
       MessagePlugin.success(res.msg)
       getProgress()
       Object.assign(progressForm, {
-        articalId: '',
+        articleId: '',
         rate: 0,
         content: '',
         files: '',

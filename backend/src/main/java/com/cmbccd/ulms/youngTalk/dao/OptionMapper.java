@@ -32,7 +32,7 @@ public interface OptionMapper {
     
     int creatNewId();
     
-    List<Map<String,Object>> selectRadioNumGroupByQuestionId(@Param("articalId") int articalId,@Param("questionId") int questionId);
+    List<Map<String,Object>> selectRadioNumGroupByQuestionId(@Param("articleId") int articleId,@Param("questionId") int questionId);
     
-    int selectCheckboxNumGroupByOptionId(@Param("articalId") int articalId,@Param("questionId") int questionId,@Param("option") String option);
+    int selectCheckboxNumGroupByOptionId(@Param("articleId") int articleId,@Param("questionId") int questionId,@Param("option") String option);
 }

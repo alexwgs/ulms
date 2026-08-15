@@ -1,11 +1,11 @@
 <template>
   <!--文章管理对话框-->
-  <t-dialog header="文章管理" v-model:visible="articalDialogVisible" width="80%" :before-close="close" mode="full-screen">
+  <t-dialog header="文章管理" v-model:visible="articleDialogVisible" width="80%" :before-close="close" mode="full-screen">
     <t-row :gutter="15">
-      <t-form ref="courseForm" :data="articalFormData" :rules="rules" size="small" label-width="100px">
+      <t-form ref="courseForm" :data="articleFormData" :rules="rules" size="small" label-width="100px">
         <t-col :span="6">
           <t-form-item label="地区" name="area">
-            <t-select v-model="articalFormData.area" placeholder="根据网络判断地区（未启用）" filterable clearable
+            <t-select v-model="articleFormData.area" placeholder="根据网络判断地区（未启用）" filterable clearable
               style="height: 20px; width: 100%">
               <t-option v-for="(item, index) in arealist" :key="index" :label="item.label"
                 :value="item.value"></t-option>
@@ -14,7 +14,7 @@
         </t-col>
         <t-col :span="6">
           <t-form-item label="条线" name="owner">
-            <t-select v-model="articalFormData.owner" filterable clearable style="height: 20px; width: 100%">
+            <t-select v-model="articleFormData.owner" filterable clearable style="height: 20px; width: 100%">
               <t-option v-for="(item, index) in ownerlist" :key="index" :label="item.label"
                 :value="item.value"></t-option>
             </t-select>
@@ -22,13 +22,13 @@
         </t-col>
         <t-col :span="6">
           <t-form-item label="文章路径" name="routeId">
-            <t-cascader v-model="articalFormData.routeId" @change="routerChange" :options="tree"
+            <t-cascader v-model="articleFormData.routeId" @change="routerChange" :options="tree"
               :keys="{ value: 'id', label: 'name' }" :style="{ width: '100%' }"></t-cascader>
           </t-form-item>
         </t-col>
         <t-col :span="6">
           <t-form-item label="允许搜索" name="routeId">
-            <t-select size="small" v-model="articalFormData.search" placeholder="是否可在前端通过搜索获取">
+            <t-select size="small" v-model="articleFormData.search" placeholder="是否可在前端通过搜索获取">
               <t-option v-for="item in yesOrNoList" :key="item.code" :label="item.codeval"
                 :value="Number(item.code)"></t-option>
             </t-select>
@@ -36,7 +36,7 @@
         </t-col>
         <t-col :span="12">
           <t-form-item label="文章标题" name="title">
-            <t-input v-model="articalFormData.title" placeholder="请输入文章标题" :maxlength="50" show-limit-number clearable
+            <t-input v-model="articleFormData.title" placeholder="请输入文章标题" :maxlength="50" show-limit-number clearable
               :style="{ width: '100%' }"></t-input>
           </t-form-item>
         </t-col>
@@ -52,7 +52,7 @@
         </t-col>
         <t-col :span="6">
           <t-form-item label="状态" name="status">
-            <t-select v-model="articalFormData.status" placeholder="请选择文章状态" filterable clearable
+            <t-select v-model="articleFormData.status" placeholder="请选择文章状态" filterable clearable
               style="height: 20px; width: 100%">
               <t-option label="有效" :value="1"></t-option>
               <t-option label="无效" :value="0"></t-option>
@@ -61,12 +61,12 @@
         </t-col>
         <t-col :span="6">
           <t-form-item label="排序" name="sorting">
-            <t-input-number v-model="articalFormData.sorting" placeholder="排序" :step="1"></t-input-number>
+            <t-input-number v-model="articleFormData.sorting" placeholder="排序" :step="1"></t-input-number>
           </t-form-item>
         </t-col>
         <t-col :span="12">
           <t-form-item label="文章内容" name="content">
-            <WangEditor v-model="articalFormData.content" :height="400" placeholder="请输入文章内容"></WangEditor>
+            <WangEditor v-model="articleFormData.content" :height="400" placeholder="请输入文章内容"></WangEditor>
           </t-form-item>
         </t-col>
         <t-col :span="12">
@@ -95,7 +95,7 @@ const uploadHeaders = { Authorization: localStorage.getItem('token') || '' }
 import { ref, reactive, onMounted, nextTick } from 'vue'
 import { MessagePlugin, DialogPlugin } from 'tdesign-vue-next'
 import WangEditor from '@/components/WangEditor.vue'
-import { articalApi } from '@/api/helper/artical'
+import { articleApi } from '@/api/helper/article'
 import { treeApi } from '@/api/helper/tree'
 
 // 定义props和emit
@@ -107,8 +107,8 @@ const keywords = ref([])
 const inputVisible = ref(false)
 const opType = ref('add')
 const inputValue = ref('')
-const articalDialogVisible = ref(false)
-const articalFormData = reactive({
+const articleDialogVisible = ref(false)
+const articleFormData = reactive({
   name: '',
   sort: 1,
   status: 1,
@@ -169,11 +169,11 @@ const getTree = async () => {
 }
 
 // 打开文章管理对话框
-const getArtical = async (type, journo) => {
+const getArticle = async (type, journo) => {
   opType.value = type
   if (type === 'add') {
     keywords.value = []
-    Object.assign(articalFormData, {
+    Object.assign(articleFormData, {
       name: '',
       sort: 1,
       status: 1,
@@ -191,16 +191,16 @@ const getArtical = async (type, journo) => {
     files.value = []
   } else if (type === 'update') {
     try {
-      const res = await articalApi.getArticalById(journo)
+      const res = await articleApi.getArticleById(journo)
       if (res.code !== 200) return MessagePlugin.error(res.msg)
-      Object.assign(articalFormData, res.data)
-      keywords.value = articalFormData.keyWord
-        ? articalFormData.keyWord.split('|')
+      Object.assign(articleFormData, res.data)
+      keywords.value = articleFormData.keyWord
+        ? articleFormData.keyWord.split('|')
         : []
       fileList.value = []
       files.value = []
-      if (articalFormData.files) {
-        const fileObj = JSON.parse(articalFormData.files)
+      if (articleFormData.files) {
+        const fileObj = JSON.parse(articleFormData.files)
         for (let i = 0; i < fileObj.length; i++) {
           fileList.value.push({ name: fileObj[i].name, url: fileObj[i].path })
         }
@@ -209,27 +209,27 @@ const getArtical = async (type, journo) => {
       MessagePlugin.error('获取文章详情失败')
     }
   }
-  articalDialogVisible.value = true
+  articleDialogVisible.value = true
 }
 
 // 提交表单
 const submitForm = async () => {
-  articalFormData.keyWord = keywords.value.join('|')
+  articleFormData.keyWord = keywords.value.join('|')
   if (files.value && files.value.length !== 0) {
-    articalFormData.files = '[' + files.value.join(',') + ']'
+    articleFormData.files = '[' + files.value.join(',') + ']'
   }
   try {
     if (opType.value === 'add') {
-      const res = await articalApi.addArtical(articalFormData)
+      const res = await articleApi.addArticle(articleFormData)
       if (res.code !== 200) return MessagePlugin.error(res.msg)
       MessagePlugin.success(res.msg)
     } else if (opType.value === 'update') {
-      const res = await articalApi.updateArtical(articalFormData)
+      const res = await articleApi.updateArticle(articleFormData)
       if (res.code !== 200) return MessagePlugin.error(res.msg)
       MessagePlugin.success(res.msg)
     }
     emit('refreshList')
-    articalDialogVisible.value = false
+    articleDialogVisible.value = false
   } catch (error) {
     MessagePlugin.error('操作失败')
   }
@@ -237,7 +237,7 @@ const submitForm = async () => {
 
 // 关闭对话框
 const close = () => {
-  Object.assign(articalFormData, {
+  Object.assign(articleFormData, {
     name: '',
     sort: 1,
     status: 1,
@@ -254,7 +254,7 @@ const close = () => {
   keywords.value = []
   fileList.value = []
   files.value = []
-  articalDialogVisible.value = false
+  articleDialogVisible.value = false
 }
 
 // 关键词管理
@@ -283,11 +283,11 @@ const handleInputConfirm = () => {
 
 // 路径选择变化处理
 const routerChange = () => {
-  if (articalFormData.routeId && articalFormData.routeId.length >= 2) {
-    articalFormData.routeId =
-      articalFormData.routeId[articalFormData.routeId.length - 1]
+  if (articleFormData.routeId && articleFormData.routeId.length >= 2) {
+    articleFormData.routeId =
+      articleFormData.routeId[articleFormData.routeId.length - 1]
   } else {
-    articalFormData.routeId = ''
+    articleFormData.routeId = ''
   }
 }
 
@@ -329,7 +329,7 @@ const beforeRemove = (file, fileList) => {
 
 // 直接暴露方法给父组件
 defineExpose({
-  getArtical
+  getArticle
 })
 </script>
 <style lang="less" scoped>

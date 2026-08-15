@@ -3,7 +3,7 @@
 <mapper namespace="com.cmbccd.ulms.youngTalk.dao.ProgressMapper">
   <resultMap id="BaseResultMap" type="com.cmbccd.ulms.youngTalk.domain.Progress">
     <id column="ID" jdbcType="DECIMAL" property="id" />
-    <result column="ARTICAL_ID" jdbcType="DECIMAL" property="articalId" />
+    <result column="ARTICAL_ID" jdbcType="DECIMAL" property="articleId" />
     <result column="TYPE" jdbcType="DECIMAL" property="type" />
     <result column="RATE" jdbcType="DECIMAL" property="rate" />
     <result column="CONTENT" jdbcType="VARCHAR" property="content" />
@@ -108,7 +108,7 @@
       RATE, CONTENT, FILES, 
       USER_ID, DATE_TIME, STATUS
       )
-    values (#{id,jdbcType=DECIMAL}, #{articalId,jdbcType=DECIMAL}, #{type,jdbcType=DECIMAL}, 
+    values (#{id,jdbcType=DECIMAL}, #{articleId,jdbcType=DECIMAL}, #{type,jdbcType=DECIMAL}, 
       #{rate,jdbcType=DECIMAL}, #{content,jdbcType=VARCHAR}, #{files,jdbcType=VARCHAR}, 
       #{userId,jdbcType=VARCHAR}, #{dateTime,jdbcType=VARCHAR}, #{status,jdbcType=DECIMAL}
       )
@@ -119,7 +119,7 @@
       <if test="id != null">
         ID,
       </if>
-      <if test="articalId != null">
+      <if test="articleId != null">
         ARTICAL_ID,
       </if>
       <if test="type != null">
@@ -148,8 +148,8 @@
       <if test="id != null">
         #{id,jdbcType=DECIMAL},
       </if>
-      <if test="articalId != null">
-        #{articalId,jdbcType=DECIMAL},
+      <if test="articleId != null">
+        #{articleId,jdbcType=DECIMAL},
       </if>
       <if test="type != null">
         #{type,jdbcType=DECIMAL},
@@ -186,8 +186,8 @@
       <if test="record.id != null">
         ID = #{record.id,jdbcType=DECIMAL},
       </if>
-      <if test="record.articalId != null">
-        ARTICAL_ID = #{record.articalId,jdbcType=DECIMAL},
+      <if test="record.articleId != null">
+        ARTICAL_ID = #{record.articleId,jdbcType=DECIMAL},
       </if>
       <if test="record.type != null">
         TYPE = #{record.type,jdbcType=DECIMAL},
@@ -218,7 +218,7 @@
   <update id="updateByExample" parameterType="map">
     update CYT_ITEM_PROGRESS
     set ID = #{record.id,jdbcType=DECIMAL},
-      ARTICAL_ID = #{record.articalId,jdbcType=DECIMAL},
+      ARTICAL_ID = #{record.articleId,jdbcType=DECIMAL},
       TYPE = #{record.type,jdbcType=DECIMAL},
       RATE = #{record.rate,jdbcType=DECIMAL},
       CONTENT = #{record.content,jdbcType=VARCHAR},
@@ -233,8 +233,8 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.cmbccd.ulms.youngTalk.domain.Progress">
     update CYT_ITEM_PROGRESS
     <set>
-      <if test="articalId != null">
-        ARTICAL_ID = #{articalId,jdbcType=DECIMAL},
+      <if test="articleId != null">
+        ARTICAL_ID = #{articleId,jdbcType=DECIMAL},
       </if>
       <if test="type != null">
         TYPE = #{type,jdbcType=DECIMAL},
@@ -262,7 +262,7 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.cmbccd.ulms.youngTalk.domain.Progress">
     update CYT_ITEM_PROGRESS
-    set ARTICAL_ID = #{articalId,jdbcType=DECIMAL},
+    set ARTICAL_ID = #{articleId,jdbcType=DECIMAL},
       TYPE = #{type,jdbcType=DECIMAL},
       RATE = #{rate,jdbcType=DECIMAL},
       CONTENT = #{content,jdbcType=VARCHAR},

@@ -3,7 +3,7 @@ package com.cmbccd.ulms.youngTalk.domain;
 public class Collect {
     private Integer id;
 
-    private Integer articalId;
+    private Integer articleId;
 
     private String userId;
 
@@ -11,7 +11,7 @@ public class Collect {
 
     private String dateTime;
     
-    private Artical artical;
+    private Article article;
     
     public Integer getId() {
         return id;
@@ -21,12 +21,12 @@ public class Collect {
         this.id = id;
     }
 
-    public Integer getArticalId() {
-        return articalId;
+    public Integer getArticleId() {
+        return articleId;
     }
 
-    public void setArticalId(Integer articalId) {
-        this.articalId = articalId;
+    public void setArticleId(Integer articleId) {
+        this.articleId = articleId;
     }
 
     public String getUserId() {
@@ -53,18 +53,18 @@ public class Collect {
         this.dateTime = dateTime == null ? null : dateTime.trim();
     }
 
-	public Artical getArtical() {
-		return artical;
+	public Article getArticle() {
+		return article;
 	}
 
-	public void setArtical(Artical artical) {
-		this.artical = artical;
+	public void setArticle(Article article) {
+		this.article = article;
 	}
 
 	@Override
 	public String toString() {
-		return "Collect [id=" + id + ", articalId=" + articalId + ", userId=" + userId + ", status=" + status
-				+ ", dateTime=" + dateTime + ", artical=" + artical + "]";
+		return "Collect [id=" + id + ", articleId=" + articleId + ", userId=" + userId + ", status=" + status
+				+ ", dateTime=" + dateTime + ", article=" + article + "]";
 	}
 	
 }

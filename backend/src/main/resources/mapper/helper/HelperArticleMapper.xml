@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.cmbccd.ulms.helper.dao.HelperArticalMapper">
-  <resultMap id="BaseResultMap" type="com.cmbccd.ulms.helper.domain.HelperArtical">
+<mapper namespace="com.cmbccd.ulms.helper.dao.HelperArticleMapper">
+  <resultMap id="BaseResultMap" type="com.cmbccd.ulms.helper.domain.HelperArticle">
     <result column="AREA" jdbcType="NUMERIC" property="area" />
     <result column="OWNER" jdbcType="NUMERIC" property="owner" />
     <result column="TITLE" jdbcType="VARCHAR" property="title" />
@@ -19,7 +19,7 @@
     <result column="ROUTE_ID" jdbcType="NUMERIC" property="routeId" />
     <result column="FILES" jdbcType="VARCHAR" property="files" />
   </resultMap>
-  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.cmbccd.ulms.helper.domain.HelperArtical">
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.cmbccd.ulms.helper.domain.HelperArticle">
     <result column="CONTENT" jdbcType="CLOB" property="content" />
   </resultMap>
   <sql id="Example_Where_Clause">
@@ -87,7 +87,7 @@
   <sql id="Blob_Column_List">
     CONTENT
   </sql>
-  <select id="selectByExampleWithBLOBs" parameterType="com.cmbccd.ulms.helper.domain.HelperArticalExample" resultMap="ResultMapWithBLOBs">
+  <select id="selectByExampleWithBLOBs" parameterType="com.cmbccd.ulms.helper.domain.HelperArticleExample" resultMap="ResultMapWithBLOBs">
     select
     <if test="distinct">
       distinct
@@ -103,7 +103,7 @@
       order by ${orderByClause}
     </if>
   </select>
-  <select id="selectByExample" parameterType="com.cmbccd.ulms.helper.domain.HelperArticalExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.cmbccd.ulms.helper.domain.HelperArticleExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
@@ -117,13 +117,13 @@
       order by ${orderByClause}
     </if>
   </select>
-  <delete id="deleteByExample" parameterType="com.cmbccd.ulms.helper.domain.HelperArticalExample">
+  <delete id="deleteByExample" parameterType="com.cmbccd.ulms.helper.domain.HelperArticleExample">
     delete from PDA_HELPER_ARTICAL
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.cmbccd.ulms.helper.domain.HelperArtical">
+  <insert id="insert" parameterType="com.cmbccd.ulms.helper.domain.HelperArticle">
     insert into PDA_HELPER_ARTICAL (AREA, OWNER, TITLE, 
       KEY_WORD, INSERT_DATE, INSERT_PLO, 
       STATUS, UPDATE_DATE, UPDATE_PLO, 
@@ -137,7 +137,7 @@
       #{search,jdbcType=NUMERIC}, #{clicks,jdbcType=NUMERIC}, #{routeId,jdbcType=NUMERIC}, 
       #{files,jdbcType=VARCHAR}, #{content,jdbcType=CLOB})
   </insert>
-  <insert id="insertSelective" parameterType="com.cmbccd.ulms.helper.domain.HelperArtical">
+  <insert id="insertSelective" parameterType="com.cmbccd.ulms.helper.domain.HelperArticle">
     insert into PDA_HELPER_ARTICAL
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="area != null">
@@ -246,7 +246,7 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.cmbccd.ulms.helper.domain.HelperArticalExample" resultType="java.lang.Long">
+  <select id="countByExample" parameterType="com.cmbccd.ulms.helper.domain.HelperArticleExample" resultType="java.lang.Long">
     select count(*) from PDA_HELPER_ARTICAL
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
@@ -356,11 +356,11 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateArticalReadCount">
+  <update id="updateArticleReadCount">
     update PDA_HELPER_ARTICAL set CLICKS = CLICKS + 1 where JOURNO = #{journo,jdbcType=VARCHAR}
   </update>
 
-  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.cmbccd.ulms.helper.domain.HelperArtical">
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.cmbccd.ulms.helper.domain.HelperArticle">
     update PDA_HELPER_ARTICAL
     set AREA = #{area,jdbcType=VARCHAR},
       OWNER = #{owner,jdbcType=VARCHAR},
@@ -380,7 +380,7 @@
       CONTENT = #{content,jdbcType=CLOB}
     where JOURNO = #{journo,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.cmbccd.ulms.helper.domain.HelperArtical">
+  <update id="updateByPrimaryKey" parameterType="com.cmbccd.ulms.helper.domain.HelperArticle">
     update PDA_HELPER_ARTICAL
     set AREA = #{area,jdbcType=VARCHAR},
       OWNER = #{owner,jdbcType=VARCHAR},
@@ -409,7 +409,7 @@
     delete from PDA_HELPER_ARTICAL
     where JOURNO = #{journo,jdbcType=VARCHAR}
   </delete>
-  <update id="updateByPrimaryKeySelective" parameterType="com.cmbccd.ulms.helper.domain.HelperArtical">
+  <update id="updateByPrimaryKeySelective" parameterType="com.cmbccd.ulms.helper.domain.HelperArticle">
     update PDA_HELPER_ARTICAL
     <set>
       <if test="area != null">AREA = #{area,jdbcType=NUMERIC},</if>

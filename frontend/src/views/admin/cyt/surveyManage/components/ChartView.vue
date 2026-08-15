@@ -36,7 +36,7 @@ import AsyncECharts from '@/components/AsyncECharts.vue'
 import { getSurveyChartData } from '@/api/cyt/index.js'
 
 const props = defineProps({
-  articalId: {
+  articleId: {
     type: Number,
     default: 0
   }
@@ -209,9 +209,9 @@ const getBarOption = (chartData) => {
   }
 }
 
-// 监听 articalId 变化
+// 监听 articleId 变化
 watch(
-  () => props.articalId,
+  () => props.articleId,
   (newId) => {
     if (newId) {
       getQuestionList(newId)

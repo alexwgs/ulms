@@ -36,7 +36,7 @@ public class CommentController {
 	@Resource
 	private ReplyService replyService;
 	@Resource
-	private ArticalService articalService;
+	private ArticleService articleService;
 	@Resource
 	private LikeService likeService;
 	@Resource
@@ -44,14 +44,14 @@ public class CommentController {
 
 	/**
 	 * 获取评论列表
-	 * @param articalId
+	 * @param articleId
 	 * @param params
 	 * @return
 	 */
-	@GetMapping(value = "comment/list/{articalId}")
-	public Msg getCommentList(@PathVariable ("articalId") int articalId ,@RequestParam Map<String, String> params) {
+	@GetMapping(value = "comment/list/{articleId}")
+	public Msg getCommentList(@PathVariable ("articleId") int articleId ,@RequestParam Map<String, String> params) {
 		String userId = Util.userIdByShiro();
-		return Msg.success(commentService.listCommentByQuery(articalId, params, userId));
+		return Msg.success(commentService.listCommentByQuery(articleId, params, userId));
 	}
 
 	/**
@@ -75,18 +75,18 @@ public class CommentController {
 		LOG.info(comment.toString());
 
 		// 获取当前文章发帖人
-		Artical artical = articalService.getArticalByIdWithNoContent(comment.getArticalId());
+		Article article = articleService.getArticleByIdWithNoContent(comment.getArticleId());
 
-		if (Util.isNullorEmpty(comment.getArticalId()) || Util.isNullorEmpty(comment.getContent())) {
+		if (Util.isNullorEmpty(comment.getArticleId()) || Util.isNullorEmpty(comment.getContent())) {
 			return Msg.error("请正确使用A6有声！");
 		}
 		int count = commentService.insertNewComment(comment);
 		if (count == 0) {
 			return Msg.error("评论回复失败！");
 		}
-		articalService.increaseReplyNum(comment.getArticalId());
+		articleService.increaseReplyNum(comment.getArticleId());
 		// 回复成功则将计入消息
-		if (!comment.getToUser().equals(userId) && !artical.getPubUser().equals(userId)) {
+		if (!comment.getToUser().equals(userId) && !article.getPubUser().equals(userId)) {
 			Message message = new Message();
 			message.setDateTime(Util.currentDateTime());
 			if (comment.getAnonFlag() == 1) {
@@ -97,7 +97,7 @@ public class CommentController {
 			message.setMessageId(commentId);
 			message.setToUser(comment.getToUser());
 			message.setId(messageService.newId());
-			message.setArticalId(comment.getArticalId());
+			message.setArticleId(comment.getArticleId());
 			// 消息类型 1-帖子 2-评论 3-进度 4-帖子状态变更消息 ...
 			message.setMessageType(1);
 			message.setIsRead(0);
@@ -105,7 +105,7 @@ public class CommentController {
 		}
 
 		WebSocketServer.sendMessage(MsgTemplate.success("cyt", "notice", "您发布的帖子有了新的回复！请在A6有声-我的消息中查看"),
-				artical.getPubUser());
+				article.getPubUser());
 		return Msg.success("回复成功！");
 	}
 

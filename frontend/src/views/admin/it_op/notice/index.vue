@@ -8,7 +8,7 @@
               <t-form-item label="年份" name="dateYear">
                 <t-date-picker
                   size="small"
-                  @change="getArticalList"
+                  @change="getArticleList"
                   v-model="yearPicker"
                   mode="year"
                   placeholder="选择年"
@@ -20,7 +20,7 @@
                 <t-select
                   size="small"
                   v-model="queryInfo.category"
-                  @change="getArticalList"
+                  @change="getArticleList"
                   placeholder="全部"
                 >
                   <t-option :value="-1" label="全部"></t-option>
@@ -38,7 +38,7 @@
                 <t-select
                   size="small"
                   v-model="queryInfo.status"
-                  @change="getArticalList"
+                  @change="getArticleList"
                   placeholder="全部"
                 >
                   <t-option label="全部" value=""></t-option>
@@ -56,7 +56,7 @@
                 <t-select
                   size="small"
                   v-model="queryInfo.topFlag"
-                  @change="getArticalList"
+                  @change="getArticleList"
                   placeholder="全部"
                 >
                   <t-option label="全部" value=""></t-option>
@@ -70,7 +70,7 @@
                 <t-select
                   size="small"
                   v-model="queryInfo.eliteFlag"
-                  @change="getArticalList"
+                  @change="getArticleList"
                   placeholder="全部"
                 >
                   <t-option label="全部" value=""></t-option>
@@ -84,7 +84,7 @@
                 <t-select
                   size="small"
                   v-model="queryInfo.onStage"
-                  @change="getArticalList"
+                  @change="getArticleList"
                   placeholder="全部"
                 >
                   <t-option label="全部" value=""></t-option>
@@ -100,7 +100,7 @@
         </t-form>
 
         <CustomTable rowKey="id"
-          :data="articals"
+          :data="articles"
           size="small"
           stripe
           height="calc(100vh - 360px)">
@@ -120,7 +120,7 @@
 
           <TableColumn colKey="title" label="标题">
             <template #default="scope">
-              <t-link theme="primary" @click="viewArtical(scope.row)">{{
+              <t-link theme="primary" @click="viewArticle(scope.row)">{{
                 scope.row.title
               }}</t-link>
             </template>
@@ -263,7 +263,7 @@ const dictStore = useDictStore()
 const router = useRouter()
 
 // 数据
-const articals = ref([])
+const articles = ref([])
 const currentPage = ref(1)
 const total = ref(0)
 const yearPicker = ref(new Date())
@@ -302,15 +302,15 @@ const newNoticeDialog = ref(false)
 const editId = ref('')
 
 // 获取文章列表
-const getArticalList = async () => {
+const getArticleList = async () => {
   try {
     if (yearPicker.value != null && yearPicker.value !== '') {
       queryInfo.dateYear = yearPicker.value.getFullYear()
     }
 
     // 使用聚合后的API
-    const res = await manageNoticeApi.getArticalList(
-      `cyt/articalList/9/${queryInfo.category}`,
+    const res = await manageNoticeApi.getArticleList(
+      `cyt/articleList/9/${queryInfo.category}`,
       queryInfo
     )
     if (res.code !== 200) {
@@ -318,7 +318,7 @@ const getArticalList = async () => {
       return
     }
 
-    articals.value = res.data.list
+    articles.value = res.data.list
     total.value = res.data.total
   } catch (error) {
     MessagePlugin.error('获取文章列表失败')
@@ -327,7 +327,7 @@ const getArticalList = async () => {
 }
 
 // 查看文章
-const viewArtical = (row) => {
+const viewArticle = (row) => {
   const url = router.resolve({ path: '/cyt/item/' + row.id })
   window.open(url.href, '_blank')
 }
@@ -338,7 +338,7 @@ const setTopAndSoOn = async (type, id, val) => {
     const newValue = val === 1 ? 0 : 1
     // 使用聚合后的API
     const res = await manageNoticeApi.setTopAndSoOn(
-      `cyt/artical/on/${type}/${id}/${newValue}`
+      `cyt/article/on/${type}/${id}/${newValue}`
     )
     if (res.code !== 200) {
       MessagePlugin.error(res.msg)
@@ -346,7 +346,7 @@ const setTopAndSoOn = async (type, id, val) => {
     }
 
     MessagePlugin.success(res.msg)
-    getArticalList()
+    getArticleList()
   } catch (error) {
     MessagePlugin.error('操作失败')
     console.error(error)
@@ -356,7 +356,7 @@ const setTopAndSoOn = async (type, id, val) => {
 // 分页变化
 const handleCurrentChange = (page) => {
   queryInfo.pageNum = page
-  getArticalList()
+  getArticleList()
 }
 
 // 审核项目
@@ -370,8 +370,8 @@ const examineItem = (row) => {
 const examineSubmit = async () => {
   try {
     // 使用聚合后的API
-    const res = await manageNoticeApi.examineArtical(
-      'cyt/artical/on/examine',
+    const res = await manageNoticeApi.examineArticle(
+      'cyt/article/on/examine',
       examineForm
     )
     if (res.code !== 200) {
@@ -381,7 +381,7 @@ const examineSubmit = async () => {
 
     MessagePlugin.success(res.msg)
     examineDialogVisible.value = false
-    getArticalList()
+    getArticleList()
   } catch (error) {
     MessagePlugin.error('审核提交失败')
     console.error(error)
@@ -407,7 +407,7 @@ const categorySubmit = async () => {
   try {
     // 使用聚合后的API
     const res = await manageNoticeApi.updateCategory(
-      'cyt/artical/category',
+      'cyt/article/category',
       categoryForm
     )
     if (res.code !== 200) {
@@ -417,7 +417,7 @@ const categorySubmit = async () => {
 
     MessagePlugin.success(res.msg)
     categoryDialogVisible.value = false
-    getArticalList()
+    getArticleList()
   } catch (error) {
     MessagePlugin.error('分类更新失败')
     console.error(error)
@@ -432,7 +432,7 @@ const openNoticeEdit = (id) => {
 
 // 组件挂载时获取数据
 onMounted(() => {
-  getArticalList()
+  getArticleList()
 })
 </script>
 

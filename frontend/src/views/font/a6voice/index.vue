@@ -3,9 +3,9 @@
     <div class="background-class"></div>
     <div class="table-toolbar a6voice-toolbar">
         <div class="toolbar-left">
-          <t-radio-group v-model="queryInfo.category" size="small" @change="getArticalListData">
+          <t-radio-group v-model="queryInfo.category" size="small" @change="getArticleListData">
             <t-radio-button label="" value="">全部</t-radio-button>
-            <t-radio-button v-for="item in articalCategoryList" :key="'2' + item.code" :label="item.codeval"
+            <t-radio-button v-for="item in articleCategoryList" :key="'2' + item.code" :label="item.codeval"
               :value="'2' + item.code"></t-radio-button>
             <t-radio-button v-for="item in itemCategoryList" :key="'1' + item.code" :label="item.codeval"
               :value="'1' + item.code"></t-radio-button>
@@ -17,14 +17,14 @@
           </t-radio-group>
         </div>
         <div class="toolbar-right">
-          <t-input size="small" placeholder="搜索帖子" v-model="queryInfo.query" @change="getArticalListData"
+          <t-input size="small" placeholder="搜索帖子" v-model="queryInfo.query" @change="getArticleListData"
             style="width: 180px" :clearable="true"></t-input>
-          <t-button size="small" @click="getArticalListData">刷新</t-button>
+          <t-button size="small" @click="getArticleListData">刷新</t-button>
           <t-button
             v-if="hasPermission('cyt:artical:add')"
             theme="primary"
             size="small"
-            @click="goto('artical/new')"
+            @click="goto('article/new')"
             >发讨论帖</t-button
           >
           <t-button
@@ -46,10 +46,10 @@
     <t-row :gutter="20">
       <t-col :span="8">
         <div class="infinite-list">
-          <div class="artical-list-tab">
-            <t-empty v-if="articalList.length == 0" description="没有符合条件的文章"></t-empty>
-            <div class="artical-box" v-for="artical in articalList" :key="artical.id">
-              <ArticalView :articalitem="artical"></ArticalView>
+          <div class="article-list-tab">
+            <t-empty v-if="articleList.length == 0" description="没有符合条件的文章"></t-empty>
+            <div class="article-box" v-for="article in articleList" :key="article.id">
+              <ArticleView :articleitem="article"></ArticleView>
             </div>
           </div>
         </div>
@@ -61,7 +61,7 @@
       <t-col :span="4">
         <div class="my-handle">
           <t-row>
-            <t-col style="text-align: center" :span="3"><t-button theme="success" size="small" @click="goto('my-artical')" variant="outline"><template #icon><DynamicIcon name="folder-opened" /></template></t-button>
+            <t-col style="text-align: center" :span="3"><t-button theme="success" size="small" @click="goto('my-article')" variant="outline"><template #icon><DynamicIcon name="folder-opened" /></template></t-button>
               <div class="my-menu">帖子管理</div>
             </t-col>
             <t-col style="text-align: center" :span="3"><t-button theme="success" size="small" @click="goto('collect')" variant="outline"><template #icon><DynamicIcon name="star-on" /></template></t-button>
@@ -92,21 +92,21 @@
             <span>本周热榜</span>
           </template>
           <div style="height: calc(100vh - 510px); overflow: auto">
-            <div class="hot-box" v-for="artical in weeklyHotList" :key="artical.id">
+            <div class="hot-box" v-for="article in weeklyHotList" :key="article.id">
               <t-row>
                 <t-col :span="10">
-                  <div class="artical-title">
+                  <div class="article-title">
                     <span>
-                      <t-link :href="getArticalLink(artical)" target="_blank">{{ artical.title }}</t-link>
+                      <t-link :href="getArticleLink(article)" target="_blank">{{ article.title }}</t-link>
                     </span>
                   </div>
                 </t-col>
                 <t-col :span="2" style="text-align: right">
                   <span>{{
-                    artical.viewNum +
-                    artical.replyNum * 2 +
-                    artical.isLike * 2 +
-                    artical.collectNum * 3
+                    article.viewNum +
+                    article.replyNum * 2 +
+                    article.isLike * 2 +
+                    article.collectNum * 3
                   }}</span>
                 </t-col>
               </t-row>
@@ -126,11 +126,11 @@ import { MessagePlugin } from 'tdesign-vue-next'
 import { useDictStore } from '@/stores'
 import {
   getWeeklyHot,
-  getArticalList,
+  getArticleList,
   getUnreadCount
 } from '@/api/a6voice/index.js'
 import Convention from './components/Convention.vue'
-import ArticalView from './components/ArticalView.vue'
+import ArticleView from './components/ArticleView.vue'
 
 const router = useRouter()
 
@@ -147,13 +147,13 @@ const queryInfo = ref({
   pageSize: 10,
   pageNum: 1
 })
-const articalList = ref([])
+const articleList = ref([])
 const unreadCount = ref('')
 const screenWidth = ref(document.documentElement.clientWidth)
 
 const dictStore = useDictStore()
 
-const articalCategoryList = computed(() => {
+const articleCategoryList = computed(() => {
   if (!dictStore.dictList?.cyt_artical_category) return []
   return dictStore.dictList.cyt_artical_category.filter(
     (item) => item.status == 1
@@ -171,7 +171,7 @@ const hasPermission = () => true
 onMounted(() => {
   dictStore.getDictList()
   getWeeklyHotData()
-  getArticalListData()
+  getArticleListData()
   getUnreadCountData()
 })
 
@@ -188,15 +188,15 @@ const getWeeklyHotData = async () => {
   }
 }
 
-const getArticalListData = async (event) => {
+const getArticleListData = async (event) => {
   try {
-    const res = await getArticalList(queryInfo.value)
+    const res = await getArticleList(queryInfo.value)
     if (res.code !== 200) {
       MessagePlugin.error(res.msg)
       return
     }
     total.value = res.data.total
-    articalList.value = res.data.list
+    articleList.value = res.data.list
   } catch (error) {
     console.error(error)
   }
@@ -204,16 +204,16 @@ const getArticalListData = async (event) => {
 
 const handleCurrentChange = (page) => {
   queryInfo.value.pageNum = page
-  getArticalListData()
+  getArticleListData()
 }
 
 const changeSort = () => {
-  getArticalListData()
+  getArticleListData()
 }
 
-const getArticalLink = (artical) => {
+const getArticleLink = (article) => {
   const typeMap = { 1: 'item', 2: 'view', 3: 'survey' }
-  return `${import.meta.env.BASE_URL}artical/${typeMap[artical.articalType]}/${artical.id}`
+  return `${import.meta.env.BASE_URL}article/${typeMap[article.articleType]}/${article.id}`
 }
 
 const goto = (path) => {
@@ -235,7 +235,7 @@ const getUnreadCountData = async () => {
 }
 
 defineExpose({
-  getArticalList: getArticalListData
+  getArticleList: getArticleListData
 })
 </script>
 
@@ -300,11 +300,11 @@ defineExpose({
   }
 }
 
-.artical-list-tab {
+.article-list-tab {
   height: 100%;
 }
 
-.artical-box {
+.article-box {
   position: relative;
 }
 
@@ -323,7 +323,7 @@ defineExpose({
   border-radius: 5px;
   position: relative;
 
-  .artical-title {
+  .article-title {
     padding-left: 10px;
     white-space: nowrap;
     overflow: hidden;

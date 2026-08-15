@@ -30,7 +30,7 @@ public interface QuestionMapper {
     
     int creatNewId();
     
-    List<Question> selectQuestionByArticalId(Integer articalId);
+    List<Question> selectQuestionByArticleId(Integer articleId);
     // 通过
-    List<Question> selectUserQuestionByArticalId(@Param("articalId") Integer articalId, @Param("userId") String userId);
+    List<Question> selectUserQuestionByArticleId(@Param("articleId") Integer articleId, @Param("userId") String userId);
 }

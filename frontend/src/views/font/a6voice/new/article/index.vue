@@ -7,7 +7,7 @@
       <span class="sub-page-title">创建新帖子</span>
     </div>
     <t-divider></t-divider>
-    <t-form ref="formRef" :data="form" label-width="80px" :rules="formRules" class="new-artical-form">
+    <t-form ref="formRef" :data="form" label-width="80px" :rules="formRules" class="new-article-form">
       <t-form-item label="板块" name="category">
         <t-radio-group v-model="form.category" size="small" @change="getExamin">
           <t-radio-button v-for="item in dictStore.getDictByNames('cyt_artical_category', 1).filter(
@@ -66,7 +66,7 @@ const id = ref('')
 const examineInfo = ref('')
 const form = reactive({
   category: 1,
-  articalType: 2,
+  articleType: 2,
   title: '',
   content: '',
   files: '',
@@ -93,9 +93,9 @@ const fileList = ref([])
 const files = ref([])
 const categoryFlags = ref({})
 
-const initArtical = async () => {
+const initArticle = async () => {
   if (id.value !== 'new') {
-    const res = await httpInstance.get(`cyt/artical/${id.value}`)
+    const res = await httpInstance.get(`cyt/article/${id.value}`)
     if (res.code !== 200) return MessagePlugin.error(res.msg)
     Object.assign(form, res.data)
     getExamin()
@@ -126,9 +126,9 @@ const onSubmit = async (status) => {
     
     let res
     if (id.value !== 'new') {
-      res = await httpInstance.put('cyt/artical', form)
+      res = await httpInstance.put('cyt/article', form)
     } else {
-      res = await httpInstance.post('cyt/artical', form)
+      res = await httpInstance.post('cyt/article', form)
     }
     
     if (res.code !== 200) {
@@ -203,7 +203,7 @@ const beforeRemove = (file) => {
 
 onMounted(() => {
   id.value = route.params.id
-  initArtical()
+  initArticle()
 })
 </script>
 
@@ -213,7 +213,7 @@ onMounted(() => {
   flex-direction: column;
 }
 
-.new-artical-form {
+.new-article-form {
   max-width: 900px;
 }
 </style>

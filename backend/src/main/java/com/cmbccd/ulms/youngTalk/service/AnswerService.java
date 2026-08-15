@@ -10,13 +10,13 @@ public interface AnswerService {
 
 	int getNewId();
 	
-	List<Answer> getAnswerByUserId(int articalId,String userId);
+	List<Answer> getAnswerByUserId(int articleId,String userId);
 	
 	int submitAnswer(Answer answer);
 	
-//	List<Answer> getAnswers(String userId,int articalId);
+//	List<Answer> getAnswers(String userId,int articleId);
 	
-	List<Answer> selectSurveyUserIds(int articalId);
+	List<Answer> selectSurveyUserIds(int articleId);
 
-	DataPage<Answer> listSurveyAnswerUser(int articalId, Map<String, String> params);
+	DataPage<Answer> listSurveyAnswerUser(int articleId, Map<String, String> params);
 }

@@ -3,7 +3,7 @@
 <mapper namespace="com.cmbccd.ulms.youngTalk.dao.QuestionMapper">
   <resultMap id="BaseResultMap" type="com.cmbccd.ulms.youngTalk.domain.Question">
     <id column="ID" jdbcType="DECIMAL" property="id" />
-    <result column="ARTICAL_ID" jdbcType="DECIMAL" property="articalId" />
+    <result column="ARTICAL_ID" jdbcType="DECIMAL" property="articleId" />
     <result column="QUESTION_TYPE" jdbcType="VARCHAR" property="questionType" />
     <result column="CONTENT" jdbcType="VARCHAR" property="content" />
     <result column="SORT" jdbcType="DECIMAL" property="sort" />
@@ -11,7 +11,7 @@
   
   <resultMap id="BaseResultMap2" type="com.cmbccd.ulms.youngTalk.domain.Question">
     <id column="ID" jdbcType="DECIMAL" property="id" />
-    <result column="ARTICAL_ID" jdbcType="DECIMAL" property="articalId" />
+    <result column="ARTICAL_ID" jdbcType="DECIMAL" property="articleId" />
     <result column="QUESTION_TYPE" jdbcType="VARCHAR" property="questionType" />
     <result column="CONTENT" jdbcType="VARCHAR" property="content" />
     <result column="SORT" jdbcType="DECIMAL" property="sort" />
@@ -113,7 +113,7 @@
   <insert id="insert" parameterType="com.cmbccd.ulms.youngTalk.domain.Question">
     insert into CYT_SURVEY_QUESTION (ID, ARTICAL_ID, QUESTION_TYPE, 
       CONTENT, SORT)
-    values (#{id,jdbcType=DECIMAL}, #{articalId,jdbcType=DECIMAL}, #{questionType,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=DECIMAL}, #{articleId,jdbcType=DECIMAL}, #{questionType,jdbcType=VARCHAR}, 
       #{content,jdbcType=VARCHAR}, #{sort,jdbcType=DECIMAL})
   </insert>
   <insert id="insertSelective" parameterType="com.cmbccd.ulms.youngTalk.domain.Question">
@@ -122,7 +122,7 @@
       <if test="id != null">
         ID,
       </if>
-      <if test="articalId != null">
+      <if test="articleId != null">
         ARTICAL_ID,
       </if>
       <if test="questionType != null">
@@ -139,8 +139,8 @@
       <if test="id != null">
         #{id,jdbcType=DECIMAL},
       </if>
-      <if test="articalId != null">
-        #{articalId,jdbcType=DECIMAL},
+      <if test="articleId != null">
+        #{articleId,jdbcType=DECIMAL},
       </if>
       <if test="questionType != null">
         #{questionType,jdbcType=VARCHAR},
@@ -165,8 +165,8 @@
       <if test="record.id != null">
         ID = #{record.id,jdbcType=DECIMAL},
       </if>
-      <if test="record.articalId != null">
-        ARTICAL_ID = #{record.articalId,jdbcType=DECIMAL},
+      <if test="record.articleId != null">
+        ARTICAL_ID = #{record.articleId,jdbcType=DECIMAL},
       </if>
       <if test="record.questionType != null">
         QUESTION_TYPE = #{record.questionType,jdbcType=VARCHAR},
@@ -185,7 +185,7 @@
   <update id="updateByExample" parameterType="map">
     update CYT_SURVEY_QUESTION
     set ID = #{record.id,jdbcType=DECIMAL},
-      ARTICAL_ID = #{record.articalId,jdbcType=DECIMAL},
+      ARTICAL_ID = #{record.articleId,jdbcType=DECIMAL},
       QUESTION_TYPE = #{record.questionType,jdbcType=VARCHAR},
       CONTENT = #{record.content,jdbcType=VARCHAR},
       SORT = #{record.sort,jdbcType=DECIMAL}
@@ -196,8 +196,8 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.cmbccd.ulms.youngTalk.domain.Question">
     update CYT_SURVEY_QUESTION
     <set>
-      <if test="articalId != null">
-        ARTICAL_ID = #{articalId,jdbcType=DECIMAL},
+      <if test="articleId != null">
+        ARTICAL_ID = #{articleId,jdbcType=DECIMAL},
       </if>
       <if test="questionType != null">
         QUESTION_TYPE = #{questionType,jdbcType=VARCHAR},
@@ -213,7 +213,7 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.cmbccd.ulms.youngTalk.domain.Question">
     update CYT_SURVEY_QUESTION
-    set ARTICAL_ID = #{articalId,jdbcType=DECIMAL},
+    set ARTICAL_ID = #{articleId,jdbcType=DECIMAL},
       QUESTION_TYPE = #{questionType,jdbcType=VARCHAR},
       CONTENT = #{content,jdbcType=VARCHAR},
       SORT = #{sort,jdbcType=DECIMAL}
@@ -224,19 +224,19 @@
   	select case when count(*) = 0 then 1 else  max(id)+1 end from CYT_SURVEY_QUESTION
   </select>
   
-  <select id="selectQuestionByArticalId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  <select id="selectQuestionByArticleId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from CYT_SURVEY_QUESTION
-    where ARTICAL_ID = #{articalId,jdbcType=DECIMAL}
+    where ARTICAL_ID = #{articleId,jdbcType=DECIMAL}
     order by sort 
   </select>
   
-  <select id="selectUserQuestionByArticalId" resultMap="BaseResultMap2">
+  <select id="selectUserQuestionByArticleId" resultMap="BaseResultMap2">
      SELECT A.*,B.ANSWER FROM (select
     <include refid="Base_Column_List" />
     from CYT_SURVEY_QUESTION
-     WHERE ARTICAL_ID = #{articalId,jdbcType=DECIMAL} ORDER BY SORT
+     WHERE ARTICAL_ID = #{articleId,jdbcType=DECIMAL} ORDER BY SORT
     ) A
     LEFT JOIN (SELECT * FROM CYT_SURVEY_ANSWER WHERE USER_ID=#{userId,jdbcType=VARCHAR}) B ON (A.ARTICAL_ID=B.ARTICAL_ID AND A.ID = B.QUESTION_ID)
   </select>

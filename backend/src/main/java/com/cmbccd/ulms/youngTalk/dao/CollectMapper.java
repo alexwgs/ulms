@@ -28,7 +28,7 @@ public interface CollectMapper {
 
     int updateByPrimaryKey(Collect record);
     //修改收藏状态 同一文章同一用户仅可收藏一次
-    int updateStatusByUserAndArtical(Collect record);
+    int updateStatusByUserAndArticle(Collect record);
     //新ID
     int creatNewId();
 }

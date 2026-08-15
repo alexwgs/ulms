@@ -7,7 +7,7 @@
     <result column="QUES_DATE" jdbcType="VARCHAR" property="quesDate" />
     <result column="GROUP_ID" jdbcType="VARCHAR" property="groupId" />
     <result column="OPTION_RAND" jdbcType="DECIMAL" property="optionRand" />
-    <result column="ARTICAL_ID" jdbcType="DECIMAL" property="articalId" />
+    <result column="ARTICAL_ID" jdbcType="DECIMAL" property="articleId" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -105,7 +105,7 @@
       GROUP_ID, OPTION_RAND, ARTICAL_ID
       )
     values (#{id,jdbcType=VARCHAR}, #{quesCode,jdbcType=VARCHAR}, #{quesDate,jdbcType=VARCHAR}, 
-      #{groupId,jdbcType=VARCHAR}, #{optionRand,jdbcType=DECIMAL}, #{articalId,jdbcType=DECIMAL}
+      #{groupId,jdbcType=VARCHAR}, #{optionRand,jdbcType=DECIMAL}, #{articleId,jdbcType=DECIMAL}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.cmbccd.ulms.edu.domain.DailyConfig">
@@ -126,7 +126,7 @@
       <if test="optionRand != null">
         OPTION_RAND,
       </if>
-      <if test="articalId != null">
+      <if test="articleId != null">
         ARTICAL_ID,
       </if>
     </trim>
@@ -146,8 +146,8 @@
       <if test="optionRand != null">
         #{optionRand,jdbcType=DECIMAL},
       </if>
-      <if test="articalId != null">
-        #{articalId,jdbcType=DECIMAL},
+      <if test="articleId != null">
+        #{articleId,jdbcType=DECIMAL},
       </if>
     </trim>
   </insert>
@@ -175,8 +175,8 @@
       <if test="record.optionRand != null">
         OPTION_RAND = #{record.optionRand,jdbcType=DECIMAL},
       </if>
-      <if test="record.articalId != null">
-        ARTICAL_ID = #{record.articalId,jdbcType=DECIMAL},
+      <if test="record.articleId != null">
+        ARTICAL_ID = #{record.articleId,jdbcType=DECIMAL},
       </if>
     </set>
     <if test="_parameter != null">
@@ -190,7 +190,7 @@
       QUES_DATE = #{record.quesDate,jdbcType=VARCHAR},
       GROUP_ID = #{record.groupId,jdbcType=VARCHAR},
       OPTION_RAND = #{record.optionRand,jdbcType=DECIMAL},
-      ARTICAL_ID = #{record.articalId,jdbcType=DECIMAL}
+      ARTICAL_ID = #{record.articleId,jdbcType=DECIMAL}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -210,8 +210,8 @@
       <if test="optionRand != null">
         OPTION_RAND = #{optionRand,jdbcType=DECIMAL},
       </if>
-      <if test="articalId != null">
-        ARTICAL_ID = #{articalId,jdbcType=DECIMAL},
+      <if test="articleId != null">
+        ARTICAL_ID = #{articleId,jdbcType=DECIMAL},
       </if>
     </set>
     where ID = #{id,jdbcType=VARCHAR}
@@ -222,7 +222,7 @@
       QUES_DATE = #{quesDate,jdbcType=VARCHAR},
       GROUP_ID = #{groupId,jdbcType=VARCHAR},
       OPTION_RAND = #{optionRand,jdbcType=DECIMAL},
-      ARTICAL_ID = #{articalId,jdbcType=DECIMAL}
+      ARTICAL_ID = #{articleId,jdbcType=DECIMAL}
     where ID = #{id,jdbcType=VARCHAR}
   </update>
 

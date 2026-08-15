@@ -9,9 +9,9 @@ import cn.dev33.satoken.annotation.SaMode;
 import cn.dev33.satoken.stp.StpUtil;
 import com.cmbccd.ulms.common.annotation.MyLog;
 import com.cmbccd.ulms.common.util.DataPage;
-import com.cmbccd.ulms.helper.domain.HelperArtical;
-import com.cmbccd.ulms.helper.domain.HelperArticalExample;
-import com.cmbccd.ulms.helper.service.HelperArticalService;
+import com.cmbccd.ulms.helper.domain.HelperArticle;
+import com.cmbccd.ulms.helper.domain.HelperArticleExample;
+import com.cmbccd.ulms.helper.service.HelperArticleService;
 import com.cmbccd.ulms.sys.domain.Msg;
 
 import org.springframework.web.bind.annotation.*;
@@ -21,68 +21,68 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("helper/artical")
-public class HelperArticalController {
+@RequestMapping("helper/article")
+public class HelperArticleController {
 
     @Resource
-    private HelperArticalService helperArticalService;
+    private HelperArticleService helperArticleService;
 
     @GetMapping("/list")
     @SaCheckPermission(value = {"helper:artical:list:self", "helper:artical:list"}, mode = SaMode.OR)
     public Msg list(@RequestParam Map<String, String> params) {
         boolean selfOnly = StpUtil.hasPermission("helper:artical:list:self");
-        return Msg.success(helperArticalService.listArticalByQuery(params, selfOnly));
+        return Msg.success(helperArticleService.listArticleByQuery(params, selfOnly));
     }
 
     @GetMapping("/font/list")
     public Msg fontList(@RequestParam Map<String, String> params) {
-        HelperArticalExample example = helperArticalService.listForFont(params);
-        List<HelperArtical> list = helperArticalService.listNoBlob(example);
-        return Msg.success(new DataPage<HelperArtical>(list));
+        HelperArticleExample example = helperArticleService.listForFont(params);
+        List<HelperArticle> list = helperArticleService.listNoBlob(example);
+        return Msg.success(new DataPage<HelperArticle>(list));
     }
 
     @GetMapping("/{journo}")
     public Msg get(@PathVariable ("journo") String journo){
-        HelperArtical artical = helperArticalService.get(journo);
-        helperArticalService.increaseReadCount(journo);
-        return Msg.success(artical);
+        HelperArticle article = helperArticleService.get(journo);
+        helperArticleService.increaseReadCount(journo);
+        return Msg.success(article);
     }
 
     @PostMapping("")
     @SaCheckPermission("helper:artical:add")
-    @MyLog(title = "[helper-artical]文章管理")
-    public Msg create(@RequestBody HelperArtical record){
-        int count = helperArticalService.create(record);
+    @MyLog(title = "[helper-article]文章管理")
+    public Msg create(@RequestBody HelperArticle record){
+        int count = helperArticleService.create(record);
         if (count<=0) return Msg.error();
         return Msg.success();
     }
 
     @PutMapping("")
     @SaCheckPermission("helper:artical:update")
-    @MyLog(title = "[helper-artical]文章管理")
-    public Msg Update(@RequestBody HelperArtical record){
+    @MyLog(title = "[helper-article]文章管理")
+    public Msg Update(@RequestBody HelperArticle record){
         if(!StpUtil.hasPermission("helper:artical:list")) {
             if(!record.getInsertPlo().equals(StpUtil.getLoginIdAsString())) {
                 return Msg.error("");
             }
         }
-        int count = helperArticalService.update(record);
+        int count = helperArticleService.update(record);
         if (count<=0) return Msg.error();
         return Msg.success();
     }
 
     @DeleteMapping("/{journo}")
     @SaCheckPermission("helper:artical:delete")
-    @MyLog(title = "[helper-artical]文章管理")
+    @MyLog(title = "[helper-article]文章管理")
     public Msg delete(@PathVariable ("journo") String journo){
-        int count = helperArticalService.delete(journo);
+        int count = helperArticleService.delete(journo);
         if (count<=0) return Msg.error();
         return Msg.success();
     }
 //
 //    @GetMapping("/keyword")
 //    public Msg get(@RequestParam ("keyword") String keyword) {
-//        HelperArtical artical = helperArticalService.get(journo);
-//        return Msg.success().add("data", artical);
+//        HelperArticle article = helperArticleService.get(journo);
+//        return Msg.success().add("data", article);
 //    }
 }

@@ -35,20 +35,20 @@ public class CommentServiceImpl implements CommentService {
 	private LikeService likeService;
 
 	@Override
-	public List<Comment> getCommentByArticalId(int articalId) {
+	public List<Comment> getCommentByArticleId(int articleId) {
 		CommentExample example = new CommentExample();
 		Criteria criteria = example.createCriteria();
-		criteria.andArticalIdEqualTo(articalId);
+		criteria.andArticleIdEqualTo(articleId);
 		criteria.andStatusEqualTo(1);
 		example.setOrderByClause(" DATE_TIME DESC");
 		return commentMapper.selectByExample(example);
 	}
 
 	@Override
-	public DataPage<Comment> listCommentByQuery(int articalId, Map<String, String> params, String userId) {
+	public DataPage<Comment> listCommentByQuery(int articleId, Map<String, String> params, String userId) {
 		Map<String, Integer> pageParams = Util.innitTablePages(params);
 		PageHelper.startPage(pageParams.get("pageNum"), pageParams.get("pageSize"));
-		List<Comment> comments = getCommentByArticalId(articalId);
+		List<Comment> comments = getCommentByArticleId(articleId);
 		for (Comment comment : comments) {
 			if (comment.getAnonFlag() == 1) {
 				comment.setUserid("匿名");

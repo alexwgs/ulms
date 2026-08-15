@@ -127,7 +127,7 @@ import {
 } from '@/api/a6voice/index.js'
 
 const props = defineProps({
-  articalId: {
+  articleId: {
     type: [Number, String],
     required: true
   },
@@ -169,7 +169,7 @@ const queryInfo = ref({
 })
 
 const commentForm = ref({
-  articalId: props.articalId,
+  articleId: props.articleId,
   toUser: props.pubUser,
   content: '',
   anonFlag: 0
@@ -177,7 +177,7 @@ const commentForm = ref({
 
 const replyForm = ref({
   commentId: 0,
-  articalId: props.articalId,
+  articleId: props.articleId,
   toUser: '',
   content: '',
   anonFlag: 0
@@ -210,7 +210,7 @@ const isLikedComment = (comment) => {
 
 const fetchComments = async () => {
   try {
-    const res = await getCommentList(props.articalId, queryInfo.value)
+    const res = await getCommentList(props.articleId, queryInfo.value)
     if (res.code !== 200) {
       MessagePlugin.error(res.msg)
       return
@@ -245,7 +245,7 @@ const handleLike = async (type, id, index) => {
       comments.value[index].likes.push({
         id: '',
         likeType: 2,
-        articalId: props.articalId,
+        articleId: props.articleId,
         userId: user.value.ploNum,
         dateTime: '',
         status: 1

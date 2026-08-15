@@ -3,12 +3,12 @@ import { httpInstance } from '@/utils/request.js'
 // 系统公告相关API
 // 获取系统公告列表
 export const getSystemNotice = (typeId = 9, topFlag = 0) => {
-  return httpInstance.get(`/cyt/articalList/${typeId}/${topFlag}`)
+  return httpInstance.get(`/cyt/articleList/${typeId}/${topFlag}`)
 }
 
 // 获取文章详情
-export const getArticalDetail = (id) => {
-  return httpInstance.get(`/cyt/artical/${id}`)
+export const getArticleDetail = (id) => {
+  return httpInstance.get(`/cyt/article/${id}`)
 }
 
 // 快捷链接相关API
@@ -82,8 +82,8 @@ export const submitMood = (data) => {
 }
 
 // 提交文章学习
-export const submitArticalStudy = (data) => {
-  return httpInstance.post('/edu/daily/score/artical/submit', data)
+export const submitArticleStudy = (data) => {
+  return httpInstance.post('/edu/daily/score/article/submit', data)
 }
 
 // 提交问题答案

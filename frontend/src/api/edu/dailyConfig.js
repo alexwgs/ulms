@@ -35,20 +35,20 @@ export const dailyConfigApi = {
       method: 'get',
       params
     }),
-  getArticalDetail: (id) =>
+  getArticleDetail: (id) =>
     httpInstance({
-      url: `cyt/artical/${id}`,
+      url: `cyt/article/${id}`,
       method: 'get'
     }),
-  addArtical: (data) =>
+  addArticle: (data) =>
     httpInstance({
-      url: 'cyt/artical',
+      url: 'cyt/article',
       method: 'post',
       data
     }),
-  updateArtical: (data) =>
+  updateArticle: (data) =>
     httpInstance({
-      url: 'cyt/artical',
+      url: 'cyt/article',
       method: 'put',
       data
     })

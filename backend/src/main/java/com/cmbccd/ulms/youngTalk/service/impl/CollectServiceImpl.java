@@ -11,7 +11,7 @@ import com.cmbccd.ulms.youngTalk.dao.CollectMapper;
 import com.cmbccd.ulms.youngTalk.domain.Collect;
 import com.cmbccd.ulms.youngTalk.domain.CollectExample;
 import com.cmbccd.ulms.youngTalk.domain.CollectExample.Criteria;
-import com.cmbccd.ulms.youngTalk.service.ArticalService;
+import com.cmbccd.ulms.youngTalk.service.ArticleService;
 import com.cmbccd.ulms.youngTalk.service.CollectService;
 import com.github.pagehelper.PageHelper;
 
@@ -25,13 +25,13 @@ public class CollectServiceImpl implements CollectService {
 	private CollectMapper collectMapper;
 
 	@Resource
-	private ArticalService articalService;
+	private ArticleService articleService;
 
 	@Override
-	public int isUserCollectByArticalId(Integer articalId, String userId) {
+	public int isUserCollectByArticleId(Integer articleId, String userId) {
 		CollectExample example = new CollectExample();
 		Criteria crtieria = example.createCriteria();
-		crtieria.andArticalIdEqualTo(articalId);
+		crtieria.andArticleIdEqualTo(articleId);
 		crtieria.andUserIdEqualTo(userId);
 		crtieria.andStatusEqualTo(1);
 		return collectMapper.countByExample(example);
@@ -53,8 +53,8 @@ public class CollectServiceImpl implements CollectService {
 	}
 
 	@Override
-	public int updateStatusByUserAndArtical(Collect record) {
-		return collectMapper.updateStatusByUserAndArtical(record);
+	public int updateStatusByUserAndArticle(Collect record) {
+		return collectMapper.updateStatusByUserAndArticle(record);
 	}
 
 	@Override
@@ -73,7 +73,7 @@ public class CollectServiceImpl implements CollectService {
 		PageHelper.startPage(pageParams.get("pageNum"), pageParams.get("pageSize"));
 		List<Collect> collects = getCollectListByUserId(userId);
 		for (Collect collect : collects) {
-			collect.setArtical(articalService.getArticalByIdWithNoContent(collect.getArticalId()));
+			collect.setArticle(articleService.getArticleByIdWithNoContent(collect.getArticleId()));
 		}
 		return new DataPage<Collect>(collects);
 	}

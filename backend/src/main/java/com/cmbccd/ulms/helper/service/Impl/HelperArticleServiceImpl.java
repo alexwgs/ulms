@@ -2,11 +2,11 @@ package com.cmbccd.ulms.helper.service.impl;
 
 import com.cmbccd.ulms.common.util.DataPage;
 import com.cmbccd.ulms.common.util.Util;
-import com.cmbccd.ulms.helper.dao.HelperArticalMapper;
-import com.cmbccd.ulms.helper.domain.HelperArtical;
-import com.cmbccd.ulms.helper.domain.HelperArticalExample;
-import com.cmbccd.ulms.helper.domain.HelperArticalExample.Criteria;
-import com.cmbccd.ulms.helper.service.HelperArticalService;
+import com.cmbccd.ulms.helper.dao.HelperArticleMapper;
+import com.cmbccd.ulms.helper.domain.HelperArticle;
+import com.cmbccd.ulms.helper.domain.HelperArticleExample;
+import com.cmbccd.ulms.helper.domain.HelperArticleExample.Criteria;
+import com.cmbccd.ulms.helper.service.HelperArticleService;
 import com.cmbccd.ulms.sys.service.PublicService;
 
 import com.github.pagehelper.PageHelper;
@@ -17,27 +17,27 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class HelperArticalServiceImpl implements HelperArticalService {
+public class HelperArticleServiceImpl implements HelperArticleService {
 
     @Resource
-    private HelperArticalMapper helperArticalMapper;
+    private HelperArticleMapper helperArticleMapper;
 
     @Resource
     private PublicService publicService;
 
     @Override
-    public List<HelperArtical> listNoBlob(HelperArticalExample example) {
-        return helperArticalMapper.selectByExample(example);
+    public List<HelperArticle> listNoBlob(HelperArticleExample example) {
+        return helperArticleMapper.selectByExample(example);
     }
 
     @Override
-    public DataPage<HelperArtical> listArticalByQuery(Map<String, String> params, boolean selfOnly) {
+    public DataPage<HelperArticle> listArticleByQuery(Map<String, String> params, boolean selfOnly) {
         String status = params.get("status");
         String routeId = params.get("routeId");
         String query = params.get("query");
         String queryType = params.get("queryType");
         Map<String, Integer> pageParams = Util.innitTablePages(params);
-        HelperArticalExample example = new HelperArticalExample();
+        HelperArticleExample example = new HelperArticleExample();
         Criteria criteria = example.createCriteria();
         Criteria criteria2 = example.createCriteria();
         if (selfOnly) {
@@ -67,18 +67,18 @@ public class HelperArticalServiceImpl implements HelperArticalService {
             example.or(criteria2);
         }
         PageHelper.startPage(pageParams.get("pageNum"), pageParams.get("pageSize"));
-        List<HelperArtical> list = helperArticalMapper.selectByExample(example);
-        return new DataPage<HelperArtical>(list);
+        List<HelperArticle> list = helperArticleMapper.selectByExample(example);
+        return new DataPage<HelperArticle>(list);
     }
 
     @Override
-    public HelperArticalExample listForFont(Map<String, String> params) {
+    public HelperArticleExample listForFont(Map<String, String> params) {
         String routeId = params.get("routeId");
         String query = params.get("query");
         String queryType = params.get("queryType");
         Map<String, Integer> pageParams = Util.innitTablePages(params);
-        HelperArticalExample example = new HelperArticalExample();
-        HelperArticalExample.Criteria criteria = example.createCriteria();
+        HelperArticleExample example = new HelperArticleExample();
+        HelperArticleExample.Criteria criteria = example.createCriteria();
         if (!Util.isNullorEmpty(params.get("order"))) {
             example.setOrderByClause(Util.buildOrderByClause(params.get("order"), params.get("orderType")));
         }
@@ -102,32 +102,32 @@ public class HelperArticalServiceImpl implements HelperArticalService {
     }
 
     @Override
-    public HelperArtical get(String journo) {
-        return helperArticalMapper.selectByPrimaryKey(journo);
+    public HelperArticle get(String journo) {
+        return helperArticleMapper.selectByPrimaryKey(journo);
     }
 
     @Override
-    public int create(HelperArtical record) {
+    public int create(HelperArticle record) {
         record.setJourno(publicService.getJourno());
         record.setInsertDate(Util.currentDateTime());
         record.setInsertPlo(Util.userIdByShiro());
-        return helperArticalMapper.insertSelective(record);
+        return helperArticleMapper.insertSelective(record);
     }
 
     @Override
     public int delete(String journo) {
-        return helperArticalMapper.deleteByPrimaryKey(journo);
+        return helperArticleMapper.deleteByPrimaryKey(journo);
     }
 
     @Override
-    public int update(HelperArtical record) {
+    public int update(HelperArticle record) {
         record.setUpdateDate(Util.currentDateTime());
         record.setUpdatePlo(Util.userIdByShiro());
-        return helperArticalMapper.updateByPrimaryKeyWithBLOBs(record);
+        return helperArticleMapper.updateByPrimaryKeyWithBLOBs(record);
     }
 
     @Override
     public int increaseReadCount(String journo) {
-        return helperArticalMapper.updateArticalReadCount(journo);
+        return helperArticleMapper.updateArticleReadCount(journo);
     }
 }

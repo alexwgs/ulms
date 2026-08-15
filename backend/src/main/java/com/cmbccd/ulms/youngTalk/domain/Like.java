@@ -5,7 +5,7 @@ public class Like {
 
     private Integer likeType;
 
-    private Integer articalId;
+    private Integer articleId;
 
     private String userId;
 
@@ -29,12 +29,12 @@ public class Like {
         this.likeType = likeType;
     }
 
-    public Integer getArticalId() {
-        return articalId;
+    public Integer getArticleId() {
+        return articleId;
     }
 
-    public void setArticalId(Integer articalId) {
-        this.articalId = articalId;
+    public void setArticleId(Integer articleId) {
+        this.articleId = articleId;
     }
 
     public String getUserId() {

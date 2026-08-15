@@ -1,5 +1,6 @@
 package com.cmbccd.ulms.db.controller;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.cmbccd.ulms.db.domain.TableTree;
 import com.cmbccd.ulms.db.service.TableTreeService;
 import com.cmbccd.ulms.sys.domain.Msg;
@@ -20,6 +21,7 @@ public class TableTreeController {
 	 * @return 包含TableTree列表的成功消息
 	 */
 	@GetMapping("/{status}")
+	@SaCheckPermission("db:tree:list")
 	public Msg getTableTree(@PathVariable ("status") short status) {
 //		当status=-1时，为全部列表
 		List<TableTree> tree = tableTreeService.getTableTree(status);
@@ -32,6 +34,7 @@ public class TableTreeController {
 	 * @return 操作结果消息
 	 */
 	@PutMapping("")
+	@SaCheckPermission("db:tree:update")
 	public Msg updateTableTree(@RequestBody TableTree record) {
 		int count = tableTreeService.updateById(record);
 		if(count == 0) return Msg.error("操作失败！");
@@ -44,6 +47,7 @@ public class TableTreeController {
 	 * @return 操作结果消息
 	 */
 	@DeleteMapping("/{id}")
+	@SaCheckPermission("db:tree:delete")
 	public Msg deleteTableTree(@PathVariable ("id") Integer id) {
 		int count = tableTreeService.deleteById(id);
 		if(count == 0) return Msg.error("修改失败！");
@@ -56,6 +60,7 @@ public class TableTreeController {
 	 * @return 操作结果消息
 	 */
 	@PostMapping("")
+	@SaCheckPermission("db:tree:insert")
 	public Msg addTableTree(@RequestBody TableTree record) {
 		int count = tableTreeService.create(record);
 		if(count == 0) return Msg.error("操作失败！");
@@ -68,6 +73,7 @@ public class TableTreeController {
 	 * @return 成功消息
 	 */
 	@PostMapping("/batch")
+	@SaCheckPermission("db:tree:insert")
 	public Msg addTableTreeBatch(@RequestBody List<TableTree> records) {
 		tableTreeService.createWithIdByBatch(records);
 		return Msg.success();

@@ -3,7 +3,7 @@ import { httpInstance } from '@/utils/request'
 
 export const manageNoticeApi = {
   /** 获取公告列表 */
-  getArticalList: (url: string, params?: Record<string, any>): Promise<ApiResponse<any>> =>
+  getArticleList: (url: string, params?: Record<string, any>): Promise<ApiResponse<any>> =>
     httpInstance({ url, method: 'get', params }),
 
   /** 设置置顶、精华、广场状态 */
@@ -11,7 +11,7 @@ export const manageNoticeApi = {
     httpInstance({ url, method: 'put' }),
 
   /** 审核文章 */
-  examineArtical: (url: string, data?: Record<string, any>): Promise<ApiResponse<any>> =>
+  examineArticle: (url: string, data?: Record<string, any>): Promise<ApiResponse<any>> =>
     httpInstance({ url, method: 'put', data }),
 
   /** 更新分类 */

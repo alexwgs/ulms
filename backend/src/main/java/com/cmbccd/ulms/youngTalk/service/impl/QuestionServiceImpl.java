@@ -24,13 +24,13 @@ public class QuestionServiceImpl implements QuestionService {
 		return questionMapper.insert(record);
 	}
 	@Override
-	public List<Question> selectUserQuestionByArticalId(int articalId,String userId) {
+	public List<Question> selectUserQuestionByArticleId(int articleId,String userId) {
 //		return questionMapper.selectByExample(example);
-		return questionMapper.selectUserQuestionByArticalId(articalId, userId);
+		return questionMapper.selectUserQuestionByArticleId(articleId, userId);
 	}
 	@Override
-	public List<Question> selectQuestionByArticalId(int articalId) {
-		return questionMapper.selectQuestionByArticalId(articalId);
+	public List<Question> selectQuestionByArticleId(int articleId) {
+		return questionMapper.selectQuestionByArticleId(articleId);
 	}
 
 }

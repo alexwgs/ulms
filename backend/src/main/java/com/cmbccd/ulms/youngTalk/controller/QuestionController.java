@@ -28,13 +28,13 @@ public class QuestionController {
 	@Resource
 	private OptionService optionService;
 
-	@GetMapping(value = "/questions/{articalId}")
-	public Msg getQuestionsByUserId(@PathVariable("articalId") int articalId) {
+	@GetMapping(value = "/questions/{articleId}")
+	public Msg getQuestionsByUserId(@PathVariable("articleId") int articleId) {
 		String userId = Util.userIdByShiro();
 
-		List<Question> questions = questionService.selectUserQuestionByArticalId(articalId, userId);
+		List<Question> questions = questionService.selectUserQuestionByArticleId(articleId, userId);
 		for (Question question : questions) {
-			List<Option> options = optionService.getOptionsByQuestionId(articalId, question.getId());
+			List<Option> options = optionService.getOptionsByQuestionId(articleId, question.getId());
 			if (!Util.isNullorEmpty(question.getAnswer()) && "checkbox".equals(question.getQuestionType())) {
 				question.setCheckboxs(question.getAnswer().split("\\|"));
 			}
@@ -43,24 +43,24 @@ public class QuestionController {
 		return Msg.success(questions);
 	}
 
-	@GetMapping(value = "/survey/chart/{articalId}")
-	public Msg getQuestionByArticalId(@PathVariable("articalId") int articalId) {
-		List<Question> list = questionService.selectQuestionByArticalId(articalId);
+	@GetMapping(value = "/survey/chart/{articleId}")
+	public Msg getQuestionByArticleId(@PathVariable("articleId") int articleId) {
+		List<Question> list = questionService.selectQuestionByArticleId(articleId);
 		List<ChartData> chartData = new ArrayList<ChartData>();
 		for (Question question : list) {
 			ChartData ctd = new ChartData().question();
 			if ("radio".equals(question.getQuestionType())) {
-				List<Map<String, Object>> rows = optionService.selectRadioNumGroupByQuestionId(question.getArticalId(),
+				List<Map<String, Object>> rows = optionService.selectRadioNumGroupByQuestionId(question.getArticleId(),
 						question.getId());
 				ctd.setRows(rows);
 
 			} else if ("checkbox".equals(question.getQuestionType())) {
 				List<Map<String, Object>> rows = new ArrayList<Map<String, Object>>();
 				//先获取OPTIONS
-				List<Option> options = optionService.getOptionsByQuestionId(articalId, question.getId());
+				List<Option> options = optionService.getOptionsByQuestionId(articleId, question.getId());
 				for(Option option : options) {
 					Map<String, Object> row = new HashMap<String, Object>();
-					int count = optionService.selectCheckboxNumGroupByOptionId(articalId, question.getId(), option.getContent());
+					int count = optionService.selectCheckboxNumGroupByOptionId(articleId, question.getId(), option.getContent());
 					row.put("选项", option.getContent());
 					row.put("选择人数", count);
 					rows.add(row);

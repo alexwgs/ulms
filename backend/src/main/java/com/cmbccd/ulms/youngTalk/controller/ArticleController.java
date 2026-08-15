@@ -9,7 +9,7 @@ import com.cmbccd.ulms.common.util.DataPage;
 import com.cmbccd.ulms.common.util.Util;
 import com.cmbccd.ulms.sys.domain.Msg;
 import com.cmbccd.ulms.youngTalk.domain.*;
-import com.cmbccd.ulms.youngTalk.domain.ArticalExample.Criteria;
+import com.cmbccd.ulms.youngTalk.domain.ArticleExample.Criteria;
 import com.cmbccd.ulms.youngTalk.service.*;
 import com.github.pagehelper.PageHelper;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +20,7 @@ import java.util.Map;
 
 /**
  * 
-* <p>Title: ArticalController.java</p>  
+* <p>Title: ArticleController.java</p>  
 * <p>Description: </p>  
 * @author WeiGenSheng
 * @date 2020年12月21日  
@@ -28,10 +28,10 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("cyt")
-public class ArticalController {
+public class ArticleController {
 
 	@Resource
-	private ArticalService articalService;
+	private ArticleService articleService;
 	@Resource
 	private LikeService likeService;
 	@Resource
@@ -48,25 +48,25 @@ public class ArticalController {
 	private MessageService messageService;
 
 	@GetMapping(value = "stageList")
-	public Msg articalViewOnStage() {
-		ArticalExample example = new ArticalExample();
+	public Msg articleViewOnStage() {
+		ArticleExample example = new ArticleExample();
 		Criteria criteria = example.createCriteria();
 		criteria.andOnStageEqualTo(1);
 		criteria.andStatusEqualTo(1);
 		example.setOrderByClause(" (VIEW_NUM*0.5+REPLY_NUM*2+COLLECT_NUM+LIKE_NUM) DESC,ELITE_FLAG DESC,ID DESC");
-		List<Artical> articalList = articalService.selectByExampleNoContent(example);
-		return Msg.success(articalList);
+		List<Article> articleList = articleService.selectByExampleNoContent(example);
+		return Msg.success(articleList);
 	}
 
 	@GetMapping(value = "topList/{type}")
-	public Msg articalTopList() {
-		ArticalExample example = new ArticalExample();
+	public Msg articleTopList() {
+		ArticleExample example = new ArticleExample();
 		Criteria criteria = example.createCriteria();
 		criteria.andStatusEqualTo(1);
 		criteria.andTopFlagEqualTo(1);
 		example.setOrderByClause(" (VIEW_NUM*0.5+REPLY_NUM*2+COLLECT_NUM+LIKE_NUM) DESC,ELITE_FLAG DESC,ID DESC");
-		List<Artical> articalList = articalService.selectByExampleNoContent(example);
-		return Msg.success(articalList);
+		List<Article> articleList = articleService.selectByExampleNoContent(example);
+		return Msg.success(articleList);
 	}
 
 	// 周热榜 通过过滤近一周到评论来确认当前到榜单
@@ -74,8 +74,8 @@ public class ArticalController {
 	public Msg getWeeklyHotList() {
 		String dateTime = Util.getPastDate(30);
 		PageHelper.startPage(0, 15);
-		List<Artical> articalList = articalService.selectWeeklyHotList(dateTime);
-		return Msg.success(articalList);
+		List<Article> articleList = articleService.selectWeeklyHotList(dateTime);
+		return Msg.success(articleList);
 	}
 
 	/**
@@ -84,18 +84,18 @@ public class ArticalController {
 	 * @param params
 	 * @return
 	 */
-	@GetMapping(value = "articalList")
-	public Msg articalCategoryList(@RequestParam Map<String, String> params) {
-		return Msg.success(articalService.listCategoryByQuery(params));
+	@GetMapping(value = "articleList")
+	public Msg articleCategoryList(@RequestParam Map<String, String> params) {
+		return Msg.success(articleService.listCategoryByQuery(params));
 	}
 
-	@GetMapping(value = "articalList/{type}/{category}")
-	public Msg articalCategoryList(@PathVariable("type") Integer type, @PathVariable("category") Integer category,
+	@GetMapping(value = "articleList/{type}/{category}")
+	public Msg articleCategoryList(@PathVariable("type") Integer type, @PathVariable("category") Integer category,
 			@RequestParam Map<String, String> params) {
-		ArticalExample example = new ArticalExample();
+		ArticleExample example = new ArticleExample();
 		Criteria criteria = example.createCriteria();
 //		criteria.andStatusEqualTo(1);
-		criteria.andArticalTypeEqualTo(type);
+		criteria.andArticleTypeEqualTo(type);
 
 		if (category != -1) {
 			criteria.andCategoryEqualTo(category);
@@ -142,117 +142,117 @@ public class ArticalController {
 		Map<String, Integer> pageParams = Util.innitTablePages(params);
 		PageHelper.startPage(pageParams.get("pageNum"), pageParams.get("pageSize"));
 
-		List<Artical> articalList = articalService.selectByExampleNoContent(example);
-		for (Artical artical : articalList) {
-			if(artical.getAnonFlag() == 1) {
-				artical.setPubUser("匿名");
+		List<Article> articleList = articleService.selectByExampleNoContent(example);
+		for (Article article : articleList) {
+			if(article.getAnonFlag() == 1) {
+				article.setPubUser("匿名");
 			} else {
-				artical.setUser(DataCache.getEmployees().get(artical.getPubUser()));
+				article.setUser(DataCache.getEmployees().get(article.getPubUser()));
 			}
 		}
-		return Msg.success(new DataPage<Artical>(articalList));
+		return Msg.success(new DataPage<Article>(articleList));
 	}
 
-	@GetMapping(value = "articalList/{type}")
-	public Msg articalList(@PathVariable("type") Integer type) {
-		ArticalExample example = new ArticalExample();
+	@GetMapping(value = "articleList/{type}")
+	public Msg articleList(@PathVariable("type") Integer type) {
+		ArticleExample example = new ArticleExample();
 		Criteria criteria = example.createCriteria();
 		criteria.andStatusEqualTo(1);
-		criteria.andArticalTypeEqualTo(type);
+		criteria.andArticleTypeEqualTo(type);
 		example.setOrderByClause(" (VIEW_NUM*0.5+REPLY_NUM*2+COLLECT_NUM+LIKE_NUM) DESC,ELITE_FLAG DESC,ID DESC");
-		List<Artical> articalList = articalService.selectByExampleNoContent(example);
-		return Msg.success(articalList);
+		List<Article> articleList = articleService.selectByExampleNoContent(example);
+		return Msg.success(articleList);
 	}
 
 	/**
 	 * 通过ID获取文章详情
 	 * 
 	 * @param id
-	 * @return：Artical
+	 * @return：Article
 	 */
-	@GetMapping(value = "artical/{id}")
-	public Msg articalById(@PathVariable("id") Integer id) {
+	@GetMapping(value = "article/{id}")
+	public Msg articleById(@PathVariable("id") Integer id) {
 		String userId = Util.userIdByShiro();
 
-		Artical artical = articalService.getArticalById(id);
-		if (Util.isNullorEmpty(artical)) {
+		Article article = articleService.getArticleById(id);
+		if (Util.isNullorEmpty(article)) {
 			return Msg.error("没有获取到文章信息！请正确使用A6有声！");
 		}
 
-		if (artical.getStatus() != 1 && !artical.getPubUser().equals(userId)) {
+		if (article.getStatus() != 1 && !article.getPubUser().equals(userId)) {
 			return Msg.error("没有获取到文章信息！您无权查看该帖子！");
 		}
 			// 是否点赞
 			if (!Util.isNullorEmpty(userId)) {
-				artical.setIsLike(likeService.isUserLikeByArticalId(id, userId));
+				article.setIsLike(likeService.isUserLikeByArticleId(id, userId));
 				// 是否收藏
-				artical.setIsCollect(collectService.isUserCollectByArticalId(id, userId));
+				article.setIsCollect(collectService.isUserCollectByArticleId(id, userId));
 			}
-		if(artical.getAnonFlag() == 1) {
-			artical.setPubUser("匿名");
+		if(article.getAnonFlag() == 1) {
+			article.setPubUser("匿名");
 		} else {
-			artical.setUser(DataCache.getEmployees().get(artical.getPubUser()));
+			article.setUser(DataCache.getEmployees().get(article.getPubUser()));
 		}
 		// 写入文字发布人对象
-		articalService.increaseViewNum(id);
-		return Msg.success(artical);
+		articleService.increaseViewNum(id);
+		return Msg.success(article);
 	}
 
 	/**
 	 * 管理员通过ID获取文章详情
 	 * 
 	 * @param id
-	 * @return：Artical
+	 * @return：Article
 	 */
 	@SaCheckPermission("cyt:artical:view")
-	@GetMapping(value = "artical/manage/{id}")
-	@MyLog(title = "[cyt-artical]文章管理")
-	public Msg adminArticalById(@PathVariable("id") Integer id) {
+	@GetMapping(value = "article/manage/{id}")
+	@MyLog(title = "[cyt-article]文章管理")
+	public Msg adminArticleById(@PathVariable("id") Integer id) {
 		String userId = Util.userIdByShiro();
 		if (userId.equals("0")) {
 			return Msg.error("您无权做此操作！请通过A6广场操作！");
 		}
-		Artical artical = articalService.getArticalById(id);
-		if (Util.isNullorEmpty(artical)) {
+		Article article = articleService.getArticleById(id);
+		if (Util.isNullorEmpty(article)) {
 			return Msg.error("没有获取到文章信息！请正确使用A6有声！");
 		}
 
 		// 是否点赞
-		artical.setIsLike(likeService.isUserLikeByArticalId(id, userId));
+		article.setIsLike(likeService.isUserLikeByArticleId(id, userId));
 		// 是否收藏
-		artical.setIsCollect(collectService.isUserCollectByArticalId(id, userId));
+		article.setIsCollect(collectService.isUserCollectByArticleId(id, userId));
 		// 写入文字发布人对象
-		if(artical.getAnonFlag() == 1) {
-			artical.setPubUser("匿名");
+		if(article.getAnonFlag() == 1) {
+			article.setPubUser("匿名");
 		} else {
-			artical.setUser(DataCache.getEmployees().get(artical.getPubUser()));
+			article.setUser(DataCache.getEmployees().get(article.getPubUser()));
 		}
-		articalService.increaseViewNum(id);
-		return Msg.success(artical);
+		articleService.increaseViewNum(id);
+		return Msg.success(article);
 	}
 
 	/**
 	 * 文章发布（非项目）
 	 */
-	@PostMapping(value = "artical")
-	public Msg insertNewArtical(@RequestBody Artical artical) {
+	@PostMapping(value = "article")
+	public Msg insertNewArticle(@RequestBody Article article) {
 		String userId = Util.userIdByShiro();
 		if (userId.equals("0")) {
 			return Msg.error("您无权做此操作！请通过A6广场操作！");
 		}
-		int id = articalService.getNewArticalId();
-		artical.setId(id);
-//		artical.setArticalType(2);
-		artical.setPubUser(userId);
-		artical.setPubDate(Util.currentDateTime());
-		artical.setTopFlag(0);
-		artical.setEliteFlag(0);
-		artical.setOnStage(0);
-		artical.setViewNum(0);
-		artical.setCollectNum(0);
-		artical.setReplyNum(0);
-		artical.setLikeNum(0);
-		int count = articalService.insertArtical(artical);
+		int id = articleService.getNewArticleId();
+		article.setId(id);
+//		article.setArticleType(2);
+		article.setPubUser(userId);
+		article.setPubDate(Util.currentDateTime());
+		article.setTopFlag(0);
+		article.setEliteFlag(0);
+		article.setOnStage(0);
+		article.setViewNum(0);
+		article.setCollectNum(0);
+		article.setReplyNum(0);
+		article.setLikeNum(0);
+		int count = articleService.insertArticle(article);
 		if (count == 0) {
 			return Msg.error("发帖失败！");
 		}
@@ -268,28 +268,28 @@ public class ArticalController {
 
 		List<Object> questions = params.getJSONArray("questions");
 
-		Artical artical = new Artical();
-		int id = articalService.getNewArticalId();
-		artical.setContent(params.getString("content"));
-		artical.setTitle(params.getString("title"));
-		artical.setCategory(params.getInteger("category"));
-		artical.setStatus(1);
-		artical.setId(id);
+		Article article = new Article();
+		int id = articleService.getNewArticleId();
+		article.setContent(params.getString("content"));
+		article.setTitle(params.getString("title"));
+		article.setCategory(params.getInteger("category"));
+		article.setStatus(1);
+		article.setId(id);
 		// 3为调研
-		artical.setAnonFlag(Util.isNullorEmpty(params.getString("anonFlag"))?0:Integer.parseInt(params.getString("anonFlag")));
-		artical.setArticalType(3); 
-		artical.setPubUser(userId);
-		artical.setCompDate(params.getString("compDate"));
-		artical.setPubDate(Util.currentDateTime());
-		artical.setTopFlag(0);
-		artical.setEliteFlag(0);
-		artical.setOnStage(0);
-		artical.setViewNum(0);
-		artical.setCollectNum(0);
-		artical.setReplyNum(0);
-		artical.setLikeNum(0);
+		article.setAnonFlag(Util.isNullorEmpty(params.getString("anonFlag"))?0:Integer.parseInt(params.getString("anonFlag")));
+		article.setArticleType(3); 
+		article.setPubUser(userId);
+		article.setCompDate(params.getString("compDate"));
+		article.setPubDate(Util.currentDateTime());
+		article.setTopFlag(0);
+		article.setEliteFlag(0);
+		article.setOnStage(0);
+		article.setViewNum(0);
+		article.setCollectNum(0);
+		article.setReplyNum(0);
+		article.setLikeNum(0);
 
-		int count = articalService.insertArtical(artical);
+		int count = articleService.insertArticle(article);
 		if (count == 0) {
 			return Msg.error("调研发布失败！");
 		}
@@ -301,7 +301,7 @@ public class ArticalController {
 			Integer questionId = questionService.getNewId();
 			quest.setId(questionId);
 			quest.setContent(questionObj.getString("content"));
-			quest.setArticalId(id);
+			quest.setArticleId(id);
 			quest.setQuestionType(questionObj.getString("questionType"));
 			quest.setSort(questionObj.getInteger("sort"));
 
@@ -317,7 +317,7 @@ public class ArticalController {
 
 				Option option = new Option();
 				option.setId(optionService.getNewId());
-				option.setArticalId(id);
+				option.setArticleId(id);
 				option.setContent(optionObj);
 				option.setQuestionId(questionId);
 				option.setSort(index);
@@ -334,13 +334,13 @@ public class ArticalController {
 	/**
 	 * 我发布的帖子或项目
 	 */
-	@GetMapping(value = "myArtical")
-	public Msg myArtical(@RequestParam Map<String, String> params) {
+	@GetMapping(value = "myArticle")
+	public Msg myArticle(@RequestParam Map<String, String> params) {
 		String userId = Util.userIdByShiro();
 		if (userId.equals("0")) {
 			return Msg.error("您无权做此操作！请通过A6广场操作！");
 		}
-		ArticalExample example = new ArticalExample();
+		ArticleExample example = new ArticleExample();
 		Criteria criteria = example.createCriteria();
 		criteria.andStatusNotEqualTo(0);
 		criteria.andPubUserEqualTo(userId);
@@ -357,15 +357,15 @@ public class ArticalController {
 		Map<String, Integer> pageParams = Util.innitTablePages(params);
 		PageHelper.startPage(pageParams.get("pageNum"), pageParams.get("pageSize"));
 
-		List<Artical> articalList = articalService.selectByExampleNoContent(example);
-		for (Artical artical : articalList) {
-			if(artical.getAnonFlag() == 1) {
-				artical.setPubUser("匿名");
+		List<Article> articleList = articleService.selectByExampleNoContent(example);
+		for (Article article : articleList) {
+			if(article.getAnonFlag() == 1) {
+				article.setPubUser("匿名");
 			} else {
-				artical.setUser(DataCache.getEmployees().get(artical.getPubUser()));
+				article.setUser(DataCache.getEmployees().get(article.getPubUser()));
 			}
 		}
-		return Msg.success( new DataPage<Artical>(articalList));
+		return Msg.success( new DataPage<Article>(articleList));
 	}
 
 	/**
@@ -377,29 +377,29 @@ public class ArticalController {
 		if (userId.equals("0")) {
 			return Msg.error("您无权做此操作！请通过A6广场操作！");
 		}
-		List<Integer> ids = memberService.getArticalIdByUserId(userId);
-		ArticalExample example = new ArticalExample();
+		List<Integer> ids = memberService.getArticleIdByUserId(userId);
+		ArticleExample example = new ArticleExample();
 		Criteria criteria = example.createCriteria();
 		if (ids != null && ids.size() != 0) {
 			criteria.andIdIn(ids);
 		} else {
 			criteria.andIdEqualTo(-1);
 		}
-		criteria.andArticalTypeEqualTo(1);
+		criteria.andArticleTypeEqualTo(1);
 		// 不给前端显示已被管理员删除到项目
 		criteria.andStatusNotEqualTo(0); 
 		Map<String, Integer> pageParams = Util.innitTablePages(params);
 		PageHelper.startPage(pageParams.get("pageNum"), pageParams.get("pageSize"));
 		example.setOrderByClause(" ID DESC ");
-		List<Artical> articalList = articalService.selectByExampleNoContent(example);
-		return Msg.success(new DataPage<Artical>(articalList));
+		List<Article> articleList = articleService.selectByExampleNoContent(example);
+		return Msg.success(new DataPage<Article>(articleList));
 	}
 
 	/**
 	 * 更新项目BY Id
 	 */
-	@PutMapping(value = "artical")
-	public Msg updateArtical(@RequestBody Artical record) {
+	@PutMapping(value = "article")
+	public Msg updateArticle(@RequestBody Article record) {
 		String userId = Util.userIdByShiro();
 		if (userId.equals("0")) {
 			return Msg.error("您无权做此操作！请通过A6广场操作！");
@@ -412,7 +412,7 @@ public class ArticalController {
 		}
 		record.setPubDate(Util.currentDateTime());
 
-		int count = articalService.updateArtical(record);
+		int count = articleService.updateArticle(record);
 		if (count == 0) {
 			return Msg.error("操作成功！");
 		}
@@ -422,20 +422,20 @@ public class ArticalController {
 	/**
 	 * 项目认领BY Id(旧版本，若是认领则为PM，其他人不可认领)
 	 */
-	@PutMapping(value="artical/take/{id}")
+	@PutMapping(value="article/take/{id}")
 	public Msg takeItem(@PathVariable ("id") int id) {
 		String userId = Util.userIdByShiro();
 		if (userId.equals("0")) {
 			return Msg.error("您无权做此操作！请通过A6广场操作！");
 		}
-		Artical artical = new Artical();
-		artical.setId(id);
-		artical.setCompType(5);
-		int count = articalService.updateArticalSelectiveByPrimaryKey(artical);
+		Article article = new Article();
+		article.setId(id);
+		article.setCompType(5);
+		int count = articleService.updateArticleSelectiveByPrimaryKey(article);
 		if(count == 0)  return Msg.error("认领项目失败！");
 		Member member = new Member();
 		member.setId(memberService.newId());
-		member.setArticalId(id);
+		member.setArticleId(id);
 		member.setUserId(userId);
 		member.setRole(1);
 		member.setScoreRate(0);
@@ -444,7 +444,7 @@ public class ArticalController {
 		if(count == 0)  return Msg.error("认领项目失败！");
 		//更新一条进度
 		Progress progress = new Progress();
-		progress.setArticalId(id);
+		progress.setArticleId(id);
 		progress.setId(progressService.newId());
 		progress.setContent("领取项目");
 		progress.setDateTime(Util.currentDateTime());
@@ -459,7 +459,7 @@ public class ArticalController {
 	/**
 	 * 项目认领BY Id(可多人认领版本)
 
-	@RequestMapping(value = "artical/take/{id}", method = RequestMethod.PUT)
+	@RequestMapping(value = "article/take/{id}", method = RequestMethod.PUT)
 	public Msg takeItem(@PathVariable("id") int id) {
 		String userId = Util.userIdByShiro();
 		if (Util.isNullorEmpty(userId)) {
@@ -469,7 +469,7 @@ public class ArticalController {
 
 		MemberExample example = new MemberExample();
 		com.cmbccd.ulms.youngTalk.domain.MemberExample.Criteria criteria = example.createCriteria();
-		criteria.andArticalIdEqualTo(id);
+		criteria.andArticleIdEqualTo(id);
 		criteria.andUserIdEqualTo(userId);
 		criteria.andStatusEqualTo(1);
 		List<Member> list = memberService.listMember(example);
@@ -478,7 +478,7 @@ public class ArticalController {
 		}
 		Member member = new Member();
 		member.setId(memberService.newId());
-		member.setArticalId(id);
+		member.setArticleId(id);
 		member.setUserId(userId);
 		member.setRole(2);
 		member.setScoreRate(0);
@@ -498,9 +498,9 @@ public class ArticalController {
 	 * @param status
 	 * @return
 	 */
-	@PutMapping(value = "artical/on/{type}/{id}/{status}")
+	@PutMapping(value = "article/on/{type}/{id}/{status}")
 	@SaCheckPermission("cyt:artical:set")
-	@MyLog(title = "[cyt-artical]文章管理")
+	@MyLog(title = "[cyt-article]文章管理")
 	public Msg setTop(@PathVariable("type") String type, @PathVariable("id") int id,
 			@PathVariable("status") int status) {
 		String userId = Util.userIdByShiro();
@@ -511,7 +511,7 @@ public class ArticalController {
 		if (Util.isNullorEmpty(type) || Util.isNullorEmpty(id) || Util.isNullorEmpty(status)) {
 			return Msg.error("没有获取到操作信息！请正确使用A6有声！");
 		}
-		Artical record = new Artical();
+		Article record = new Article();
 		record.setId(id);
 		if ("top".equals(type)) {
 			record.setTopFlag(status);
@@ -522,7 +522,7 @@ public class ArticalController {
 		} else {
 			return Msg.error("没有获取到操作信息！请正确使用A6有声！");
 		}
-		int count = articalService.updateArticalSelectiveByPrimaryKey(record);
+		int count = articleService.updateArticleSelectiveByPrimaryKey(record);
 		if (count == 0) {
 			Msg.error("操作失败！");
 		}
@@ -532,10 +532,10 @@ public class ArticalController {
 	/**
 	 * 结案管理
 	 */
-	@PutMapping(value = "artical/on/comp")
+	@PutMapping(value = "article/on/comp")
 	@SaCheckPermission("cyt:artical:complete")
-	@MyLog(title = "[cyt-artical]文章管理")
-	public Msg setItemComplete(@RequestBody Artical record) {
+	@MyLog(title = "[cyt-article]文章管理")
+	public Msg setItemComplete(@RequestBody Article record) {
 		String userId = Util.userIdByShiro();
 		if (userId.equals("0")) {
 			return Msg.error("您无权做此操作！请通过A6广场操作！");
@@ -544,7 +544,7 @@ public class ArticalController {
 		if (Util.isNullorEmpty(record.getId())) {
 			return Msg.error("没有获取到ID！请正确使用A6有声！");
 		}
-		int count = articalService.updateArticalSelectiveByPrimaryKey(record);
+		int count = articleService.updateArticleSelectiveByPrimaryKey(record);
 		if (count == 0) {
 			Msg.error("操作失败！");
 		}
@@ -558,10 +558,10 @@ public class ArticalController {
 	 * @param record
 	 * @return
 	 */
-	@PutMapping(value = "artical/on/examine")
+	@PutMapping(value = "article/on/examine")
 	@SaCheckPermission("cyt:artical:examine")
-	@MyLog(title = "[cyt-artical]文章管理")
-	public Msg setItemExamine(@RequestBody Artical record) {
+	@MyLog(title = "[cyt-article]文章管理")
+	public Msg setItemExamine(@RequestBody Article record) {
 		String userId = Util.userIdByShiro();
 		if (userId.equals("0")) {
 			return Msg.error("您无权做此操作！请通过A6广场操作！");
@@ -570,22 +570,22 @@ public class ArticalController {
 		if (Util.isNullorEmpty(record.getId())) {
 			return Msg.error("没有获取到ID！请正确使用A6有声！");
 		}
-		int count = articalService.updateArticalSelectiveByPrimaryKey(record);
+		int count = articleService.updateArticleSelectiveByPrimaryKey(record);
 		if (count == 0) {
 			Msg.error("操作失败！");
 		}
 
-		Artical artical = articalService.getArticalByIdWithNoContent(record.getId());
+		Article article = articleService.getArticleByIdWithNoContent(record.getId());
 
 		// 发送审核情况推送
-		if (!userId.equals(artical.getPubUser())) {
+		if (!userId.equals(article.getPubUser())) {
 			Message message = new Message();
 			message.setDateTime(Util.currentDateTime());
 			message.setFromUser("system");
 			message.setMessageId(record.getStatus());
-			message.setToUser(artical.getPubUser());
+			message.setToUser(article.getPubUser());
 			message.setId(messageService.newId());
-			message.setArticalId(record.getId());
+			message.setArticleId(record.getId());
 			// 消息类型 1-帖子 2-评论 3-进度 4-帖子状态变更消息 ...
 			message.setMessageType(4);
 			message.setIsRead(0);
@@ -600,10 +600,10 @@ public class ArticalController {
 	 * @param record
 	 * @return
 	 */
-	@PutMapping(value = "artical/category")
+	@PutMapping(value = "article/category")
 	@SaCheckPermission("cyt:artical:category:update")
-	@MyLog(title = "[cyt-artical]文章管理")
-	public Msg updateArticalCategory(@RequestBody Artical record) {
+	@MyLog(title = "[cyt-article]文章管理")
+	public Msg updateArticleCategory(@RequestBody Article record) {
 		String userId = Util.userIdByShiro();
 		if (userId.equals("0")) {
 			return Msg.error("您无权做此操作！请通过A6广场操作！");
@@ -612,7 +612,7 @@ public class ArticalController {
 		if (Util.isNullorEmpty(record.getId())) {
 			return Msg.error("没有获取到ID！请正确使用A6有声！");
 		}
-		int count = articalService.updateArticalSelectiveByPrimaryKey(record);
+		int count = articleService.updateArticleSelectiveByPrimaryKey(record);
 		if (count == 0) {
 			Msg.error("操作失败！");
 		}
@@ -625,9 +625,9 @@ public class ArticalController {
 	 * @param record
 	 * @return
 	 */
-	@PutMapping(value = "artical/delete")
-	@MyLog(title = "[cyt-artical]文章管理")
-	public Msg articalDeleteOrRecover(@RequestBody Artical record) {
+	@PutMapping(value = "article/delete")
+	@MyLog(title = "[cyt-article]文章管理")
+	public Msg articleDeleteOrRecover(@RequestBody Article record) {
 		String userId = Util.userIdByShiro();
 		if (userId.equals("0")) {
 			return Msg.error("您无权做此操作！请通过A6广场操作！");
@@ -636,7 +636,7 @@ public class ArticalController {
 		if (Util.isNullorEmpty(record.getId())) {
 			return Msg.error("没有获取到ID！请正确使用A6有声！");
 		}
-		int count = articalService.updateArticalSelectiveByPrimaryKey(record);
+		int count = articleService.updateArticleSelectiveByPrimaryKey(record);
 		if (count == 0) {
 			Msg.error("操作失败！");
 		}

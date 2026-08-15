@@ -39,5 +39,5 @@ public interface AnswerMapper {
     
     int creatNewId();
     
-    List<Answer> selectSurveyUserIds(int articalId);
+    List<Answer> selectSurveyUserIds(int articleId);
 }

@@ -3,7 +3,7 @@
 <mapper namespace="com.cmbccd.ulms.youngTalk.dao.CollectMapper">
   <resultMap id="BaseResultMap" type="com.cmbccd.ulms.youngTalk.domain.Collect">
     <id column="ID" jdbcType="DECIMAL" property="id" />
-    <result column="ARTICAL_ID" jdbcType="DECIMAL" property="articalId" />
+    <result column="ARTICAL_ID" jdbcType="DECIMAL" property="articleId" />
     <result column="USER_ID" jdbcType="VARCHAR" property="userId" />
     <result column="STATUS" jdbcType="DECIMAL" property="status" />
     <result column="DATE_TIME" jdbcType="VARCHAR" property="dateTime" />
@@ -102,7 +102,7 @@
   <insert id="insert" parameterType="com.cmbccd.ulms.youngTalk.domain.Collect">
     insert into CYT_ARTICAL_COLLECT (ID, ARTICAL_ID, USER_ID, 
       STATUS, DATE_TIME)
-    values (#{id,jdbcType=DECIMAL}, #{articalId,jdbcType=DECIMAL}, #{userId,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=DECIMAL}, #{articleId,jdbcType=DECIMAL}, #{userId,jdbcType=VARCHAR}, 
       #{status,jdbcType=DECIMAL}, #{dateTime,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.cmbccd.ulms.youngTalk.domain.Collect">
@@ -111,7 +111,7 @@
       <if test="id != null">
         ID,
       </if>
-      <if test="articalId != null">
+      <if test="articleId != null">
         ARTICAL_ID,
       </if>
       <if test="userId != null">
@@ -128,8 +128,8 @@
       <if test="id != null">
         #{id,jdbcType=DECIMAL},
       </if>
-      <if test="articalId != null">
-        #{articalId,jdbcType=DECIMAL},
+      <if test="articleId != null">
+        #{articleId,jdbcType=DECIMAL},
       </if>
       <if test="userId != null">
         #{userId,jdbcType=VARCHAR},
@@ -154,8 +154,8 @@
       <if test="record.id != null">
         ID = #{record.id,jdbcType=DECIMAL},
       </if>
-      <if test="record.articalId != null">
-        ARTICAL_ID = #{record.articalId,jdbcType=DECIMAL},
+      <if test="record.articleId != null">
+        ARTICAL_ID = #{record.articleId,jdbcType=DECIMAL},
       </if>
       <if test="record.userId != null">
         USER_ID = #{record.userId,jdbcType=VARCHAR},
@@ -174,7 +174,7 @@
   <update id="updateByExample" parameterType="map">
     update CYT_ARTICAL_COLLECT
     set ID = #{record.id,jdbcType=DECIMAL},
-      ARTICAL_ID = #{record.articalId,jdbcType=DECIMAL},
+      ARTICAL_ID = #{record.articleId,jdbcType=DECIMAL},
       USER_ID = #{record.userId,jdbcType=VARCHAR},
       STATUS = #{record.status,jdbcType=DECIMAL},
       DATE_TIME = #{record.dateTime,jdbcType=VARCHAR}
@@ -185,8 +185,8 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.cmbccd.ulms.youngTalk.domain.Collect">
     update CYT_ARTICAL_COLLECT
     <set>
-      <if test="articalId != null">
-        ARTICAL_ID = #{articalId,jdbcType=DECIMAL},
+      <if test="articleId != null">
+        ARTICAL_ID = #{articleId,jdbcType=DECIMAL},
       </if>
       <if test="userId != null">
         USER_ID = #{userId,jdbcType=VARCHAR},
@@ -202,18 +202,18 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.cmbccd.ulms.youngTalk.domain.Collect">
     update CYT_ARTICAL_COLLECT
-    set ARTICAL_ID = #{articalId,jdbcType=DECIMAL},
+    set ARTICAL_ID = #{articleId,jdbcType=DECIMAL},
       USER_ID = #{userId,jdbcType=VARCHAR},
       STATUS = #{status,jdbcType=DECIMAL},
       DATE_TIME = #{dateTime,jdbcType=VARCHAR}
     where ID = #{id,jdbcType=DECIMAL}
   </update>
  
-  <update id="updateStatusByUserAndArtical" parameterType="com.cmbccd.ulms.youngTalk.domain.Collect">
+  <update id="updateStatusByUserAndArticle" parameterType="com.cmbccd.ulms.youngTalk.domain.Collect">
     update CYT_ARTICAL_COLLECT
     set STATUS = #{status,jdbcType=DECIMAL},
       DATE_TIME = #{dateTime,jdbcType=VARCHAR}
-    where ARTICAL_ID =  #{articalId,jdbcType=DECIMAL} and USER_ID = #{userId,jdbcType=VARCHAR}
+    where ARTICAL_ID =  #{articleId,jdbcType=DECIMAL} and USER_ID = #{userId,jdbcType=VARCHAR}
   </update>
   
   <select id="creatNewId" resultType="java.lang.Integer">

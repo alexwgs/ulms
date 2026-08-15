@@ -21,7 +21,7 @@
             <t-tree
               style="margin-top: 5px"
               :data="tree"
-              @click="routeArtical"
+              @click="routeArticle"
               :keys="{ value: 'id', label: 'name', children: 'children' }"
               expand-all
               activable
@@ -37,7 +37,7 @@
         <div style="width: 100%">
           <t-input-adornment>
             <template #append>
-              <t-button @click="getArticalListByQuery('content')"><template #icon><DynamicIcon name="search" /></template>全文搜索</t-button
+              <t-button @click="getArticleListByQuery('content')"><template #icon><DynamicIcon name="search" /></template>全文搜索</t-button
               >
             </template>
             <t-input
@@ -45,7 +45,7 @@
               v-model="queryInfo.query"
               size="small"
               clearable
-              @change="getArticalListByQuery('keyword')"
+              @change="getArticleListByQuery('keyword')"
             ></t-input>
           </t-input-adornment>
           <div style="padding-top: 10px; font-size: 14px">
@@ -56,14 +56,14 @@
                 closable
                 theme="danger"
                 variant="light"
-                @close="routeArtical(null)"
+                @close="routeArticle(null)"
                 >{{ currentNode.name }}</t-tag
               >
             </div>
           </div>
         </div>
         <CustomTable rowKey="id"
-          :data="articals"
+          :data="articles"
           size="small"
           height="calc(100vh - 250px)"
           style="width: 100%; padding-top: 10px"
@@ -88,7 +88,7 @@
               <a
                 class="link"
                 target="_blank"
-                :href="'/helper/artical/' + scope.row.journo"
+                :href="'/helper/article/' + scope.row.journo"
                 rel="opener"
                 >新窗口打卡</a
               >
@@ -114,7 +114,7 @@
 import { ref, reactive, onMounted, watch } from 'vue'
 import { MessagePlugin } from 'tdesign-vue-next'
 import { treeApi } from '@/api/helper/tree'
-import { articalApi } from '@/api/helper/artical'
+import { articleApi } from '@/api/helper/article'
 import ViewDialog from './components/ViewDialog.vue'
 
 const queryInfo = reactive({
@@ -129,7 +129,7 @@ const queryInfo = reactive({
 })
 
 const filterText = ref('')
-const articals = ref([])
+const articles = ref([])
 const tree = ref([])
 const currentNode = ref(null)
 const total = ref(0)
@@ -150,7 +150,7 @@ const getTree = async () => {
       return
     }
     tree.value = res.data
-    getArticalList()
+    getArticleList()
   } catch (error) {
     MessagePlugin.error(error.message || '获取树形数据失败')
   }
@@ -161,26 +161,26 @@ const filterNode = (node) => {
   return node.data.name.indexOf(filterText.value) !== -1
 }
 
-const getArticalList = async () => {
+const getArticleList = async () => {
   try {
-    const res = await articalApi.getArticals(queryInfo)
+    const res = await articleApi.getArticles(queryInfo)
     if (res.code !== 200) {
       MessagePlugin.error(res.msg)
       return
     }
-    articals.value = res.data.list
+    articles.value = res.data.list
     total.value = res.data.total
   } catch (error) {
     MessagePlugin.error(error.message || '获取文章列表失败')
   }
 }
 
-const getArticalListByQuery = (queryType) => {
+const getArticleListByQuery = (queryType) => {
   queryInfo.queryType = queryType
-  getArticalList()
+  getArticleList()
 }
 
-const routeArtical = (context) => {
+const routeArticle = (context) => {
   // Extract data from TDesign @click context, or use raw value from programmatic calls
   let data
   if (context && context.node) {
@@ -201,17 +201,17 @@ const routeArtical = (context) => {
       activeValue.value = [queryInfo.routeId]
     }
   }
-  getArticalList()
+  getArticleList()
 }
 
 const handleCurrentChange = (page) => {
   queryInfo.pageNum = page
-  getArticalList()
+  getArticleList()
 }
 
 const handleSizeChange = (pageSize) => {
   queryInfo.pageSize = pageSize
-  getArticalList()
+  getArticleList()
 }
 
 const currentView = (journo) => {

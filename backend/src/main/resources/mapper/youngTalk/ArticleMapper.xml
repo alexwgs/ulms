@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.cmbccd.ulms.youngTalk.dao.ArticalMapper">
-  <resultMap id="BaseResultMap" type="com.cmbccd.ulms.youngTalk.domain.Artical">
+<mapper namespace="com.cmbccd.ulms.youngTalk.dao.ArticleMapper">
+  <resultMap id="BaseResultMap" type="com.cmbccd.ulms.youngTalk.domain.Article">
     <result column="ID" jdbcType="DECIMAL" property="id" />
-    <result column="ARTICAL_TYPE" jdbcType="DECIMAL" property="articalType" />
+    <result column="ARTICAL_TYPE" jdbcType="DECIMAL" property="articleType" />
     <result column="CATEGORY" jdbcType="DECIMAL" property="category" />
     <result column="TITLE" jdbcType="VARCHAR" property="title" />
     <result column="STATUS" jdbcType="DECIMAL" property="status" />
@@ -25,7 +25,7 @@
     <result column="RESP_STATUS" jdbcType="DECIMAL" property="respStatus" />
     <result column="ANON_FLAG" jdbcType="DECIMAL" property="anonFlag" />
   </resultMap>
-  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.cmbccd.ulms.youngTalk.domain.Artical">
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.cmbccd.ulms.youngTalk.domain.Article">
     <result column="CONTENT" jdbcType="CLOB" property="content" />
   </resultMap>
   <sql id="Example_Where_Clause">
@@ -94,7 +94,7 @@
   <sql id="Blob_Column_List">
     CONTENT
   </sql>
-  <select id="selectByExampleWithBLOBs" parameterType="com.cmbccd.ulms.youngTalk.domain.ArticalExample" resultMap="ResultMapWithBLOBs">
+  <select id="selectByExampleWithBLOBs" parameterType="com.cmbccd.ulms.youngTalk.domain.ArticleExample" resultMap="ResultMapWithBLOBs">
     select
     <if test="distinct">
       distinct
@@ -110,7 +110,7 @@
       order by ${orderByClause}
     </if>
   </select>
-  <select id="selectByExample" parameterType="com.cmbccd.ulms.youngTalk.domain.ArticalExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.cmbccd.ulms.youngTalk.domain.ArticleExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
@@ -124,13 +124,13 @@
       order by ${orderByClause}
     </if>
   </select>
-  <delete id="deleteByExample" parameterType="com.cmbccd.ulms.youngTalk.domain.ArticalExample">
+  <delete id="deleteByExample" parameterType="com.cmbccd.ulms.youngTalk.domain.ArticleExample">
     delete from CYT_ARTICAL_LIST
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.cmbccd.ulms.youngTalk.domain.Artical">
+  <insert id="insert" parameterType="com.cmbccd.ulms.youngTalk.domain.Article">
     insert into CYT_ARTICAL_LIST (ID, ARTICAL_TYPE, CATEGORY,
                                   TITLE, STATUS, RESP_DEPT,
                                   PUB_USER, PUB_DATE, COMP_TYPE,
@@ -139,7 +139,7 @@
                                   REPLY_NUM, LIKE_NUM, COVER,
                                   FILES, COMP_GRADE, RESP_STATUS,
                                   ANON_FLAG, CONTENT)
-    values (#{id,jdbcType=DECIMAL}, #{articalType,jdbcType=DECIMAL}, #{category,jdbcType=DECIMAL},
+    values (#{id,jdbcType=DECIMAL}, #{articleType,jdbcType=DECIMAL}, #{category,jdbcType=DECIMAL},
             #{title,jdbcType=VARCHAR}, #{status,jdbcType=DECIMAL}, #{respDept,jdbcType=VARCHAR},
             #{pubUser,jdbcType=VARCHAR}, #{pubDate,jdbcType=VARCHAR}, #{compType,jdbcType=DECIMAL},
             #{compDate,jdbcType=VARCHAR}, #{topFlag,jdbcType=DECIMAL}, #{eliteFlag,jdbcType=DECIMAL},
@@ -148,13 +148,13 @@
             #{files,jdbcType=VARCHAR}, #{compGrade,jdbcType=DECIMAL}, #{respStatus,jdbcType=DECIMAL},
             #{anonFlag,jdbcType=DECIMAL}, #{content,jdbcType=CLOB})
   </insert>
-  <insert id="insertSelective" parameterType="com.cmbccd.ulms.youngTalk.domain.Artical">
+  <insert id="insertSelective" parameterType="com.cmbccd.ulms.youngTalk.domain.Article">
     insert into CYT_ARTICAL_LIST
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         ID,
       </if>
-      <if test="articalType != null">
+      <if test="articleType != null">
         ARTICAL_TYPE,
       </if>
       <if test="category != null">
@@ -225,8 +225,8 @@
       <if test="id != null">
         #{id,jdbcType=DECIMAL},
       </if>
-      <if test="articalType != null">
-        #{articalType,jdbcType=DECIMAL},
+      <if test="articleType != null">
+        #{articleType,jdbcType=DECIMAL},
       </if>
       <if test="category != null">
         #{category,jdbcType=DECIMAL},
@@ -293,7 +293,7 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.cmbccd.ulms.youngTalk.domain.ArticalExample" resultType="java.lang.Long">
+  <select id="countByExample" parameterType="com.cmbccd.ulms.youngTalk.domain.ArticleExample" resultType="java.lang.Long">
     select count(*) from CYT_ARTICAL_LIST
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
@@ -305,8 +305,8 @@
       <if test="record.id != null">
         ID = #{record.id,jdbcType=DECIMAL},
       </if>
-      <if test="record.articalType != null">
-        ARTICAL_TYPE = #{record.articalType,jdbcType=DECIMAL},
+      <if test="record.articleType != null">
+        ARTICAL_TYPE = #{record.articleType,jdbcType=DECIMAL},
       </if>
       <if test="record.category != null">
         CATEGORY = #{record.category,jdbcType=DECIMAL},
@@ -379,7 +379,7 @@
   <update id="updateByExampleWithBLOBs" parameterType="map">
     update CYT_ARTICAL_LIST
     set ID = #{record.id,jdbcType=DECIMAL},
-    ARTICAL_TYPE = #{record.articalType,jdbcType=DECIMAL},
+    ARTICAL_TYPE = #{record.articleType,jdbcType=DECIMAL},
     CATEGORY = #{record.category,jdbcType=DECIMAL},
     TITLE = #{record.title,jdbcType=VARCHAR},
     STATUS = #{record.status,jdbcType=DECIMAL},
@@ -408,7 +408,7 @@
   <update id="updateByExample" parameterType="map">
     update CYT_ARTICAL_LIST
     set ID = #{record.id,jdbcType=DECIMAL},
-    ARTICAL_TYPE = #{record.articalType,jdbcType=DECIMAL},
+    ARTICAL_TYPE = #{record.articleType,jdbcType=DECIMAL},
     CATEGORY = #{record.category,jdbcType=DECIMAL},
     TITLE = #{record.title,jdbcType=VARCHAR},
     STATUS = #{record.status,jdbcType=DECIMAL},
@@ -434,11 +434,11 @@
     </if>
   </update>
 
-  <update id="updateByPrimaryKeySelective" parameterType="com.cmbccd.ulms.youngTalk.domain.Artical">
+  <update id="updateByPrimaryKeySelective" parameterType="com.cmbccd.ulms.youngTalk.domain.Article">
     update CYT_ARTICAL_LIST
     <set>
-      <if test="articalType != null">
-        ARTICAL_TYPE = #{articalType,jdbcType=DECIMAL},
+      <if test="articleType != null">
+        ARTICAL_TYPE = #{articleType,jdbcType=DECIMAL},
       </if>
       <if test="category != null">
         CATEGORY = #{category,jdbcType=DECIMAL},
@@ -506,9 +506,9 @@
     </set>
     where ID = #{id,jdbcType=DECIMAL}
   </update>
-  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.cmbccd.ulms.youngTalk.domain.Artical">
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.cmbccd.ulms.youngTalk.domain.Article">
     update CYT_ARTICAL_LIST
-    set ARTICAL_TYPE = #{articalType,jdbcType=DECIMAL},
+    set ARTICAL_TYPE = #{articleType,jdbcType=DECIMAL},
         CATEGORY = #{category,jdbcType=DECIMAL},
         TITLE = #{title,jdbcType=VARCHAR},
         STATUS = #{status,jdbcType=DECIMAL},
@@ -532,9 +532,9 @@
         CONTENT = #{content,jdbcType=CLOB}
     where ID = #{id,jdbcType=DECIMAL}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.cmbccd.ulms.youngTalk.domain.Artical">
+  <update id="updateByPrimaryKey" parameterType="com.cmbccd.ulms.youngTalk.domain.Article">
     update CYT_ARTICAL_LIST
-    set ARTICAL_TYPE = #{articalType,jdbcType=DECIMAL},
+    set ARTICAL_TYPE = #{articleType,jdbcType=DECIMAL},
         CATEGORY = #{category,jdbcType=DECIMAL},
         TITLE = #{title,jdbcType=VARCHAR},
         STATUS = #{status,jdbcType=DECIMAL},
@@ -558,7 +558,7 @@
     where ID = #{id,jdbcType=DECIMAL}
   </update>
 
-  <select id="creatNewArticalId" resultType="java.lang.Integer">
+  <select id="creatNewArticleId" resultType="java.lang.Integer">
     select case when count(*) = 0 then 1 else  max(id)+1 end from CYT_ARTICAL_LIST
   </select>
 

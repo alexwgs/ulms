@@ -2,28 +2,28 @@ import { httpInstance } from '@/utils/request.js'
 
 // 讨论帖相关API
 // 获取讨论帖列表
-export const getArticalList = (params) => {
-  return httpInstance.get('/cyt/articalList', { params })
+export const getArticleList = (params) => {
+  return httpInstance.get('/cyt/articleList', { params })
 }
 
 // 获取讨论帖详情
-export const getArticalDetail = (id) => {
-  return httpInstance.get(`/cyt/artical/${id}`)
+export const getArticleDetail = (id) => {
+  return httpInstance.get(`/cyt/article/${id}`)
 }
 
 // 更新讨论帖
-export const updateArtical = (data) => {
-  return httpInstance.put('/cyt/artical', data)
+export const updateArticle = (data) => {
+  return httpInstance.put('/cyt/article', data)
 }
 
 // 新增讨论帖
-export const addArtical = (data) => {
-  return httpInstance.post('/cyt/artical', data)
+export const addArticle = (data) => {
+  return httpInstance.post('/cyt/article', data)
 }
 
 // 删除讨论帖
-export const deleteArtical = (params) => {
-  return httpInstance.put('/cyt/artical/delete', { params })
+export const deleteArticle = (params) => {
+  return httpInstance.put('/cyt/article/delete', { params })
 }
 
 // 收藏相关API
@@ -104,12 +104,12 @@ export const markAllMessageRead = () => {
 // 课题相关API
 // 获取课题列表
 export const getItemList = (category, params) => {
-  return httpInstance.get(`/cyt/articalList/1/${category}`, { params })
+  return httpInstance.get(`/cyt/articleList/1/${category}`, { params })
 }
 
 // 获取课题详情
 export const getItemDetail = (id) => {
-  return httpInstance.get(`/cyt/artical/${id}`)
+  return httpInstance.get(`/cyt/article/${id}`)
 }
 
 // 获取课题成员
@@ -139,18 +139,18 @@ export const getMyItem = (params) => {
 
 // 承接课题
 export const takeItem = (id) => {
-  return httpInstance.put(`cyt/artical/take/${id}`)
+  return httpInstance.put(`cyt/article/take/${id}`)
 }
 
 // 调研相关API
 // 获取调研列表
 export const getSurveyList = (category, params) => {
-  return httpInstance.get(`/cyt/articalList/3/${category}`, { params })
+  return httpInstance.get(`/cyt/articleList/3/${category}`, { params })
 }
 
 // 获取调研详情
 export const getSurveyDetail = (id) => {
-  return httpInstance.get(`/cyt/artical/${id}`)
+  return httpInstance.get(`/cyt/article/${id}`)
 }
 
 // 获取调研问题
@@ -192,6 +192,6 @@ export const getStageList = () => {
 
 // 我的文章相关API
 // 获取我的文章列表
-export const getMyArtical = (params) => {
-  return httpInstance.get('cyt/myArtical', { params })
+export const getMyArticle = (params) => {
+  return httpInstance.get('cyt/myArticle', { params })
 }

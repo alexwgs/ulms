@@ -714,63 +714,63 @@ public class DailyScoreExample {
             return (Criteria) this;
         }
 
-        public Criteria andArticalStatusIsNull() {
+        public Criteria andArticleStatusIsNull() {
             addCriterion("ARTICAL_STATUS is null");
             return (Criteria) this;
         }
 
-        public Criteria andArticalStatusIsNotNull() {
+        public Criteria andArticleStatusIsNotNull() {
             addCriterion("ARTICAL_STATUS is not null");
             return (Criteria) this;
         }
 
-        public Criteria andArticalStatusEqualTo(Short value) {
-            addCriterion("ARTICAL_STATUS =", value, "articalStatus");
+        public Criteria andArticleStatusEqualTo(Short value) {
+            addCriterion("ARTICAL_STATUS =", value, "articleStatus");
             return (Criteria) this;
         }
 
-        public Criteria andArticalStatusNotEqualTo(Short value) {
-            addCriterion("ARTICAL_STATUS <>", value, "articalStatus");
+        public Criteria andArticleStatusNotEqualTo(Short value) {
+            addCriterion("ARTICAL_STATUS <>", value, "articleStatus");
             return (Criteria) this;
         }
 
-        public Criteria andArticalStatusGreaterThan(Short value) {
-            addCriterion("ARTICAL_STATUS >", value, "articalStatus");
+        public Criteria andArticleStatusGreaterThan(Short value) {
+            addCriterion("ARTICAL_STATUS >", value, "articleStatus");
             return (Criteria) this;
         }
 
-        public Criteria andArticalStatusGreaterThanOrEqualTo(Short value) {
-            addCriterion("ARTICAL_STATUS >=", value, "articalStatus");
+        public Criteria andArticleStatusGreaterThanOrEqualTo(Short value) {
+            addCriterion("ARTICAL_STATUS >=", value, "articleStatus");
             return (Criteria) this;
         }
 
-        public Criteria andArticalStatusLessThan(Short value) {
-            addCriterion("ARTICAL_STATUS <", value, "articalStatus");
+        public Criteria andArticleStatusLessThan(Short value) {
+            addCriterion("ARTICAL_STATUS <", value, "articleStatus");
             return (Criteria) this;
         }
 
-        public Criteria andArticalStatusLessThanOrEqualTo(Short value) {
-            addCriterion("ARTICAL_STATUS <=", value, "articalStatus");
+        public Criteria andArticleStatusLessThanOrEqualTo(Short value) {
+            addCriterion("ARTICAL_STATUS <=", value, "articleStatus");
             return (Criteria) this;
         }
 
-        public Criteria andArticalStatusIn(List<Short> values) {
-            addCriterion("ARTICAL_STATUS in", values, "articalStatus");
+        public Criteria andArticleStatusIn(List<Short> values) {
+            addCriterion("ARTICAL_STATUS in", values, "articleStatus");
             return (Criteria) this;
         }
 
-        public Criteria andArticalStatusNotIn(List<Short> values) {
-            addCriterion("ARTICAL_STATUS not in", values, "articalStatus");
+        public Criteria andArticleStatusNotIn(List<Short> values) {
+            addCriterion("ARTICAL_STATUS not in", values, "articleStatus");
             return (Criteria) this;
         }
 
-        public Criteria andArticalStatusBetween(Short value1, Short value2) {
-            addCriterion("ARTICAL_STATUS between", value1, value2, "articalStatus");
+        public Criteria andArticleStatusBetween(Short value1, Short value2) {
+            addCriterion("ARTICAL_STATUS between", value1, value2, "articleStatus");
             return (Criteria) this;
         }
 
-        public Criteria andArticalStatusNotBetween(Short value1, Short value2) {
-            addCriterion("ARTICAL_STATUS not between", value1, value2, "articalStatus");
+        public Criteria andArticleStatusNotBetween(Short value1, Short value2) {
+            addCriterion("ARTICAL_STATUS not between", value1, value2, "articleStatus");
             return (Criteria) this;
         }
 

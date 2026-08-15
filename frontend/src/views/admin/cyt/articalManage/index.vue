@@ -7,7 +7,7 @@
             <t-form-item label="年份" name="dateYear">
               <t-date-picker
                 size="small"
-                @change="getArticalList"
+                @change="getArticleList"
                 v-model="yearPicker"
                 mode="year"
                 placeholder="选择年"
@@ -19,7 +19,7 @@
               <t-select
                 size="small"
                 v-model="queryInfo.category"
-                @change="getArticalList"
+                @change="getArticleList"
                 placeholder="全部"
               >
                 <t-option :value="-1" label="全部"></t-option>
@@ -38,7 +38,7 @@
               <t-select
                 size="small"
                 v-model="queryInfo.status"
-                @change="getArticalList"
+                @change="getArticleList"
                 placeholder="全部"
               >
                 <t-option label="全部" value=""></t-option>
@@ -57,7 +57,7 @@
               <t-select
                 size="small"
                 v-model="queryInfo.topFlag"
-                @change="getArticalList"
+                @change="getArticleList"
                 placeholder="全部"
               >
                 <t-option label="全部" value=""></t-option>
@@ -71,7 +71,7 @@
               <t-select
                 size="small"
                 v-model="queryInfo.eliteFlag"
-                @change="getArticalList"
+                @change="getArticleList"
                 placeholder="全部"
               >
                 <t-option label="全部" value=""></t-option>
@@ -85,7 +85,7 @@
               <t-select
                 size="small"
                 v-model="queryInfo.onStage"
-                @change="getArticalList"
+                @change="getArticleList"
                 placeholder="全部"
               >
                 <t-option label="全部" value=""></t-option>
@@ -97,7 +97,7 @@
         </t-row>
       </t-form>
       <CustomTable rowKey="id"
-        :data="articals"
+        :data="articles"
         size="small"
         stripe
         height="calc(100vh - 360px)"
@@ -117,7 +117,7 @@
         </TableColumn>
         <TableColumn colKey="title" label="标题">
           <template #default="scope">
-            <t-link theme="primary" @click="viewArtical(scope.row)">{{
+            <t-link theme="primary" @click="viewArticle(scope.row)">{{
               scope.row.title
             }}</t-link>
           </template>
@@ -262,16 +262,16 @@ import { MessagePlugin, LoadingPlugin } from 'tdesign-vue-next'
 import { useRouter } from 'vue-router'
 import { usePagination } from '@/hooks/usePagination'
 import {
-  getArticalList as fetchArticalList,
-  setArticalStatus,
-  examineArtical,
-  updateArticalCategory
+  getArticleList as fetchArticleList,
+  setArticleStatus,
+  examineArticle,
+  updateArticleCategory
 } from '@/api/cyt/index.js'
 import { useDictStore } from '@/stores'
 const dictStore = useDictStore()
 const router = useRouter()
 
-const articals = ref([])
+const articles = ref([])
 const loading = ref(false)
 const total = ref(0)
 const yearPicker = ref(new Date())
@@ -303,18 +303,18 @@ const categoryForm = reactive({
   category: ''
 })
 
-const getArticalList = async () => {
+const getArticleList = async () => {
   try {
     loading.value = true
     if (yearPicker.value != null && yearPicker.value !== '') {
       queryInfo.dateYear = yearPicker.value.getFullYear()
     }
-    const res = await fetchArticalList(queryInfo.category, queryInfo)
+    const res = await fetchArticleList(queryInfo.category, queryInfo)
     if (res.code !== 200) {
       MessagePlugin.error(res.msg)
       return
     }
-    articals.value = res.data.list
+    articles.value = res.data.list
     total.value = res.data.total
   } catch (error) {
     console.error('获取文章列表失败:', error)
@@ -324,7 +324,7 @@ const getArticalList = async () => {
   }
 }
 
-const viewArtical = (row) => {
+const viewArticle = (row) => {
   const url = router.resolve({ path: '/cyt/item/' + row.id })
   window.open(url.href, '_blank')
 }
@@ -332,13 +332,13 @@ const viewArtical = (row) => {
 const setTopAndSoOn = async (type, id, val) => {
   try {
     let newVal = val === 1 ? 0 : 1
-    const res = await setArticalStatus(type, id, newVal)
+    const res = await setArticleStatus(type, id, newVal)
     if (res.code !== 200) {
       MessagePlugin.error(res.msg)
       return
     }
     MessagePlugin.success(res.msg)
-    getArticalList()
+    getArticleList()
   } catch (error) {
     console.error('设置文章状态失败:', error)
     MessagePlugin.error('设置文章状态失败')
@@ -347,7 +347,7 @@ const setTopAndSoOn = async (type, id, val) => {
 
 const { currentPage, pageSizes, handleCurrentChange, handleSizeChange } = usePagination({
   query: queryInfo,
-  fetch: getArticalList,
+  fetch: getArticleList,
   pageSizes: [20, 100, 500]
 })
 
@@ -359,14 +359,14 @@ const examineItem = (row) => {
 
 const examineSubmit = async () => {
   try {
-    const res = await examineArtical(examineForm)
+    const res = await examineArticle(examineForm)
     if (res.code !== 200) {
       MessagePlugin.error(res.msg)
       return
     }
     MessagePlugin.success(res.msg)
     examineDialogVisible.value = false
-    getArticalList()
+    getArticleList()
   } catch (error) {
     console.error('审核文章失败:', error)
     MessagePlugin.error('审核文章失败')
@@ -387,14 +387,14 @@ const updateCategory = (row) => {
 
 const categorySubmit = async () => {
   try {
-    const res = await updateArticalCategory(categoryForm)
+    const res = await updateArticleCategory(categoryForm)
     if (res.code !== 200) {
       MessagePlugin.error(res.msg)
       return
     }
     MessagePlugin.success(res.msg)
     categoryDialogVisible.value = false
-    getArticalList()
+    getArticleList()
   } catch (error) {
     console.error('移动文章分类失败:', error)
     MessagePlugin.error('移动文章分类失败')
@@ -402,7 +402,7 @@ const categorySubmit = async () => {
 }
 
 onMounted(() => {
-  getArticalList()
+  getArticleList()
 })
 </script>
 

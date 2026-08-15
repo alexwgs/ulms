@@ -5,7 +5,7 @@ import java.util.List;
 public class Question {
     private Integer id;
 
-    private Integer articalId;
+    private Integer articleId;
 
     private String questionType;
 
@@ -27,12 +27,12 @@ public class Question {
         this.id = id;
     }
 
-    public Integer getArticalId() {
-        return articalId;
+    public Integer getArticleId() {
+        return articleId;
     }
 
-    public void setArticalId(Integer articalId) {
-        this.articalId = articalId;
+    public void setArticleId(Integer articleId) {
+        this.articleId = articleId;
     }
 
     public String getQuestionType() {
@@ -85,7 +85,7 @@ public class Question {
 
 	@Override
 	public String toString() {
-		return "Question [id=" + id + ", articalId=" + articalId + ", questionType=" + questionType + ", content="
+		return "Question [id=" + id + ", articleId=" + articleId + ", questionType=" + questionType + ", content="
 				+ content + ", sort=" + sort + ", options=" + options + ", answer=" + answer + ", checkboxs="
 				+ checkboxs + "]";
 	}

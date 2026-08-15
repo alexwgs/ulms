@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.Map;
 
 public interface CommentService {
-	public List<Comment> getCommentByArticalId(int articalId);
+	public List<Comment> getCommentByArticleId(int articleId);
 
-	public DataPage<Comment> listCommentByQuery(int articalId, Map<String, String> params, String userId);
+	public DataPage<Comment> listCommentByQuery(int articleId, Map<String, String> params, String userId);
 	
 	public int insertNewComment (Comment record);
 	

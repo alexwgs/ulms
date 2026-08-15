@@ -1,6 +1,6 @@
 package com.cmbccd.ulms.helper.domain;
 
-public class HelperArtical {
+public class HelperArticle {
     private String journo;
 
     private String area;

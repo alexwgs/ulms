@@ -1,14 +1,14 @@
 <template>
   <div>
     <t-dialog
-      v-model:visible="articalDialogVisible"
+      v-model:visible="articleDialogVisible"
       width="80%"
       :before-close="handleClose"
       top="8vh"
       :close-on-overlay-click="false"
     >
-      <div v-if="artical" class="main-content">
-        <div class="title">{{ artical.title }}</div>
+      <div v-if="article" class="main-content">
+        <div class="title">{{ article.title }}</div>
         <div style="padding-top: 10px">
           标签：
           <span v-for="item in keyword" :key="item" style="padding-left: 5px">
@@ -16,22 +16,22 @@
               {{ item }}
             </t-tag>
           </span>
-          <div class="artical-icon">
+          <div class="article-icon">
             <span style="color: var(--td-text-color-placeholder); font-size: 14px; padding-right: 10px"
-              >发布人：{{ artical.insertPlo }} &emsp;|&emsp;发布时间：{{
-                artical.insertDate
+              >发布人：{{ article.insertPlo }} &emsp;|&emsp;发布时间：{{
+                article.insertDate
               }}</span
             >
           </div>
         </div>
-        <div class="artical-text" v-html="content"></div>
+        <div class="article-text" v-html="content"></div>
         <p
-          v-if="artical.hasOwnProperty('files') && artical.files != null"
+          v-if="article.hasOwnProperty('files') && article.files != null"
           style="margin-bottom: 0"
         >
           附件下载：<t-button
             size="small"
-            v-for="(file, index) in JSON.parse(artical.files)"
+            v-for="(file, index) in JSON.parse(article.files)"
             :key="index"
             @click="downloadFile(file.path)"
             theme="primary"
@@ -46,7 +46,7 @@
             <template #prepend>关键词高亮</template>
             <t-input v-model.trim="searchWord" size="small" placeholder="快速搜索" :clearable="true"></t-input>
           </t-input-adornment>
-          <t-button size="small" @click="articalDialogVisible = false"
+          <t-button size="small" @click="articleDialogVisible = false"
             >关闭</t-button
           >
         </div>
@@ -58,28 +58,28 @@
 <script setup>
 import { ref, watch } from 'vue'
 import { MessagePlugin } from 'tdesign-vue-next'
-import { articalApi } from '@/api/helper/artical'
+import { articleApi } from '@/api/helper/article'
 
 const fsURL = import.meta.env.VITE_FILE_BASE_URL || 'http://localhost:8080'
 
-const articalDialogVisible = ref(false)
+const articleDialogVisible = ref(false)
 const keyword = ref([])
-const artical = ref(null)
+const article = ref(null)
 const searchWord = ref(null)
 const content = ref('')
 
 const init = async (journo, searchWordParam) => {
   try {
-    const res = await articalApi.getArticalById(journo)
+    const res = await articleApi.getArticleById(journo)
     if (res.code !== 200) {
       MessagePlugin.error(res.msg)
       return
     }
-    artical.value = res.data
+    article.value = res.data
     keyword.value = res.data.keyWord.split('|')
-    content.value = artical.value.content
+    content.value = article.value.content
     searchWord.value = searchWordParam
-    articalDialogVisible.value = true
+    articleDialogVisible.value = true
   } catch (error) {
     MessagePlugin.error(error.message || '获取文章失败')
   }
@@ -87,7 +87,7 @@ const init = async (journo, searchWordParam) => {
 
 const handleClose = () => {
   // TDesign 的 @before-close 不提供 done 回调，直接修改 v-model:visible
-  articalDialogVisible.value = false
+  articleDialogVisible.value = false
 }
 
 const downloadFile = (path) => {
@@ -105,16 +105,16 @@ function escapeRegExp(str) {
 }
 
 watch(searchWord, (newSearchWord) => {
-  if (artical.value && artical.value.content) {
+  if (article.value && article.value.content) {
     if (newSearchWord && newSearchWord.length > 0) {
       const escaped = escapeHtml(newSearchWord)
       const Reg = new RegExp(escapeRegExp(escaped), 'g')
-      content.value = artical.value.content.replace(
+      content.value = article.value.content.replace(
         Reg,
         `<span style="color: #ff5134;background-color: #e0e400;font-weight: 600;">${escaped}</span>`
       )
     } else {
-      content.value = artical.value.content
+      content.value = article.value.content
     }
   }
 })
@@ -135,7 +135,7 @@ defineExpose({
     margin-top: -20px;
     width: 100%;
   }
-  .artical-text {
+  .article-text {
     height: calc(100vh - 400px);
     width: 100%;
     margin-top: 10px;
@@ -148,7 +148,7 @@ defineExpose({
   text-decoration: none;
   color: chocolate;
 }
-.artical-icon {
+.article-icon {
   float: right;
   i {
     margin-right: 20px;

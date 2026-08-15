@@ -25,29 +25,29 @@ public class MemberController {
 	@Resource
 	private MemberService memberService;
 
-	@PostMapping(value = "member/{articalId}")
-	public Msg setMember(@PathVariable("articalId") int articalId, @RequestBody List<Member> members) {
+	@PostMapping(value = "member/{articleId}")
+	public Msg setMember(@PathVariable("articleId") int articleId, @RequestBody List<Member> members) {
 		String userId = Util.userIdByShiro();
 		if (userId.equals("0")) {
 			return Msg.error("您无权做此操作！请通过A6广场操作！");
 		}
 
-		memberService.invalidByArticalId(articalId);
+		memberService.invalidByArticleId(articleId);
 		for (Member member : members) {
-			member.setArticalId(articalId);
+			member.setArticleId(articleId);
 			memberService.insertRecord(member);
 		}
 		return Msg.success();
 	}
 
-	@GetMapping(value = "member/{articalId}")
-	public Msg getMember(@PathVariable("articalId") int articalId) {
+	@GetMapping(value = "member/{articleId}")
+	public Msg getMember(@PathVariable("articleId") int articleId) {
 		// String userId = Util.userIdByShiro();
 //		if (userId.equals("0")) {
 //			return Msg.error("您无权做此操作！请通过A6广场操作！");
 //		}
 
-		List<Member> members = memberService.getMemberListByArticalId(articalId);
+		List<Member> members = memberService.getMemberListByArticleId(articleId);
 		for (Member member : members) {
 			member.setUser(DataCache.getEmployees().get(member.getUserId()));
 		}

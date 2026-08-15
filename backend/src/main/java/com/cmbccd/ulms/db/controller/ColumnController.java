@@ -1,5 +1,6 @@
 package com.cmbccd.ulms.db.controller;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.cmbccd.ulms.common.util.Util;
 import com.cmbccd.ulms.db.domain.Column;
 import com.cmbccd.ulms.db.service.ColumnService;
@@ -21,6 +22,7 @@ public class ColumnController {
 	 * @return
 	 */
 	@GetMapping("/{tid}")
+	@SaCheckPermission("db:column:list")
 	public Msg getColumnsByTid(@PathVariable("tid") String tid) {
 		if(Util.isNullorEmpty(tid)) return Msg.error("没有获取到表参数！");
 		if (Util.isInteger(tid)) {
@@ -36,6 +38,7 @@ public class ColumnController {
 	 * @return
 	 */
 	@PostMapping("/update")
+	@SaCheckPermission("db:column:update")
 	public Msg updateColumnsByTid(@RequestBody List<Column> list) {
 		for(Column record: list) {
 			columnService.update(record);

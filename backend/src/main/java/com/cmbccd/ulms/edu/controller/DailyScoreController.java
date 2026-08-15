@@ -36,9 +36,9 @@ public class DailyScoreController {
 		return Msg.success(dailyScoreResult);
 	}
 
-	@PostMapping("/artical/submit")
-	public Msg submitArticalStudy(@RequestBody DailyScore dailyScore) {
-		DailyScore dailyScoreResult = dailyScoreService.submitArticalStudy(dailyScore);
+	@PostMapping("/article/submit")
+	public Msg submitArticleStudy(@RequestBody DailyScore dailyScore) {
+		DailyScore dailyScoreResult = dailyScoreService.submitArticleStudy(dailyScore);
 		if(Util.isNullorEmpty(dailyScoreResult)) return Msg.error("数据提交失败！");
 		return Msg.success(dailyScoreResult);
 	}

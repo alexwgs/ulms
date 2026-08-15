@@ -19,10 +19,10 @@ public class LikeServiceImpl implements LikeService {
 	private LikeMapper likeMapper;
 
 	@Override
-	public int isUserLikeByArticalId(int articalId , String userId) {
+	public int isUserLikeByArticleId(int articleId , String userId) {
 		LikeExample example = new LikeExample();
 		Criteria criteria = example.createCriteria();
-		criteria.andArticalIdEqualTo(articalId);
+		criteria.andArticleIdEqualTo(articleId);
 		criteria.andUserIdEqualTo(userId);
 		criteria.andLikeTypeEqualTo(1);
 		criteria.andStatusEqualTo(1);
@@ -48,7 +48,7 @@ public class LikeServiceImpl implements LikeService {
 	public List<Like> getCommentLikeById(int commentId, String userId) {
 		LikeExample example = new LikeExample();
 		Criteria criteria = example.createCriteria();
-		criteria.andArticalIdEqualTo(commentId);
+		criteria.andArticleIdEqualTo(commentId);
 		criteria.andUserIdEqualTo(userId);
 		criteria.andLikeTypeEqualTo(2);
 		criteria.andStatusEqualTo(1);

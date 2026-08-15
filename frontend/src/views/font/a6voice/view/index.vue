@@ -1,18 +1,18 @@
 <template>
-  <div class="artical-view-container">
+  <div class="article-view-container">
     <div class="main-container">
       <t-row :gutter="20">
         <t-col :span="8">
-          <div class="artical-content">
+          <div class="article-content">
             <t-breadcrumb separator="/">
               <t-breadcrumb-item :to="{ path: '/a6voice' }">A6有声</t-breadcrumb-item>
               <t-breadcrumb-item>{{ typeName }}</t-breadcrumb-item>
-              <t-breadcrumb-item>{{ artical.title }}</t-breadcrumb-item>
+              <t-breadcrumb-item>{{ article.title }}</t-breadcrumb-item>
             </t-breadcrumb>
 
-            <h2 class="artical-title">{{ artical.title }}</h2>
+            <h2 class="article-title">{{ article.title }}</h2>
 
-            <div class="artical-meta" style="
+            <div class="article-meta" style="
                 display: flex;
                 align-items: center;
                 gap: 12px;
@@ -24,9 +24,9 @@
                 </t-tag>
               </div>
               <span style="color: var(--td-text-color-placeholder)">发布人：{{
-                artical.user ? artical.user.ploName : '匿名'
+                article.user ? article.user.ploName : '匿名'
               }}</span>
-              <span style="color: var(--td-text-color-placeholder)">发布时间：{{ artical.pubDate }}</span>
+              <span style="color: var(--td-text-color-placeholder)">发布时间：{{ article.pubDate }}</span>
               <div style="
                   margin-left: auto;
                   display: flex;
@@ -36,24 +36,24 @@
                 <span><t-icon>
                     <View />
                   </t-icon>
-                  {{ artical.viewNum + 1 }} 次</span>
+                  {{ article.viewNum + 1 }} 次</span>
                 <span><t-icon>
                     <StarFilled />
                   </t-icon>
-                  {{ artical.collectNum }}</span>
+                  {{ article.collectNum }}</span>
                 <span><t-icon>
                     <Pointer />
-                  </t-icon> {{ artical.likeNum }}</span>
+                  </t-icon> {{ article.likeNum }}</span>
                 <span><t-icon>
                     <ChatSquare />
                   </t-icon>
-                  {{ artical.replyNum }}</span>
+                  {{ article.replyNum }}</span>
               </div>
             </div>
 
             <t-divider></t-divider>
 
-            <div v-if="articalType === 'item'" class="item-members">
+            <div v-if="articleType === 'item'" class="item-members">
               <div v-for="member in members" :key="member.id" class="member-card">
                 <t-avatar :src="fsURL + member.user.avatar" size="50px"></t-avatar>
                 <div class="member-info">
@@ -63,29 +63,29 @@
               </div>
             </div>
 
-            <div class="artical-body" v-html="artical.content"></div>
+            <div class="article-body" v-html="article.content"></div>
 
-            <div v-if="artical.files" class="attachments">
+            <div v-if="article.files" class="attachments">
               <div class="attach-title">附件下载：</div>
-              <t-button v-for="(file, index) in parseFiles(artical.files)" :key="index" size="small" theme="primary"
+              <t-button v-for="(file, index) in parseFiles(article.files)" :key="index" size="small" theme="primary"
                 variant="outline" @click="downloadFile(file)">
                 {{ file.name }}
               </t-button>
             </div>
 
-            <div class="artical-actions">
+            <div class="article-actions">
               <t-button :theme="isLike ? 'primary' : 'default'" :disabled="isLike === 1" @click="handleLike">
-                <i class="iconfont iconzan1"></i> 点赞 {{ artical.likeNum }}
+                <i class="iconfont iconzan1"></i> 点赞 {{ article.likeNum }}
               </t-button>
               <t-button :theme="isCollect ? 'primary' : 'default'" @click="handleCollect">
                 <i class="iconfont iconshoucang1"></i>
-                {{ isCollect ? '已' : '' }}收藏 {{ artical.collectNum }}
+                {{ isCollect ? '已' : '' }}收藏 {{ article.collectNum }}
               </t-button>
             </div>
           </div>
 
           <t-card v-if="showComment" class="comment-section">
-            <Comment ref="commentRef" :artical-id="articalId" :pub-user="artical.pubUser"
+            <Comment ref="commentRef" :article-id="articleId" :pub-user="article.pubUser"
               :show-anon-option="flags.anonFlag" :show-comment-form="flags.commentFlag"
               @comment-submitted="onCommentSubmitted" />
           </t-card>
@@ -95,7 +95,7 @@
         </t-col>
 
         <t-col :span="4">
-          <t-card v-if="articalType === 'item'" class="progress-card">
+          <t-card v-if="articleType === 'item'" class="progress-card">
             <template #header>
               <span>项目进度</span>
             </template>
@@ -105,7 +105,7 @@
             </div>
           </t-card>
 
-          <t-card v-if="articalType === 'survey'" class="survey-card">
+          <t-card v-if="articleType === 'survey'" class="survey-card">
             <template #header>
               <span>调研信息</span>
             </template>
@@ -133,7 +133,7 @@
             </template>
             <div class="related-list">
               <div v-for="item in relatedList" :key="item.id" class="related-item"
-                @click="goToartical(item.id, item.articalType)">
+                @click="goToarticle(item.id, item.articleType)">
                 <span class="related-title">{{ item.title }}</span>
                 <span class="related-num">{{ item.replyNum }} 条评论</span>
               </div>
@@ -153,13 +153,13 @@ import Comment from './components/Comment.vue'
 import useDictStore from '@/stores/modules/dict'
 import { sanitizeHtml } from '@/utils/tools'
 import {
-  getArticalDetail,
+  getArticleDetail,
   toggleLike,
   toggleCollect,
   getItemMembers,
   getItemProgress,
   getSurveyDetail,
-  getArticalList
+  getArticleList
 } from '@/api/a6voice/index.js'
 const dictStore = useDictStore()
 const route = useRoute()
@@ -167,10 +167,10 @@ const router = useRouter()
 
 const fsURL = import.meta.env.VITE_FILE_BASE_URL || ''
 
-const articalId = ref(route.params.id)
-const articalType = ref(route.params.type || 'view')
+const articleId = ref(route.params.id)
+const articleType = ref(route.params.type || 'view')
 
-const artical = ref({})
+const article = ref({})
 const isLike = ref(0)
 const isCollect = ref(0)
 const members = ref([])
@@ -187,32 +187,32 @@ const typeName = computed(() => {
     item: '课题',
     survey: '调研'
   }
-  return typeMap[articalType.value] || '讨论'
+  return typeMap[articleType.value] || '讨论'
 })
 
-const articalTypeNum = computed(() => {
+const articleTypeNum = computed(() => {
   const typeMap = {
     view: 2,
     item: 1,
     survey: 3
   }
-  return typeMap[articalType.value] || 2
+  return typeMap[articleType.value] || 2
 })
 
 const activeTags = computed(() => {
   const tags = []
-  if (artical.value.topFlag === 1) tags.push({ label: '置顶', type: 'success' })
-  if (artical.value.eliteFlag === 1)
+  if (article.value.topFlag === 1) tags.push({ label: '置顶', type: 'success' })
+  if (article.value.eliteFlag === 1)
     tags.push({ label: '精华', type: 'danger' })
-  if (artical.value.compType) {
+  if (article.value.compType) {
     const compTypeMap = {
       1: { label: '已结案', type: 'success' },
       2: { label: '待结案', type: 'warning' },
       3: { label: '待认领', type: 'info' },
       6: { label: '进行中', type: '' }
     }
-    if (compTypeMap[artical.value.compType]) {
-      tags.push(compTypeMap[artical.value.compType])
+    if (compTypeMap[article.value.compType]) {
+      tags.push(compTypeMap[article.value.compType])
     }
   }
   return tags
@@ -225,14 +225,14 @@ const progressStatus = computed(() => {
 })
 
 const showComment = computed(() => {
-  if (!artical.value.category) return true
-  const categoryDesc = getCategoryDescription(artical.value.category)
+  if (!article.value.category) return true
+  const categoryDesc = getCategoryDescription(article.value.category)
   return categoryDesc?.commentFlag !== false
 })
 
 const flags = computed(() => {
-  if (!artical.value.category) return {}
-  return getCategoryDescription(artical.value.category)
+  if (!article.value.category) return {}
+  return getCategoryDescription(article.value.category)
 })
 
 const getCategoryDescription = (category) => {
@@ -260,23 +260,23 @@ const downloadFile = (file) => {
   window.open(fsURL + file.path)
 }
 
-const fetchartical = async () => {
+const fetcharticle = async () => {
   try {
-    const res = await getArticalDetail(articalId.value)
+    const res = await getArticleDetail(articleId.value)
     if (res.code !== 200) {
       MessagePlugin.error(res.msg)
       return
     }
-    artical.value = res.data
-    artical.value.content = sanitizeHtml(res.data.content)
+    article.value = res.data
+    article.value.content = sanitizeHtml(res.data.content)
     isLike.value = res.data.isLike || 0
     isCollect.value = res.data.isCollect || 0
-    document.title = `[A6有声]${artical.value.title}`
+    document.title = `[A6有声]${article.value.title}`
 
-    if (articalType.value === 'item') {
+    if (articleType.value === 'item') {
       await fetchItemMembers()
       await fetchItemProgress()
-    } else if (articalType.value === 'survey') {
+    } else if (articleType.value === 'survey') {
       await fetchSurveyStats()
     }
   } catch (error) {
@@ -286,7 +286,7 @@ const fetchartical = async () => {
 
 const fetchItemMembers = async () => {
   try {
-    const res = await getItemMembers(articalId.value)
+    const res = await getItemMembers(articleId.value)
     if (res.code === 200) {
       members.value = res.data || []
     }
@@ -297,7 +297,7 @@ const fetchItemMembers = async () => {
 
 const fetchItemProgress = async () => {
   try {
-    const res = await getItemProgress(articalId.value)
+    const res = await getItemProgress(articleId.value)
     if (res.code === 200) {
       progress.value = res.data?.progress || 0
       currentStage.value = res.data?.stageName || ''
@@ -309,7 +309,7 @@ const fetchItemProgress = async () => {
 
 const fetchSurveyStats = async () => {
   try {
-    const res = await getSurveyDetail(articalId.value)
+    const res = await getSurveyDetail(articleId.value)
     if (res.code === 200) {
       surveyStats.value = res.data || {}
       hasAnswered.value = res.data?.hasAnswer || false
@@ -321,14 +321,14 @@ const fetchSurveyStats = async () => {
 
 const fetchRelatedList = async () => {
   try {
-    const res = await getArticalList({
-      category: artical.value.category,
+    const res = await getArticleList({
+      category: article.value.category,
       pageSize: 5,
       pageNum: 1
     })
     if (res.code === 200) {
       relatedList.value = (res.data.list || [])
-        .filter((item) => item.id !== articalId.value)
+        .filter((item) => item.id !== articleId.value)
         .slice(0, 5)
     }
   } catch (error) {
@@ -338,13 +338,13 @@ const fetchRelatedList = async () => {
 
 const handleLike = async () => {
   try {
-    const res = await toggleLike(1, articalId.value)
+    const res = await toggleLike(1, articleId.value)
     if (res.code !== 200) {
       MessagePlugin.error(res.msg)
       return
     }
     isLike.value = 1
-    artical.value.likeNum++
+    article.value.likeNum++
     MessagePlugin.success(res.msg)
   } catch (error) {
     console.error('点赞失败', error)
@@ -353,16 +353,16 @@ const handleLike = async () => {
 
 const handleCollect = async () => {
   try {
-    const res = await toggleCollect(articalId.value, isCollect.value)
+    const res = await toggleCollect(articleId.value, isCollect.value)
     if (res.code !== 200) {
       MessagePlugin.error(res.msg)
       return
     }
     isCollect.value = isCollect.value === 1 ? 0 : 1
     if (isCollect.value === 1) {
-      artical.value.collectNum++
+      article.value.collectNum++
     } else {
-      artical.value.collectNum--
+      article.value.collectNum--
     }
     MessagePlugin.success(res.msg)
   } catch (error) {
@@ -371,36 +371,36 @@ const handleCollect = async () => {
 }
 
 const onCommentSubmitted = () => {
-  artical.value.replyNum++
+  article.value.replyNum++
 }
 
 const handleAnswerSurvey = () => {
   const url = router.resolve({
-    path: `/artical/survey/${articalId.value}`,
+    path: `/article/survey/${articleId.value}`,
     query: { answer: 1 }
   })
   window.open(url.href, '_blank')
 }
 
-const goToartical = (id, type) => {
+const goToarticle = (id, type) => {
   const typeMap = {
     1: 'item',
     2: 'view',
     3: 'survey'
   }
   const routeType = typeMap[type] || 'view'
-  const url = router.resolve(`/artical/${routeType}/${id}`)
+  const url = router.resolve(`/article/${routeType}/${id}`)
   window.open(url.href, '_blank')
 }
 
 onMounted(() => {
-  fetchartical()
+  fetcharticle()
   fetchRelatedList()
 })
 </script>
 
 <style scoped>
-.artical-view-container {
+.article-view-container {
   width: 100%;
   min-height: 100vh;
 -colorbackground: #fff;
@@ -413,15 +413,15 @@ onMounted(() => {
   padding: 0 20px;
 }
 
-.artical-content {
+.article-content {
 background: #fff;
   padding: 20px;
   border-radius: 4px;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
 
-.artical-meta {
-  .artical-info {
+.article-meta {
+  .article-info {
     color: var(--td-text-color-placeholder);
     font-size: 14px;
     margin-bottom: 10px;
@@ -432,7 +432,7 @@ background: #fff;
   }
 }
 
-.artical-body {
+.article-body {
   min-height: 300px;
   padding: 20px 0;
   word-wrap: break-word;
@@ -485,7 +485,7 @@ background: #f5f7fa;
   }
 }
 
-.artical-actions {
+.article-actions {
   margin-top: 30px;
   text-align: center;
 

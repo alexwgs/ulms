@@ -12,7 +12,7 @@ import com.cmbccd.ulms.youngTalk.dao.MessageMapper;
 import com.cmbccd.ulms.youngTalk.domain.Message;
 import com.cmbccd.ulms.youngTalk.domain.MessageExample;
 import com.cmbccd.ulms.youngTalk.domain.MessageExample.Criteria;
-import com.cmbccd.ulms.youngTalk.service.ArticalService;
+import com.cmbccd.ulms.youngTalk.service.ArticleService;
 import com.cmbccd.ulms.youngTalk.service.MessageService;
 import com.github.pagehelper.PageHelper;
 
@@ -25,7 +25,7 @@ public class MessageServiceImpl implements MessageService {
 	private MessageMapper messageMapper;
 
 	@Resource
-	private ArticalService articalService;
+	private ArticleService articleService;
 
 	@Override
 	public int insertMessage(Message record) {
@@ -70,7 +70,7 @@ public class MessageServiceImpl implements MessageService {
 		PageHelper.startPage(pageParams.get("pageNum"), pageParams.get("pageSize"));
 		List<Message> messages = messageMapper.selectByExample(example);
 		for (Message message : messages) {
-			message.setArtical(articalService.getArticalByIdWithNoContent(message.getArticalId()));
+			message.setArticle(articleService.getArticleByIdWithNoContent(message.getArticleId()));
 			message.setfUser(DataCache.getEmployees().get(message.getFromUser()));
 		}
 		return new DataPage<Message>(messages);

@@ -9,7 +9,7 @@
       <t-step-item title="心情打卡" v-if="tabFlag.mood"><template #icon><DynamicIcon name="star" /></template></t-step-item>
       <t-step-item title="今日身份" v-if="tabFlag.identity"><template #icon><DynamicIcon name="user" /></template></t-step-item>
       <t-step-item
-        title="公布栏学习" v-if="tabFlag.artical"
+        title="公布栏学习" v-if="tabFlag.article"
       ><template #icon><DynamicIcon name="book-open" /></template></t-step-item>
       <t-step-item
         title="每日一招" v-if="tabFlag.question"
@@ -70,16 +70,16 @@
         </t-row>
       </div>
       <div v-show="currentItem === '公布栏学习'">
-        <h4>{{ artical.title }}</h4>
+        <h4>{{ article.title }}</h4>
         <div class="main-container">
-          <div v-html="artical.content"></div>
+          <div v-html="article.content"></div>
         </div>
         <div style="width: 100%; text-align: center; padding-top: 15px">
           <t-button
             theme="primary"
             size="small"
             v-if="dailyScore && dailyScore.valid === 0"
-            @click="submitArticalStudy()"
+            @click="submitArticleStudy()"
             >学完了</t-button
           >
         </div>
@@ -159,10 +159,10 @@ import {
   getDailyQuestionInit,
   getQuestionBank,
   getMoodPic as apiGetMoodPic,
-  getArticalDetail,
+  getArticleDetail,
   getIdentityList,
   submitMood as apiSubmitMood,
-  submitArticalStudy as apiSubmitArticalStudy,
+  submitArticleStudy as apiSubmitArticleStudy,
   submitQuestion as apiSubmitQuestion
 } from '@/api/welcome/index.js'
 
@@ -175,10 +175,10 @@ const dailyScore = ref({})
 const tabFlag = reactive({
   mood: false,
   identity: false,
-  artical: false,
+  article: false,
   question: false
 })
-const artical = ref({})
+const article = ref({})
 const currentStep = ref(1)
 const currentItem = ref('')
 const question = ref({})
@@ -199,7 +199,7 @@ const init = (quesDate) => {
   Object.assign(tabFlag, {
     mood: false,
     identity: false,
-    artical: false,
+    article: false,
     question: false
   })
   currentStep.value = 1
@@ -219,7 +219,7 @@ const init = (quesDate) => {
         Object.assign(tabFlag, {
           mood: false,
           identity: false,
-          artical: false,
+          article: false,
           question: false
         })
         MessagePlugin.warning(res.msg)
@@ -228,7 +228,7 @@ const init = (quesDate) => {
     .then(() => {
       if (dailyScore.value.valid === 0) {
         if (quesDate) {
-          if (dailyConfig.value.articalId) tabFlag.artical = true
+          if (dailyConfig.value.articleId) tabFlag.article = true
           tabFlag.question = true
         } else {
           tabFlag.question = true
@@ -240,11 +240,11 @@ const init = (quesDate) => {
           } else {
             tabFlag.mood = true
           }
-          if (dailyConfig.value.articalId) tabFlag.artical = true
-          else tabFlag.artical = false
+          if (dailyConfig.value.articleId) tabFlag.article = true
+          else tabFlag.article = false
         }
       } else {
-        if (dailyConfig.value.articalId) tabFlag.artical = true
+        if (dailyConfig.value.articleId) tabFlag.article = true
       }
       dataLoading()
     })
@@ -275,7 +275,7 @@ const dataLoading = () => {
   if (tabFlag.mood) getMoodPic()
   if (tabFlag.identity) getIdentity()
   if (tabFlag.question) getQuestion()
-  if (tabFlag.artical) getArtical()
+  if (tabFlag.article) getArticle()
 }
 
 const getQuestion = () => {
@@ -330,13 +330,13 @@ const getMoodPic = () => {
   })
 }
 
-const getArtical = () => {
-  getArticalDetail(dailyConfig.value.articalId).then((res) => {
+const getArticle = () => {
+  getArticleDetail(dailyConfig.value.articleId).then((res) => {
     if (res.code !== 200) {
       MessagePlugin.error(res.msg)
       return
     }
-    artical.value = res.data
+    article.value = res.data
   })
 }
 
@@ -376,16 +376,16 @@ const sendIdentityChangeMsg = () => {
   nextStep()
 }
 
-const submitArticalStudy = async () => {
+const submitArticleStudy = async () => {
   studyDate.studyEnd = formatDateTime()
   if (dailyScore.value.studyBeg && dailyScore.value.studyBeg) {
     nextStep()
   } else {
     dailyScore.value.studyBeg = studyDate.studyBeg
     dailyScore.value.studyEnd = studyDate.studyEnd
-    dailyScore.value.articalStatus = 1
+    dailyScore.value.articleStatus = 1
     try {
-      const res = await apiSubmitArticalStudy(dailyScore.value)
+      const res = await apiSubmitArticleStudy(dailyScore.value)
       if (res.code !== 200) {
         MessagePlugin.error(res.msg)
         return

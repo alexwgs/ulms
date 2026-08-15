@@ -10,8 +10,8 @@ export const constantRoutes = [
   COLLEGE,
   EDU,
   {
-    path: '/artical/:type/:id',
-    name: 'artical-view',
+    path: '/article/:type/:id',
+    name: 'article-view',
     component: () => import('@/views/font/a6voice/view/index.vue'),
     meta: {
       title: '文章详情',
@@ -30,9 +30,9 @@ export const constantRoutes = [
         component: () => import('@/views/admin/dashboard/index.vue')
       },
       {
-        path: 'font/a6voice/my-artical',
+        path: 'font/a6voice/my-article',
         name: '帖子管理',
-        component: () => import('@/views/font/a6voice/my-artical/index.vue')
+        component: () => import('@/views/font/a6voice/my-article/index.vue')
       },
       {
         path: 'font/a6voice/collect',
@@ -50,9 +50,9 @@ export const constantRoutes = [
         component: () => import('@/views/font/a6voice/my-item/index.vue')
       },
       {
-        path: 'font/a6voice/artical/:id',
+        path: 'font/a6voice/article/:id',
         name: '新建帖子',
-        component: () => import('@/views/font/a6voice/new/artical/index.vue')
+        component: () => import('@/views/font/a6voice/new/article/index.vue')
       },
       {
         path: 'font/a6voice/item/:id',

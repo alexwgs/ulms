@@ -5,7 +5,7 @@ import com.cmbccd.ulms.sys.domain.Employee;
 public class Member {
     private Integer id;
 
-    private Integer articalId;
+    private Integer articleId;
 
     private String userId;
 
@@ -27,12 +27,12 @@ public class Member {
         this.id = id;
     }
 
-    public Integer getArticalId() {
-        return articalId;
+    public Integer getArticleId() {
+        return articleId;
     }
 
-    public void setArticalId(Integer articalId) {
-        this.articalId = articalId;
+    public void setArticleId(Integer articleId) {
+        this.articleId = articleId;
     }
 
     public String getUserId() {

@@ -5,7 +5,7 @@ import com.cmbccd.ulms.sys.domain.Employee;
 public class Message {
     private Integer id;
 
-    private Integer articalId;
+    private Integer articleId;
 
     private Integer messageType;
 
@@ -19,7 +19,7 @@ public class Message {
 
     private String dateTime;
     
-    private Artical artical;
+    private Article article;
     
     private Employee fUser;
 
@@ -31,12 +31,12 @@ public class Message {
         this.id = id;
     }
 
-    public Integer getArticalId() {
-        return articalId;
+    public Integer getArticleId() {
+        return articleId;
     }
 
-    public void setArticalId(Integer articalId) {
-        this.articalId = articalId;
+    public void setArticleId(Integer articleId) {
+        this.articleId = articleId;
     }
 
     public Integer getMessageType() {
@@ -87,12 +87,12 @@ public class Message {
         this.dateTime = dateTime == null ? null : dateTime.trim();
     }
 
-	public Artical getArtical() {
-		return artical;
+	public Article getArticle() {
+		return article;
 	}
 
-	public void setArtical(Artical artical) {
-		this.artical = artical;
+	public void setArticle(Article article) {
+		this.article = article;
 	}
 
 	public Employee getfUser() {

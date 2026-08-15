@@ -23,7 +23,7 @@ public interface MemberMapper {
     // 新 ID
     int creatNewId();
     
-    List<Integer> selectArticalIdByUserId(String userId);
+    List<Integer> selectArticleIdByUserId(String userId);
     
-    int invalidStatusByArticalId(int articalId);
+    int invalidStatusByArticleId(int articleId);
 }

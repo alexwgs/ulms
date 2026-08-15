@@ -7,7 +7,7 @@ import com.cmbccd.ulms.sys.domain.Employee;
 public class Comment {
     private Integer id;
 
-    private Integer articalId;
+    private Integer articleId;
 
     private String content;
 
@@ -37,12 +37,12 @@ public class Comment {
         this.id = id;
     }
 
-    public Integer getArticalId() {
-        return articalId;
+    public Integer getArticleId() {
+        return articleId;
     }
 
-    public void setArticalId(Integer articalId) {
-        this.articalId = articalId;
+    public void setArticleId(Integer articleId) {
+        this.articleId = articleId;
     }
 
     public String getContent() {
@@ -129,7 +129,7 @@ public class Comment {
     public String toString() {
         return "Comment{" +
                 "id=" + id +
-                ", articalId=" + articalId +
+                ", articleId=" + articleId +
                 ", content='" + content + '\'' +
                 ", likeNum=" + likeNum +
                 ", userid='" + userid + '\'' +

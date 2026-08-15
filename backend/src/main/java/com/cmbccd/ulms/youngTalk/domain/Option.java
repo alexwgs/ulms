@@ -3,7 +3,7 @@ package com.cmbccd.ulms.youngTalk.domain;
 public class Option {
     private Integer id;
 
-    private Integer articalId;
+    private Integer articleId;
 
     private Integer questionId;
 
@@ -19,12 +19,12 @@ public class Option {
         this.id = id;
     }
 
-    public Integer getArticalId() {
-        return articalId;
+    public Integer getArticleId() {
+        return articleId;
     }
 
-    public void setArticalId(Integer articalId) {
-        this.articalId = articalId;
+    public void setArticleId(Integer articleId) {
+        this.articleId = articleId;
     }
 
     public Integer getQuestionId() {
@@ -53,7 +53,7 @@ public class Option {
 
 	@Override
 	public String toString() {
-		return "Option [id=" + id + ", articalId=" + articalId + ", questionId=" + questionId + ", content=" + content
+		return "Option [id=" + id + ", articleId=" + articleId + ", questionId=" + questionId + ", content=" + content
 				+ ", sort=" + sort + "]";
 	}
     

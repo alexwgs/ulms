@@ -25,14 +25,14 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public List<Integer> getArticalIdByUserId(String userId) {
+	public List<Integer> getArticleIdByUserId(String userId) {
 		
-		return memberMapper.selectArticalIdByUserId(userId);
+		return memberMapper.selectArticleIdByUserId(userId);
 	}
 
 	@Override
-	public int invalidByArticalId(int articalId) {
-		return memberMapper.invalidStatusByArticalId(articalId);
+	public int invalidByArticleId(int articleId) {
+		return memberMapper.invalidStatusByArticleId(articleId);
 	}
 
 	@Override
@@ -42,11 +42,11 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public List<Member> getMemberListByArticalId(int articalId) {
+	public List<Member> getMemberListByArticleId(int articleId) {
 		MemberExample example = new MemberExample();
 		Criteria criteria = example.createCriteria();
 		criteria.andStatusEqualTo(1);
-		criteria.andArticalIdEqualTo(articalId);
+		criteria.andArticleIdEqualTo(articleId);
 		example.setOrderByClause(" Role ASC , ID DESC ");
 		return memberMapper.selectByExample(example);
 	}

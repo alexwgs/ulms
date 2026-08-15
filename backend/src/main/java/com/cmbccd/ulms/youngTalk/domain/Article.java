@@ -2,10 +2,10 @@ package com.cmbccd.ulms.youngTalk.domain;
 
 import com.cmbccd.ulms.sys.domain.Employee;
 
-public class Artical {
+public class Article {
     private Integer id;
 
-    private Integer articalType;
+    private Integer articleType;
 
     private Integer category;
 
@@ -62,12 +62,12 @@ public class Artical {
         this.id = id;
     }
 
-    public Integer getArticalType() {
-        return articalType;
+    public Integer getArticleType() {
+        return articleType;
     }
 
-    public void setArticalType(Integer articalType) {
-        this.articalType = articalType;
+    public void setArticleType(Integer articleType) {
+        this.articleType = articleType;
     }
 
     public Integer getCategory() {
@@ -264,9 +264,9 @@ public class Artical {
 
     @Override
     public String toString() {
-        return "Artical{" +
+        return "Article{" +
                 "id=" + id +
-                ", articalType=" + articalType +
+                ", articleType=" + articleType +
                 ", category=" + category +
                 ", title='" + title + '\'' +
                 ", status=" + status +

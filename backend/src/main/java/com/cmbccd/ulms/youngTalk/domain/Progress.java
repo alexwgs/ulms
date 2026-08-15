@@ -5,7 +5,7 @@ import com.cmbccd.ulms.sys.domain.Employee;
 public class Progress {
     private Integer id;
 
-    private Integer articalId;
+    private Integer articleId;
 
     private Integer type;
 
@@ -31,12 +31,12 @@ public class Progress {
         this.id = id;
     }
 
-    public Integer getArticalId() {
-        return articalId;
+    public Integer getArticleId() {
+        return articleId;
     }
 
-    public void setArticalId(Integer articalId) {
-        this.articalId = articalId;
+    public void setArticleId(Integer articleId) {
+        this.articleId = articleId;
     }
 
     public Integer getType() {

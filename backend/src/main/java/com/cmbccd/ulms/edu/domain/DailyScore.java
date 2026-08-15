@@ -19,7 +19,7 @@ public class DailyScore {
 
     private String firstAnswer;
 
-    private Short articalStatus;
+    private Short articleStatus;
 
     private String studyBeg;
 
@@ -105,12 +105,12 @@ public class DailyScore {
         this.firstAnswer = firstAnswer == null ? null : firstAnswer.trim();
     }
 
-    public Short getArticalStatus() {
-        return articalStatus;
+    public Short getArticleStatus() {
+        return articleStatus;
     }
 
-    public void setArticalStatus(Short articalStatus) {
-        this.articalStatus = articalStatus;
+    public void setArticleStatus(Short articleStatus) {
+        this.articleStatus = articleStatus;
     }
 
     public String getStudyBeg() {
@@ -164,7 +164,7 @@ public class DailyScore {
     public DailyScore() {
     }
 
-    public DailyScore(String quesDate, String ploNum, String ploName, String deptNum, String deptGroup, String quesCode, Short mistakes, Short passFlag, Short articalStatus, Short valid) {
+    public DailyScore(String quesDate, String ploNum, String ploName, String deptNum, String deptGroup, String quesCode, Short mistakes, Short passFlag, Short articleStatus, Short valid) {
         this.quesDate = quesDate;
         this.ploNum = ploNum;
         this.ploName = ploName;
@@ -173,7 +173,7 @@ public class DailyScore {
         this.quesCode = quesCode;
         this.mistakes = mistakes;
         this.passFlag = passFlag;
-        this.articalStatus = articalStatus;
+        this.articleStatus = articleStatus;
         this.valid = valid;
     }
 }

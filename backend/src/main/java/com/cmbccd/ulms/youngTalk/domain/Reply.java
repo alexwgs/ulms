@@ -5,7 +5,7 @@ import com.cmbccd.ulms.sys.domain.Employee;
 public class Reply {
     private Integer id;
 
-    private Integer articalId;
+    private Integer articleId;
 
     private Integer commentId;
 
@@ -33,12 +33,12 @@ public class Reply {
         this.id = id;
     }
 
-    public Integer getArticalId() {
-        return articalId;
+    public Integer getArticleId() {
+        return articleId;
     }
 
-    public void setArticalId(Integer articalId) {
-        this.articalId = articalId;
+    public void setArticleId(Integer articleId) {
+        this.articleId = articleId;
     }
 
     public Integer getCommentId() {

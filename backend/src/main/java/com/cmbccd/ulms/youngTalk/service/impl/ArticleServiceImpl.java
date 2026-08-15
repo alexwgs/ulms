@@ -8,37 +8,37 @@ import org.springframework.stereotype.Service;
 import com.cmbccd.ulms.common.controller.DataCache;
 import com.cmbccd.ulms.common.util.DataPage;
 import com.cmbccd.ulms.common.util.Util;
-import com.cmbccd.ulms.youngTalk.dao.ArticalMapper;
-import com.cmbccd.ulms.youngTalk.domain.Artical;
-import com.cmbccd.ulms.youngTalk.domain.ArticalExample;
-import com.cmbccd.ulms.youngTalk.domain.ArticalExample.Criteria;
-import com.cmbccd.ulms.youngTalk.service.ArticalService;
+import com.cmbccd.ulms.youngTalk.dao.ArticleMapper;
+import com.cmbccd.ulms.youngTalk.domain.Article;
+import com.cmbccd.ulms.youngTalk.domain.ArticleExample;
+import com.cmbccd.ulms.youngTalk.domain.ArticleExample.Criteria;
+import com.cmbccd.ulms.youngTalk.service.ArticleService;
 import com.github.pagehelper.PageHelper;
 
 import jakarta.annotation.Resource;
 
 /**
  * 
-* <p>Title: ArticalServiceImpl.java</p>  
+* <p>Title: ArticleServiceImpl.java</p>  
 * <p>Description: </p>  
 * @author WeiGenSheng
 * @date 2020年12月21日  
 * @version 1.0
  */
 @Service
-public class ArticalServiceImpl implements ArticalService {
+public class ArticleServiceImpl implements ArticleService {
 
 	@Resource
-	private ArticalMapper articalMapper;
+	private ArticleMapper articleMapper;
 	
 	@Override
-	public List<Artical> selectByExampleNoContent(ArticalExample example) {
-		return articalMapper.selectByExample(example);
+	public List<Article> selectByExampleNoContent(ArticleExample example) {
+		return articleMapper.selectByExample(example);
 	}
 
 	@Override
-	public DataPage<Artical> listCategoryByQuery(Map<String, String> params) {
-		ArticalExample example = new ArticalExample();
+	public DataPage<Article> listCategoryByQuery(Map<String, String> params) {
+		ArticleExample example = new ArticleExample();
 		Criteria criteria = example.createCriteria();
 		criteria.andStatusEqualTo(1);
 		String sortType = params.get("sortType");
@@ -74,7 +74,7 @@ public class ArticalServiceImpl implements ArticalService {
 		}
 		if (!Util.isNullorEmpty(params.get("category"))) {
 			String typeCategory = params.get("category");
-			criteria.andArticalTypeEqualTo(Integer.parseInt(typeCategory.substring(0, 1)));
+			criteria.andArticleTypeEqualTo(Integer.parseInt(typeCategory.substring(0, 1)));
 			criteria.andCategoryEqualTo(Integer.parseInt(typeCategory.substring(1)));
 		}
 
@@ -84,94 +84,94 @@ public class ArticalServiceImpl implements ArticalService {
 			}
 		}
 		// 不包含系统通知类型9
-		criteria.andArticalTypeLessThan(8);
+		criteria.andArticleTypeLessThan(8);
 		Map<String, Integer> pageParams = Util.innitTablePages(params);
 		PageHelper.startPage(pageParams.get("pageNum"), pageParams.get("pageSize"));
 
-		List<Artical> articalList = articalMapper.selectByExample(example);
-		for (Artical artical : articalList) {
-			if (artical.getAnonFlag() == 1) {
-				artical.setPubUser("匿名");
+		List<Article> articleList = articleMapper.selectByExample(example);
+		for (Article article : articleList) {
+			if (article.getAnonFlag() == 1) {
+				article.setPubUser("匿名");
 			} else {
-				artical.setUser(DataCache.getEmployees().get(artical.getPubUser()));
+				article.setUser(DataCache.getEmployees().get(article.getPubUser()));
 			}
 		}
-		return new DataPage<Artical>(articalList);
+		return new DataPage<Article>(articleList);
 	}
 
 	@Override
-	public List<Artical> selectByExampleWithContent(ArticalExample example) {
-		return articalMapper.selectByExampleWithBLOBs(example);
+	public List<Article> selectByExampleWithContent(ArticleExample example) {
+		return articleMapper.selectByExampleWithBLOBs(example);
 	}
 
 	@Override
-	public Integer getNewArticalId() {
-		return articalMapper.creatNewArticalId();
+	public Integer getNewArticleId() {
+		return articleMapper.creatNewArticleId();
 	}
 
 	@Override
 	public Integer increaseViewNum(Integer id) {
-		return articalMapper.viewNumIncrease(id);
+		return articleMapper.viewNumIncrease(id);
 	}
 
 	@Override
-	public Artical getArticalById(int id) {
-		return articalMapper.selectByPrimaryKey(id);
+	public Article getArticleById(int id) {
+		return articleMapper.selectByPrimaryKey(id);
 	}
 
 	@Override
 	public Integer increaseLikeNum(Integer id) {
-		return articalMapper.likeNumIncrease(id);
+		return articleMapper.likeNumIncrease(id);
 	}
 
 	@Override
 	public Integer increaseCollectNum(Integer id) {
-		return articalMapper.collectNumIncrease(id);
+		return articleMapper.collectNumIncrease(id);
 	}
 
 	@Override
 	public Integer decreaseCollectNum(Integer id) {
-		return articalMapper.collectNumDecrease(id);
+		return articleMapper.collectNumDecrease(id);
 	}
 
 	@Override
 	public Integer increaseReplyNum(Integer id) {
-		return articalMapper.replyNumIncrease(id);
+		return articleMapper.replyNumIncrease(id);
 	}
 
 	@Override
 	public Integer decreaseReplyNum(Integer id) {
-		return articalMapper.replyNumDecrease(id);
+		return articleMapper.replyNumDecrease(id);
 	}
 
 	@Override
-	public Integer insertArtical(Artical record) {
-		return articalMapper.insertSelective(record);
+	public Integer insertArticle(Article record) {
+		return articleMapper.insertSelective(record);
 	}
 
 	@Override
-	public Artical getArticalByIdWithNoContent(int id) {
-		return articalMapper.selectByPrimaryKeyWithNoContent(id);
+	public Article getArticleByIdWithNoContent(int id) {
+		return articleMapper.selectByPrimaryKeyWithNoContent(id);
 	}
 
 	@Override
-	public int updateArtical(Artical record) {
-		return articalMapper.updateByPrimaryKeyWithBLOBs(record);
+	public int updateArticle(Article record) {
+		return articleMapper.updateByPrimaryKeyWithBLOBs(record);
 	}
 
 	@Override
-	public int updateArticalSelectiveByPrimaryKey(Artical record) {
-		return 	articalMapper.updateByPrimaryKeySelective(record);
+	public int updateArticleSelectiveByPrimaryKey(Article record) {
+		return 	articleMapper.updateByPrimaryKeySelective(record);
 	}
 
 	@Override
-	public int updateByPrimaryKeySelective(Artical record) {
-		return articalMapper.updateByPrimaryKeySelective(record);
+	public int updateByPrimaryKeySelective(Article record) {
+		return articleMapper.updateByPrimaryKeySelective(record);
 	}
 
 	@Override
-	public List<Artical> selectWeeklyHotList(String dateTime) {
-		return articalMapper.selectWeeklyHotList(dateTime);
+	public List<Article> selectWeeklyHotList(String dateTime) {
+		return articleMapper.selectWeeklyHotList(dateTime);
 	}
 
 	

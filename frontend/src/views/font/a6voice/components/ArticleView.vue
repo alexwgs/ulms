@@ -1,35 +1,35 @@
 <template>
-  <div class="artical-card">
-    <div class="artical-header">
-      <div class="artical-tags">
-        <t-tag size="small" :theme="articalTypeTag" variant="light">{{
-          articalTypeText
+  <div class="article-card">
+    <div class="article-header">
+      <div class="article-tags">
+        <t-tag size="small" :theme="articleTypeTag" variant="light">{{
+          articleTypeText
         }}</t-tag>
         <t-tag
-          v-if="articalitem.articalType === 1"
+          v-if="articleitem.articleType === 1"
           size="small"
           theme="warning"
           variant="light"
           >{{ itemCategoryText }}</t-tag
         >
         <t-tag
-          v-else-if="articalitem.articalType !== 1"
+          v-else-if="articleitem.articleType !== 1"
           size="small"
           theme="primary"
           variant="light"
-          >{{ articalCategoryText }}</t-tag
+          >{{ articleCategoryText }}</t-tag
         >
       </div>
-      <div class="artical-badges">
+      <div class="article-badges">
         <t-tag
-          v-if="articalitem.topFlag === 1"
+          v-if="articleitem.topFlag === 1"
           size="small"
           theme="success"
           variant="light"
           >置顶</t-tag
         >
         <t-tag
-          v-if="articalitem.eliteFlag === 1"
+          v-if="articleitem.eliteFlag === 1"
           size="small"
           theme="danger"
           variant="light"
@@ -37,33 +37,33 @@
         >
       </div>
     </div>
-    <div class="artical-title">
-      <router-link class="link" target="_blank" :to="articalRoute">{{
-        articalitem.title
+    <div class="article-title">
+      <router-link class="link" target="_blank" :to="articleRoute">{{
+        articleitem.title
       }}</router-link>
     </div>
-    <div class="artical-meta">
+    <div class="article-meta">
       <span class="author">{{
-        articalitem.user
-          ? articalitem.user.ploName + ' / ' + articalitem.user.ploNum
+        articleitem.user
+          ? articleitem.user.ploName + ' / ' + articleitem.user.ploNum
           : '匿名'
       }}</span>
       <span class="dot">·</span>
       <span class="time">{{ timeAgo }}</span>
       <span class="stats">
         <span class="stat"
-          ><DynamicIcon name="view-list" /> {{ articalitem.viewNum }}
+          ><DynamicIcon name="view-list" /> {{ articleitem.viewNum }}
           浏览</span
         >
         <span class="stat"
-          ><DynamicIcon name="chat-round" /> {{ articalitem.replyNum }}
+          ><DynamicIcon name="chat-round" /> {{ articleitem.replyNum }}
           评论</span
         >
         <span class="stat"
-          ><DynamicIcon name="thumb-up" /> {{ articalitem.likeNum }}</span
+          ><DynamicIcon name="thumb-up" /> {{ articleitem.likeNum }}</span
         >
         <span class="stat"
-          ><DynamicIcon name="star-on" /> {{ articalitem.collectNum }}
+          ><DynamicIcon name="star-on" /> {{ articleitem.collectNum }}
           收藏</span
         >
       </span>
@@ -83,54 +83,54 @@ dayjs.locale('zh-cn')
 
 const dictStore = useDictStore()
 const props = defineProps({
-  articalitem: {
+  articleitem: {
     type: Object,
     default: null
   }
 })
 
-const articalRoute = computed(() => {
+const articleRoute = computed(() => {
   const typeMap = {
     1: 'item',
     2: 'view',
     3: 'survey'
   }
-  const type = typeMap[props.articalitem?.articalType] || 'view'
-  return `/artical/${type}/${props.articalitem?.id}`
+  const type = typeMap[props.articleitem?.articleType] || 'view'
+  return `/article/${type}/${props.articleitem?.id}`
 })
 
 const itemCategoryText = computed(() => {
-  return dictStore.getDictName('cyt_item_category', props.articalitem?.category)
+  return dictStore.getDictName('cyt_item_category', props.articleitem?.category)
 })
 
-const articalCategoryText = computed(() => {
+const articleCategoryText = computed(() => {
   return dictStore.getDictName(
     'cyt_artical_category',
-    props.articalitem?.category
+    props.articleitem?.category
   )
 })
 
-const articalTypeTag = computed(() => {
-  if (props.articalitem?.articalType === 1) return 'warning'
-  if (props.articalitem?.articalType === 3) return 'danger'
+const articleTypeTag = computed(() => {
+  if (props.articleitem?.articleType === 1) return 'warning'
+  if (props.articleitem?.articleType === 3) return 'danger'
   return 'primary'
 })
 
-const articalTypeText = computed(() => {
+const articleTypeText = computed(() => {
   return dictStore.getDictName(
     'cyt_artical_type',
-    props.articalitem?.articalType
+    props.articleitem?.articleType
   )
 })
 
 const timeAgo = computed(() => {
-  if (!props.articalitem?.pubDate) return ''
-  return dayjs(props.articalitem.pubDate).fromNow()
+  if (!props.articleitem?.pubDate) return ''
+  return dayjs(props.articleitem.pubDate).fromNow()
 })
 </script>
 
 <style lang="less" scoped>
-.artical-card {
+.article-card {
   background: var(--td-bg-color-container);
   border: 1px solid var(--td-component-stroke-color);
   border-radius: 8px;
@@ -139,24 +139,24 @@ const timeAgo = computed(() => {
   transition: box-shadow 0.2s ease;
 }
 
-.artical-card:hover {
+.article-card:hover {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
 }
 
-.artical-header {
+.article-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 8px;
 }
 
-.artical-tags {
+.article-tags {
   display: flex;
   align-items: center;
   gap: 6px;
 }
 
-.artical-title {
+.article-title {
   font-size: 17px;
   font-weight: 600;
   line-height: 1.5;
@@ -175,7 +175,7 @@ const timeAgo = computed(() => {
   }
 }
 
-.artical-meta {
+.article-meta {
   display: flex;
   align-items: center;
   gap: 6px;

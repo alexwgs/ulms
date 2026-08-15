@@ -11,7 +11,7 @@
     <result column="MISTAKES" jdbcType="DECIMAL" property="mistakes" />
     <result column="PASS_FLAG" jdbcType="DECIMAL" property="passFlag" />
     <result column="FIRST_ANSWER" jdbcType="VARCHAR" property="firstAnswer" />
-    <result column="ARTICAL_STATUS" jdbcType="DECIMAL" property="articalStatus" />
+    <result column="ARTICAL_STATUS" jdbcType="DECIMAL" property="articleStatus" />
     <result column="STUDY_BEG" jdbcType="VARCHAR" property="studyBeg" />
     <result column="STUDY_END" jdbcType="VARCHAR" property="studyEnd" />
     <result column="MOOD_TYPE" jdbcType="VARCHAR" property="moodType" />
@@ -112,7 +112,7 @@
     values (#{quesDate,jdbcType=VARCHAR}, #{ploNum,jdbcType=VARCHAR}, #{ploName,jdbcType=VARCHAR}, 
       #{deptNum,jdbcType=VARCHAR}, #{deptGroup,jdbcType=VARCHAR}, #{quesCode,jdbcType=VARCHAR}, 
       #{mistakes,jdbcType=DECIMAL}, #{passFlag,jdbcType=DECIMAL}, #{firstAnswer,jdbcType=VARCHAR}, 
-      #{articalStatus,jdbcType=DECIMAL}, #{studyBeg,jdbcType=VARCHAR}, #{studyEnd,jdbcType=VARCHAR}, 
+      #{articleStatus,jdbcType=DECIMAL}, #{studyBeg,jdbcType=VARCHAR}, #{studyEnd,jdbcType=VARCHAR}, 
       #{moodType,jdbcType=VARCHAR}, #{moodMemo,jdbcType=VARCHAR}, #{moodDate,jdbcType=VARCHAR}, 
       #{valid,jdbcType=DECIMAL})
   </insert>
@@ -146,7 +146,7 @@
       <if test="firstAnswer != null">
         FIRST_ANSWER,
       </if>
-      <if test="articalStatus != null">
+      <if test="articleStatus != null">
         ARTICAL_STATUS,
       </if>
       <if test="studyBeg != null">
@@ -196,8 +196,8 @@
       <if test="firstAnswer != null">
         #{firstAnswer,jdbcType=VARCHAR},
       </if>
-      <if test="articalStatus != null">
-        #{articalStatus,jdbcType=DECIMAL},
+      <if test="articleStatus != null">
+        #{articleStatus,jdbcType=DECIMAL},
       </if>
       <if test="studyBeg != null">
         #{studyBeg,jdbcType=VARCHAR},
@@ -255,8 +255,8 @@
       <if test="record.firstAnswer != null">
         FIRST_ANSWER = #{record.firstAnswer,jdbcType=VARCHAR},
       </if>
-      <if test="record.articalStatus != null">
-        ARTICAL_STATUS = #{record.articalStatus,jdbcType=DECIMAL},
+      <if test="record.articleStatus != null">
+        ARTICAL_STATUS = #{record.articleStatus,jdbcType=DECIMAL},
       </if>
       <if test="record.studyBeg != null">
         STUDY_BEG = #{record.studyBeg,jdbcType=VARCHAR},
@@ -292,7 +292,7 @@
       MISTAKES = #{record.mistakes,jdbcType=DECIMAL},
       PASS_FLAG = #{record.passFlag,jdbcType=DECIMAL},
       FIRST_ANSWER = #{record.firstAnswer,jdbcType=VARCHAR},
-      ARTICAL_STATUS = #{record.articalStatus,jdbcType=DECIMAL},
+      ARTICAL_STATUS = #{record.articleStatus,jdbcType=DECIMAL},
       STUDY_BEG = #{record.studyBeg,jdbcType=VARCHAR},
       STUDY_END = #{record.studyEnd,jdbcType=VARCHAR},
       MOOD_TYPE = #{record.moodType,jdbcType=VARCHAR},

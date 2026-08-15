@@ -12,7 +12,7 @@
         <t-row :gutter="[24, 24]">
           <t-col :span="4">
             <t-form-item label="状态" name="status">
-              <t-select size="small" v-model="queryInfo.status" @change="getArticalList"
+              <t-select size="small" v-model="queryInfo.status" @change="getArticleList"
                 placeholder="全部">
                 <t-option label="全部" value=""></t-option>
                 <t-option v-for="item in dictStore.getDictByNames('cyt_artical_status', 1)" :key="item.id"
@@ -23,18 +23,18 @@
           </t-col>
           <t-col :span="4">
             <t-form-item label="项目年份" name="dateYear">
-              <t-date-picker size="small" @change="getArticalList" v-model="yearPicker" mode="year" placeholder="选择年">
+              <t-date-picker size="small" @change="getArticleList" v-model="yearPicker" mode="year" placeholder="选择年">
               </t-date-picker>
             </t-form-item>
           </t-col>
         </t-row>
       </t-form>
-      <CustomTable rowKey="id" :data="articals" size="small" stripe style="width: 100%" height="calc(100vh - 350px)">
-        <TableColumn colKey="articalType" label="类型" width="100">
+      <CustomTable rowKey="id" :data="articles" size="small" stripe style="width: 100%" height="calc(100vh - 350px)">
+        <TableColumn colKey="articleType" label="类型" width="100">
           <template #default="scope">
             <t-tag size="small" v-for="item in dictStore.getDictByNames('cyt_artical_type', 1)" :key="item.code"
-              :theme="scope.row.articalType == 1 ? 'danger' : 'default'"
-              :style="scope.row.articalType == item.code ? '' : 'display:none'" variant="light">{{ item.codeval
+              :theme="scope.row.articleType == 1 ? 'danger' : 'default'"
+              :style="scope.row.articleType == item.code ? '' : 'display:none'" variant="light">{{ item.codeval
               }}</t-tag>
           </template>
         </TableColumn>
@@ -57,10 +57,10 @@
         </TableColumn>
         <TableColumn label="操作" width="230">
           <template #default="scope">
-            <t-button theme="primary" size="small" @click="viewArtical(scope.$index, scope.row)">查看</t-button>
+            <t-button theme="primary" size="small" @click="viewArticle(scope.$index, scope.row)">查看</t-button>
             <t-button size="small" :disabled="scope.row.status == 2 || scope.row.status == 4 ? false : true"
-              @click="updateArtical(scope.$index, scope.row)">编辑</t-button>
-            <t-button theme="danger" size="small" @click="articalDelete(scope.$index, scope.row)">删除</t-button>
+              @click="updateArticle(scope.$index, scope.row)">编辑</t-button>
+            <t-button theme="danger" size="small" @click="articleDelete(scope.$index, scope.row)">删除</t-button>
           </template>
         </TableColumn>
       </CustomTable>
@@ -81,7 +81,7 @@ import { useDictStore } from '@/stores'
 const router = useRouter()
 const dictStore = useDictStore()
 
-const articals = ref([])
+const articles = ref([])
 const currentPage = ref(1)
 const total = ref(0)
 const yearPicker = ref(new Date())
@@ -96,20 +96,20 @@ const queryInfo = reactive({
 })
 
 onMounted(() => {
-  getArticalList()
+  getArticleList()
 })
 
-const getArticalList = async () => {
+const getArticleList = async () => {
   if (yearPicker.value != null && yearPicker.value !== '') {
     queryInfo.dateYear = new Date(yearPicker.value).getFullYear()
   }
   try {
-    const res = await httpInstance.get('cyt/myArtical', { params: queryInfo })
+    const res = await httpInstance.get('cyt/myArticle', { params: queryInfo })
     if (res.code !== 200) {
       MessagePlugin.error(res.msg)
       return
     }
-    articals.value = res.data.list
+    articles.value = res.data.list
     total.value = res.data.total
   } catch (error) {
     MessagePlugin.error('获取文章列表失败')
@@ -117,27 +117,27 @@ const getArticalList = async () => {
   }
 }
 
-const viewArtical = (index, row) => {
-  if (row.articalType === 1) {
-    const url = router.resolve({ path: '/artical/item/' + row.id })
+const viewArticle = (index, row) => {
+  if (row.articleType === 1) {
+    const url = router.resolve({ path: '/article/item/' + row.id })
     window.open(url.href, '_blank')
   } else {
-    const url = router.resolve({ path: '/artical/view/' + row.id })
+    const url = router.resolve({ path: '/article/view/' + row.id })
     window.open(url.href, '_blank')
   }
 }
 
-const updateArtical = (index, row) => {
-  if (row.articalType === 1) {
+const updateArticle = (index, row) => {
+  if (row.articleType === 1) {
     router.push({ path: 'item-pub/' + row.id })
-  } else if (row.articalType === 3) {
+  } else if (row.articleType === 3) {
     router.push({ path: 'survey/' + row.id })
   } else {
-    router.push({ path: 'artical/' + row.id })
+    router.push({ path: 'article/' + row.id })
   }
 }
 
-const articalDelete = (index, row) => {
+const articleDelete = (index, row) => {
   DialogPlugin.confirm('删除后不可恢复，请确认是否要删除?', '提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
@@ -145,13 +145,13 @@ const articalDelete = (index, row) => {
   }).then(async () => {
     try {
       const params = { id: row.id, status: 0 }
-      const res = await httpInstance.put('cyt/artical/delete', params)
+      const res = await httpInstance.put('cyt/article/delete', params)
       if (res.code !== 200) {
         MessagePlugin.error(res.msg)
         return
       }
       MessagePlugin.success(res.msg)
-      getArticalList()
+      getArticleList()
     } catch (error) {
       MessagePlugin.error('删除失败')
       console.error(error)

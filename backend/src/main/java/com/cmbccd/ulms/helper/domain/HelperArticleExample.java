@@ -3,14 +3,14 @@ package com.cmbccd.ulms.helper.domain;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HelperArticalExample {
+public class HelperArticleExample {
     protected String orderByClause;
 
     protected boolean distinct;
 
     protected List<Criteria> oredCriteria;
 
-    public HelperArticalExample() {
+    public HelperArticleExample() {
         oredCriteria = new ArrayList<>();
     }
 

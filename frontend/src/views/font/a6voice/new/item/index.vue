@@ -81,7 +81,7 @@ const cover = ref([])
 const form = reactive({
   category: '',
   respDept: '',
-  articalType: 1,
+  articleType: 1,
   title: '',
   content: '',
   cover: '',
@@ -113,9 +113,9 @@ const files = ref([])
 const examineInfo = ref('')
 const categoryFlags = ref({})
 
-const initArtical = async () => {
+const initArticle = async () => {
   if (id.value !== 'new') {
-    const res = await httpInstance.get(`cyt/artical/${id.value}`)
+    const res = await httpInstance.get(`cyt/article/${id.value}`)
     if (res.code !== 200) return MessagePlugin.error(res.msg)
     Object.assign(form, res.data)
     respDepts.value = form.respDept.split(',')
@@ -143,9 +143,9 @@ const onSubmit = async (status) => {
   
   let res
   if (form.id) {
-    res = await httpInstance.put('cyt/artical', form)
+    res = await httpInstance.put('cyt/article', form)
   } else {
-    res = await httpInstance.post('cyt/artical', form)
+    res = await httpInstance.post('cyt/article', form)
   }
   
   if (res.code !== 200) return MessagePlugin.error(res.msg)
@@ -229,7 +229,7 @@ const getExamin = () => {
 
 onMounted(() => {
   id.value = route.params.id
-  initArtical()
+  initArticle()
 })
 </script>
 

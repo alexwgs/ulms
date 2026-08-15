@@ -11,9 +11,9 @@ public interface OptionService {
 	
 	int insertNewOption(Option record);
 	
-	List<Option> getOptionsByQuestionId(int articalId,int questionId);
+	List<Option> getOptionsByQuestionId(int articleId,int questionId);
 	
-	List<Map<String,Object>> selectRadioNumGroupByQuestionId(Integer articalId,Integer questionId);
+	List<Map<String,Object>> selectRadioNumGroupByQuestionId(Integer articleId,Integer questionId);
 	
-	int selectCheckboxNumGroupByOptionId(Integer articalId,Integer questionId,String option);
+	int selectCheckboxNumGroupByOptionId(Integer articleId,Integer questionId,String option);
 }

@@ -1,14 +1,14 @@
 <template>
   <t-layout class="view-container">
     <t-layout>
-      <t-content v-if="artical.category != undefined">
-        <div class="artical-content">
-          <h3>{{ artical.title }}</h3>
+      <t-content v-if="article.category != undefined">
+        <div class="article-content">
+          <h3>{{ article.title }}</h3>
           <div>
             标签：
             <span v-for="item in labelItems" :key="item.label">
               <t-tag
-                v-if="artical[item.field] == item.val"
+                v-if="article[item.field] == item.val"
                 :theme="item.type"
                 variant="light"
                 size="small"
@@ -16,28 +16,28 @@
                 {{ item.label }}
               </t-tag>
             </span>
-            <div class="artical-icon">
+            <div class="article-icon">
               <span style="color: var(--td-text-color-placeholder); font-size: 14px; padding-right: 10px"
-                >发布人：{{ artical.user.ploName }} &emsp;|&emsp;发布时间：{{
-                  artical.pubDate
+                >发布人：{{ article.user.ploName }} &emsp;|&emsp;发布时间：{{
+                  article.pubDate
                 }}</span
               >
               <i class="iconfont iconfaxian"
-                ><font>{{ artical.viewNum + 1 }}</font></i
+                ><font>{{ article.viewNum + 1 }}</font></i
               >
               <i class="iconfont iconshoucang1"
-                ><font>{{ artical.collectNum }}</font></i
+                ><font>{{ article.collectNum }}</font></i
               >
               <i class="iconfont iconzan1"
-                ><font>{{ artical.likeNum }}</font></i
+                ><font>{{ article.likeNum }}</font></i
               >
               <i class="iconfont iconxiaoxi"
-                ><font>{{ artical.replyNum }}</font></i
+                ><font>{{ article.replyNum }}</font></i
               >
             </div>
           </div>
           <t-divider></t-divider>
-          <div class="artical-text" v-html="artical.content"></div>
+          <div class="article-text" v-html="article.content"></div>
           <t-divider content-position="center"> 调 研 </t-divider>
           <!-- -------------------------------问卷部分------------------------------------ -->
           <div class="QN-questions">
@@ -146,7 +146,7 @@ const fsURL = import.meta.env.VITE_FILE_BASE_URL
 
 const id = ref(route.params.id) // 获取传递的参数
 const replyId = ref(-1)
-const artical = ref({})
+const article = ref({})
 const isLike = ref(0)
 const isCollect = ref(0)
 const comments = ref([])
@@ -199,7 +199,7 @@ const getComment = async () => {
 
 onMounted(() => {
   // 获取文章详情和问题列表的逻辑需要根据实际API实现
-  // 这里假设已经在父组件中获取了artical和questions数据
+  // 这里假设已经在父组件中获取了article和questions数据
   getComment()
 })
 </script>
@@ -210,13 +210,13 @@ onMounted(() => {
 background-color: var(--td-bg-color-page);
 }
 
-.artical-content {
+.article-content {
   padding: 20px;
 background-color: #fff;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
 
-.artical-icon {
+.article-icon {
   float: right;
 
   i {
@@ -229,12 +229,12 @@ background-color: #fff;
   }
 }
 
-.artical-text {
+.article-text {
   // 文章正文的样式
   padding-left: 10px;
 }
 
-.artical-operations {
+.article-operations {
   margin-top: 20px;
   text-align: center;
 }
