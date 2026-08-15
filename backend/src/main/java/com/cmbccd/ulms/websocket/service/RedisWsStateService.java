@@ -15,6 +15,7 @@ import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 
 import jakarta.websocket.Session;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -51,7 +52,8 @@ public class RedisWsStateService implements WsStateService {
         // 注册 Redis Pub/Sub 订阅
         MessageListener listener = (message, pattern) -> {
             try {
-                onRelayMessage(new String(message.getBody()));
+                // 消息由 StringRedisTemplate(UTF-8) 发布，必须用 UTF-8 解码，避免 GBK 默认字符集乱码
+                onRelayMessage(new String(message.getBody(), StandardCharsets.UTF_8));
             } catch (Exception e) {
                 LOG.error("处理中继消息失败", e);
             }
