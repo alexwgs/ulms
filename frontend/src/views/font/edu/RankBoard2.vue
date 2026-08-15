@@ -10,7 +10,7 @@
           <div
             class="my-rank-info"
             style="text-align: center"
-            v-if="global?.user?.jobLevel?.indexOf('100,102,103,104,105') === -1"
+            v-if="userInfo?.jobLevel?.indexOf('100,102,103,104,105') === -1"
           >
             <t-space>
               <t-button
@@ -75,7 +75,7 @@
           </TableColumn>
         </CustomTable>
       </t-col>
-      <t-col :span="9">
+      <t-col :span="8">
         <CustomTable rowKey="id"
           :data="mainTable"
           :loading="loading"
@@ -137,6 +137,9 @@ import { brushReportApi } from '@/api/edu/brushReport'
 import { downloadExcel } from '@/utils/request'
 import { MessagePlugin } from 'tdesign-vue-next'
 import * as echarts from 'echarts'
+
+// 当前登录用户信息（登录时写入 localStorage，standalone 路由下守卫不加载 userStore）
+const userInfo = JSON.parse(localStorage.getItem('user') || '{}')
 
 const formatDate = (date) => {
   return new Date(date).toISOString().split('T')[0]

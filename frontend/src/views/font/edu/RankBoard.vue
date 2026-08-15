@@ -36,7 +36,7 @@
           <div style="margin: 15px 0 15px 0">
             <t-date-range-picker v-model="dateRange" size="small" format="YYYY-MM-DD" @change="dateChange" style="background-color: transparent; margin-right: 10px" :placeholder="['开始日期', '结束日期']"></t-date-range-picker>
             <t-button v-if="
-              global?.user?.jobLevel?.indexOf('100,102,103,104,105') === -1
+              userInfo?.jobLevel?.indexOf('100,102,103,104,105') === -1
             " theme="primary" size="small" @click="
                 downloadExcel(
                   'edu/brush/score/report/hum',
@@ -144,6 +144,9 @@ import { brushReportApi } from '@/api/edu/brushReport'
 import { downloadExcel } from '@/utils/request'
 import { MessagePlugin } from 'tdesign-vue-next'
 
+// 当前登录用户信息（登录时写入 localStorage，standalone 路由下守卫不加载 userStore）
+const userInfo = JSON.parse(localStorage.getItem('user') || '{}')
+
 const formatDate = (date) => {
   return new Date(date).toISOString().split('T')[0]
 }
@@ -181,7 +184,7 @@ const getHumRank = async () => {
   rankList.value = res.data
   // 获取我的信息
   myRank.value = rankList.value.filter(
-    (e) => e.ploNum === global?.user?.ploNum
+    (e) => e.ploNum === userInfo.ploNum
   )[0]
   loading.value = false
 }
