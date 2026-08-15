@@ -10,6 +10,13 @@ import { DialogPlugin } from 'tdesign-vue-next'
 export function useConfirm() {
   const confirm = (message, options = {}) => {
     return new Promise((resolve) => {
+      let settled = false
+      const done = (val) => {
+        if (!settled) {
+          settled = true
+          resolve(val)
+        }
+      }
       const dialog = DialogPlugin.confirm({
         header: options.title || '提示',
         body: message,
@@ -17,12 +24,18 @@ export function useConfirm() {
         confirmBtn: options.confirmButtonText || '确定',
         cancelBtn: options.cancelButtonText || '取消',
         onConfirm: () => {
-          // 确认按钮不会自动关闭弹窗，需手动销毁
+          done(true)
           dialog.destroy()
-          resolve(true)
         },
-        onCancel: () => resolve(false),
-        onClose: () => resolve(false)
+        onCancel: () => {
+          done(false)
+          dialog.destroy()
+        },
+        // onClose 会被 TDesign 用作实际关闭逻辑，必须在这里显式销毁弹窗
+        onClose: () => {
+          done(false)
+          dialog.destroy()
+        }
       })
     })
   }
