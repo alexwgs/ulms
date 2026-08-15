@@ -6,7 +6,6 @@ import com.cmbccd.ulms.common.util.DataPage;
 import com.cmbccd.ulms.sys.domain.JobInfo;
 import com.cmbccd.ulms.sys.domain.Msg;
 import com.cmbccd.ulms.sys.service.JobInfoService;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.annotation.Resource;
