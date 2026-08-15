@@ -1,20 +1,26 @@
 package com.cmbccd.ulms.edu.service.impl;
 
 import com.cmbccd.ulms.common.controller.DataCache;
+import com.cmbccd.ulms.common.util.DataPage;
 import com.cmbccd.ulms.common.util.Util;
 import com.cmbccd.ulms.edu.dao.DailyConfigMapper;
 import com.cmbccd.ulms.edu.dao.DailyScoreMapper;
 import com.cmbccd.ulms.edu.domain.DailyConfig;
 import com.cmbccd.ulms.edu.domain.DailyScore;
 import com.cmbccd.ulms.edu.domain.DailyScoreExample;
+import com.cmbccd.ulms.edu.domain.DailyScoreExample.Criteria;
 import com.cmbccd.ulms.edu.domain.report.DailyScoreSummary;
 import com.cmbccd.ulms.edu.service.DailyScoreService;
+import com.cmbccd.ulms.sys.domain.Department;
 import com.cmbccd.ulms.sys.domain.Employee;
+import com.github.pagehelper.PageHelper;
 import org.springframework.stereotype.Service;
 import java.math.RoundingMode;
 import jakarta.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class DailyScoreServiceImpl implements DailyScoreService {
@@ -69,6 +75,46 @@ public class DailyScoreServiceImpl implements DailyScoreService {
             }
         }
         return list;
+    }
+
+    @Override
+    public DataPage<DailyScoreSummary> listDailyScoreByQuery(Map<String, String> params) {
+        String begDate = params.get("begDate");
+        String endDate = params.get("endDate");
+        String groupBy = params.get("groupBy");
+        String query = params.get("query");
+        String queryType = params.get("queryType");
+        int total = getDailyTaskNum(begDate, endDate);
+        Map<String, Integer> pageParams = Util.innitTablePages(params);
+        DailyScoreExample example = new DailyScoreExample();
+        Criteria criteria = example.createCriteria();
+        criteria.andQuesDateBetween(begDate, endDate);
+        criteria.andValidEqualTo((short) 1);
+        if (!Util.isNullorEmpty(params.get("order"))) {
+            example.setOrderByClause(Util.buildOrderByClause(params.get("order"), params.get("orderType")));
+        }
+        if (!Util.isNullorEmpty(query)) {
+            if ("ploNum".equals(queryType)) {
+                criteria.andPloNumEqualTo(query);
+            } else if ("ploName".equals(queryType)) {
+                criteria.andPloNameLike("%" + query + "%");
+            } else if ("group".equals(queryType)) {
+                List<String> condition = DataCache.getDepartments().values().stream()
+                        .filter(e -> e.getDeptName().indexOf(query) > -1)
+                        .map(Department::getDeptNum).collect(Collectors.toList());
+                condition.add("0");
+                criteria.andDeptGroupIn(condition);
+            } else if ("dept".equals(queryType)) {
+                List<String> condition = DataCache.getDepartments().values().stream()
+                        .filter(e -> e.getDeptName().indexOf(query) > -1)
+                        .map(Department::getDeptNum).collect(Collectors.toList());
+                condition.add("0");
+                criteria.andDeptNumIn(condition);
+            }
+        }
+        PageHelper.startPage(pageParams.get("pageNum"), pageParams.get("pageSize"));
+        List<DailyScoreSummary> list = listSumary(example, groupBy, total);
+        return new DataPage<DailyScoreSummary>(list);
     }
 
     @Override

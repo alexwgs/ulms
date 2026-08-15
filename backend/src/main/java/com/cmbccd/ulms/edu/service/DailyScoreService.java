@@ -1,11 +1,13 @@
 package com.cmbccd.ulms.edu.service;
 
+import com.cmbccd.ulms.common.util.DataPage;
 import com.cmbccd.ulms.edu.domain.DailyConfig;
 import com.cmbccd.ulms.edu.domain.DailyScore;
 import com.cmbccd.ulms.edu.domain.DailyScoreExample;
 import com.cmbccd.ulms.edu.domain.report.DailyScoreSummary;
 
 import java.util.List;
+import java.util.Map;
 
 public interface DailyScoreService {
 
@@ -23,6 +25,8 @@ public interface DailyScoreService {
 
     int getDailyTaskNum(String begDate,String endDate);
     List<DailyScoreSummary> listSumary(DailyScoreExample example, String groupBy, int total);
+
+    DataPage<DailyScoreSummary> listDailyScoreByQuery(Map<String, String> params);
 
     int create(DailyScore record);
 
