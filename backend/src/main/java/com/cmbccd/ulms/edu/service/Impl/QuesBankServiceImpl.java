@@ -209,5 +209,20 @@ public class QuesBankServiceImpl implements QuesBankService{
 		this.updateQuesNumber();
 		return count;
 	}
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public int transferQuestions(String libCode, String[] questCodes) {
+		if (questCodes == null || questCodes.length < 1) {
+			return 0;
+		}
+		for (String quesCode : questCodes) {
+			QuesBank record = new QuesBank();
+			record.setQuesCode(quesCode);
+			record.setLibCode(libCode);
+			this.updateBySelective(record);
+		}
+		return questCodes.length;
+	}
 }
 

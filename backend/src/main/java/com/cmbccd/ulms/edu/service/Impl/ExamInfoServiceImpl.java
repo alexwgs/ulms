@@ -7,11 +7,14 @@ import com.cmbccd.ulms.edu.domain.AreaConfig;
 import com.cmbccd.ulms.edu.domain.ExamInfo;
 import com.cmbccd.ulms.edu.domain.ExamInfoExample;
 import com.cmbccd.ulms.edu.domain.ExamInfoExample.Criteria;
+import com.cmbccd.ulms.edu.domain.QuesTemp;
 import com.cmbccd.ulms.edu.service.AreaConfigService;
 import com.cmbccd.ulms.edu.service.ExamInfoService;
+import com.cmbccd.ulms.edu.service.QuesTempService;
 import com.cmbccd.ulms.sys.service.PublicService;
 import com.github.pagehelper.PageHelper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.annotation.Resource;
 import java.util.List;
@@ -111,7 +114,21 @@ public class ExamInfoServiceImpl implements ExamInfoService {
 		return list;
 	}
 
-	
-	
+	@Resource
+	private QuesTempService quesTempService;
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public int createExamTemp(String examCode, List<QuesTemp> list) {
+		quesTempService.delete(examCode);
+		int quesNum = quesTempService.create(list);
+		// 更新试题数量
+		ExamInfo examInfo = new ExamInfo();
+		examInfo.setExamCode(examCode);
+		examInfo.setQuesNum(quesNum);
+		this.update(examInfo);
+		return quesNum;
+	}
+
 	
 }
