@@ -90,8 +90,8 @@ public class BdExceptionHandler {
     // 拦截：未登录异常
     @ExceptionHandler(NotLoginException.class)
     public Msg handlerException(NotLoginException e, HttpServletResponse response) {
-        // 打印堆栈，以供调试
-        logger.warn(e.getMessage(), e);
+        // 未登录是预期内状态（每个匿名请求都会触发），仅记录简短信息避免堆栈刷屏
+        logger.info("未登录访问被拦截: {}", e.getMessage());
         // 设置 HTTP 状态码为 401，以便前端拦截器正确识别
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         // 返回给前端
