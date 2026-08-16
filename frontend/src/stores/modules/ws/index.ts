@@ -4,7 +4,7 @@ import ReconnectingWebSocket from 'reconnecting-websocket'
 import router from '@/router'
 import { useOhtStore, useUserStore } from '@/stores'
 import { clearToken } from '@/utils/auth'
-import { NotifyPlugin } from 'tdesign-vue-next'
+import { NotifyPlugin, MessagePlugin } from 'tdesign-vue-next'
 import todoVoice from '@/assets/voice/todoVoice.mp3'
 import ohtVoice from '@/assets/voice/ohtVoice.mp3'
 import messageVoice from '@/assets/voice/messageVoice.mp3'
@@ -441,6 +441,11 @@ export const useWsStore = defineStore('websocket', {
     // 处理错误消息
     handleErrorMessage(msg, ohtStore) {
       console.error('[系统]消息:', msg.msg)
+
+      // 审计修复：后端 error 消息（如权限校验失败）必须提示用户，避免操作无反馈
+      if (msg.msg) {
+        MessagePlugin.warning(msg.msg)
+      }
 
       ohtStore.setOhtStatusInfo('default1')
       ohtStore.setOrderStatus(0)

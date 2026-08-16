@@ -356,9 +356,10 @@ public class MessageHandle {
 						WebSocketServer.sendMessage(MsgTemplate.success("oht", "error", "完成结案失败，请确认此案件是否存在！"), userId);
 						return;
 					}
-					// 审计加固（IDOR）：仅求助者本人可以确认完成自己的案件
-					if (!userId.equals(ohtCase.getBuildId())) {
-						WebSocketServer.sendMessage(MsgTemplate.success("oht", "error", "您无权确认他人的案件！"), userId);
+					// 审计加固（IDOR）：pcompCase 由业务主任（接单人）结案（前端 roleType=1 弹窗含客户信息），
+					// 仅接单者本人可以完成自己接起的案件
+					if (ohtCase.getPickId() == null || !userId.equals(ohtCase.getPickId())) {
+						WebSocketServer.sendMessage(MsgTemplate.success("oht", "error", "您无权完成他人的案件！"), userId);
 						return;
 					}
 					if (!ohtCase.getCaseStatus().equals(0)) {
@@ -373,10 +374,12 @@ public class MessageHandle {
 						// User.setOrderStatus(0);
 						// 推送给发起人订单已接起，并将发起人状态设置为LINKED
 						WebSocketServer.getState().setWaittingCase(this.caseService.getHelpWaitCase());
+						// 房间内其他成员（求助人）收到"对方已结案"
 						WebSocketServer.sendMessageByRoom(MsgTemplate.success("oht", "command", "otherComplete")
 								.add("case", WebSocketServer.getState().getWaittingCase()), ohtCase.getCaseId(), userId);
-						WebSocketServer.sendMessageByRoom(MsgTemplate.success("oht", "command", "mineComplete")
-								.add("case", WebSocketServer.getState().getWaittingCase()), ohtCase.getCaseId(), ohtCase.getBuildId());
+						// 操作者（接单主任）本人收到 mineComplete：重置状态并刷新待接列表
+						WebSocketServer.sendMessage(MsgTemplate.success("oht", "command", "mineComplete")
+								.add("case", WebSocketServer.getState().getWaittingCase()), userId);
 					} else {
 						WebSocketServer.sendMessage(MsgTemplate.success("oht", "error", "完成结案失败，可能未找到该求助案件，请联系管理员！"),
 								userId);
@@ -402,9 +405,9 @@ public class MessageHandle {
 						WebSocketServer.sendMessage(MsgTemplate.success("oht", "error", "案件结案失败，请确认此案件是否存在！"), userId);
 						return;
 					}
-					// 审计加固（IDOR）：仅接单者本人可以完成自己接起的案件
-					if (ohtCase.getPickId() == null || !userId.equals(ohtCase.getPickId())) {
-						WebSocketServer.sendMessage(MsgTemplate.success("oht", "error", "您无权完成他人的案件！"), userId);
+					// 审计加固（IDOR）：bcompCase 由求助人本人确认结案（前端 roleType=0 弹窗无客户信息）
+					if (!userId.equals(ohtCase.getBuildId())) {
+						WebSocketServer.sendMessage(MsgTemplate.success("oht", "error", "您无权确认他人的案件！"), userId);
 						return;
 					}
 					if (!ohtCase.getCaseStatus().equals(0)) {
@@ -418,10 +421,12 @@ public class MessageHandle {
 						// User.setOrderStatus(0);
 						// 推送给发起人订单已接起，并将发起人状态设置为LINKED
 						WebSocketServer.getState().setWaittingCase(this.caseService.getHelpWaitCase());
+						// 房间内其他成员（接单主任）收到"对方已结案"
 						WebSocketServer.sendMessageByRoom(MsgTemplate.success("oht", "command", "otherComplete")
 								.add("case", WebSocketServer.getState().getWaittingCase()), ohtCase.getCaseId(), userId);
-						WebSocketServer.sendMessageByRoom(MsgTemplate.success("oht", "command", "mineComplete")
-								.add("case", WebSocketServer.getState().getWaittingCase()), ohtCase.getCaseId(), ohtCase.getPickId());
+						// 操作者（求助人）本人收到 mineComplete：重置状态
+						WebSocketServer.sendMessage(MsgTemplate.success("oht", "command", "mineComplete")
+								.add("case", WebSocketServer.getState().getWaittingCase()), userId);
 						WebSocketServer.roomChange(userId, "default");
 						// 结案后清除双方的未结案件缓存并广播
 						refreshUserCaseAndBroadcast(userId);
