@@ -94,9 +94,10 @@
                   <!-- Emoji（离线表情面板：纯本地字符，内网/离线可用；打开时高亮） -->
                   <t-popup v-model:visible="emojiVisible" placement="top-start" trigger="click">
                     <t-button text class="icon-btn" :class="{ 'is-active': emojiVisible }" title="表情">
-                      <t-icon size="20">
+                      <t-icon size="18">
                         <SmileIcon />
                       </t-icon>
+                      <span class="icon-btn-label">表情</span>
                     </t-button>
                     <template #content>
                       <OfflineEmojiPicker @select="onEmojiSelect" />
@@ -106,9 +107,10 @@
                   <!-- 快捷消息 -->
                   <t-dropdown @click="selectQuickMemo" trigger="click">
                     <t-button text class="icon-btn" title="快捷消息">
-                      <t-icon size="20">
+                      <t-icon size="18">
                         <ChatBubbleIcon />
                       </t-icon>
+                      <span class="icon-btn-label">快捷消息</span>
                     </t-button>
                     <template #dropdown>
                       <t-dropdown-menu>
@@ -125,6 +127,7 @@
                     <t-icon size="18">
                       <DeleteIcon />
                     </t-icon>
+                    <span class="icon-btn-label">清屏</span>
                   </t-button>
                 </div>
               </div>
@@ -677,13 +680,15 @@ onMounted(() => {
     }
   }
 
-  // 图标按钮：40px 点击区、hover 浅灰、emoji 激活高亮、清屏 hover 泛红
+  // 工具栏按钮：图标 + 文字标签，hover 浅灰、emoji 激活高亮、清屏 hover 泛红
   :deep(.icon-btn) {
-    width: 34px;
-    height: 34px;
-    padding: 0;
+    height: 32px;
+    padding: 0 10px;
     border-radius: 8px;
     color: #4a5568;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
     transition: background 0.15s ease, color 0.15s ease;
 
     &:hover {
@@ -698,6 +703,11 @@ onMounted(() => {
     &.danger:hover {
       background: #fdeeee;
       color: #f76560;
+    }
+
+    .icon-btn-label {
+      font-size: 13px;
+      line-height: 1;
     }
   }
 
