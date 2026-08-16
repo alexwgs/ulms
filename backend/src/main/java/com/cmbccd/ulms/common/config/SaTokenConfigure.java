@@ -29,7 +29,6 @@ public class SaTokenConfigure implements WebMvcConfigurer  {
                             "/favicon.ico",     // 浏览器图标
                             "/error",           // 错误处理端点
                             "/api/login",       // 登录接口
-                            "/api/getPw",       // 获取加密密钥（历史遗留端点）
                             "/api/logout",      // 登出：未登录时也应可调用，避免前端 token 残留
                             "/api/unauth",      // 未登录提示端点
                             "/api/403",         // 无权限提示端点
@@ -46,7 +45,6 @@ public class SaTokenConfigure implements WebMvcConfigurer  {
                         "/favicon.ico",
                         "/error",
                         "/api/login",
-                        "/api/getPw",
                         "/api/logout",
                         "/api/unauth",
                         "/api/403"

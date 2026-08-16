@@ -28,7 +28,7 @@
         </t-form-item>
 
         <t-form-item name="password">
-          <t-input v-model="loginForm.password" type="password" maxlength="10" @enter="login"
+          <t-input v-model="loginForm.password" type="password" maxlength="20" @enter="login"
             placeholder="同人员成长平台、业务辅助系统密码">
             <template #prefix-icon>
               <DynamicIcon name="lock-on" />
@@ -52,15 +52,15 @@
         </t-form-item>
 
         <t-form-item label="旧密码" name="oPassword">
-          <t-input type="password" v-model="resetForm.oPassword" maxlength="10" />
+          <t-input type="password" v-model="resetForm.oPassword" maxlength="20" />
         </t-form-item>
 
         <t-form-item label="新密码" name="nPassword">
-          <t-input type="password" v-model="resetForm.nPassword" maxlength="10" />
+          <t-input type="password" v-model="resetForm.nPassword" maxlength="20" />
         </t-form-item>
 
         <t-form-item label="确认密码" name="cPassword">
-          <t-input type="password" v-model="resetForm.cPassword" maxlength="10" />
+          <t-input type="password" v-model="resetForm.cPassword" maxlength="20" />
         </t-form-item>
       </t-form>
 

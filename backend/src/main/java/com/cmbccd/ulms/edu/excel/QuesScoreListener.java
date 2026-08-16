@@ -67,7 +67,12 @@ public class QuesScoreListener extends AnalysisEventListener<Map<Integer, String
     
 	@Override
 	public void doAfterAllAnalysed(AnalysisContext context) {
-        // 这里也要保存数据，确保最后遗留的数据也存储到数据库
+        // 审计修复：解析过程中有错误行（工号无法识别）时保留错误信息，
+        // 不再无条件覆盖为成功
+        Object code = msg.get("code");
+        if (code != null && !Integer.valueOf(200).equals(code)) {
+            return;
+        }
 		msg = Msg.success("所有数据解析完成！成功导入【"+count+"】条数据！");
 	}
 

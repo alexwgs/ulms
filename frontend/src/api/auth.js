@@ -80,14 +80,6 @@ export function logout() {
 }
 
 /**
- * 获取加密密码
- * @returns {Promise}
- */
-export function getEncryptedPassword() {
-  return httpInstance({ url: '/getPw' })
-}
-
-/**
  * 新建操作日志
  * @param {Object} data - 操作日志数据
  * @returns {Promise}

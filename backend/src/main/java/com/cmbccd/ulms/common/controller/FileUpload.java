@@ -88,9 +88,9 @@ public class FileUpload {
 			int i = fis.read(temp);
 			while (i != -1) {
 				fos.write(temp, 0, i);
-				fos.flush();
 				i = fis.read(temp);
 			}
+			fos.flush();
 		} catch (IOException e) {
 			log.error("发生错误！", e);
 			// 写盘失败必须终止，不能继续落库并返回"上传成功"

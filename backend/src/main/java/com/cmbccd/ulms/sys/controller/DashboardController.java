@@ -3,6 +3,8 @@ package com.cmbccd.ulms.sys.controller;
 import com.cmbccd.ulms.sys.domain.Msg;
 import com.cmbccd.ulms.sys.service.OperLogService;
 import com.cmbccd.ulms.sys.service.OperateLogService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,6 +21,8 @@ import java.util.Map;
 @RestController
 @RequestMapping("sys/dashboard")
 public class DashboardController {
+
+    private static final Logger log = LoggerFactory.getLogger(DashboardController.class);
 
     @Resource
     private OperLogService operLogService;
@@ -38,7 +42,7 @@ public class DashboardController {
                     .put("todayStats", stats)
                     .put("errorList", errorList);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("获取今日统计数据失败", e);
             return Msg.error("获取今日统计数据失败");
         }
     }
@@ -53,7 +57,7 @@ public class DashboardController {
             List<Map<String, Object>> data = operLogService.getUvPvTrend(days);
             return Msg.success(data);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("获取UV/PV趋势数据失败", e);
             return Msg.error("获取UV/PV趋势数据失败");
         }
     }
@@ -68,7 +72,7 @@ public class DashboardController {
             List<Map<String, Object>> data = operLogService.getMethodStatsTrend(days);
             return Msg.success(data);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("获取请求统计趋势数据失败", e);
             return Msg.error("获取请求统计趋势数据失败");
         }
     }
@@ -83,7 +87,7 @@ public class DashboardController {
             List<Map<String, Object>> data = operateLogService.getSubsysVisitTrend(days);
             return Msg.success(data);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("获取子系统访问趋势数据失败", e);
             return Msg.error("获取子系统访问趋势数据失败");
         }
     }

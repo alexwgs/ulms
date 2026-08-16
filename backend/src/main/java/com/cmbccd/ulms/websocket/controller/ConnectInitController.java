@@ -86,7 +86,8 @@ public class ConnectInitController {
 		// 默认为空闲状态
 //		user.setOrderStatus(0);
 		// 如果用户是金普卡业务主任则需要初始化当前状态 及 当日是否有身份！
-		if (DIRECTOR_NUM.equals(user.getUser().getJobLevel())) {
+		// 审计修复：员工不在缓存（getUser() 为 null）时跳过主任初始化，避免 NPE
+		if (user.getUser() != null && DIRECTOR_NUM.equals(user.getUser().getJobLevel())) {
 			WebSocketServer.getState().addDirector(userId);
 			StatusJour statusJour = this.statusJourService.getUserLatestStatusJour(Util.getDateToday(), userId);
 			if (Util.isNullorEmpty(statusJour)) {

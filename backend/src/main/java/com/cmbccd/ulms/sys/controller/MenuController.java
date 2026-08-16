@@ -83,7 +83,12 @@ public class MenuController {
 		String[] roleArray = userRole.getRoles().split(",");
 
 		for (String id : roleArray) {
-			permissions += "0," + roleService.getRoleById(Integer.parseInt(id)).getPermissions() + ",";
+			Role role = roleService.getRoleById(Integer.parseInt(id));
+			// 审计修复：角色可能已被删除，判空避免 NPE
+			if (role == null) {
+				continue;
+			}
+			permissions += "0," + role.getPermissions() + ",";
 		}
 		List<String> permissionList = menuService.selectFontPermissionByIds(permissions.split(","));
 		List<Menu> menuList = menuService.getMenuWithAuth("a6squre",(short)1, authMenuIds);

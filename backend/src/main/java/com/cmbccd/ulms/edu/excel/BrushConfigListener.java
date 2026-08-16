@@ -74,8 +74,13 @@ public class BrushConfigListener extends AnalysisEventListener<Map<Integer, Stri
     
 	@Override
 	public void doAfterAllAnalysed(AnalysisContext context) {
-        // 这里也要保存数据，确保最后遗留的数据也存储到数据库
-		dailyGroupService.batchInsert(list);
+        // 审计修复：解析过程中有错误行（工号无法识别/分组不存在）时保留错误信息，
+        // 不再无条件覆盖为成功；仅无错误时落库并返回成功
+        Object code = msg.get("code");
+        if (code != null && !Integer.valueOf(200).equals(code)) {
+            return;
+        }
+        dailyGroupService.batchInsert(list);
 		msg = Msg.success("所有数据解析完成！");
 	}
 

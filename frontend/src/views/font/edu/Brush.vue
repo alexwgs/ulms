@@ -182,6 +182,7 @@ const getBrushConfig = async () => {
   const res = await brushApi.getBrushConfig()
   if (res.code !== 200) {
     MessagePlugin.error(res.msg)
+    loading.value = false
     return
   }
   Object.assign(brushConfig, res.data)

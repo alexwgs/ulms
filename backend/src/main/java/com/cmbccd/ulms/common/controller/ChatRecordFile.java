@@ -61,6 +61,8 @@ public class ChatRecordFile {
 	    }
 	    catch (IOException e) {
 	      log.error("创建聊天记录文件失败", e);
+	      // 审计修复：文件创建失败直接返回，避免 new PrintWriter(null) NPE 冒泡到 WS 消息链
+	      return;
 	    }
 	    PrintWriter pw = new PrintWriter(fw);
 	    pw.println(msgJson);
