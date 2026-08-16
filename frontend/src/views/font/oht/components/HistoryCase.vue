@@ -34,24 +34,24 @@
             </t-descriptions>
           </template>
         </TableColumn>
-        <TableColumn label="建案时间" colKey="caseId">
-          <template #default="scope">{{
-            dictStore.getDictName('oht_case_status', scope.row.caseStatus)
-          }}</template>
+        <TableColumn label="建案时间" colKey="dataTime" width="160">
+          <template #default="scope">
+            {{ formatTime(scope.row.dataTime) }}
+          </template>
         </TableColumn>
-        <TableColumn label="案件ID" colKey="caseId"></TableColumn>
-        <TableColumn label="案件状态" colKey="caseStatus">
+        <TableColumn label="案件ID" colKey="caseId" width="110" ellipsis></TableColumn>
+        <TableColumn label="案件状态" colKey="caseStatus" width="100">
           <template #default="scope">
             {{ dictStore.getDictName('oht_case_status', scope.row.caseStatus) }}
           </template>
         </TableColumn>
-        <TableColumn label="案件类型" colKey="caseType">
+        <TableColumn label="案件类型" colKey="caseType" width="120">
           <template #default="scope">
             {{ dictStore.getDictName('oht_case_type', scope.row.caseType) }}
           </template>
         </TableColumn>
-        <TableColumn colKey="buildUser.ploName" sortable="custom" label="建案工号"></TableColumn>
-        <TableColumn colKey="pickUser.ploName" sortable="custom" label="受理工号"></TableColumn>
+        <TableColumn colKey="buildUser.ploName" sortable="custom" label="建案工号" width="110"></TableColumn>
+        <TableColumn colKey="pickUser.ploName" sortable="custom" label="受理工号" width="110"></TableColumn>
       </CustomTable>
       <t-pagination @page-size-change="handleSizeChange" @current-change="handleCurrentChange" :current="currentPage"
         :page-size-options="pageSizes" :page-size="historyCaseQueryInfo.pageSize"
