@@ -511,17 +511,17 @@ onMounted(() => {
   height: calc(100vh - 580px);
   min-height: 300px;
   overflow-y: auto;
-  background: #f5f7fb;
+  background: var(--td-bg-color-page);
   padding: 15px;
   scrollbar-width: thin;
-  scrollbar-color: #cdd5e1 transparent;
+  scrollbar-color: var(--td-border-level-1-color) transparent;
 
   &::-webkit-scrollbar {
     width: 6px;
   }
 
   &::-webkit-scrollbar-thumb {
-    background: #cdd5e1;
+    background: var(--td-border-level-1-color);
     border-radius: 3px;
   }
 
@@ -544,13 +544,13 @@ onMounted(() => {
 
           .bubble {
             .bubble-content {
-              background: #fff;
-              border: 1px solid #e3e9f2;
-              box-shadow: 0 1px 3px rgba(23, 35, 59, 0.05);
+              background: var(--td-bg-color-container);
+              border: 1px solid var(--td-border-level-1-color);
+              box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 
               .bubble-arrow {
                 left: -8px;
-                border-right-color: #fff;
+                border-right-color: var(--td-bg-color-container);
               }
             }
           }
@@ -602,14 +602,14 @@ onMounted(() => {
         content: '';
         flex: 1;
         height: 1px;
-        background: #e4e9f2;
+        background: var(--td-border-level-1-color);
       }
 
       span {
         padding: 2px 10px;
         border-radius: 10px;
-        background: #e8edf5;
-        color: #7a8699;
+        background: var(--td-bg-color-component);
+        color: var(--td-text-color-placeholder);
         font-size: 12px;
         font-variant-numeric: tabular-nums;
       }
@@ -627,7 +627,7 @@ onMounted(() => {
           height: 40px;
           border-radius: 6px;
           object-fit: cover;
-          border: 1px solid #e3e9f2;
+          border: 1px solid var(--td-border-level-1-color);
         }
       }
 
@@ -661,8 +661,8 @@ onMounted(() => {
 }
 
 .input-area {
-  border-top: 1px solid #e8edf5;
-  background: #fff;
+  border-top: 1px solid var(--td-border-level-1-color);
+  background: var(--td-bg-color-container);
   padding: 8px 12px 10px;
 
   // 工具栏：图标按钮横向排布，无分隔线（一体面板）
@@ -680,33 +680,33 @@ onMounted(() => {
     }
   }
 
-  // 工具栏按钮：透明底 + 浅灰外框（覆盖 t-button 默认 primary 蓝底），hover 浅灰、emoji 激活绿、清屏 hover 泛红
+  // 工具栏按钮：透明底 + 浅灰外框（覆盖 t-button 默认 primary 蓝底），明暗主题自适应
   :deep(.icon-btn) {
     height: 32px;
     padding: 0 10px;
     border-radius: 8px;
     background: transparent;
-    border: 1px solid #dfe4ec;
-    color: #3d4757;
+    border: 1px solid var(--td-border-level-1-color);
+    color: var(--td-text-color-primary);
     display: inline-flex;
     align-items: center;
     gap: 5px;
     transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 
     &:hover {
-      background: #f5f7fa;
-      border-color: #c9d2e0;
+      background: var(--td-bg-color-container-hover);
+      border-color: var(--td-border-level-2-color);
     }
 
     &.is-active {
-      background: #e8f3ec;
+      background: var(--td-brand-color-light);
       border-color: #8fd6ab;
       color: #07c160;
     }
 
     &.danger:hover {
-      background: #fdeeee;
-      border-color: #f3b8b5;
+      background: rgba(247, 101, 96, 0.1);
+      border-color: rgba(247, 101, 96, 0.4);
       color: #f76560;
     }
 
@@ -720,29 +720,29 @@ onMounted(() => {
     margin-bottom: 8px;
   }
 
-  // 微信风格输入框：浅灰圆角、聚焦变白并描绿边
+  // 微信风格输入框：组件底色圆角（明暗自适应）、聚焦变亮并描绿边
   .chat-textarea {
     width: 100%;
     padding: 9px 12px;
     resize: none;
-    border: 1px solid #ededed;
+    border: 1px solid transparent;
     border-radius: 4px;
-    background: #ededed;
+    background: var(--td-bg-color-component);
     font: inherit;
     font-size: 14px;
     line-height: 1.6;
-    color: #1e2a3a;
+    color: var(--td-text-color-primary);
     transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
 
     &:focus {
       outline: none;
-      background: #fff;
+      background: var(--td-bg-color-container);
       border-color: #07c160;
       box-shadow: 0 0 0 2px rgba(7, 193, 96, 0.12);
     }
 
     &::placeholder {
-      color: #a3adbd;
+      color: var(--td-text-color-placeholder);
     }
   }
 
@@ -757,7 +757,7 @@ onMounted(() => {
       align-items: center;
       gap: 4px;
       font-size: 12px;
-      color: #a3adbd;
+      color: var(--td-text-color-placeholder);
 
       .keycap {
         display: inline-flex;
@@ -766,11 +766,11 @@ onMounted(() => {
         min-width: 18px;
         height: 18px;
         padding: 0 4px;
-        border: 1px solid #d8dee8;
+        border: 1px solid var(--td-border-level-1-color);
         border-bottom-width: 2px;
         border-radius: 4px;
-        background: #f7f9fc;
-        color: #6b7688;
+        background: var(--td-bg-color-component);
+        color: var(--td-text-color-secondary);
         font-size: 11px;
         line-height: 1;
       }
@@ -822,7 +822,7 @@ onMounted(() => {
         flex-wrap: wrap;
         gap: 8px;
         padding: 10px 0;
-        border-bottom: 1px solid #f0f0f0;
+        border-bottom: 1px solid var(--td-border-level-1-color);
 
         &:last-child {
           border-bottom: none;
@@ -830,7 +830,7 @@ onMounted(() => {
 
         .label {
           font-size: 13px;
-          color: #666;
+          color: var(--td-text-color-secondary);
           min-width: 70px;
         }
 

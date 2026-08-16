@@ -117,10 +117,10 @@ const select = (emoji) => {
 <style lang="less" scoped>
 .emoji-board {
   width: 320px;
-  background: #fff;
+  background: var(--td-bg-color-container);
   border-radius: 8px;
-  box-shadow: 0 4px 16px rgba(23, 35, 59, 0.12);
-  border: 1px solid #e8edf5;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  border: 1px solid var(--td-border-level-1-color);
   overflow: hidden;
 }
 
@@ -129,8 +129,8 @@ const select = (emoji) => {
   align-items: center;
   gap: 2px;
   padding: 8px 8px 6px;
-  border-bottom: 1px solid #eef1f6;
-  background: #f8fafd;
+  border-bottom: 1px solid var(--td-border-level-1-color);
+  background: var(--td-bg-color-container-hover);
 
   .emoji-tab {
     flex: 1;
@@ -147,11 +147,11 @@ const select = (emoji) => {
     transition: background 0.15s ease;
 
     &:hover {
-      background: #eef3fb;
+      background: var(--td-bg-color-container-hover);
     }
 
     &.active {
-      background: #e2ecff;
+      background: var(--td-brand-color-light);
     }
   }
 }
@@ -182,7 +182,7 @@ const select = (emoji) => {
     transition: background 0.12s ease, transform 0.12s ease;
 
     &:hover {
-      background: #eef3fb;
+      background: var(--td-bg-color-container-hover);
       transform: scale(1.12);
     }
 
