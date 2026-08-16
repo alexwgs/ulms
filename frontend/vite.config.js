@@ -38,9 +38,10 @@ export default defineConfig({
     assetsDir: 'static/img/',
     rollupOptions: {
       output: {
+        // 审计优化（F-M2）：移除 tdesign/echarts 的强制整包——TDesignResolver 已按需
+        // 引入组件，强制 manualChunks 会把整个 7MB 库打进单 chunk 抵消 tree-shaking；
+        // 仅保留 vue 生态 vendor 分组，其余交给 Rollup 自动分包
         manualChunks: {
-          echarts: ['echarts'],
-          'tdesign-vue-next': ['tdesign-vue-next'],
           vendor: ['vue', 'vue-router', 'pinia', 'axios']
         },
         chunkFileNames: 'static/js/[name]-[hash].js',
