@@ -73,9 +73,20 @@ public class ChatRecordFile {
 	     if (room == null || !room.matches("[\\w-]+")) {
 	         return Msg.error("房间名不合法");
 	     }
-	     String month = date.substring(0, 4) + date.substring(5, 7);
-	     String path = ulmsConfig.getUploadPath() + "chatRecord/" + month + "/" + room + ".txt";
-	     File f = new File(path);
+	     // 写入端目录为 Util.getMonth()（yyyy-MM，如 2026-08）；读取优先该格式，
+	     // 兼容历史遗留的 yyyyMM（如 202608）目录
+	     String monthDashed = date.substring(0, 7);
+	     String monthCompact = date.substring(0, 4) + date.substring(5, 7);
+	     String base = ulmsConfig.getUploadPath() + "chatRecord/";
+	     File f = new File(base + monthDashed + "/" + room + ".txt");
+	     String path = f.getPath();
+	     if (!f.exists()) {
+	         File legacy = new File(base + monthCompact + "/" + room + ".txt");
+	         if (legacy.exists()) {
+	             f = legacy;
+	             path = legacy.getPath();
+	         }
+	     }
 	     List<Map<String, Object>> list = new ArrayList<>();
 	     if (!f.exists()) {
 	         log.info("查询聊天记录：文件不存在 date={}, room={}, path={}", date, room, path);
@@ -102,9 +113,13 @@ public class ChatRecordFile {
 	             if (data == null) {
 	                 continue;
 	             }
-	             String ctime = data.getString("ctime");
+	             // 真实写入结构为 MsgTemplate.success()：data 内再包一层 data（ohtMsg）；
+	             // 兼容测试/旧数据 data 直接为消息对象的情况
+	             JSONObject inner = data.getJSONObject("data");
+	             JSONObject msgObj = inner != null ? inner : data;
+	             String ctime = msgObj.getString("ctime");
 	             if (ctime != null && ctime.startsWith(date)) {
-	                 list.add(data);
+	                 list.add(msgObj);
 	             }
 	         } catch (Exception ignored) {
 	             // 单行解析失败不影响其余记录
@@ -139,6 +154,8 @@ public class ChatRecordFile {
             fileDir.mkdirs();
         }
 
+	    log.info("写聊天记录: room={}, path={}, len={}", roomName, path + roomName + ".txt",
+	            msgJson == null ? 0 : msgJson.length());
 	    try (BufferedWriter bw = new BufferedWriter(
 	            new OutputStreamWriter(new FileOutputStream(new File(path + roomName + ".txt"), true),
 	                    StandardCharsets.UTF_8))) {
@@ -147,6 +164,7 @@ public class ChatRecordFile {
 	      bw.write(msgJson);
 	      bw.newLine();
 	      bw.flush();
+	      log.info("写聊天记录成功: path={}", path + roomName + ".txt");
 	    } catch (IOException e) {
 	      log.error("写入聊天记录文件失败", e);
 	    }

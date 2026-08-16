@@ -159,6 +159,7 @@ public class MessageHandle {
 				}
 				chatRecordFile.writeChatRecordFile(roomName,
 						JSON.toJSONString(MsgTemplate.success(modal, type).add("data", ohtMsg)));
+				log.info("写聊天记录调用完成: room={}", roomName);
 
 			} else if ("identity".equals(jsonMsg.getString("type"))) {
 				int ohtFlag = 0;
