@@ -31,9 +31,13 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   const getIndexImgData = async () => {
-    const res = await getIndexImg()
-    if (res.code !== 200) throw new Error(res.msg)
-    indexImgs.value = res.data.data
+    try {
+      const res = await getIndexImg()
+      if (res.code !== 200) return
+      indexImgs.value = res.data.data
+    } catch (e) {
+      // 未登录/网络异常时静默降级（登录页背景图非关键资源，避免 Uncaught (in promise)）
+    }
   }
 
   return {

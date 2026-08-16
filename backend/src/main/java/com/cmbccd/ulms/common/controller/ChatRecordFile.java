@@ -1,12 +1,14 @@
 package com.cmbccd.ulms.common.controller;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +54,7 @@ public class ChatRecordFile {
 		staticInit = this;
 	}
 
-	Logger log= LoggerFactory.getLogger(ChatRecordFile.class);
+	static final Logger log= LoggerFactory.getLogger(ChatRecordFile.class);
 
 	 /**
 	  * 按日期查询聊天记录（大厅 default / 案件房间），按行解析记录文件并按日期过滤。
@@ -78,37 +80,52 @@ public class ChatRecordFile {
 	     if (!f.exists()) {
 	         return Msg.success(list);
 	     }
-	     try (BufferedReader br = new BufferedReader(
-	             new InputStreamReader(new FileInputStream(f), StandardCharsets.UTF_8))) {
-	         String line;
-	         while ((line = br.readLine()) != null) {
-	             if (line.trim().isEmpty()) {
+	     // 优先按 UTF-8 读取；旧版记录文件可能为平台默认编码（Windows 下 GBK），
+	     // 出现替换符（U+FFFD）时回退用 GBK 重读，保证历史记录可解析
+	     String content = readFileContent(f, StandardCharsets.UTF_8);
+	     if (content.indexOf('\uFFFD') >= 0) {
+	         String gbk = readFileContent(f, Charset.forName("GBK"));
+	         if (gbk.indexOf('\uFFFD') < 0) {
+	             content = gbk;
+	         }
+	     }
+	     for (String line : content.split("\\r?\\n")) {
+	         if (line.trim().isEmpty()) {
+	             continue;
+	         }
+	         try {
+	             JSONObject obj = JSON.parseObject(line);
+	             JSONObject data = obj == null ? null : obj.getJSONObject("data");
+	             if (data == null) {
 	                 continue;
 	             }
-	             try {
-	                 JSONObject obj = JSON.parseObject(line);
-	                 JSONObject data = obj == null ? null : obj.getJSONObject("data");
-	                 if (data == null) {
-	                     continue;
-	                 }
-	                 String ctime = data.getString("ctime");
-	                 if (ctime != null && ctime.startsWith(date)) {
-	                     list.add(data);
-	                 }
-	             } catch (Exception ignored) {
-	                 // 单行解析失败不影响其余记录
+	             String ctime = data.getString("ctime");
+	             if (ctime != null && ctime.startsWith(date)) {
+	                 list.add(data);
 	             }
+	         } catch (Exception ignored) {
+	             // 单行解析失败不影响其余记录
 	         }
-	     } catch (IOException e) {
-	         log.error("读取聊天记录文件失败: {}", path, e);
 	     }
 	     return Msg.success(list);
 	 }
 
+	 /** 以指定字符集读取文件全部内容 */
+	 private static String readFileContent(File f, Charset charset) {
+	     StringBuilder sb = new StringBuilder();
+	     try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(f), charset))) {
+	         String line;
+	         while ((line = br.readLine()) != null) {
+	             sb.append(line).append('\n');
+	         }
+	     } catch (IOException e) {
+	         log.error("读取聊天记录文件失败: {}, charset={}", f.getPath(), charset.name(), e);
+	     }
+	     return sb.toString();
+	 }
+
 	 public void writeChatRecordFile(String roomName, String msgJson)
 	  {
-	    FileWriter fw = null;
-
 	    String path = this.ulmsConfig.getUploadPath() + "chatRecord/"+Util.getMonth()+"/";
 
         //文件夹不存在则新建
@@ -118,29 +135,16 @@ public class ChatRecordFile {
             fileDir.mkdirs();
         }
 
-	    try
-	    {
-	      File f = new File(path + roomName + ".txt");
-	      fw = new FileWriter(f, true);
-	    }
-	    catch (IOException e) {
-	      log.error("创建聊天记录文件失败", e);
-	      // 审计修复：文件创建失败直接返回，避免 new PrintWriter(null) NPE 冒泡到 WS 消息链
-	      return;
-	    }
-	    PrintWriter pw = new PrintWriter(fw);
-	    pw.println(msgJson);
-	    pw.flush();
-	    try {
-	      if (fw != null) {
-	          fw.flush();
-	      }
-	      pw.close();
-	      if (fw != null) {
-	          fw.close();
-	      }
+	    try (BufferedWriter bw = new BufferedWriter(
+	            new OutputStreamWriter(new FileOutputStream(new File(path + roomName + ".txt"), true),
+	                    StandardCharsets.UTF_8))) {
+	      // 统一 UTF-8 追加写入（旧版 FileWriter 使用平台默认编码，Windows 下为 GBK，
+	      // 导致记录文件编码与读取端不一致，中文乱码/解析失败）
+	      bw.write(msgJson);
+	      bw.newLine();
+	      bw.flush();
 	    } catch (IOException e) {
-	      log.error("关闭聊天记录文件流失败", e);
+	      log.error("写入聊天记录文件失败", e);
 	    }
 	  }
 

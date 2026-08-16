@@ -36,7 +36,10 @@
 
             <!-- 消息区域（外层容器滚动，内容多时可滚动查看） -->
             <div class="message-container" ref="messageDiv">
-              <div class="message-list">
+              <div v-if="!messageCont.length" class="message-empty">
+                <t-empty description="今日暂无会话记录"></t-empty>
+              </div>
+              <div v-else class="message-list">
                   <div v-for="(item, index) in messageCont" :key="index" class="message-item"
                     :class="[getMessageClass(item.direction)]">
                     <!-- 时间显示 -->
@@ -421,7 +424,7 @@ const loadTodayRecord = async () => {
     const today = dayjs().format('YYYY-MM-DD')
     const res = await chatRecordApi.getRecord(today)
     if (res.code !== 200) {
-      MessagePlugin.error(res.msg)
+      MessagePlugin.error(res.msg || '加载当日会话记录失败')
       return
     }
     const me = JSON.parse(localStorage.getItem('user') || '{}')?.ploNum
@@ -437,6 +440,7 @@ const loadTodayRecord = async () => {
     setScrollTop()
   } catch (error) {
     console.error('加载当日会话记录失败', error)
+    MessagePlugin.error('加载当日会话记录失败')
   }
 }
 
@@ -457,10 +461,13 @@ const queryHistory = async () => {
   try {
     const res = await chatRecordApi.getRecord(historyDate.value)
     if (res.code !== 200) {
-      MessagePlugin.error(res.msg)
+      MessagePlugin.error(res.msg || '查询历史会话失败')
       return
     }
     historyList.value = res.data || []
+    if (!historyList.value.length) {
+      MessagePlugin.info('该日期暂无会话记录')
+    }
   } catch (error) {
     console.error('查询历史会话失败', error)
     MessagePlugin.error('查询历史会话失败')
@@ -618,6 +625,14 @@ onMounted(() => {
 
   &::-webkit-scrollbar-track {
     background: transparent;
+  }
+
+  .message-empty {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    min-height: 300px;
   }
 
   .message-list {
