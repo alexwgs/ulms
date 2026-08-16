@@ -3,6 +3,8 @@ import App from './App.vue'
 import router from './router'
 import pinia from '@/stores'
 import 'tdesign-vue-next/dist/tdesign.css'
+// 图标字体（A6有声等页面的 iconfont 图标依赖）
+import './assets/css/iconfont/iconfont.css'
 // 全局样式放在 tdesign.css 之后引入，保证覆盖规则（间距、卡片、表格等）真正生效
 import './assets/css/global.css'
 import { MessagePlugin } from 'tdesign-vue-next'

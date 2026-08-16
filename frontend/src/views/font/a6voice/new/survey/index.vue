@@ -93,8 +93,9 @@
               <t-input :ref="`DOM${i}${j}`" v-if="checkboxEditing && currentCheckboxIndex === `${i}${j}`"
                 :placeholder="label" v-model="question.options[j]" @blur="checkboxEditing = false"
                 @enter="checkboxEditing = false"></t-input>
+              <!-- 审计修复：多选选项补文字显示（原只渲染空复选框，看不到选项内容） -->
               <t-checkbox v-else :value="label === '' ? '多选选项-' + (j + 1) : label"
-                @click="handleCheckboxClick(`${i}${j}`, `DOM${i}${j}`)"></t-checkbox>
+                @click="handleCheckboxClick(`${i}${j}`, `DOM${i}${j}`)">{{ label === '' ? '多选选项-' + (j + 1) : label }}</t-checkbox>
               <span v-show="hoverLabel && activeLableIndex === `${i}${j}`" class="label-operation">
                 <t-icon class="remove-label-icon" @click="removeLable(i, j)"><RemoveIcon /></t-icon>
                 <t-icon class="add-label-icon" @click="addLable(i, j)"><AddIcon /></t-icon>
@@ -103,7 +104,7 @@
           </t-checkbox-group>
         </div>
         <div v-else-if="question.questionType === 'textarea'">
-          <t-textarea placeholder="请输入内容" v-model="question.value" />
+          <p style="color: var(--td-text-color-placeholder)">（填空题，答题时填写）</p>
         </div>
         <div style="text-align: right; padding-bottom: 10px">
           <t-link size="small" theme="primary" :underline="false" :disabled="question.sort === 1 || questionnaire.questions.length === 1

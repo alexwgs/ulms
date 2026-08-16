@@ -20,6 +20,16 @@ export const constantRoutes = [
     }
   },
   {
+    path: '/youngTalk/question/preview',
+    name: 'survey-preview',
+    component: () => import('@/views/font/a6voice/new/survey/preview.vue'),
+    meta: {
+      title: '调研预览',
+      hidden: true,
+      standalone: true
+    }
+  },
+  {
     path: '/',
     name: 'layout',
     component: Layout,
