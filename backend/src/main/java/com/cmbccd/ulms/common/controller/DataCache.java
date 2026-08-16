@@ -33,9 +33,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public class DataCache {
 	private static final Logger log = LoggerFactory.getLogger(DataCache.class);
 
-	private static final Map<String, Employee> EMPLOYEE = new ConcurrentHashMap<>();
+	private static volatile Map<String, Employee> EMPLOYEE = new ConcurrentHashMap<>();
 	private static volatile Map<String, Department> DEPARTMENT = new ConcurrentHashMap<>();
-	private static final Map<String, JobInfo> JOBINFO = new ConcurrentHashMap<>();
+	private static volatile Map<String, JobInfo> JOBINFO = new ConcurrentHashMap<>();
 
     private static volatile List<Dictionary> Dict = new ArrayList<>();
 	public static final int BATCH_COUNT = 128;
@@ -91,27 +91,43 @@ public class DataCache {
 	@Scheduled(cron = "0 0 7,8,9,10,11,12,13,14,15,16,17,18,19,20,22 * * ?")
 	public void init() {
 		log.info("初始化人员信息开始");
-		List<Employee> emps = employeeService.selectEmployeeInit();
-		DEPARTMENT = departmentService.getDepartmentMap();
-		EMPLOYEE.clear();
-		JOBINFO.clear();
-		Dict  = dictionaryService.getDictionaryList(null);
-		JOB = jobInfoService.list(null);
-		JOB.forEach(e -> JOBINFO.put(e.getJobLevel(), e));
-		for (Employee emp : emps) {
-			String userId = emp.getPloNum();
-			if (Util.isNullorEmpty(emp.getAvatar())) {
-				emp.setAvatar("upload/getFile/avatar/avatar.png");
+		try {
+			List<Employee> emps = employeeService.selectEmployeeInit();
+			Map<String, Department> deptMap = departmentService.getDepartmentMap();
+			List<Dictionary> dictList = dictionaryService.getDictionaryList(null);
+			List<JobInfo> jobList = jobInfoService.list(null);
+			// 审计加固（B-M5）：先构建完整新缓存，再整体原子替换，
+			// 避免刷新期间读到空/半量数据；失败时保留旧缓存而非清空
+			Map<String, Employee> newEmp = new ConcurrentHashMap<>();
+			Map<String, JobInfo> newJob = new ConcurrentHashMap<>();
+			if (jobList != null) {
+				jobList.forEach(e -> newJob.put(e.getJobLevel(), e));
 			}
-			
-			String dept_name = Optional.ofNullable(DataCache.getDepartments().get(emp.getDeptNum())).map(e -> e.getDeptName()).orElse("-");
-			String group_name = Optional.ofNullable(DataCache.getDepartments().get(emp.getDeptGroup())).map(e -> e.getDeptName()).orElse("-");
-			emp.setDeptName(dept_name);
-			emp.setGroupName(group_name);
+			if (emps != null) {
+				for (Employee emp : emps) {
+					String userId = emp.getPloNum();
+					if (Util.isNullorEmpty(emp.getAvatar())) {
+						emp.setAvatar("upload/getFile/avatar/avatar.png");
+					}
 
-			EMPLOYEE.put(userId, emp);
+					String dept_name = Optional.ofNullable(deptMap.get(emp.getDeptNum())).map(e -> e.getDeptName()).orElse("-");
+					String group_name = Optional.ofNullable(deptMap.get(emp.getDeptGroup())).map(e -> e.getDeptName()).orElse("-");
+					emp.setDeptName(dept_name);
+					emp.setGroupName(group_name);
+
+					newEmp.put(userId, emp);
+				}
+			}
+			DEPARTMENT = deptMap;
+			Dict = dictList;
+			JOB = jobList;
+			EMPLOYEE = newEmp;
+			JOBINFO = newJob;
+			log.info("初始化人员信息结束");
+		} catch (Exception e) {
+			// 刷新失败保留旧缓存，避免全站 NPE
+			log.error("初始化人员信息失败，保留旧缓存", e);
 		}
-		log.info("初始化人员信息结束");
 	}
 
 
