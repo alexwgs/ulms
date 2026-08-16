@@ -219,11 +219,10 @@ const viewChatRecord = async (row) => {
   }
 }
 
-// 格式化日期时间
+// 格式化日期时间（兼容秒级/毫秒级时间戳，统一 yyyy-MM-dd HH:mm:ss）
+import { formatTime } from '@/utils/formatTime'
 const formatDateTime = (timestamp) => {
-  if (!timestamp) return ''
-  const date = new Date(timestamp)
-  return date.toLocaleString()
+  return formatTime(timestamp)
 }
 
 // 获取字典标签

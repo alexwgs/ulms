@@ -60,11 +60,10 @@ watch(dialogVisible, (newVal) => {
   emit('update:visible', newVal)
 })
 
-// 格式化日期时间
+// 格式化日期时间（兼容秒级/毫秒级时间戳与日期字符串，统一 yyyy-MM-dd HH:mm:ss）
+import { formatTime } from '@/utils/formatTime'
 const formatDateTime = (timestamp) => {
-  if (!timestamp) return ''
-  const date = new Date(timestamp)
-  return date.toLocaleString()
+  return formatTime(timestamp)
 }
 
 // 获取字典标签

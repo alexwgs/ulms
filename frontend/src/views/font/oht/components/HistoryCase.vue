@@ -16,9 +16,9 @@
               </t-descriptions-item>
               <t-descriptions-item label="客户信息">{{ props.row.custId ? props.row.custId : '--' }}</t-descriptions-item>
               <t-descriptions-item label="等待时长">{{ props.row.waitTime != null ? Math.floor(props.row.waitTime / 60) + '分' + (props.row.waitTime % 60) + '秒' : '--' }}</t-descriptions-item>
-              <t-descriptions-item label="建案时间">{{ props.row.dataTime ? props.row.dataTime : '--' }}</t-descriptions-item>
+              <t-descriptions-item label="建案时间">{{ props.row.dataTime ? formatTime(props.row.dataTime) : '--' }}</t-descriptions-item>
               <t-descriptions-item label="接起时间">{{ props.row.pickTime ? unixTimeToDateTime(props.row.pickTime) : '--' }}</t-descriptions-item>
-              <t-descriptions-item label="结案时间">{{ props.row.pcompTime ? props.row.pcompTime : '--' }}</t-descriptions-item>
+              <t-descriptions-item label="结案时间">{{ props.row.pcompTime ? formatTime(props.row.pcompTime) : '--' }}</t-descriptions-item>
               <t-descriptions-item label="发起人结案类型">
                 {{ dictStore.getDictName('oht_case_bcompType', props.row.bcompType) }}
               </t-descriptions-item>
@@ -125,10 +125,10 @@ const historyCaseDateChangeEvent = () => {
 // 处理页码变更
 
 
-// 时间戳转换为日期时间
+// 时间戳转换为日期时间（兼容秒级/毫秒级时间戳，统一 yyyy-MM-dd HH:mm:ss 格式）
+import { formatTime } from '@/utils/formatTime'
 const unixTimeToDateTime = (UnixTime) => {
-  if (UnixTime === null || UnixTime === undefined) return '--'
-  return new Date(UnixTime * 1000).toLocaleString()
+  return formatTime(UnixTime, 'YYYY-MM-DD HH:mm:ss') || '--'
 }
 
 defineExpose({
