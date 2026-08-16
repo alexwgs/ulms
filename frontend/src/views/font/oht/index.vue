@@ -467,7 +467,9 @@ const queryHistory = async () => {
     }
   } catch (error) {
     console.error('查询历史会话失败', error)
-    MessagePlugin.error('查询历史会话失败')
+    const status = error?.response?.status
+    const detail = error?.response?.data?.msg
+    MessagePlugin.error(detail || (status ? `查询历史会话失败（HTTP ${status}）` : '查询历史会话失败，请检查网络'))
   } finally {
     historyLoading.value = false
   }

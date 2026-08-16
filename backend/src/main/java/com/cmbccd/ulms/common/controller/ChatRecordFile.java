@@ -78,8 +78,10 @@ public class ChatRecordFile {
 	     File f = new File(path);
 	     List<Map<String, Object>> list = new ArrayList<>();
 	     if (!f.exists()) {
+	         log.info("查询聊天记录：文件不存在 date={}, room={}, path={}", date, room, path);
 	         return Msg.success(list);
 	     }
+	     log.info("查询聊天记录：开始 date={}, room={}, path={}", date, room, path);
 	     // 优先按 UTF-8 读取；旧版记录文件可能为平台默认编码（Windows 下 GBK），
 	     // 出现替换符（U+FFFD）时回退用 GBK 重读，保证历史记录可解析
 	     String content = readFileContent(f, StandardCharsets.UTF_8);
@@ -87,6 +89,7 @@ public class ChatRecordFile {
 	         String gbk = readFileContent(f, Charset.forName("GBK"));
 	         if (gbk.indexOf('\uFFFD') < 0) {
 	             content = gbk;
+	             log.info("查询聊天记录：UTF-8 解码异常，已回退 GBK 读取");
 	         }
 	     }
 	     for (String line : content.split("\\r?\\n")) {
@@ -107,6 +110,7 @@ public class ChatRecordFile {
 	             // 单行解析失败不影响其余记录
 	         }
 	     }
+	     log.info("查询聊天记录：完成 date={}, room={}, rows={}", date, room, list.size());
 	     return Msg.success(list);
 	 }
 
