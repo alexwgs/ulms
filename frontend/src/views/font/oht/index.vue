@@ -38,10 +38,9 @@
               </div>
             </div>
 
-            <!-- 消息区域 -->
+            <!-- 消息区域（外层容器滚动，内容多时可滚动查看） -->
             <div class="message-container" ref="messageDiv">
-              <div ref="messageScrollbar" height="100%">
-                <div class="message-list">
+              <div class="message-list">
                   <div v-for="(item, index) in messageCont" :key="index" class="message-item"
                     :class="[getMessageClass(item.direction)]">
                     <!-- 时间显示 -->
@@ -86,9 +85,8 @@
                   </div>
                 </div>
               </div>
-            </div>
 
-            <!-- 输入区域 -->
+            <!-- 输入区域（微信风格：浅灰圆角输入框 + 绿色发送按钮） -->
             <div class="input-area">
               <!-- 工具栏 -->
               <div class="toolbar">
@@ -144,10 +142,10 @@
                   @keydown="handleKeydown"></textarea>
               </div>
 
-              <!-- 发送按钮 -->
+              <!-- 发送按钮（微信绿） -->
               <div class="send-area">
                 <span class="tips">Enter 发送 · Shift+Enter 换行</span>
-                <t-button theme="primary" @click="handleMessage" :disabled="!chatContent.trim()" :loading="sending">
+                <t-button class="wx-send-btn" @click="handleMessage" :disabled="!chatContent.trim()" :loading="sending">
                   <t-icon>
                     <NotificationIcon />
                   </t-icon>
@@ -226,7 +224,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, nextTick, computed } from 'vue'
+import { ref, reactive, onMounted, nextTick, computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { MessagePlugin } from 'tdesign-vue-next'
 import { InfoCircleFilledIcon, FileIcon, DeleteIcon, NotificationIcon, UserCircleIcon, TimeIcon, SmileIcon, LockOnIcon } from 'tdesign-icons-vue-next'
@@ -254,12 +252,13 @@ const userStore = useUserStore()
 const historyCaseRef = ref(null)
 const stationRef = ref(null)
 
-const messageScrollbar = ref(null)
+const messageDiv = ref(null)
 const inputRef = ref(null)
 
 const chatContent = ref('')
 const quickMemo = ref([])
-const messageCont = ref([])
+// 消息列表：直接响应 wsStore.message（wsStore 内部可能整体替换数组，computed 保证始终同步）
+const messageCont = computed(() => wsStore.message)
 const sending = ref(false)
 const emojiVisible = ref(false)
 
@@ -329,16 +328,22 @@ const handleKeydown = (e) => {
   }
 }
 
+// 消息列表滚动到底（外层容器滚动）
 const setScrollTop = () => {
   nextTick(() => {
     setTimeout(() => {
-      if (messageScrollbar.value && messageScrollbar.value.wrap) {
-        messageScrollbar.value.wrap.scrollTop =
-          messageScrollbar.value.wrap.scrollHeight
+      if (messageDiv.value) {
+        messageDiv.value.scrollTop = messageDiv.value.scrollHeight
       }
     }, 10)
   })
 }
+
+// 新消息到达（发送/接收）时自动滚动到底部
+watch(
+  () => messageCont.value.length,
+  () => setScrollTop()
+)
 
 const getQuickMemo = async () => {
   try {
@@ -357,7 +362,6 @@ const selectQuickMemo = (data) => {
 
 const clearChatMessage = () => {
   wsStore.message = []
-  messageCont.value = wsStore.message
   MessagePlugin.success('聊天记录已清空')
 }
 
@@ -380,7 +384,6 @@ const onEmojiSelect = (emoji) => {
 
 onMounted(() => {
   if (!loggedIn) return
-  messageCont.value = wsStore.message
   getQuickMemo()
   setScrollTop()
 })
@@ -508,9 +511,24 @@ onMounted(() => {
 .message-container {
   height: calc(100vh - 580px);
   min-height: 300px;
-  overflow: hidden;
+  overflow-y: auto;
   background: #f5f7fb;
   padding: 15px;
+  scrollbar-width: thin;
+  scrollbar-color: #cdd5e1 transparent;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #cdd5e1;
+    border-radius: 3px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
 
   .message-list {
     .message-item {
@@ -646,14 +664,14 @@ onMounted(() => {
 .input-area {
   border-top: 1px solid #e8edf5;
   background: #fff;
-  padding: 10px 15px 12px;
+  padding: 10px 14px 12px;
 
   .toolbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 10px;
-    padding-bottom: 10px;
+    margin-bottom: 8px;
+    padding-bottom: 8px;
     border-bottom: 1px solid #f0f3f8;
 
     .toolbar-left,
@@ -675,24 +693,25 @@ onMounted(() => {
     margin-bottom: 10px;
   }
 
+  // 微信风格输入框：浅灰圆角、聚焦变白并描绿边
   .chat-textarea {
     width: 100%;
-    padding: 8px 10px;
+    padding: 9px 12px;
     resize: none;
-    border: 1px solid #dfe5ee;
-    border-radius: 8px;
+    border: 1px solid #ededed;
+    border-radius: 4px;
+    background: #ededed;
     font: inherit;
     font-size: 14px;
     line-height: 1.6;
     color: #1e2a3a;
-    background: #fafbfd;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
 
     &:focus {
       outline: none;
-      border-color: var(--td-brand-color);
-      box-shadow: 0 0 0 2px rgba(0, 82, 217, 0.12);
       background: #fff;
+      border-color: #07c160;
+      box-shadow: 0 0 0 2px rgba(7, 193, 96, 0.12);
     }
 
     &::placeholder {
@@ -707,8 +726,25 @@ onMounted(() => {
 
     .tips {
       font-size: 12px;
-      color: var(--td-text-color-secondary);
+      color: #a3adbd;
     }
+  }
+}
+
+// 微信风格发送按钮：微信绿、圆角、禁用灰
+:deep(.wx-send-btn) {
+  border-radius: 4px;
+  background: #07c160;
+  border-color: #07c160;
+
+  &:hover:not(.t-is-disabled) {
+    background: #06ad56;
+    border-color: #06ad56;
+  }
+
+  &.t-is-disabled {
+    background: #c8c8c8;
+    border-color: #c8c8c8;
   }
 }
 
