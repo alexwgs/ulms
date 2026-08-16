@@ -158,20 +158,4 @@ function findFirstMenu(menuList, menuId) {
   return null
 }
 
-// 定义一个名为 redirectToLogin 的函数，用于重定向到登录页面
-function redirectToLogin(to, next) {
-  // 调用 next 函数进行路由跳转
-  next({
-    // 指定跳转的目标路由名称为 'login'
-    name: 'login',
-    // 传递查询参数，包括当前路由的完整路径和原有的查询参数
-    query: {
-      // 将当前路由的完整路径作为 'redirect' 参数传递给登录页面
-      redirect: to.fullPath,
-      // 使用扩展运算符 ...to.query 将当前路由的所有查询参数合并到新的查询参数对象中
-      ...to.query
-    }
-  })
-}
-
 export default router

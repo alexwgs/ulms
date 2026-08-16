@@ -116,16 +116,3 @@ export const notFound = {
   component: () => import('@/views/exception/not-found/index.vue')
 }
 
-/**
- * 这个路由是为了防止vue-router在一开始匹配不到路由的时候报：
- * No match found for location with xxx 的警告
- */
-export const defaultPathRoute = {
-  path: window.location.hash.replace('#', '') || window.location.pathname,
-  name: 'defaultRouteName',
-  component: () => import('@/views/exception/403.vue'),
-  meta: {
-    hidden: true,
-    noShowTabbar: true
-  }
-}

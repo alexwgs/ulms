@@ -33,12 +33,6 @@ const useUserStore = defineStore('user', {
   },
 
   actions: {
-    switchRoles(): Promise<string> {
-      return new Promise((resolve) => {
-        this.role = this.role === 'user' ? 'admin' : 'user'
-        resolve(this.role)
-      })
-    },
     // Set user's information
     setInfo(partial: Record<string, any>) {
       this.$patch(partial)
