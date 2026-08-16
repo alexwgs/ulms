@@ -26,6 +26,9 @@
             <div class="chat-header">
               <div class="chat-title">
                 <span>在线沟通</span>
+                <span class="conn-badge" :class="connState.class">
+                  <i class="conn-dot"></i>{{ connState.text }}
+                </span>
               </div>
               <div class="chat-tips">
                 <t-icon>
@@ -90,18 +93,16 @@
               <!-- 工具栏 -->
               <div class="toolbar">
                 <div class="toolbar-left">
-                  <!-- Emoji按钮 -->
+                  <!-- Emoji按钮（离线表情面板：纯本地字符，内网/离线可用） -->
                   <div class="tool-item">
-                    <t-popup placement="top-start" :width="320" trigger="click">
-                      <t-button text @click="toggleEmoji">
+                    <t-popup v-model:visible="emojiVisible" placement="top-start" trigger="click">
+                      <t-button text>
                         <t-icon size="20">
-                          <SunnyIcon />
+                          <SmileIcon />
                         </t-icon>
                       </t-button>
                       <template #content>
-                        <div class="emoji-picker-container">
-                          <emoji-picker v-if="showEmoji" @select="onEmojiSelect" />
-                        </div>
+                        <OfflineEmojiPicker @select="onEmojiSelect" />
                       </template>
                     </t-popup>
                   </div>
@@ -136,16 +137,17 @@
                 </div>
               </div>
 
-              <!-- 输入框 -->
+              <!-- 输入框（原生 textarea：支持光标定位插入 emoji、Shift+Enter 换行） -->
               <div class="input-wrapper">
-                <t-textarea v-model="chatContent"  :rows="3" placeholder="请输入消息内容..."
-                  @keyup="handleKeyup" resize="none" />
+                <textarea ref="inputRef" v-model="chatContent" rows="3" class="chat-textarea"
+                  placeholder="请输入消息内容...（Enter 发送，Shift+Enter 换行）"
+                  @keydown="handleKeydown"></textarea>
               </div>
 
               <!-- 发送按钮 -->
               <div class="send-area">
-                <span class="tips">Enter 发送消息</span>
-                <t-button theme="success" @click="handleMessage" :disabled="!chatContent.trim()" :loading="sending">
+                <span class="tips">Enter 发送 · Shift+Enter 换行</span>
+                <t-button theme="primary" @click="handleMessage" :disabled="!chatContent.trim()" :loading="sending">
                   <t-icon>
                     <NotificationIcon />
                   </t-icon>
@@ -227,9 +229,8 @@
 import { ref, reactive, onMounted, nextTick, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { MessagePlugin } from 'tdesign-vue-next'
-import { ChatIcon, InfoCircleFilledIcon, FileIcon, DeleteIcon, NotificationIcon, UserCircleIcon, TimeIcon, SunnyIcon, LockOnIcon } from 'tdesign-icons-vue-next'
-import EmojiPicker from 'vue3-emoji-picker'
-import 'vue3-emoji-picker/css'
+import { InfoCircleFilledIcon, FileIcon, DeleteIcon, NotificationIcon, UserCircleIcon, TimeIcon, SmileIcon, LockOnIcon } from 'tdesign-icons-vue-next'
+import OfflineEmojiPicker from './components/OfflineEmojiPicker.vue'
 import CommandBar from './components/CommandBar.vue'
 import UserList from './components/UserList.vue'
 import Station from './components/Station.vue'
@@ -254,12 +255,13 @@ const historyCaseRef = ref(null)
 const stationRef = ref(null)
 
 const messageScrollbar = ref(null)
+const inputRef = ref(null)
 
 const chatContent = ref('')
 const quickMemo = ref([])
 const messageCont = ref([])
 const sending = ref(false)
-const showEmoji = ref(false)
+const emojiVisible = ref(false)
 
 const fsURL = import.meta.env.VITE_FILE_BASE_URL
 const defaultAvatar = new URL('@/assets/img/default_avatar.png', import.meta.url).href
@@ -269,6 +271,17 @@ const message = reactive({
   type: 'message',
   content: '',
   avatar: ''
+})
+
+// 连接状态胶囊（在线/连接中/离线/异常）
+const connState = computed(() => {
+  const map = {
+    connected: { class: 'on', text: '在线' },
+    connecting: { class: 'pending', text: '连接中' },
+    disconnected: { class: 'off', text: '离线' },
+    error: { class: 'off', text: '连接异常' }
+  }
+  return map[wsStore.connectionStatus] || { class: 'off', text: wsStore.connectionStatusText || '离线' }
 })
 
 const getMessageClass = (direction) => {
@@ -299,14 +312,19 @@ const handleMessage = () => {
     wsStore.sendMessage(message)
     chatContent.value = ''
     sending.value = false
+  } else {
+    MessagePlugin.warning('当前未连接，消息发送失败，请检查网络')
   }
 
   setScrollTop()
+  // 发送后回焦输入框
+  nextTick(() => inputRef.value?.focus())
 }
 
-// TDesign t-textarea 的 keyup 是组件事件，参数为 (value, { e })，不能用 .enter 修饰符
-const handleKeyup = (value, context) => {
-  if (context?.e?.key === 'Enter') {
+// Enter 发送、Shift+Enter 换行；中文输入法组合中（isComposing）不触发发送
+const handleKeydown = (e) => {
+  if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) {
+    e.preventDefault()
     handleMessage()
   }
 }
@@ -334,6 +352,7 @@ const getQuickMemo = async () => {
 
 const selectQuickMemo = (data) => {
   chatContent.value = data.value
+  nextTick(() => inputRef.value?.focus())
 }
 
 const clearChatMessage = () => {
@@ -342,13 +361,21 @@ const clearChatMessage = () => {
   MessagePlugin.success('聊天记录已清空')
 }
 
-const toggleEmoji = () => {
-  showEmoji.value = !showEmoji.value
-}
-
+// 离线 emoji 面板：点击表情插入光标处（本地 Unicode，无网络依赖）
 const onEmojiSelect = (emoji) => {
-  chatContent.value += emoji.i
-  showEmoji.value = false
+  const ta = inputRef.value
+  const start = ta ? ta.selectionStart : chatContent.value.length
+  const end = ta ? ta.selectionEnd : start
+  chatContent.value =
+    chatContent.value.slice(0, start) + emoji + chatContent.value.slice(end)
+  emojiVisible.value = false
+  nextTick(() => {
+    if (ta) {
+      const pos = start + emoji.length
+      ta.focus()
+      ta.setSelectionRange(pos, pos)
+    }
+  })
 }
 
 onMounted(() => {
@@ -417,7 +444,7 @@ onMounted(() => {
     justify-content: space-between;
     align-items: center;
     padding: 12px 16px;
-background: linear-gradient(135deg, var(--td-brand-color) 0%, var(--td-success-color) 100%);
+    background: linear-gradient(135deg, #22355c 0%, #17233b 100%);
     color: white;
 
     .chat-title {
@@ -426,6 +453,40 @@ background: linear-gradient(135deg, var(--td-brand-color) 0%, var(--td-success-c
       gap: 8px;
       font-size: 16px;
       font-weight: 600;
+    }
+
+    .conn-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 2px 9px;
+      margin-left: 4px;
+      font-size: 12px;
+      font-weight: 400;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.14);
+
+      .conn-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #9aa5b8;
+      }
+
+      &.on .conn-dot {
+        background: #3ddc84;
+        box-shadow: 0 0 0 3px rgba(61, 220, 132, 0.22);
+      }
+
+      &.pending .conn-dot {
+        background: #f7ba2a;
+        box-shadow: 0 0 0 3px rgba(247, 186, 42, 0.22);
+        animation: conn-blink 1.2s ease-in-out infinite;
+      }
+
+      &.off .conn-dot {
+        background: #f76560;
+      }
     }
 
     .chat-tips {
@@ -438,11 +499,17 @@ background: linear-gradient(135deg, var(--td-brand-color) 0%, var(--td-success-c
   }
 }
 
+@keyframes conn-blink {
+  50% {
+    opacity: 0.35;
+  }
+}
+
 .message-container {
   height: calc(100vh - 580px);
   min-height: 300px;
   overflow: hidden;
-  background: var(--td-bg-color-container);
+  background: #f5f7fb;
   padding: 15px;
 
   .message-list {
@@ -460,12 +527,13 @@ background: linear-gradient(135deg, var(--td-brand-color) 0%, var(--td-success-c
 
           .bubble {
             .bubble-content {
-background: white;
-              border: 1px solid #e8e8e8;
+              background: #fff;
+              border: 1px solid #e3e9f2;
+              box-shadow: 0 1px 3px rgba(23, 35, 59, 0.05);
 
               .bubble-arrow {
                 left: -8px;
-                border-right-color: white;
+                border-right-color: #fff;
               }
             }
           }
@@ -483,13 +551,15 @@ background: white;
 
           .bubble {
             .bubble-content {
-background: #95ec69;
-              border: 1px solid #95ec69;
+              background: linear-gradient(135deg, #2f6bff 0%, #0052d9 100%);
+              color: #fff;
+              border: none;
+              box-shadow: 0 2px 6px rgba(0, 82, 217, 0.22);
 
               .bubble-arrow {
                 right: -8px;
                 left: auto;
-                border-left-colorbackground: #95ec69;
+                border-left-color: #0052d9;
                 border-right-color: transparent;
               }
             }
@@ -505,15 +575,26 @@ background: #95ec69;
     }
 
     .message-time {
-      text-align: center;
-      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 4px 0 12px;
+
+      &::before,
+      &::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: #e4e9f2;
+      }
 
       span {
-background: #dadada;
-        color: white;
         padding: 2px 10px;
-        border-radius: 3px;
+        border-radius: 10px;
+        background: #e8edf5;
+        color: #7a8699;
         font-size: 12px;
+        font-variant-numeric: tabular-nums;
       }
     }
 
@@ -527,8 +608,9 @@ background: #dadada;
         img {
           width: 40px;
           height: 40px;
-          border-radius: 4px;
+          border-radius: 6px;
           object-fit: cover;
+          border: 1px solid #e3e9f2;
         }
       }
 
@@ -562,9 +644,9 @@ background: #dadada;
 }
 
 .input-area {
-  border-top: 1px solid #e8e8e8;
-  background: var(--td-bg-color-container);
-  padding: 10px 15px;
+  border-top: 1px solid #e8edf5;
+  background: #fff;
+  padding: 10px 15px 12px;
 
   .toolbar {
     display: flex;
@@ -572,7 +654,7 @@ background: #dadada;
     align-items: center;
     margin-bottom: 10px;
     padding-bottom: 10px;
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 1px solid #f0f3f8;
 
     .toolbar-left,
     .toolbar-right {
@@ -593,6 +675,31 @@ background: #dadada;
     margin-bottom: 10px;
   }
 
+  .chat-textarea {
+    width: 100%;
+    padding: 8px 10px;
+    resize: none;
+    border: 1px solid #dfe5ee;
+    border-radius: 8px;
+    font: inherit;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #1e2a3a;
+    background: #fafbfd;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+    &:focus {
+      outline: none;
+      border-color: var(--td-brand-color);
+      box-shadow: 0 0 0 2px rgba(0, 82, 217, 0.12);
+      background: #fff;
+    }
+
+    &::placeholder {
+      color: #a3adbd;
+    }
+  }
+
   .send-area {
     display: flex;
     justify-content: space-between;
@@ -602,15 +709,6 @@ background: #dadada;
       font-size: 12px;
       color: var(--td-text-color-secondary);
     }
-  }
-}
-
-.emoji-picker-container {
-  :deep(.emoji-picker) {
-    --ep-bg-color: white;
-    --ep-border-color: #e8e8e8;
-    --ep-text-color: #333;
-    --ep-secondary-bg-color: #f5f7fa;
   }
 }
 
@@ -665,9 +763,5 @@ background: #dadada;
 
 :deep(.t-scrollbar__wrap) {
   overflow-x: hidden;
-}
-
-:deep(.t-textarea__inner) {
-  border-radius: 8px;
 }
 </style>

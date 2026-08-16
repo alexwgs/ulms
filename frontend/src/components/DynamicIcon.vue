@@ -1,6 +1,6 @@
 <template>
   <component :is="iconComponent" v-if="iconComponent" v-bind="$attrs" />
-  <t-icon v-else :name="name" v-bind="$attrs" />
+  <FileIcon v-else v-bind="$attrs" />
 </template>
 
 <script setup>
@@ -39,6 +39,7 @@ import {
   FullscreenIcon, EllipsisIcon, ToolsIcon,
   BuildingIcon, EducationIcon,
   BookmarkIcon,
+  ThumbUpIcon, ThumbUpFilledIcon, UsergroupIcon, HelpCircleIcon,
 } from 'tdesign-icons-vue-next'
 
 const props = defineProps({
@@ -70,6 +71,7 @@ const iconMap = {
   'error-circle-filled': ErrorCircleFilledIcon,
   'info-circle-filled': InfoCircleFilledIcon,
   'help-circle-filled': HelpCircleFilledIcon,
+  'help-circle': HelpCircleIcon,
   'close-circle-filled': CloseCircleFilledIcon,
   'close-circle': CloseCircleFilledIcon,
   'chevron-down': ChevronDownIcon,
@@ -147,11 +149,58 @@ const iconMap = {
   'building': BuildingIcon,
   'education': EducationIcon,
   'bookmark': BookmarkIcon,
+  'thumb-up': ThumbUpIcon,
+  'thumb-up-filled': ThumbUpFilledIcon,
+  'usergroup': UsergroupIcon,
   // Common dashboard/admin extras
   'app': HomeIcon,
   'user-setting': SettingIcon,
   'cloudy-day': SunnyIcon,
   'preview': BrowseIcon,
+  // 菜单历史图标（el-icon-* 旧命名 → 本地 TDesign 图标，避免触发 iconfont CDN 加载，离线/内网可用）
+  'house': HomeIcon,
+  'el-icon-alarm-clock': AlarmIcon,
+  'el-icon-coin': MoneyIcon,
+  'el-icon-copy-document': FileCopyIcon,
+  'el-icon-date': CalendarIcon,
+  'el-icon-document': FileIcon,
+  'el-icon-document-copy': FileCopyIcon,
+  'el-icon-edit-outline': EditIcon,
+  'el-icon-folder-opened': FolderOpenIcon,
+  'el-icon-help': HelpCircleIcon,
+  'el-icon-link': LinkIcon,
+  'el-icon-location': LocationIcon,
+  'el-icon-magic-stick': ToolsIcon,
+  'el-icon-menu': MenuIcon,
+  'el-icon-message-solid': ChatBubbleIcon,
+  'el-icon-mic': MicrophoneIcon,
+  'el-icon-microphone': MicrophoneIcon,
+  'el-icon-notebook-1': BookIcon,
+  'el-icon-notebook-2': BookIcon,
+  'el-icon-odometer': DashboardIcon,
+  'el-icon-paperclip': LinkIcon,
+  'el-icon-phone': CallIcon,
+  'el-icon-phone-outline': CallIcon,
+  'el-icon-picture': ImageIcon,
+  'el-icon-pie-chart': ChartPieIcon,
+  'el-icon-position': LocationIcon,
+  'el-icon-question': HelpCircleIcon,
+  'el-icon-receiving': DownloadIcon,
+  'el-icon-s-custom': UserCircleIcon,
+  'el-icon-s-data': ChartBarIcon,
+  'el-icon-search': SearchIcon,
+  'el-icon-setting': SettingIcon,
+  'el-icon-s-grid': ViewModuleIcon,
+  'el-icon-s-marketing': ChartLineIcon,
+  'el-icon-s-order': ViewListIcon,
+  'el-icon-s-promotion': DiscountIcon,
+  'el-icon-star-on': StarFilledIcon,
+  'el-icon-s-tools': ToolsIcon,
+  'el-icon-s-unfold': UnfoldMoreIcon,
+  'el-icon-tickets': TicketIcon,
+  'el-icon-time': TimeIcon,
+  'el-icon-user': UserIcon,
+  'el-icon-user-solid': UserCircleIcon,
 }
 
 const iconComponent = computed(() => {

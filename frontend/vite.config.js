@@ -30,8 +30,29 @@ export default defineConfig({
         })
       ]
     }),
+    {
+      // 离线/内网优化：TDesign 图标组件（t-icon name=）默认从 tdesign.gtimg.com CDN
+      // 动态注入 SVG sprite（index.js），内网环境会加载失败导致图标缺失。
+      // 将 CDN 地址替换为本地打包的 public/tdesign-icons.js（内容与 CDN 一致）。
+      name: 'tdesign-icons-local',
+      enforce: 'pre',
+      transform(code, id) {
+        if (id.includes('tdesign-icons-vue-next') && id.includes('svg-sprite')) {
+          return code.replace(
+            'https://tdesign.gtimg.com/icon/0.4.2/fonts/index.js',
+            '/ulms/tdesign-icons.js'
+          )
+        }
+        return null
+      }
+    },
   ],
   base: '/ulms/', //引入路径相当于webpack中的 baseUrl 或 publicPath
+  optimizeDeps: {
+    // 排除图标库的依赖预构建：esbuild 预构建会绕过下方 transform 插件（CDN URL 替换），
+    // 排除后按源码加载，确保离线图标本地化生效
+    exclude: ['tdesign-icons-vue-next']
+  },
   server: {
     historyApiFallback: true
   },

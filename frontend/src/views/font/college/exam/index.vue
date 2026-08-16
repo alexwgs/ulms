@@ -111,8 +111,10 @@
     <t-dialog v-if="examResult" header="考试成绩" v-model:visible="dialogVisible" width="50%" :close-btn="false"
       :close-on-overlay-click="false">
       <div v-if="examResult" class="result-container">
-        <t-icon :name="examResult.passFlag == 1 ? 'check-circle' : 'error-circle'"
-          :style="{ color: examResult.passFlag == 1 ? 'var(--td-success-color)' : 'var(--td-error-color)', fontSize: '72px' }" />
+        <CheckCircleIcon v-if="examResult.passFlag == 1"
+          :style="{ color: 'var(--td-success-color)', fontSize: '72px' }" />
+        <ErrorCircleIcon v-else
+          :style="{ color: 'var(--td-error-color)', fontSize: '72px' }" />
         <div class="result-title">{{ examResult.passFlag == 1 ? '恭喜！考试通过！' : '很遗憾！考试未通过！' }}</div>
         <div class="result-subtitle">您一共答对了{{ examResult.rightNum }}题！</div>
       </div>
@@ -130,6 +132,7 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { MessagePlugin } from 'tdesign-vue-next'
+import { CheckCircleIcon, ErrorCircleIcon } from 'tdesign-icons-vue-next'
 import { httpInstance } from '@/utils/request'
 import Question from '@/views/font/edu/component/Question.vue'
 

@@ -18,7 +18,8 @@
         </div>
         <!-- 侧边栏折叠按钮 -->
         <div class="sidebar-collapse-btn" @click="toggleCollapse">
-          <t-icon :name="appStore.menuCollapse ? 'chevron-right' : 'chevron-left'" size="16px" />
+          <ChevronRightIcon v-if="appStore.menuCollapse" size="16px" />
+          <ChevronLeftIcon v-else size="16px" />
         </div>
       </t-aside>
       <t-layout class="layout-content" :style="paddingStyle">
@@ -36,6 +37,7 @@ import AppSider from '@/layouts/sider/index.vue'
 import AppMain from '@/layouts/page/index.vue'
 import AppHead from '@/layouts/head/index.vue'
 import { useAppStore } from '@/stores';
+import { ChevronLeftIcon, ChevronRightIcon } from 'tdesign-icons-vue-next';
 
 import { computed, ref, onMounted } from 'vue'
 

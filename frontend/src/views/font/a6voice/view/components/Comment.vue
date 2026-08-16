@@ -28,11 +28,11 @@
 
       <template #actions>
         <t-space key="thumbUp" size="6px" class="action-item" @click="handleLike(2, comment.id, index)">
-          <t-icon name="thumb-up" :color="isLikedComment(comment) ? 'red' : 'default'" />
+          <ThumbUpIcon :color="isLikedComment(comment) ? 'var(--td-error-color)' : undefined" />
           <span>{{ comment.likeNum }}</span>
         </t-space>
         <t-space key="chat" size="6px" class="action-item" @click="handleReply(comment.id)">
-          <t-icon name="chat" />
+          <ChatIcon />
           <span>回复TA</span>
         </t-space>
       </template>
@@ -55,11 +55,11 @@
             </template>
             <template #actions>
               <t-space key="thumbUp" size="6px" class="action-item" @click="handleLike(3, reply.id, index)">
-                <t-icon name="thumb-up" :color="isLikedComment(reply) ? 'blue' : 'default'" />
+                <ThumbUpIcon :color="isLikedComment(reply) ? 'var(--td-brand-color)' : undefined" />
                 <span>{{ reply.likeNum }}</span>
               </t-space>
               <t-space key="chat" size="6px" class="action-item" @click="handleReply(reply.id)">
-                <t-icon name="chat" />
+                <ChatIcon />
                 <span>回复TA</span>
               </t-space>
             </template>
@@ -88,10 +88,10 @@
     <!-- Sticky bottom comment bar -->
     <div v-if="showCommentForm" ref="stickyBarRef" class="comment-sticky-bar" :class="{ 'is-expanded': commentExpanded }">
       <div class="sticky-bar-trigger" @click="expandComment">
-        <t-icon name="edit" />
+        <EditIcon />
         <span v-if="!commentExpanded">发表评论...</span>
         <span v-else @click.stop="commentExpanded = false" class="collapse-btn">
-          <t-icon name="chevron-down" /> 收起
+          <ChevronDownIcon /> 收起
         </span>
       </div>
       <div v-show="commentExpanded" class="sticky-bar-body" ref="stickyBarBodyRef">
@@ -121,6 +121,7 @@ import { MessagePlugin } from 'tdesign-vue-next'
 import WangEditor from '@/components/WangEditor.vue'
 import defaultAvatarImg from '@/assets/img/default_avatar.png'
 import { isLogin } from '@/utils/auth'
+import { ThumbUpIcon, ChatIcon, EditIcon, ChevronDownIcon } from 'tdesign-icons-vue-next'
 import {
   toggleLike,
   addComment,

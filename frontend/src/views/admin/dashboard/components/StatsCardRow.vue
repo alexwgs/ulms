@@ -4,7 +4,7 @@
       <t-card :bordered="false" class="stat-card stat-card--online">
         <div class="stat-card__body">
           <div class="stat-card__icon">
-            <t-icon name="user" size="32" />
+            <UserIcon size="32px" />
           </div>
           <div class="stat-card__content">
             <div class="stat-card__value">{{ onlineCount }}</div>
@@ -17,7 +17,7 @@
       <t-card :bordered="false" class="stat-card stat-card--uv">
         <div class="stat-card__body">
           <div class="stat-card__icon">
-            <t-icon name="usergroup" size="32" />
+            <UsergroupIcon size="32px" />
           </div>
           <div class="stat-card__content">
             <div class="stat-card__value">{{ todayStats.uv ?? 0 }}</div>
@@ -30,7 +30,7 @@
       <t-card :bordered="false" class="stat-card stat-card--pv">
         <div class="stat-card__body">
           <div class="stat-card__icon">
-            <t-icon name="chart-line" size="32" />
+            <ChartLineIcon size="32px" />
           </div>
           <div class="stat-card__content">
             <div class="stat-card__value">{{ todayStats.pv ?? 0 }}</div>
@@ -43,7 +43,7 @@
       <t-card :bordered="false" class="stat-card" :class="{ 'stat-card--danger': todayStats.exceptionCount > 0 }">
         <div class="stat-card__body">
           <div class="stat-card__icon">
-            <t-icon name="error-circle" size="32" />
+            <ErrorCircleIcon size="32px" />
           </div>
           <div class="stat-card__content">
             <div class="stat-card__value">{{ todayStats.exceptionCount ?? 0 }}</div>
@@ -56,6 +56,8 @@
 </template>
 
 <script setup>
+import { UserIcon, UsergroupIcon, ChartLineIcon, ErrorCircleIcon } from 'tdesign-icons-vue-next'
+
 defineProps({
   todayStats: {
     type: Object,
