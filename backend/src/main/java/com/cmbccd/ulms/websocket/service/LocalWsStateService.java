@@ -52,8 +52,6 @@ public class LocalWsStateService implements WsStateService {
     @Override
     public void userJoinRoom(String userId, String roomName) {
         userRoom.put(userId, roomName);
-        sessionMap.remove(userId);
-        sessionMap.put(userId, sessionMap.get(userId));
         roomMap.computeIfAbsent(roomName, k -> ConcurrentHashMap.newKeySet()).add(userId);
     }
 

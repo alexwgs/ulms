@@ -638,7 +638,7 @@ public class ArticleController {
 		}
 		int count = articleService.updateArticleSelectiveByPrimaryKey(record);
 		if (count == 0) {
-			Msg.error("操作失败！");
+			return Msg.error("操作失败！");
 		}
 		return Msg.success();
 	}

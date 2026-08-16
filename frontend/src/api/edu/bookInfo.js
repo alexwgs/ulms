@@ -8,13 +8,7 @@ export const bookInfoApi = {
       method: 'get',
       params
     }),
-  updateBookList: (data) =>
-    httpInstance({
-      url: 'edu/book/list',
-      method: 'put',
-      data
-    }),
-
+  // 后端已移除误导性 PUT /edu/book/list（原实为删除），删除统一走 deleteBookList
   deleteBookList: (data) =>
     httpInstance({
       url: 'edu/book/list/delete',

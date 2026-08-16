@@ -93,6 +93,8 @@ public class FileUpload {
 			}
 		} catch (IOException e) {
 			log.error("发生错误！", e);
+			// 写盘失败必须终止，不能继续落库并返回"上传成功"
+			return Msg.error("文件上传失败，请稍后重试！");
 		} finally {
 			if (fis != null) {
 				try {
@@ -276,7 +278,8 @@ public class FileUpload {
 			bis = new BufferedInputStream(Files.newInputStream(new File(path + fileName).toPath()));
 			int i = bis.read(buff);
 			while (i != -1) {
-				os.write(buff, 0, buff.length);
+				// 必须按实际读取长度写入，否则末尾会混入上次缓冲的脏字节导致文件损坏
+				os.write(buff, 0, i);
 				os.flush();
 				i = bis.read(buff);
 			}

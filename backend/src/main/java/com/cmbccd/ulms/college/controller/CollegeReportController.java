@@ -1,6 +1,8 @@
 package com.cmbccd.ulms.college.controller;
 
 import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.ExcelWriter;
+import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 import com.cmbccd.ulms.college.domain.report.CourseExamDetail;
 import com.cmbccd.ulms.college.domain.report.CourseLib;
@@ -141,11 +143,16 @@ public class CollegeReportController {
         response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xlsx");
         List<List<List<String>>> list = collegeReportService.listEvalDetail(courseId);
         HorizontalCellStyleStrategy horizontalCellStyleStrategy = ExcelUtils.simpleExcelTemplateStyle();
-        for(List<List<String>> data: list) {
-            int i= 1;
-            EasyExcel.write(response.getOutputStream()).registerWriteHandler(horizontalCellStyleStrategy)
-                .sheet("满意度评价明细sheet"+i++).doWrite(data);
+        // 多 sheet 必须复用同一个 ExcelWriter，逐个 sheet 写入后统一 finish；
+        // 原实现在循环内重复 EasyExcel.write(同一响应流) 会写出多个文件头导致导出损坏
+        ExcelWriter writer = EasyExcel.write(response.getOutputStream())
+                .registerWriteHandler(horizontalCellStyleStrategy).build();
+        int i = 1;
+        for (List<List<String>> data : list) {
+            WriteSheet sheet = EasyExcel.writerSheet("满意度评价明细sheet" + i++).build();
+            writer.write(data, sheet);
         }
+        writer.finish();
     }
 
     /**

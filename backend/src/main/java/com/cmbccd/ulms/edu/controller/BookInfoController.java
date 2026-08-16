@@ -86,13 +86,10 @@ public class BookInfoController {
 		return Msg.success();
 	}
 
-	@PutMapping("/list")
-	@MyLog(title = "[edu-book]预约管理")
-	public Msg updateBookList(@RequestBody BookList record) {
-		int count = bookListService.delete(record);
-		if(count<1) return Msg.error();
-		return Msg.success();
-	}
+	/**
+	 * 预约名单的"更新"实为删除（前端无调用方，deleteBookList 走 PUT /list/delete）；
+	 * 移除误导性接口，删除操作统一走 /list/delete
+	 */
 	@GetMapping("/info/list/{examCode}")
 	public Msg getExamBookTimeInfo(@PathVariable ("examCode") String examCode) {
 		if(Util.isNullorEmpty(examCode)) return Msg.error("没有获取到考试编号！");

@@ -73,7 +73,7 @@ public class QuickUrlController {
 		if (Util.isNullorEmpty(record.getId())) {
 			return Msg.error("缺失表单信息，请完善后在提交！");
 		}
-		int count = quickUrlService.insertQuickUrl(record);
+		int count = quickUrlService.deleteQuickUrlById(record.getId());
 		return Msg.success("成功完成[ " + count + " ]条信息的删除！");
 	}
 }
