@@ -2,9 +2,7 @@
   <!-- 免登录访问：未登录时显示登录引导，不发起依赖登录的请求（聊天/WS/个人信息均需登录） -->
   <div v-if="!loggedIn" class="oht-login-guide">
     <t-card class="login-guide-card">
-      <t-icon size="48" style="color: var(--td-brand-color)">
-        <LockOnIcon />
-      </t-icon>
+      <LockOnIcon size="48px" style="color: var(--td-brand-color)" />
       <h3>值机助手需要登录后使用</h3>
       <p>登录后可在线沟通、查看值班状态、历史案件等信息</p>
       <t-button theme="primary" size="large" @click="goLogin">立即登录</t-button>
@@ -31,9 +29,7 @@
                 </span>
               </div>
               <div class="chat-tips">
-                <t-icon>
-                  <InfoCircleFilledIcon />
-                </t-icon>
+                <InfoCircleFilledIcon />
                 <span>消息最多保留100条</span>
               </div>
             </div>
@@ -93,11 +89,11 @@
                 <div class="toolbar-left">
                   <!-- Emoji（离线表情面板：纯本地字符，内网/离线可用；打开时高亮） -->
                   <t-popup v-model:visible="emojiVisible" placement="top-start" trigger="click">
-                    <t-button text class="icon-btn" :class="{ 'is-active': emojiVisible }" title="表情">
-                      <t-icon size="18">
-                        <SmileIcon />
-                      </t-icon>
-                      <span class="icon-btn-label">表情</span>
+                    <t-button variant="outline" theme="default" class="icon-btn" :class="{ 'is-active': emojiVisible }" title="表情">
+                      <template #icon>
+                        <SmileIcon size="18px" />
+                      </template>
+                      表情
                     </t-button>
                     <template #content>
                       <OfflineEmojiPicker @select="onEmojiSelect" />
@@ -106,11 +102,11 @@
 
                   <!-- 快捷消息 -->
                   <t-dropdown @click="selectQuickMemo" trigger="click">
-                    <t-button text class="icon-btn" title="快捷消息">
-                      <t-icon size="18">
-                        <ChatBubbleIcon />
-                      </t-icon>
-                      <span class="icon-btn-label">快捷消息</span>
+                    <t-button variant="outline" theme="default" class="icon-btn" title="快捷消息">
+                      <template #icon>
+                        <ChatBubbleIcon size="18px" />
+                      </template>
+                      快捷消息
                     </t-button>
                     <template #dropdown>
                       <t-dropdown-menu>
@@ -123,11 +119,11 @@
                 </div>
 
                 <div class="toolbar-right">
-                  <t-button text class="icon-btn danger" title="清屏" @click="clearChatMessage">
-                    <t-icon size="18">
-                      <DeleteIcon />
-                    </t-icon>
-                    <span class="icon-btn-label">清屏</span>
+                  <t-button variant="outline" theme="default" class="icon-btn danger" title="清屏" @click="clearChatMessage">
+                    <template #icon>
+                      <DeleteIcon size="18px" />
+                    </template>
+                    清屏
                   </t-button>
                 </div>
               </div>
@@ -145,9 +141,9 @@
                   <span class="keycap keycap--alt">⇧</span>Shift+Enter 换行
                 </div>
                 <t-button class="wx-send-btn" @click="handleMessage" :disabled="!chatContent.trim()" :loading="sending">
-                  <t-icon>
+                  <template #icon>
                     <NotificationIcon />
-                  </t-icon>
+                  </template>
                   发送
                 </t-button>
               </div>
@@ -163,9 +159,7 @@
           <t-card class="info-card" shadow>
             <template #header>
               <div class="card-header">
-                <t-icon>
-                  <UserCircleIcon />
-                </t-icon>
+                <UserCircleIcon />
                 <span>基本信息</span>
               </div>
             </template>
@@ -202,9 +196,9 @@
               <div class="info-item">
                 <span class="label">快捷操作：</span>
                 <t-button theme="primary" size="small" @click="historyCaseRef.viewHistoryCase()">
-                  <t-icon>
+                  <template #icon>
                     <TimeIcon />
-                  </t-icon>
+                  </template>
                   历史案件
                 </t-button>
               </div>
@@ -680,23 +674,10 @@ onMounted(() => {
     }
   }
 
-  // 工具栏按钮：透明底 + 浅灰外框（覆盖 t-button 默认 primary 蓝底），明暗主题自适应
+  // 工具栏按钮：TDesign 官方 outline 描边按钮（透明底 + 描边，明暗自适应），
+  // 仅补充激活态（表情面板打开）与清屏危险 hover
   :deep(.icon-btn) {
-    height: 32px;
-    padding: 0 10px;
     border-radius: 8px;
-    background: transparent;
-    border: 1px solid var(--td-border-level-1-color);
-    color: var(--td-text-color-primary);
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
-
-    &:hover {
-      background: var(--td-bg-color-container-hover);
-      border-color: var(--td-border-level-2-color);
-    }
 
     &.is-active {
       background: var(--td-brand-color-light);
@@ -708,11 +689,6 @@ onMounted(() => {
       background: rgba(247, 101, 96, 0.1);
       border-color: rgba(247, 101, 96, 0.4);
       color: #f76560;
-    }
-
-    .icon-btn-label {
-      font-size: 13px;
-      line-height: 1;
     }
   }
 
