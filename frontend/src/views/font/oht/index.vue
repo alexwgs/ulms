@@ -419,14 +419,12 @@ const onEmojiSelect = (emoji) => {
 
 // 自动加载当天的大厅会话记录（default.txt），刷新页面后聊天内容不丢失。
 // 记录文件中的消息带 sendId：当前用户发的显示为右侧（direction 1），其余显示左侧（direction 2）。
+// 失败时静默降级：token 失效场景由 401 拦截器统一引导重登，此处不弹错误干扰使用。
 const loadTodayRecord = async () => {
   try {
     const today = dayjs().format('YYYY-MM-DD')
     const res = await chatRecordApi.getRecord(today)
-    if (res.code !== 200) {
-      MessagePlugin.error(res.msg || '加载当日会话记录失败')
-      return
-    }
+    if (res.code !== 200) return
     const me = JSON.parse(localStorage.getItem('user') || '{}')?.ploNum
     const msgs = (res.data || []).map((m) => ({
       direction: m.sendId === me ? 1 : 2,
@@ -440,7 +438,6 @@ const loadTodayRecord = async () => {
     setScrollTop()
   } catch (error) {
     console.error('加载当日会话记录失败', error)
-    MessagePlugin.error('加载当日会话记录失败')
   }
 }
 
