@@ -36,7 +36,7 @@
             </div>
           </div>
           <t-divider></t-divider>
-          <div class="article-text" v-html="article.content"></div>
+          <SafeHtml class="article-text" :html="article.content" />
           <t-divider></t-divider>
           <p v-if="article.hasOwnProperty('files') && article.files != null">
             附件下载：<t-button v-for="(file, index) in parseFiles(article.files)" :key="index" size="medium"
@@ -84,7 +84,7 @@
                   }}楼&emsp; {{ comment.dateTime }}
                 </div>
               </div>
-              <div class="comment-content" v-html="comment.content"></div>
+              <SafeHtml class="comment-content" :html="comment.content" />
               <div class="comment-operations">
                 <t-button v-if="flags.commentFlag" size="small" @click="reply(comment.id)">
                   <template #icon><i class="iconfont iconxiaoxi"></i></template>
@@ -122,7 +122,7 @@
                       回复</span>
                     <div class="comment-time">{{ reply.dataTime }}</div>
                   </div>
-                  <div class="comment-content" v-html="reply.content"></div>
+                  <SafeHtml class="comment-content" :html="reply.content" />
                 </section>
               </div>
             </section>

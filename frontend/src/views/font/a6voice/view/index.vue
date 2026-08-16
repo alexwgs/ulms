@@ -63,7 +63,7 @@
               </div>
             </div>
 
-            <div class="article-body" v-html="article.content"></div>
+            <SafeHtml class="article-body" :html="article.content" />
 
             <div v-if="article.files" class="attachments">
               <div class="attach-title">附件下载：</div>

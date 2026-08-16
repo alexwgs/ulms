@@ -53,7 +53,7 @@
               itemTakeFlag ? '我已经报名这个项目' : '我要报名这个项目'
             }}</t-button>
           </div>
-          <div class="article-text" v-html="article.content"></div>
+          <SafeHtml class="article-text" :html="article.content" />
           <t-divider></t-divider>
           <p v-if="article.hasOwnProperty('files') && article.files">
             附件下载：<t-button v-for="(file, index) in parseFiles(article.files)" :key="index" size="small"

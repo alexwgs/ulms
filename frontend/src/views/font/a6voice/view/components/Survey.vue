@@ -45,7 +45,7 @@
           </div>
           <t-divider></t-divider>
           <div v-if="comments.length">已完成调研问卷</div>
-          <div class="article-text" v-html="article.content"></div>
+          <SafeHtml class="article-text" :html="article.content" />
           <t-divider content-position="center"> 调 研 </t-divider>
           调研截止时间：{{ article.compDate }}
           <div class="QN-questions">

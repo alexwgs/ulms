@@ -24,7 +24,7 @@
             >
           </div>
         </div>
-        <div class="article-text" v-html="content"></div>
+        <SafeHtml class="article-text" :html="content" />
         <p
           v-if="article.hasOwnProperty('files') && article.files != null"
           style="margin-bottom: 0"

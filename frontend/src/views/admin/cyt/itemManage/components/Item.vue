@@ -61,7 +61,7 @@
               >待认领</t-button
             >
           </div>
-          <div class="article-text" v-html="article.content"></div>
+          <SafeHtml class="article-text" :html="article.content" />
           <t-divider></t-divider>
           <p v-if="article.hasOwnProperty('files') && article.files != null">
             附件下载：<t-button
@@ -171,7 +171,7 @@
                   }}楼&emsp; {{ comment.dateTime }}
                 </div>
               </div>
-              <div class="comment-content" v-html="comment.content"></div>
+              <SafeHtml class="comment-content" :html="comment.content" />
               <div class="comment-operations">
                 <t-button
                   size="small"
@@ -205,7 +205,7 @@
                     >
                     <div class="comment-time">{{ reply.dataTime }}</div>
                   </div>
-                  <div class="comment-content" v-html="reply.content"></div>
+                  <SafeHtml class="comment-content" :html="reply.content" />
                   <div class="comment-btn">
                     <t-button
                       size="small"

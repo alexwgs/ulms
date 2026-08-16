@@ -85,7 +85,7 @@
           <span class="comment-header" v-else>{{ fUser.ploName }}/{{ fUser.ploNum }}</span>
           <div class="comment-time">{{ comment.dateTime }}</div>
         </div>
-        <div class="comment-content" v-html="comment.content"></div>
+        <SafeHtml class="comment-content" :html="comment.content" />
       </section>
       <t-textarea :rows="3" placeholder="请输入回复内容" v-model="answerForm.content">
       </t-textarea>

@@ -23,7 +23,7 @@
       </template>
 
       <template #content>
-        <div v-html="comment.content"></div>
+        <SafeHtml :html="comment.content" />
       </template>
 
       <template #actions>
@@ -51,7 +51,7 @@
               </t-avatar>
             </template>
             <template #content>
-              <div v-html="reply.content"></div>
+              <SafeHtml :html="reply.content" />
             </template>
             <template #actions>
               <t-space key="thumbUp" size="6px" class="action-item" @click="handleLike(3, reply.id, index)">

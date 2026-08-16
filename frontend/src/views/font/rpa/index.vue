@@ -39,7 +39,7 @@
                     >
                       <t-tooltip placement="bottom">
                         <template #content>
-                          <div v-html="tool.memo"></div>
+                          <SafeHtml :html="tool.memo" />
                         </template>
                         <span>{{ tool.name }}</span>
                       </t-tooltip>

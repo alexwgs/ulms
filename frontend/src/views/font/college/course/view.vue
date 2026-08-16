@@ -65,7 +65,7 @@
                   course.ifEval === 1 ? '需要评价' : '无需评价' }}</t-tag></t-col>
                 <t-col :span="4"><t-tag v-if="course.evalDate != 0" variant="light">{{ course.evalDate }}天内完成</t-tag></t-col>
               </t-row>
-              <div style="margin-top: 10px" v-html="course.courseDes"></div>
+              <SafeHtml style="margin-top: 10px" :html="course.courseDes" />
               <div class="menu">
                 <div class="menu-title">课程目录</div>
                 <t-timeline>

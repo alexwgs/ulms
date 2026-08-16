@@ -71,9 +71,7 @@
       </div>
       <div v-show="currentItem === '公布栏学习'">
         <h4>{{ article.title }}</h4>
-        <div class="main-container">
-          <div v-html="article.content"></div>
-        </div>
+          <SafeHtml class="main-container" :html="article.content" />
         <div style="width: 100%; text-align: center; padding-top: 15px">
           <t-button
             theme="primary"

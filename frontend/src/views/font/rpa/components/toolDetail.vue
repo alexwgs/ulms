@@ -18,7 +18,7 @@
           record.runTimes
         }}</t-descriptions-item>
         <t-descriptions-item label="使用说明" :span="2">
-          <div v-html="record.memo"></div>
+          <SafeHtml :html="record.memo" />
         </t-descriptions-item>
         <t-descriptions-item label="运行参数" :span="2">
           <t-form

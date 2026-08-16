@@ -44,7 +44,7 @@
             </div>
           </div>
           <t-divider></t-divider>
-          <div class="article-text" v-html="article.content"></div>
+          <SafeHtml class="article-text" :html="article.content" />
           <t-divider></t-divider>
           <p v-if="article.hasOwnProperty('files') && article.files">
             附件下载：<t-button

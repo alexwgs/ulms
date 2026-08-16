@@ -37,7 +37,7 @@
             </div>
           </div>
           <t-divider></t-divider>
-          <div class="article-text" v-html="article.content"></div>
+          <SafeHtml class="article-text" :html="article.content" />
           <t-divider content-position="center"> 调 研 </t-divider>
           <!-- -------------------------------问卷部分------------------------------------ -->
           <div class="QN-questions">
@@ -123,7 +123,7 @@
                   }}楼&emsp; {{ comment.dateTime }}
                 </div>
               </div>
-              <div class="comment-content" v-html="comment.content"></div>
+              <SafeHtml class="comment-content" :html="comment.content" />
             </section>
             <t-divider></t-divider>
           </div>
