@@ -57,7 +57,12 @@ public class CommentServiceImpl implements CommentService {
 			}
 			comment.setUser(DataCache.getEmployees().get(comment.getUserid()));
 			List<Reply> replys = replyService.getReplyByCommentId(comment.getId());
-			List<Like> likes = likeService.getCommentLikeById(comment.getId(), userId);
+			// 免登录阅读：未登录用户无"我是否点赞过"标记，跳过点赞查询（userId 为 null 时
+			// MyBatis Example 的 andUserIdEqualTo(null) 会抛异常）
+			List<Like> likes = null;
+			if (!Util.isNullorEmpty(userId)) {
+				likes = likeService.getCommentLikeById(comment.getId(), userId);
+			}
 			if (Util.isNullorEmpty(replys)) {
 				continue;
 			}
