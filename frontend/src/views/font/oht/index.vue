@@ -680,28 +680,33 @@ onMounted(() => {
     }
   }
 
-  // 工具栏按钮：图标 + 文字标签，hover 浅灰、emoji 激活高亮、清屏 hover 泛红
+  // 工具栏按钮：透明底 + 浅灰外框（覆盖 t-button 默认 primary 蓝底），hover 浅灰、emoji 激活绿、清屏 hover 泛红
   :deep(.icon-btn) {
     height: 32px;
     padding: 0 10px;
     border-radius: 8px;
-    color: #4a5568;
+    background: transparent;
+    border: 1px solid #dfe4ec;
+    color: #3d4757;
     display: inline-flex;
     align-items: center;
     gap: 5px;
-    transition: background 0.15s ease, color 0.15s ease;
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 
     &:hover {
-      background: #f2f4f8;
+      background: #f5f7fa;
+      border-color: #c9d2e0;
     }
 
     &.is-active {
       background: #e8f3ec;
+      border-color: #8fd6ab;
       color: #07c160;
     }
 
     &.danger:hover {
       background: #fdeeee;
+      border-color: #f3b8b5;
       color: #f76560;
     }
 
