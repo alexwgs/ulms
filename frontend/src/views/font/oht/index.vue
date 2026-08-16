@@ -86,51 +86,45 @@
                 </div>
               </div>
 
-            <!-- 输入区域（微信风格：浅灰圆角输入框 + 绿色发送按钮） -->
+            <!-- 输入区域：微信式对话输入台（图标工具栏 + 浅灰输入框 + 键帽提示 + 绿色发送） -->
             <div class="input-area">
-              <!-- 工具栏 -->
+              <!-- 工具栏：左侧表情/快捷消息，右侧清屏 -->
               <div class="toolbar">
                 <div class="toolbar-left">
-                  <!-- Emoji按钮（离线表情面板：纯本地字符，内网/离线可用） -->
-                  <div class="tool-item">
-                    <t-popup v-model:visible="emojiVisible" placement="top-start" trigger="click">
-                      <t-button text>
-                        <t-icon size="20">
-                          <SmileIcon />
-                        </t-icon>
-                      </t-button>
-                      <template #content>
-                        <OfflineEmojiPicker @select="onEmojiSelect" />
-                      </template>
-                    </t-popup>
-                  </div>
+                  <!-- Emoji（离线表情面板：纯本地字符，内网/离线可用；打开时高亮） -->
+                  <t-popup v-model:visible="emojiVisible" placement="top-start" trigger="click">
+                    <t-button text class="icon-btn" :class="{ 'is-active': emojiVisible }" title="表情">
+                      <t-icon size="20">
+                        <SmileIcon />
+                      </t-icon>
+                    </t-button>
+                    <template #content>
+                      <OfflineEmojiPicker @select="onEmojiSelect" />
+                    </template>
+                  </t-popup>
 
                   <!-- 快捷消息 -->
-                  <div class="tool-item">
-                    <t-dropdown @click="selectQuickMemo" trigger="click">
-                      <t-button text>
-                        <t-icon size="20">
-                          <FileIcon />
-                        </t-icon>
-                        <span class="btn-text">快捷消息</span>
-                      </t-button>
-                      <template #dropdown>
-                        <t-dropdown-menu>
-                          <t-dropdown-item v-for="item in quickMemo" :key="item.journo" :value="item.memo">
-                            {{ item.memo }}
-                          </t-dropdown-item>
-                        </t-dropdown-menu>
-                      </template>
-                    </t-dropdown>
-                  </div>
+                  <t-dropdown @click="selectQuickMemo" trigger="click">
+                    <t-button text class="icon-btn" title="快捷消息">
+                      <t-icon size="20">
+                        <ChatBubbleIcon />
+                      </t-icon>
+                    </t-button>
+                    <template #dropdown>
+                      <t-dropdown-menu>
+                        <t-dropdown-item v-for="item in quickMemo" :key="item.journo" :value="item.memo">
+                          {{ item.memo }}
+                        </t-dropdown-item>
+                      </t-dropdown-menu>
+                    </template>
+                  </t-dropdown>
                 </div>
 
                 <div class="toolbar-right">
-                  <t-button text theme="danger" @click="clearChatMessage">
+                  <t-button text class="icon-btn danger" title="清屏" @click="clearChatMessage">
                     <t-icon size="18">
                       <DeleteIcon />
                     </t-icon>
-                    <span class="btn-text">清屏</span>
                   </t-button>
                 </div>
               </div>
@@ -138,13 +132,15 @@
               <!-- 输入框（原生 textarea：支持光标定位插入 emoji、Shift+Enter 换行） -->
               <div class="input-wrapper">
                 <textarea ref="inputRef" v-model="chatContent" rows="3" class="chat-textarea"
-                  placeholder="请输入消息内容...（Enter 发送，Shift+Enter 换行）"
-                  @keydown="handleKeydown"></textarea>
+                  placeholder="输入消息内容..." @keydown="handleKeydown"></textarea>
               </div>
 
-              <!-- 发送按钮（微信绿） -->
-              <div class="send-area">
-                <span class="tips">Enter 发送 · Shift+Enter 换行</span>
+              <!-- 底部操作行：键帽提示 + 微信绿发送按钮 -->
+              <div class="send-row">
+                <div class="send-hints">
+                  <span class="keycap">⏎</span>Enter 发送
+                  <span class="keycap keycap--alt">⇧</span>Shift+Enter 换行
+                </div>
                 <t-button class="wx-send-btn" @click="handleMessage" :disabled="!chatContent.trim()" :loading="sending">
                   <t-icon>
                     <NotificationIcon />
@@ -227,7 +223,7 @@
 import { ref, reactive, onMounted, nextTick, computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { MessagePlugin } from 'tdesign-vue-next'
-import { InfoCircleFilledIcon, FileIcon, DeleteIcon, NotificationIcon, UserCircleIcon, TimeIcon, SmileIcon, LockOnIcon } from 'tdesign-icons-vue-next'
+import { InfoCircleFilledIcon, ChatBubbleIcon, DeleteIcon, NotificationIcon, UserCircleIcon, TimeIcon, SmileIcon, LockOnIcon } from 'tdesign-icons-vue-next'
 import OfflineEmojiPicker from './components/OfflineEmojiPicker.vue'
 import CommandBar from './components/CommandBar.vue'
 import UserList from './components/UserList.vue'
@@ -664,33 +660,49 @@ onMounted(() => {
 .input-area {
   border-top: 1px solid #e8edf5;
   background: #fff;
-  padding: 10px 14px 12px;
+  padding: 8px 12px 10px;
 
+  // 工具栏：图标按钮横向排布，无分隔线（一体面板）
   .toolbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 8px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid #f0f3f8;
 
     .toolbar-left,
     .toolbar-right {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 2px;
+    }
+  }
+
+  // 图标按钮：40px 点击区、hover 浅灰、emoji 激活高亮、清屏 hover 泛红
+  :deep(.icon-btn) {
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border-radius: 8px;
+    color: #4a5568;
+    transition: background 0.15s ease, color 0.15s ease;
+
+    &:hover {
+      background: #f2f4f8;
     }
 
-    .tool-item {
-      .btn-text {
-        margin-left: 4px;
-        font-size: 13px;
-      }
+    &.is-active {
+      background: #e8f3ec;
+      color: #07c160;
+    }
+
+    &.danger:hover {
+      background: #fdeeee;
+      color: #f76560;
     }
   }
 
   .input-wrapper {
-    margin-bottom: 10px;
+    margin-bottom: 8px;
   }
 
   // 微信风格输入框：浅灰圆角、聚焦变白并描绿边
@@ -719,14 +731,38 @@ onMounted(() => {
     }
   }
 
-  .send-area {
+  // 底部操作行：左侧键帽提示，右侧发送按钮
+  .send-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
 
-    .tips {
+    .send-hints {
+      display: flex;
+      align-items: center;
+      gap: 4px;
       font-size: 12px;
       color: #a3adbd;
+
+      .keycap {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 18px;
+        height: 18px;
+        padding: 0 4px;
+        border: 1px solid #d8dee8;
+        border-bottom-width: 2px;
+        border-radius: 4px;
+        background: #f7f9fc;
+        color: #6b7688;
+        font-size: 11px;
+        line-height: 1;
+      }
+
+      .keycap--alt {
+        margin-left: 8px;
+      }
     }
   }
 }
