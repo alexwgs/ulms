@@ -10,7 +10,7 @@
           <div
             class="my-rank-info"
             style="text-align: center"
-            v-if="userInfo?.jobLevel?.indexOf('100,102,103,104,105') === -1"
+            v-if="hasPermission('edu:brush:report')"
           >
             <t-space>
               <t-button
@@ -137,9 +137,11 @@ import { brushReportApi } from '@/api/edu/brushReport'
 import { downloadExcel } from '@/utils/request'
 import { MessagePlugin } from 'tdesign-vue-next'
 import * as echarts from 'echarts'
+import { usePermission } from '@/hooks/usePermission'
 
 // 当前登录用户信息（登录时写入 localStorage，standalone 路由下守卫不加载 userStore）
 const userInfo = JSON.parse(localStorage.getItem('user') || '{}')
+const { hasPermission } = usePermission()
 
 const formatDate = (date) => {
   return new Date(date).toISOString().split('T')[0]

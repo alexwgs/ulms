@@ -23,7 +23,7 @@ const useUserStore = defineStore('user', {
     jobStatus: undefined,
     ploDesc: undefined,
     ploMobil: undefined,
-    role: 'admin'
+    role: 'user'
   }),
 
   getters: {

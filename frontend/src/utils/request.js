@@ -5,6 +5,12 @@ import axios from 'axios'
 import router from '../router/index'
 import axiosRetry from 'axios-retry'
 import { MessagePlugin } from 'tdesign-vue-next'
+import {
+  getBusinessErrorMessage,
+  getHttpErrorMessage,
+  NETWORK_ERROR_MESSAGE,
+  TIMEOUT_MESSAGE
+} from './errorCodes'
 
 const httpInstance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
@@ -64,9 +70,10 @@ httpInstance.interceptors.response.use(
           break
         default:
       }
-      if (res.code >= 500) MessagePlugin.error(res.msg)
-      else if (res.code >= 400) MessagePlugin.warning(res.msg)
-      else if (res.code >= 300) MessagePlugin.info(res.msg)
+      // 审计修复（F-H4）：业务错误统一按对照表提示，后端文案优先、对照表兜底
+      if (res.code >= 500) MessagePlugin.error(res.msg || getBusinessErrorMessage(res.code))
+      else if (res.code >= 400) MessagePlugin.warning(res.msg || getBusinessErrorMessage(res.code))
+      else if (res.code >= 300) MessagePlugin.info(res.msg || getBusinessErrorMessage(res.code))
       return Promise.resolve(res)
     } else {
       return Promise.reject(response) //失败
@@ -97,12 +104,18 @@ httpInstance.interceptors.response.use(
         // 404请求不存在
         case 404:
           break
-        // 其他错误，直接抛出错误提示
+        // 审计修复（F-H4）：HTTP 5xx 统一提示（原来静默失败，用户无感知）
         default:
+          if (error.response.status >= 500) {
+            MessagePlugin.error(getHttpErrorMessage(error.response.status))
+          }
       }
       return Promise.reject(error.response)
     }
-    // 网络错误/请求超时（无响应对象）
+    // 审计修复（F-H4）：网络错误/请求超时（无响应对象）统一提示
+    const isTimeout =
+      error.code === 'ECONNABORTED' || error.code === 'ETIMEDOUT' || error.message?.includes('timeout')
+    MessagePlugin.error(isTimeout ? TIMEOUT_MESSAGE : NETWORK_ERROR_MESSAGE)
     return Promise.reject(error)
   }
 )

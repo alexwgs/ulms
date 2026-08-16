@@ -2,6 +2,7 @@ package com.cmbccd.ulms.edu.controller;
 
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.cmbccd.ulms.common.annotation.MyLog;
 import com.cmbccd.ulms.common.util.ExcelUtils;
 import com.cmbccd.ulms.common.util.Util;
@@ -81,8 +82,9 @@ public class BrushScoreController {
 		return Msg.success(list);
 	}
 
-	// 报表模块
+	// 报表模块（审计：按角色配置权限码 edu:brush:report 控制下载）
 	@GetMapping("/report/hum")
+	@SaCheckPermission("edu:brush:report")
 	@MyLog(title = "[edu-brush]刷题管理", content = "报表下载")
 	public void reportExamScoreHum(HttpServletResponse response, @RequestParam Map<String, String> params)
 			throws IOException {
@@ -99,6 +101,7 @@ public class BrushScoreController {
 	}
 
 	@GetMapping("/report/group")
+	@SaCheckPermission("edu:brush:report")
 	@MyLog(title = "[edu-brush]刷题管理", content = "报表下载")
 	public void reportExamScoreGroup(HttpServletResponse response, @RequestParam Map<String, String> params)
 			throws IOException {
@@ -113,6 +116,7 @@ public class BrushScoreController {
 	}
 
 	@GetMapping("/report/dept")
+	@SaCheckPermission("edu:brush:report")
 	@MyLog(title = "[edu-brush]刷题管理", content = "报表下载")
 	public void reportExamScoreDept(HttpServletResponse response, @RequestParam Map<String, String> params)
 			throws IOException {
@@ -127,6 +131,7 @@ public class BrushScoreController {
 	}
 
 	@GetMapping("/report/category")
+	@SaCheckPermission("edu:brush:report")
 	@MyLog(title = "[edu-brush]刷题管理", content = "报表下载")
 	public void reportCategoryInfo(HttpServletResponse response, @RequestParam Map<String, String> params)
 			throws IOException {

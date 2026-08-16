@@ -81,6 +81,8 @@ const useMenuStore = defineStore('menu', {
   state: () => ({
     menuList: [],
     routeMenus: [],
+    // 审计修复（F-M7）：保存后端装配的权限码集合，供 hasPermission 真实判断
+    permissions: [],
     routeHasMounted: false
   }),
 
@@ -109,6 +111,10 @@ const useMenuStore = defineStore('menu', {
       this.menuList = partial || []
     },
 
+    setPermissions(partial: string[]) {
+      this.permissions = partial || []
+    },
+
     setRouteMounted(value: boolean) {
       this.routeHasMounted = value
     },
@@ -118,6 +124,8 @@ const useMenuStore = defineStore('menu', {
         const res = await getMenu()
         // this.setMenuList(res.data)
         this.setMenuList(res.menu)
+        // 审计修复（F-M7）：保存后端装配的权限码集合（getWithMenuList 返回）
+        this.setPermissions(res.permissions || [])
         await this.addRouteMenus()
         return true
       } catch (error) {

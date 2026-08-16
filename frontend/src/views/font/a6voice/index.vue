@@ -124,6 +124,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { MessagePlugin } from 'tdesign-vue-next'
 import { useDictStore } from '@/stores'
+import { usePermission } from '@/hooks/usePermission'
 import {
   getWeeklyHot,
   getArticleList,
@@ -165,8 +166,8 @@ const itemCategoryList = computed(() => {
   return dictStore.dictList.cyt_item_category.filter((item) => item.status == 1)
 })
 
-// 前端权限体系尚未建立，暂时保持放行（待接入后端权限码后收紧）
-const hasPermission = () => true
+// 审计修复（F-M7）：接入真实权限码判断（cyt:* 权限码需在菜单资源配置）
+const { hasPermission } = usePermission()
 
 onMounted(() => {
   dictStore.getDictList()
