@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { getDictionary } from '@/api/auth.js'
+import { isLogin } from '@/utils/auth'
 
 const useDictStore = defineStore('dict', {
   state: () => ({
@@ -45,9 +46,9 @@ const useDictStore = defineStore('dict', {
       }
     },
     getDictByNames(dictName: string, status: number | null) {
-      // 判断当前dict存不存在，若不存在从服务器获取
+      // 判断当前dict存不存在，若不存在从服务器获取（免登录阅读：未登录不发起依赖登录的字典请求）
       if (!this.dictList || !Object.keys(this.dictList).length) {
-        this.getDictList()
+        if (isLogin()) this.getDictList()
       }
       if (dictName == null || dictName == undefined || dictName == '') return []
       const dicts = this.dictList?.[dictName]
@@ -57,7 +58,9 @@ const useDictStore = defineStore('dict', {
     },
     getDictName(dictName: string, val: any) {
       if (!this.dictList || !Object.keys(this.dictList).length) {
-        this.getDictList()
+        if (isLogin()) this.getDictList()
+        // 未加载（免登录降级）：返回空串而非"未定义"，避免界面显示无意义标签
+        return ''
       }
       const dicts = this.dictList?.[dictName]
       const value = dicts?.find((element: any) => element.code == val)
@@ -65,7 +68,8 @@ const useDictStore = defineStore('dict', {
     },
     getDictLabel(dictName: string, val: any) {
       if (!this.dictList || !Object.keys(this.dictList).length) {
-        this.getDictList()
+        if (isLogin()) this.getDictList()
+        return ''
       }
       const dicts = this.dictList?.[dictName]
       const value = dicts?.find((element: any) => element.code == val)

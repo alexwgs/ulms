@@ -7,12 +7,16 @@
 import { computed } from 'vue'
 import { useDictStore, useUiStore } from '@/stores';
 import { zhCN, tdesignConfig } from '@/config/tdesign'
+import { isLogin } from '@/utils/auth'
 
 const dictStore = useDictStore();
-try {
-  dictStore.getDictList();
-} catch (e) {
-  console.error('字典初始化失败', e)
+// 免登录阅读：字典接口依赖登录，未登录时跳过（否则 401 会被拦截器踢回登录页）
+if (isLogin()) {
+  try {
+    dictStore.getDictList();
+  } catch (e) {
+    console.error('字典初始化失败', e)
+  }
 }
 
 const uiStore = useUiStore();
