@@ -116,6 +116,14 @@
                       </t-dropdown-menu>
                     </template>
                   </t-dropdown>
+
+                  <!-- 历史消息：按日期查询历史会话明细 -->
+                  <t-button variant="outline" theme="default" class="icon-btn" title="历史消息" @click="openHistory">
+                    <template #icon>
+                      <TimeIcon size="18px" />
+                    </template>
+                    历史消息
+                  </t-button>
                 </div>
 
                 <div class="toolbar-right">
@@ -213,6 +221,31 @@
     <!-- 弹窗组件 -->
     <Station ref="stationRef" />
     <HistoryCase ref="historyCaseRef" />
+
+    <!-- 历史会话明细弹窗 -->
+    <t-dialog v-model:visible="historyVisible" header="历史会话明细" width="560px" :footer="false"
+      :close-on-overlay-click="true">
+      <div class="history-toolbar">
+        <t-date-picker v-model="historyDate" format="YYYY-MM-DD" value-type="YYYY-MM-DD" :clearable="false"
+          allow-input placeholder="选择日期" />
+        <t-button theme="primary" size="small" :loading="historyLoading" @click="queryHistory">
+          <template #icon>
+            <SearchIcon size="16px" />
+          </template>
+          查询
+        </t-button>
+      </div>
+      <div class="history-list">
+        <t-empty v-if="!historyLoading && !historyList.length" description="该日期暂无会话记录"></t-empty>
+        <div v-for="(m, i) in historyList" :key="i" class="history-item">
+          <div class="history-head">
+            <span class="history-name">{{ m.sendName || '未知用户' }}</span>
+            <span class="history-time">{{ m.ctime }}</span>
+          </div>
+          <div class="history-content">{{ m.content }}</div>
+        </div>
+      </div>
+    </t-dialog>
   </div>
 </template>
 
@@ -220,7 +253,8 @@
 import { ref, reactive, onMounted, nextTick, computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { MessagePlugin } from 'tdesign-vue-next'
-import { InfoCircleFilledIcon, ChatBubbleIcon, DeleteIcon, NotificationIcon, UserCircleIcon, TimeIcon, SmileIcon, LockOnIcon } from 'tdesign-icons-vue-next'
+import dayjs from 'dayjs'
+import { InfoCircleFilledIcon, ChatBubbleIcon, DeleteIcon, NotificationIcon, UserCircleIcon, TimeIcon, SmileIcon, LockOnIcon, SearchIcon } from 'tdesign-icons-vue-next'
 import OfflineEmojiPicker from './components/OfflineEmojiPicker.vue'
 import CommandBar from './components/CommandBar.vue'
 import UserList from './components/UserList.vue'
@@ -228,6 +262,7 @@ import Station from './components/Station.vue'
 import HistoryCase from './components/HistoryCase.vue'
 import { useOhtStore, useDictStore, useUserStore, useWsStore } from '@/stores'
 import { quickMemoApi } from '@/api/oht/quickMemo'
+import { chatRecordApi } from '@/api/oht/chatRecord'
 import { isLogin } from '@/utils/auth'
 
 const route = useRoute()
@@ -254,6 +289,10 @@ const quickMemo = ref([])
 const messageCont = computed(() => wsStore.message)
 const sending = ref(false)
 const emojiVisible = ref(false)
+const historyVisible = ref(false)
+const historyDate = ref(dayjs().format('YYYY-MM-DD'))
+const historyList = ref([])
+const historyLoading = ref(false)
 
 const fsURL = import.meta.env.VITE_FILE_BASE_URL
 const defaultAvatar = new URL('@/assets/img/default_avatar.png', import.meta.url).href
@@ -375,10 +414,68 @@ const onEmojiSelect = (emoji) => {
   })
 }
 
+// 自动加载当天的大厅会话记录（default.txt），刷新页面后聊天内容不丢失。
+// 记录文件中的消息带 sendId：当前用户发的显示为右侧（direction 1），其余显示左侧（direction 2）。
+const loadTodayRecord = async () => {
+  try {
+    const today = dayjs().format('YYYY-MM-DD')
+    const res = await chatRecordApi.getRecord(today)
+    if (res.code !== 200) {
+      MessagePlugin.error(res.msg)
+      return
+    }
+    const me = JSON.parse(localStorage.getItem('user') || '{}')?.ploNum
+    const msgs = (res.data || []).map((m) => ({
+      direction: m.sendId === me ? 1 : 2,
+      sendName: m.sendName || '',
+      avatar: m.avatar || '',
+      content: m.content || '',
+      ctime: m.ctime || ''
+    }))
+    // 当天消息较多时仅展示最近 100 条（与 WS 消息上限一致）
+    wsStore.message = msgs.slice(-100)
+    setScrollTop()
+  } catch (error) {
+    console.error('加载当日会话记录失败', error)
+  }
+}
+
+// 历史消息弹窗：打开时默认查询当天
+const openHistory = () => {
+  historyDate.value = dayjs().format('YYYY-MM-DD')
+  historyList.value = []
+  historyVisible.value = true
+  queryHistory()
+}
+
+const queryHistory = async () => {
+  if (!historyDate.value) {
+    MessagePlugin.warning('请选择日期')
+    return
+  }
+  historyLoading.value = true
+  try {
+    const res = await chatRecordApi.getRecord(historyDate.value)
+    if (res.code !== 200) {
+      MessagePlugin.error(res.msg)
+      return
+    }
+    historyList.value = res.data || []
+  } catch (error) {
+    console.error('查询历史会话失败', error)
+    MessagePlugin.error('查询历史会话失败')
+  } finally {
+    historyLoading.value = false
+  }
+}
+
 onMounted(() => {
   if (!loggedIn) return
   getQuickMemo()
-  setScrollTop()
+  // 先加载当天大厅会话，再建立实时消息（WS 新消息通过 push 追加）
+  loadTodayRecord().finally(() => {
+    setScrollTop()
+  })
 })
 </script>
 
@@ -826,5 +923,58 @@ onMounted(() => {
 
 :deep(.t-scrollbar__wrap) {
   overflow-x: hidden;
+}
+
+// 历史会话明细弹窗
+.history-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+
+  .t-date-picker {
+    width: 180px;
+  }
+}
+
+.history-list {
+  max-height: 420px;
+  overflow-y: auto;
+  padding-right: 4px;
+
+  .history-item {
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    border: 1px solid var(--td-border-level-1-color);
+    border-radius: 8px;
+    background: var(--td-bg-color-container-hover);
+
+    .history-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+
+      .history-name {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--td-text-color-primary);
+      }
+
+      .history-time {
+        font-size: 12px;
+        color: var(--td-text-color-placeholder);
+        font-variant-numeric: tabular-nums;
+      }
+    }
+
+    .history-content {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--td-text-color-primary);
+      word-break: break-all;
+      white-space: pre-wrap;
+    }
+  }
 }
 </style>
