@@ -477,6 +477,11 @@ const queryHistory = async () => {
 
 onMounted(() => {
   if (!loggedIn) return
+  // 预请求桌面通知权限：首次进入时请求授权，之后接单/新消息才能弹出系统级通知
+  // （WS 回调非用户手势上下文，Chrome 会静默拒绝 requestPermission）
+  if ('Notification' in window && Notification.permission === 'default') {
+    Notification.requestPermission()
+  }
   getQuickMemo()
   // 先加载当天大厅会话，再建立实时消息（WS 新消息通过 push 追加）
   loadTodayRecord().finally(() => {

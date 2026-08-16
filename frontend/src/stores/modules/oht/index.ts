@@ -96,7 +96,7 @@ export const useOhtStore = defineStore('oht', {
         this.waittingCase = []
       } else {
         // 过滤拒绝的案件
-        this.waittingCase = cases
+        const filtered = cases
           .filter((item) => !this.refuseCaseIds.includes(item.caseId))
           .map((item) => {
             if (item.buildGroup === user.deptGroup) {
@@ -109,6 +109,16 @@ export const useOhtStore = defineStore('oht', {
             return item
           })
           .sort((a, b) => a.buildTime - b.buildTime)
+
+        // 过滤后无待接案件（如已全部拒绝）：停止提醒声音，避免拒绝后铃声持续播放
+        if (!filtered.length) {
+          wsStore.setVoiceNotice('close')
+          clearTimeout(this.ohtCurrentCaseCountingTimer)
+          this.waittingCase = []
+          return
+        }
+
+        this.waittingCase = filtered
 
         this.ohtCasesToCurrentCase()
       }

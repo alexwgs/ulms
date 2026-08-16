@@ -604,16 +604,17 @@ export const useWsStore = defineStore('websocket', {
       if (title === null) title = '新的消息'
       if (message === null) message = '您有新的消息,请注意查收！'
       this.setVoiceNotice(voiceType)
-      if (window.Notification && Notification.permission !== 'denied') {
-        Notification.requestPermission(function (status) {
-          var notice_ = new Notification(
-            title + '【' + new Date().toLocaleString() + '】',
-            { body: message }
-          )
-          notice_.onclick = function () {
-            window.focus()
-          }
-        })
+      // 桌面通知：已授权直接弹出；未询问过则请求一次（页面加载时已预请求，此处兜底）；
+      // 已拒绝则不弹（页面内 NotifyPlugin 提示仍然生效）
+      if (window.Notification) {
+        const permission = Notification.permission
+        if (permission === 'granted') {
+          this.showDesktopNotification(title, message)
+        } else if (permission === 'default') {
+          Notification.requestPermission().then((status) => {
+            if (status === 'granted') this.showDesktopNotification(title, message)
+          })
+        }
       } else {
         this.sendNotice(
           'oht',
@@ -621,6 +622,19 @@ export const useWsStore = defineStore('websocket', {
           title + '【' + new Date().toLocaleString() + '】',
           message
         )
+      }
+    },
+    showDesktopNotification(title, message) {
+      try {
+        const notice = new Notification(
+          title + '【' + new Date().toLocaleString() + '】',
+          { body: message }
+        )
+        notice.onclick = function () {
+          window.focus()
+        }
+      } catch (e) {
+        console.error('桌面通知创建失败', e)
       }
     },
     setVoiceNotice(type) {
