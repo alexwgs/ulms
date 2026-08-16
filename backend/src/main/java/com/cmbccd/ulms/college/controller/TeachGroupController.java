@@ -60,6 +60,10 @@ public class TeachGroupController {
     @SaCheckPermission("college:group:upload")
     @MyLog(title = "[college-teacher]讲师管理")
     public Msg processDailyGroupExcel(@PathVariable ("fileName") String fileName) {
+        // 审计加固：路径穿越防护（文件名必须为纯文件名，禁止 .. / \）
+        if (fileName.contains("..") || fileName.contains("/") || fileName.contains("\\")) {
+            return Msg.error("非法的文件名！");
+        }
         String file = ulmsConfig.getUploadPath() + "excel" + File.separator + fileName;
         teachGroupService.deleteAll();
         TeachGroupListener listener = new TeachGroupListener(teachGroupService);
