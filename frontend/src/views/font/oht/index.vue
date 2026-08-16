@@ -1,5 +1,16 @@
 <template>
-  <div class="oht-chat-container">
+  <!-- 免登录访问：未登录时显示登录引导，不发起依赖登录的请求（聊天/WS/个人信息均需登录） -->
+  <div v-if="!loggedIn" class="oht-login-guide">
+    <t-card class="login-guide-card">
+      <t-icon size="48" style="color: var(--td-brand-color)">
+        <LockOnIcon />
+      </t-icon>
+      <h3>值机助手需要登录后使用</h3>
+      <p>登录后可在线沟通、查看值班状态、历史案件等信息</p>
+      <t-button theme="primary" size="large" @click="goLogin">立即登录</t-button>
+    </t-card>
+  </div>
+  <div v-else class="oht-chat-container">
     <t-row :gutter="15" class="main-row">
       <!-- 左侧聊天区域 -->
       <t-col :span="8">
@@ -214,8 +225,9 @@
 
 <script setup>
 import { ref, reactive, onMounted, nextTick, computed } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { MessagePlugin } from 'tdesign-vue-next'
-import { ChatIcon, InfoCircleFilledIcon, FileIcon, DeleteIcon, NotificationIcon, UserCircleIcon, TimeIcon, SunnyIcon } from 'tdesign-icons-vue-next'
+import { ChatIcon, InfoCircleFilledIcon, FileIcon, DeleteIcon, NotificationIcon, UserCircleIcon, TimeIcon, SunnyIcon, LockOnIcon } from 'tdesign-icons-vue-next'
 import EmojiPicker from 'vue3-emoji-picker'
 import 'vue3-emoji-picker/css'
 import CommandBar from './components/CommandBar.vue'
@@ -224,6 +236,15 @@ import Station from './components/Station.vue'
 import HistoryCase from './components/HistoryCase.vue'
 import { useOhtStore, useDictStore, useUserStore, useWsStore } from '@/stores'
 import { quickMemoApi } from '@/api/oht/quickMemo'
+import { isLogin } from '@/utils/auth'
+
+const route = useRoute()
+const router = useRouter()
+const loggedIn = isLogin()
+
+const goLogin = () => {
+  router.push({ name: 'login', query: { redirect: route.fullPath } })
+}
 
 const ohtStore = useOhtStore()
 const wsStore = useWsStore()
@@ -331,6 +352,7 @@ const onEmojiSelect = (emoji) => {
 }
 
 onMounted(() => {
+  if (!loggedIn) return
   messageCont.value = wsStore.message
   getQuickMemo()
   setScrollTop()
@@ -338,6 +360,32 @@ onMounted(() => {
 </script>
 
 <style lang="less" scoped>
+.oht-login-guide {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 120px);
+
+  .login-guide-card {
+    width: 420px;
+    padding: 40px 20px;
+    text-align: center;
+    border-radius: 12px;
+
+    h3 {
+      margin: 16px 0 8px;
+      font-size: 18px;
+      color: var(--td-text-color-primary);
+    }
+
+    p {
+      margin: 0 0 24px;
+      font-size: 13px;
+      color: var(--td-text-color-secondary);
+    }
+  }
+}
+
 .oht-chat-container {
   padding: 0;
   min-height: 50vh;

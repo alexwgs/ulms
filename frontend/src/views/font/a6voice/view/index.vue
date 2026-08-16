@@ -5,7 +5,7 @@
         <t-col :span="8">
           <div class="article-content">
             <t-breadcrumb separator="/">
-              <t-breadcrumb-item :to="{ path: '/a6voice' }">A6有声</t-breadcrumb-item>
+              <t-breadcrumb-item :to="{ path: '/font/a6voice' }">A6有声</t-breadcrumb-item>
               <t-breadcrumb-item>{{ typeName }}</t-breadcrumb-item>
               <t-breadcrumb-item>{{ article.title }}</t-breadcrumb-item>
             </t-breadcrumb>
@@ -183,6 +183,7 @@ import { MessagePlugin } from 'tdesign-vue-next'
 import Comment from './components/Comment.vue'
 import useDictStore from '@/stores/modules/dict'
 import { sanitizeHtml } from '@/utils/tools'
+import { isLogin } from '@/utils/auth'
 import {
   getArticleDetail,
   toggleLike,
@@ -224,6 +225,14 @@ const typeName = computed(() => {
   }
   return typeMap[articleType.value] || '讨论'
 })
+
+// 免登录阅读：交互（点赞/收藏/评论/答卷）前检查登录，未登录提示并跳登录页（带回跳地址）
+const requireLogin = () => {
+  if (isLogin()) return true
+  MessagePlugin.warning('请先登录后再操作')
+  router.push({ name: 'login', query: { redirect: route.fullPath } })
+  return false
+}
 
 const articleTypeNum = computed(() => {
   const typeMap = {
@@ -310,7 +319,10 @@ const fetcharticle = async () => {
 
     if (articleType.value === 'item') {
       await fetchItemMembers()
-      await fetchItemProgress()
+      // 项目进度为个人数据接口，未登录跳过（避免 401 触发跳登录）
+      if (isLogin()) {
+        await fetchItemProgress()
+      }
     } else if (articleType.value === 'survey') {
       await fetchSurveyStats()
       await fetchQuestions()
@@ -371,6 +383,7 @@ const fetchQuestions = async () => {
 }
 
 const submitSurveyAnswer = async () => {
+  if (!requireLogin()) return
   const answers = []
   for (const question of questions.value) {
     const answer = { questionId: question.id, articleId: question.articleId, answer: '' }
@@ -423,6 +436,7 @@ const fetchRelatedList = async () => {
 }
 
 const handleLike = async () => {
+  if (!requireLogin()) return
   try {
     const res = await toggleLike(1, articleId.value)
     if (res.code !== 200) {
@@ -438,6 +452,7 @@ const handleLike = async () => {
 }
 
 const handleCollect = async () => {
+  if (!requireLogin()) return
   try {
     const res = await toggleCollect(articleId.value, isCollect.value)
     if (res.code !== 200) {

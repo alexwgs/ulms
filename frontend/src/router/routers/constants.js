@@ -30,6 +30,30 @@ export const constantRoutes = [
     }
   },
   {
+    // 免登录可访问的 A6 有声列表页（与动态菜单同路径，静态注册优先匹配；
+    // 页面内部对需登录的接口做 isLogin 判断，未登录降级展示）
+    path: '/font/a6voice',
+    name: 'a6voice-list',
+    component: () => import('@/views/font/a6voice/index.vue'),
+    meta: {
+      title: 'A6有声',
+      hidden: true,
+      standalone: true
+    }
+  },
+  {
+    // 免登录可访问的值机助手（OHT 值班工具）页：未登录时页面内显示登录引导，
+    // 不发起依赖登录的请求（聊天/WS/个人信息均需登录）
+    path: '/font/oht',
+    name: 'oht-index',
+    component: () => import('@/views/font/oht/index.vue'),
+    meta: {
+      title: '值机助手',
+      hidden: true,
+      standalone: true
+    }
+  },
+  {
     path: '/',
     name: 'layout',
     component: Layout,

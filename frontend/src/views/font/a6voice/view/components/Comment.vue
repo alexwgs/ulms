@@ -116,15 +116,28 @@
 
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { MessagePlugin } from 'tdesign-vue-next'
 import WangEditor from '@/components/WangEditor.vue'
 import defaultAvatarImg from '@/assets/img/default_avatar.png'
+import { isLogin } from '@/utils/auth'
 import {
   toggleLike,
   addComment,
   addReply,
   getCommentList
 } from '@/api/a6voice/index.js'
+
+const route = useRoute()
+const router = useRouter()
+
+// 免登录阅读：评论/回复/点赞等交互前检查登录，未登录提示并跳登录页（带回跳地址）
+const requireLogin = () => {
+  if (isLogin()) return true
+  MessagePlugin.warning('请先登录后再操作')
+  router.push({ name: 'login', query: { redirect: route.fullPath } })
+  return false
+}
 
 const props = defineProps({
   articleId: {
@@ -234,6 +247,7 @@ const handleReply = (commentId) => {
 }
 
 const handleLike = async (type, id, index) => {
+  if (!requireLogin()) return
   try {
     const res = await toggleLike(type, id)
     if (res.code !== 200) {
@@ -273,6 +287,7 @@ const handleClickOutside = (e) => {
 }
 
 const handleSubmitComment = async () => {
+  if (!requireLogin()) return
   if (commentForm.value.content.length > 1000) {
     MessagePlugin.error('文本字数过多，最多可输入1000个字符！')
     return
@@ -299,6 +314,7 @@ const handleSubmitComment = async () => {
 }
 
 const submitReply = async (commentId, toUser) => {
+  if (!requireLogin()) return
   if (replyForm.value.content.length > 1000) {
     MessagePlugin.error('文本字数过多，最多可输入1000个字符！')
     return

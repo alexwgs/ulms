@@ -125,6 +125,7 @@ import { useRouter } from 'vue-router'
 import { MessagePlugin } from 'tdesign-vue-next'
 import { useDictStore } from '@/stores'
 import { usePermission } from '@/hooks/usePermission'
+import { isLogin } from '@/utils/auth'
 import {
   getWeeklyHot,
   getArticleList,
@@ -170,10 +171,13 @@ const itemCategoryList = computed(() => {
 const { hasPermission } = usePermission()
 
 onMounted(() => {
-  dictStore.getDictList()
+  // 免登录阅读：帖子列表/热榜为公开接口；字典与未读消息依赖登录，未登录跳过
+  if (isLogin()) {
+    dictStore.getDictList()
+    getUnreadCountData()
+  }
   getWeeklyHotData()
   getArticleListData()
-  getUnreadCountData()
 })
 
 const getWeeklyHotData = async () => {

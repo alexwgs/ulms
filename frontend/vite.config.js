@@ -15,7 +15,9 @@ export default defineConfig({
       imports: ['vue'],
       resolvers: [
         TDesignResolver({
-          library: 'vue-next'
+          library: 'vue-next',
+          // 审计修复：自动按需导入 tdesign-icons 图标组件（模板直接使用 <View/> 等）
+          resolveIcons: true
         })
       ]
     }),
@@ -23,7 +25,8 @@ export default defineConfig({
       resolvers: [
         // 自动导入 TDesign 组件
         TDesignResolver({
-          library: 'vue-next'
+          library: 'vue-next',
+          resolveIcons: true
         })
       ]
     }),
