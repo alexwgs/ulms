@@ -88,7 +88,7 @@
               <a
                 class="link"
                 target="_blank"
-                :href="'/helper/article/' + scope.row.journo"
+                :href="articleUrl(scope.row.journo)"
                 rel="opener"
                 >新窗口打卡</a
               >
@@ -218,6 +218,11 @@ const currentView = (journo) => {
   if (viewDialogRef.value) {
     viewDialogRef.value.init(journo, queryInfo.query)
   }
+}
+
+// "新窗口打卡"：打开文章阅读页（注意补 base 前缀，否则会跳到应用根路径之外 404）
+const articleUrl = (journo) => {
+  return `${import.meta.env.BASE_URL}helper/article/${journo}`
 }
 
 const expanded = (expandFlag) => {

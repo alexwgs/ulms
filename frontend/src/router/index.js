@@ -3,7 +3,7 @@ import {
   createWebHashHistory,
   createWebHistory
 } from 'vue-router'
-import { constantRoutes, notFound } from '@/router/routers/constants'
+import { constantRoutes, publicRoutes, notFound } from '@/router/routers/constants'
 import { useUserStore, useMenuStore, useAppStore } from '@/stores'
 import { isLogin } from '@/utils/auth'
 import NProgress from 'nprogress'
@@ -17,11 +17,47 @@ const router = createRouter({
   }
 })
 
+/**
+ * 免登录公开页面（A6有声列表 / 值机助手）：
+ * - 未登录时动态注册顶层路由放行（页面无 Layout，但可完整阅读）
+ * - 已登录时移除顶层路由，由动态菜单路由（Layout 框架内）接管
+ */
+const ensurePublicRoute = (path) => {
+  const def = publicRoutes.find((r) => r.path === path)
+  if (def && !router.hasRoute(def.name)) {
+    router.addRoute(def)
+  }
+}
+
+const removePublicRoutes = () => {
+  publicRoutes.forEach((r) => {
+    if (router.hasRoute(r.name)) {
+      router.removeRoute(r.name)
+    }
+  })
+}
+
 router.beforeEach(async (to, from, next) => {
   NProgress.start()
   const userStore = useUserStore()
   const menuStore = useMenuStore()
   const appStore = useAppStore()
+
+  // 0. 免登录公开页面：未登录注册顶层路由放行；已登录移除顶层路由走框架内菜单路由
+  if (publicRoutes.some((r) => r.path === to.path)) {
+    if (!isLogin()) {
+      ensurePublicRoute(to.path)
+      // 首次导航时路由尚未注册（to.matched 为空），需重导航一次让新路由生效；
+      // 已注册则直接放行（避免重复 replace 造成循环）
+      if (to.matched.length === 0) {
+        next({ path: to.path, query: to.query, hash: to.hash, replace: true })
+        return
+      }
+      next()
+      return
+    }
+    removePublicRoutes()
+  }
 
   // 1. 先处理独立页面（不需要登录和菜单的页面）
   if (to.meta.standalone) {

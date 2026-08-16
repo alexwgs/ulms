@@ -18,8 +18,10 @@ public class SaTokenConfigure implements WebMvcConfigurer  {
 
     /**
      * 免登录阅读白名单（A6 有声公开阅读接口，仅 GET 有效）：
-     * 帖子/课题/调研列表与详情、调研问题、评论列表、榜单、课题成员。
-     * 注意：/api/cyt/article/* 只匹配一级路径，article/manage/{id}（编辑回显）不在白名单内。
+     * 帖子/课题/调研列表与详情、调研问题、评论列表、榜单、课题成员；
+     * 值机助手（onlineHelper2）：知识路径树、文章列表、文章详情（新窗口打卡）。
+     * 注意：/api/cyt/article/* 只匹配一级路径，article/manage/{id}（编辑回显）不在白名单内；
+     * helper/article/list（管理列表）即使被路径覆盖，也会被方法级 @SaCheckPermission 拦截。
      * 写操作（评论/点赞/收藏/发布/答卷/加入课题）与个人数据接口
      * （我的文章/我的收藏/消息/进度/收藏列表）仍需登录。
      */
@@ -33,7 +35,10 @@ public class SaTokenConfigure implements WebMvcConfigurer  {
             "/api/cyt/comment/rank",
             "/api/cyt/weekly/rank",
             "/api/cyt/stageList",
-            "/api/cyt/member/*"
+            "/api/cyt/member/*",
+            "/api/helper/tree/tree",
+            "/api/helper/article/font/list",
+            "/api/helper/article/*"
     };
     private static final AntPathMatcher PATH_MATCHER = new AntPathMatcher();
 

@@ -30,25 +30,12 @@ export const constantRoutes = [
     }
   },
   {
-    // 免登录可访问的 A6 有声列表页（与动态菜单同路径，静态注册优先匹配；
-    // 页面内部对需登录的接口做 isLogin 判断，未登录降级展示）
-    path: '/font/a6voice',
-    name: 'a6voice-list',
-    component: () => import('@/views/font/a6voice/index.vue'),
+    // 值机助手文章阅读页（"新窗口打卡"目标）：免登录阅读
+    path: '/helper/article/:journo',
+    name: 'helper-article-view',
+    component: () => import('@/views/font/onlineHelper2/article.vue'),
     meta: {
-      title: 'A6有声',
-      hidden: true,
-      standalone: true
-    }
-  },
-  {
-    // 免登录可访问的值机助手（OHT 值班工具）页：未登录时页面内显示登录引导，
-    // 不发起依赖登录的请求（聊天/WS/个人信息均需登录）
-    path: '/font/oht',
-    name: 'oht-index',
-    component: () => import('@/views/font/oht/index.vue'),
-    meta: {
-      title: '值机助手',
+      title: '文章阅读',
       hidden: true,
       standalone: true
     }
@@ -149,4 +136,46 @@ export const notFound = {
   name: 'notFound',
   component: () => import('@/views/exception/not-found/index.vue')
 }
+
+/**
+ * 免登录公开页面（仅未登录时由路由守卫动态注册为顶层路由；已登录时移除，
+ * 走框架内的动态菜单路由，保证页面处于 Layout 框架中）。
+ * 页面内部对依赖登录的接口做 isLogin 判断，未登录降级展示。
+ */
+export const publicRoutes = [
+  {
+    path: '/font/a6voice',
+    name: 'public-a6voice',
+    component: () => import('@/views/font/a6voice/index.vue'),
+    meta: {
+      title: 'A6有声',
+      hidden: true,
+      standalone: true,
+      public: true
+    }
+  },
+  {
+    path: '/font/oht',
+    name: 'public-oht',
+    component: () => import('@/views/font/oht/index.vue'),
+    meta: {
+      title: '求助系统',
+      hidden: true,
+      standalone: true,
+      public: true
+    }
+  },
+  {
+    // 值机助手Bata：知识路径树 + 文章列表，阅读接口免登录（仅 GET）
+    path: '/font/onlineHelper2',
+    name: 'public-onlineHelper2',
+    component: () => import('@/views/font/onlineHelper2/index.vue'),
+    meta: {
+      title: '值机助手',
+      hidden: true,
+      standalone: true,
+      public: true
+    }
+  }
+]
 
