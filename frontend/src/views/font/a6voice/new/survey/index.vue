@@ -1,18 +1,17 @@
 <template>
   <t-card>
     <div class="sub-page-header">
-      <t-button theme="default" variant="text" @click="router.back()">
-        
-      返回</t-button>
+      <t-button theme="default" variant="text" @click="router.back()">返回</t-button>
       <span class="sub-page-title">创建新调研</span>
     </div>
+
     <div class="QN-header">
       <t-form ref="formRef" :rules="rules" :data="questionnaire" label-width="80px">
         <t-form-item label="调研标题" name="title">
-          <t-input v-model="questionnaire.title" size="small" placeholder="请输入调研标题 2-50 字内"></t-input>
+          <t-input v-model="questionnaire.title" size="small" placeholder="请输入调研标题（2-50 字）"></t-input>
         </t-form-item>
-        <t-row>
-          <t-col :span="3">
+        <t-row :gutter="16">
+          <t-col :span="6">
             <t-form-item label="调研分类" name="category">
               <t-select v-model="questionnaire.category" size="small" placeholder="请选择">
                 <t-option v-for="item in dictStore.getDictByNames('cyt_artical_category', 1).filter(
@@ -21,31 +20,26 @@
               </t-select>
             </t-form-item>
           </t-col>
-          <t-col :span="3">
+          <t-col :span="6">
             <t-form-item label="截止时间" name="compDate">
-              <t-date-picker size="small" style="width: 180px" v-model="questionnaire.compDate" mode="date" enable-time-picker
-                placeholder="选择日期时间">
-              </t-date-picker>
+              <t-date-picker size="small" style="width: 200px" v-model="questionnaire.compDate" mode="date"
+                enable-time-picker placeholder="选择日期时间"></t-date-picker>
             </t-form-item>
           </t-col>
-          <t-col :span="6">
+          <t-col :span="12">
             <t-form-item>
-              <t-dropdown @click="(dropdownItem) => addQuestion(dropdownItem.value)">
-                <t-button theme="primary" size="small">
-                  添加题目
-                  <AddIcon />
-                </t-button>
-                <template #dropdown>
-                  <t-dropdown-menu>
-                    <t-dropdown-item v-for="item in dictStore.getDictByNames('cyt_survey_question_type', 1)"
-                      :key="item.id" :value="item.code">{{ item.codeval }}</t-dropdown-item>
-                  </t-dropdown-menu>
-                </template>
-              </t-dropdown>
               <t-space>
-                <t-button class="release-button" theme="primary" size="small" @click="preview">预览</t-button>
-                <t-button class="release-button" theme="primary" size="small" :disabled="releaseBtnFlag"
-                  @click="release">发布</t-button>
+                <t-button theme="primary" size="small" variant="outline" @click="addQuestion('radio')">
+                  <template #icon><DynamicIcon name="add" /></template>单选
+                </t-button>
+                <t-button theme="primary" size="small" variant="outline" @click="addQuestion('checkbox')">
+                  <template #icon><DynamicIcon name="add" /></template>多选
+                </t-button>
+                <t-button theme="primary" size="small" variant="outline" @click="addQuestion('textarea')">
+                  <template #icon><DynamicIcon name="add" /></template>填空
+                </t-button>
+                <t-button theme="primary" size="small" @click="preview">预览</t-button>
+                <t-button theme="success" size="small" :disabled="releaseBtnFlag" @click="release">发布</t-button>
               </t-space>
             </t-form-item>
           </t-col>
@@ -55,75 +49,58 @@
         </t-form-item>
       </t-form>
     </div>
+
+    <!-- 题目列表（卡片式，选项直接输入、增删按钮常显） -->
     <div class="QN-questions">
-      <div class="QN-question" v-for="(question, i) in questionnaire.questions" :key="i" @mouseover="
-        () => {
-          hoverQuestion = true
-          activeQuestionIndex = i
-        }
-      " @mouseout="hoverQuestion = false">
-        <t-input :ref="`title${i}`" v-if="questionTitleEditing && currentQuestionTitleIndex === `${i}`"
-          :placeholder="question.content" v-model="question.content" @blur="questionTitleEditing = false"
-          @enter="questionTitleEditing = false"></t-input>
-        <p v-else @click="handleQuestionTitleClick(`${i}`, `title${i}`)">
-          题号：{{ question.sort }} |
-          {{ question.content === '' ? '请输入调研题目！' : question.content }}
-        </p>
-        <div v-if="question.questionType === 'radio'">
-          <t-radio-group v-model="question.radio">
-            <div v-for="(label, j) in question.options" :key="j" class="lable-wrapper"
-              @mouseenter="handleMouseEnter(i, j)" @mouseleave="hoverLabel = false">
-              <t-input :ref="`DOM${i}${j}`" v-if="radioEditing && currentRadioIndex === `${i}${j}`"
-                :placeholder="label" v-model="question.options[j]" @blur="radioEditing = false"
-                @enter="radioEditing = false"></t-input>
-              <t-radio v-else :value="label === '' ? '单选选项-' + (j + 1) : label"
-                @click="handleRadioClick(`${i}${j}`, `DOM${i}${j}`)">{{ label === '' ? '单选选项-' + (j + 1) : label
-                }}</t-radio>
-              <span v-show="hoverLabel && activeLableIndex === `${i}${j}`" class="label-operation">
-                <t-icon class="remove-label-icon" @click="removeLable(i, j)"><RemoveIcon /></t-icon>
-                <t-icon class="add-label-icon" @click="addLable(i, j)"><AddIcon /></t-icon>
-              </span>
+      <div class="QN-question" v-for="(question, i) in questionnaire.questions" :key="i">
+        <div class="question-head">
+          <span class="question-no">第 {{ question.sort }} 题</span>
+          <span class="question-type-tag">{{ typeName(question.questionType) }}</span>
+          <div class="question-ops">
+            <t-link size="small" theme="primary" :underline="false" :disabled="question.sort === 1"
+              @click="orderChange('up', i)">上移</t-link>
+            <t-link size="small" theme="primary" :underline="false"
+              :disabled="question.sort === questionnaire.questions.length" @click="orderChange('down', i)">下移</t-link>
+            <t-link size="small" theme="danger" :underline="false" @click="deleteQuestion(i)">删除</t-link>
+          </div>
+        </div>
+        <t-input v-model="question.content" size="small" placeholder="请输入题目内容" class="question-input" />
+        <div v-if="question.questionType !== 'textarea'" class="options-area">
+          <div v-for="(label, j) in question.options" :key="j" class="option-row">
+            <div class="option-input-wrap">
+              <t-radio v-if="question.questionType === 'radio'" :value="label"
+                :checked="false" class="option-icon" />
+              <t-checkbox v-else :value="label" :checked="false" class="option-icon" />
+              <t-input v-model="question.options[j]" size="small" class="option-input"
+                :placeholder="'选项 ' + (j + 1)" />
             </div>
-          </t-radio-group>
-        </div>
-        <div v-else-if="question.questionType === 'checkbox'">
-          <t-checkbox-group v-model="question.checkList">
-            <div v-for="(label, j) in question.options" :key="j" class="lable-wrapper"
-              @mouseenter="handleMouseEnter(i, j)" @mouseleave="hoverLabel = false">
-              <t-input :ref="`DOM${i}${j}`" v-if="checkboxEditing && currentCheckboxIndex === `${i}${j}`"
-                :placeholder="label" v-model="question.options[j]" @blur="checkboxEditing = false"
-                @enter="checkboxEditing = false"></t-input>
-              <!-- 审计修复：多选选项补文字显示（原只渲染空复选框，看不到选项内容） -->
-              <t-checkbox v-else :value="label === '' ? '多选选项-' + (j + 1) : label"
-                @click="handleCheckboxClick(`${i}${j}`, `DOM${i}${j}`)">{{ label === '' ? '多选选项-' + (j + 1) : label }}</t-checkbox>
-              <span v-show="hoverLabel && activeLableIndex === `${i}${j}`" class="label-operation">
-                <t-icon class="remove-label-icon" @click="removeLable(i, j)"><RemoveIcon /></t-icon>
-                <t-icon class="add-label-icon" @click="addLable(i, j)"><AddIcon /></t-icon>
-              </span>
+            <div class="option-ops">
+              <t-button variant="text" theme="danger" size="small" @click="removeLable(i, j)">
+                <template #icon><DynamicIcon name="delete" /></template>
+              </t-button>
+              <t-button variant="text" theme="primary" size="small" @click="addLable(i, j)">
+                <template #icon><DynamicIcon name="add" /></template>
+              </t-button>
             </div>
-          </t-checkbox-group>
+          </div>
+          <t-button variant="outline" theme="primary" size="small" @click="addLable(i, question.options.length - 1)">
+            <template #icon><DynamicIcon name="add" /></template>添加选项
+          </t-button>
         </div>
-        <div v-else-if="question.questionType === 'textarea'">
-          <p style="color: var(--td-text-color-placeholder)">（填空题，答题时填写）</p>
-        </div>
-        <div style="text-align: right; padding-bottom: 10px">
-          <t-link size="small" theme="primary" :underline="false" :disabled="question.sort === 1 || questionnaire.questions.length === 1
-            " @click="orderChange('up', i)">上移</t-link>&nbsp;&nbsp;&nbsp;
-          <t-link size="small" theme="primary" :underline="false" :disabled="question.sort === questionnaire.questions.length ||
-            questionnaire.questions.length === 1
-            " @click="orderChange('down', i)">下移</t-link>&nbsp;&nbsp;&nbsp;
-          <t-link size="small" theme="danger" :underline="false" @click="deleteQuestion(i)">删除</t-link>
-        </div>
+        <div v-else class="textarea-tip">填空题：答题时由参与者填写</div>
+      </div>
+
+      <div v-if="questionnaire.questions.length === 0" class="empty-tip">
+        尚未添加题目，点击上方「单选 / 多选 / 填空」添加
       </div>
     </div>
   </t-card>
 </template>
 
 <script setup>
-import { ref, reactive, computed, nextTick } from 'vue'
+import { ref, reactive, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { MessagePlugin } from 'tdesign-vue-next'
-import { AddIcon, RemoveIcon } from 'tdesign-icons-vue-next'
 import WangEditor from '@/components/WangEditor.vue'
 import { httpInstance } from '@/utils/request'
 import { useDictStore } from '@/stores'
@@ -138,7 +115,6 @@ const getTemplate = (questionType) => {
       sort: 1,
       questionType: 'radio',
       content: '',
-      radio: '',
       options: ['', '']
     },
     checkbox: {
@@ -146,32 +122,22 @@ const getTemplate = (questionType) => {
       questionType: 'checkbox',
       content: '',
       checkList: [],
-      options: ['', '', '', '']
+      options: ['', '']
     },
     textarea: {
       sort: 1,
       questionType: 'textarea',
       content: '',
-      value: '',
       options: []
     }
   }
   return template[questionType]
 }
 
-const titleEditing = ref(false)
-const subtitleEditing = ref(false)
-const radioEditing = ref(false)
-const checkboxEditing = ref(false)
-const questionTitleEditing = ref(false)
-const hoverQuestion = ref(false)
-const hoverLabel = ref(false)
-const currentRadioIndex = ref('')
-const currentCheckboxIndex = ref('')
-const currentTitleIndex = ref('')
-const currentQuestionTitleIndex = ref('')
-const activeQuestionIndex = ref(0)
-const activeLableIndex = ref('')
+const typeName = (type) => {
+  const map = { radio: '单选题', checkbox: '多选题', textarea: '填空题' }
+  return map[type] || type
+}
 
 const questionnaire = reactive(
   JSON.parse(window.localStorage.getItem('SET_QUESTIONNAIRE')) || {
@@ -188,12 +154,8 @@ const rules = {
     { required: true, message: '调研标题', trigger: 'blur' },
     { min: 2, max: 50, message: '长度在 2 到 50 个字符', trigger: 'blur' }
   ],
-  category: [
-    { required: true, message: '请选择调研板块', trigger: 'change' }
-  ],
-  compDate: [
-    { required: true, message: '请选择调研截止日期', trigger: 'change' }
-  ],
+  category: [{ required: true, message: '请选择调研板块', trigger: 'change' }],
+  compDate: [{ required: true, message: '请选择调研截止日期', trigger: 'change' }],
   content: [
     { required: true, message: '请输入调研正文内容！', trigger: 'blur' },
     { min: 10, message: '大于 10 个字符', trigger: 'blur' }
@@ -201,41 +163,6 @@ const rules = {
 }
 
 const releaseBtnFlag = ref(false)
-
-const handleMouseEnter = (i, j) => {
-  hoverLabel.value = true
-  activeLableIndex.value = `${i}${j}`
-}
-
-const handleRadioClick = (index, ref) => {
-  radioEditing.value = true
-  currentRadioIndex.value = index
-  nextTick(() => {
-    if (formRef.value && formRef.value[ref] && formRef.value[ref][0]) {
-      formRef.value[ref][0].focus()
-    }
-  })
-}
-
-const handleCheckboxClick = (index, ref) => {
-  checkboxEditing.value = true
-  currentCheckboxIndex.value = index
-  nextTick(() => {
-    if (formRef.value && formRef.value[ref] && formRef.value[ref][0]) {
-      formRef.value[ref][0].focus()
-    }
-  })
-}
-
-const handleQuestionTitleClick = (index, ref) => {
-  questionTitleEditing.value = true
-  currentQuestionTitleIndex.value = index
-  nextTick(() => {
-    if (formRef.value && formRef.value[ref] && formRef.value[ref][0]) {
-      formRef.value[ref][0].focus()
-    }
-  })
-}
 
 const deleteQuestion = (index) => {
   questionnaire.questions.splice(index, 1)
@@ -262,7 +189,7 @@ const addQuestion = (command) => {
 
 const release = async () => {
   try {
-    const list = reverseQuestionList.value
+    const list = JSON.parse(JSON.stringify(questionnaire))
     if (list.questions.length < 1)
       return MessagePlugin.warning('至少需要一个调研问题！')
     for (const item of list.questions) {
@@ -291,6 +218,7 @@ const release = async () => {
       return
     }
     MessagePlugin.success(res.msg)
+    window.localStorage.removeItem('SET_QUESTIONNAIRE')
     releaseBtnFlag.value = false
     router.back()
   } catch (e) {
@@ -300,130 +228,125 @@ const release = async () => {
 }
 
 const preview = () => {
-  window.localStorage.setItem(
-    'SET_QUESTIONNAIRE',
-    JSON.stringify(questionnaire)
-  )
+  window.localStorage.setItem('SET_QUESTIONNAIRE', JSON.stringify(questionnaire))
   router.push('/youngTalk/question/preview')
 }
 
 const orderChange = (type, i) => {
   if (type === 'down') {
-    questionnaire.questions[i] = questionnaire.questions.splice(
-      i + 1,
-      1,
-      questionnaire.questions[i]
-    )[0]
+    questionnaire.questions[i] = questionnaire.questions.splice(i + 1, 1, questionnaire.questions[i])[0]
   } else if (type === 'up') {
-    questionnaire.questions[i] = questionnaire.questions.splice(
-      i - 1,
-      1,
-      questionnaire.questions[i]
-    )[0]
+    questionnaire.questions[i] = questionnaire.questions.splice(i - 1, 1, questionnaire.questions[i])[0]
   }
   for (let i = 0; i < questionnaire.questions.length; i++) {
     questionnaire.questions[i].sort = i + 1
   }
 }
-
-const reverseQuestionList = computed(() => {
-  const list = JSON.parse(JSON.stringify(questionnaire))
-  return list
-})
 </script>
 
 <style scoped lang="less">
-.edit {
-  padding-bottom: 5rem;
-}
+.sub-page-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
 
-.header {
-  padding: 0 2rem;
-  border-bottom: var(--td-component-stroke);
-  margin-bottom: 1rem;
-}
-
-.add-label-icon,
-.remove-label-icon {
-  font-size: 1rem;
-  position: absolute;
-  top: 0rem;
-  right: 0rem;
-  cursor: pointer;
-}
-
-.remove-label-icon {
-  right: 1.5rem;
-}
-
-.delete-icon {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-}
-
-.lable-wrapper {
-  position: relative;
-}
-
-.QN-title {
-  h1 {
-    text-align: center;
-    margin-bottom: 0.8em;
+  .sub-page-title {
+    font-size: 18px;
+    font-weight: 600;
   }
 }
 
-.QN-description {
-  p {
-    text-align: center;
-  }
-}
-
-.QN-header,
-.QN-question {
-  position: relative;
-  margin: 1rem 3rem;
-  border-bottom: var(--td-component-stroke);
-}
-
-.QN-question {
-  p {
-    margin-bottom: 1em;
-  }
+.QN-header {
+  margin-bottom: 20px;
 }
 
 .QN-questions {
-  margin-bottom: 3rem;
-}
-
-.t-radio-group {
-  display: block;
-  position: relative;
-}
-
-.t-radio,
-.t-checkbox {
-  display: block;
-  padding: 0.5em;
-}
-
-.operation {
-  margin: 1rem 3rem;
-  display: flex;
-  justify-content: center;
-}
-
-.release-button {
-  width: 6rem;
-  margin-left: 2rem;
-}
-
-.qr-wrapper {
-  width: 100%;
-  height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  gap: 14px;
+}
+
+.QN-question {
+  border: 1px solid var(--td-component-stroke);
+  border-radius: 10px;
+  padding: 14px 16px;
+  background: var(--td-bg-color-container);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.question-head {
+  display: flex;
   align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+
+  .question-no {
+    font-weight: 600;
+    color: var(--td-brand-color);
+  }
+
+  .question-type-tag {
+    font-size: 12px;
+    color: var(--td-text-color-placeholder);
+    background: var(--td-brand-color-light);
+    border-radius: 4px;
+    padding: 2px 8px;
+  }
+
+  .question-ops {
+    margin-left: auto;
+    display: flex;
+    gap: 8px;
+  }
+}
+
+.question-input {
+  margin-bottom: 10px;
+}
+
+.options-area {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  .option-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    .option-input-wrap {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+
+      .option-icon {
+        flex: 0 0 auto;
+      }
+
+      .option-input {
+        flex: 1;
+      }
+    }
+
+    .option-ops {
+      flex: 0 0 auto;
+      display: flex;
+      gap: 0;
+    }
+  }
+}
+
+.textarea-tip {
+  color: var(--td-text-color-placeholder);
+  font-size: 13px;
+  padding: 4px 0;
+}
+
+.empty-tip {
+  text-align: center;
+  color: var(--td-text-color-placeholder);
+  padding: 30px 0;
 }
 </style>
