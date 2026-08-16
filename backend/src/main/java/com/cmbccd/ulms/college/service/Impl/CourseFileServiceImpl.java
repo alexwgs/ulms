@@ -26,6 +26,18 @@ public class CourseFileServiceImpl implements CourseFileService {
     }
 
     @Override
+    public List<CourseFile> listByCourseIds(List<String> courseIds) {
+        if (courseIds == null || courseIds.isEmpty()) {
+            return new java.util.ArrayList<>();
+        }
+        CourseFileExample example = new CourseFileExample();
+        CourseFileExample.Criteria criteria = example.createCriteria();
+        criteria.andCourseIdIn(courseIds);
+        example.setOrderByClause(" file_type, to_number(file_order)");
+        return courseFileMapper.selectByExample(example);
+    }
+
+    @Override
     public int update(CourseFile courseFile) {
         CourseFileExample example = new CourseFileExample();
         CourseFileExample.Criteria criteria = example.createCriteria();

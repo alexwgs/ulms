@@ -17,6 +17,7 @@ import com.github.pagehelper.PageHelper;
 import org.springframework.stereotype.Service;
 
 import jakarta.annotation.Resource;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -114,8 +115,15 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public List<Course> listWithClob(CourseExample example) {
         List<Course> courses = courseMapper.selectByExampleWithBLOBs(example);
-        for(Course item : courses) {
-            item.setCourseFile(courseFileService.list(item.getCourseId(), null));
+        if (courses == null || courses.isEmpty()) {
+            return courses;
+        }
+        // N+1 优化：批量查询全部课程的附件，内存分组替代循环内逐课查询
+        List<String> courseIds = courses.stream().map(Course::getCourseId).collect(Collectors.toList());
+        Map<String, List<CourseFile>> fileMap = courseFileService.listByCourseIds(courseIds).stream()
+                .collect(Collectors.groupingBy(CourseFile::getCourseId));
+        for (Course item : courses) {
+            item.setCourseFile(fileMap.getOrDefault(item.getCourseId(), Collections.emptyList()));
         }
         return courses;
     }
