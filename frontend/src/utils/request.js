@@ -30,7 +30,9 @@ httpInstance.interceptors.request.use(
       // FormData 用于文件上传，不需要 JSON 序列化
       if (config.data instanceof FormData) {
         delete config.headers['Content-Type']
-      } else {
+      } else if (config.data && typeof config.data === 'object') {
+        // 仅在 data 为对象时序列化（幂等）：axios-retry 重试会重新走本拦截器，
+        // 若 data 已是字符串（上次序列化结果）再 stringify 会双重编码导致后端 400
         config.data = JSON.stringify(config.data)
         config.headers['Content-Type'] = 'application/json'
       }

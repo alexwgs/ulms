@@ -34,6 +34,7 @@ const props = defineProps({
 
 // 导入 store
 const ohtStore = useOhtStore()
+const wsStore = useWsStore()
 
 // 响应式数据
 const identityList = ref([])
@@ -84,8 +85,8 @@ const sendIdentityChangeMsg = () => {
   if (identityArry.value.length < 1) return MessagePlugin.error('请至少选择一个身份！')
   identityChange.userStatus = ohtStore.userStatus === null ? 0 : ohtStore.userStatus
   identityChange.content = identityArry.value.join(',')
-  if (useWsStore.connectionStatus === 'connected') {
-    useWsStore.send(JSON.stringify(identityChange))
+  if (wsStore.connectionStatus === 'connected') {
+    wsStore.sendMessage(identityChange)
   }
   ohtStore.setIdentity(identityArry.value.join(','))
   identityVisible.value = !props.updateFlag

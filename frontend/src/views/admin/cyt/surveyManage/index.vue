@@ -369,6 +369,7 @@ import {
   updateArticleCategory
 } from '@/api/cyt/index.js'
 import { usePermission } from '@/hooks/usePermission.js'
+import { downloadExcel } from '@/utils/request'
 
 const dictStore = useDictStore()
 const router = useRouter()
@@ -550,15 +551,8 @@ const openChartView = (id) => {
   chartViewVisible.value = true
 }
 
-// 下载Excel报表
-const downloadExcel = (url, params, fileName) => {
-  // 这里需要实现下载Excel的功能，根据项目现有代码实现
-  // 可以参考现有项目中的实现方式
-  window.open(
-    `${import.meta.env.VITE_APP_BASE_API}/${url}?${new URLSearchParams(params)}`,
-    '_blank'
-  )
-}
+// 下载Excel报表：统一走 request.js 的 downloadExcel（带鉴权、blob 下载）
+// 原本地实现引用了不存在的 VITE_APP_BASE_API 且 window.open 不带 Authorization，已废弃
 
 onMounted(() => {
   getArticleList()
