@@ -36,4 +36,9 @@ public interface QuesBankService {
 	int updateQuesNumber();
 
 	int invalidAllQuestionByQuesLib(String libCode);
+
+	/**
+	 * 批量转移题目到目标题库（事务在 Service 层，Controller 仅编排）
+	 */
+	int transferQuestions(String libCode, String[] questCodes);
 }

@@ -252,6 +252,11 @@ public class MessageHandle {
 						WebSocketServer.sendMessage(MsgTemplate.success("oht", "error", "案件取消失败，请确认此案件是否存在！"), userId);
 						return;
 					}
+					// 审计加固（IDOR）：只有求助者本人可以取消自己的案件
+					if (!userId.equals(ohtCase.getBuildId())) {
+						WebSocketServer.sendMessage(MsgTemplate.success("oht", "error", "您无权取消他人的求助案件！"), userId);
+						return;
+					}
 					if (ohtCase.getCaseStatus().equals(0)) {
 						int bcompType = command.getInteger("bcompType");
 
@@ -290,6 +295,14 @@ public class MessageHandle {
 					Case ohtCase = this.caseService.getCaseByCaseId(command.getString("caseId"));
 					if (ohtCase == null) {
 						WebSocketServer.sendMessage(MsgTemplate.success("oht", "error", "案件接起失败，请确认此案件是否存在！"), userId);
+						return;
+					}
+					// 审计加固（IDOR）：仅业务主任或被派单用户可以接单
+					boolean isDirector = WebSocketServer.getState().isDirector(userId);
+					boolean hasTask = this.caseTaskService.selectTaskByCaseId(ohtCase.getCaseId()).stream()
+							.anyMatch(t -> userId.equals(t.getUserId()));
+					if (!isDirector && !hasTask) {
+						WebSocketServer.sendMessage(MsgTemplate.success("oht", "error", "您无权接起该案件！"), userId);
 						return;
 					}
 					if (ohtCase.getCaseStatus().equals(0)) {
@@ -342,6 +355,11 @@ public class MessageHandle {
 						WebSocketServer.sendMessage(MsgTemplate.success("oht", "error", "完成结案失败，请确认此案件是否存在！"), userId);
 						return;
 					}
+					// 审计加固（IDOR）：仅求助者本人可以确认完成自己的案件
+					if (!userId.equals(ohtCase.getBuildId())) {
+						WebSocketServer.sendMessage(MsgTemplate.success("oht", "error", "您无权确认他人的案件！"), userId);
+						return;
+					}
 					if (!ohtCase.getCaseStatus().equals(0)) {
 						ohtCase.setPcompTime(Util.currentDateTime());
 						ohtCase.setCustId(command.getString("custId"));
@@ -383,6 +401,11 @@ public class MessageHandle {
 						WebSocketServer.sendMessage(MsgTemplate.success("oht", "error", "案件结案失败，请确认此案件是否存在！"), userId);
 						return;
 					}
+					// 审计加固（IDOR）：仅接单者本人可以完成自己接起的案件
+					if (ohtCase.getPickId() == null || !userId.equals(ohtCase.getPickId())) {
+						WebSocketServer.sendMessage(MsgTemplate.success("oht", "error", "您无权完成他人的案件！"), userId);
+						return;
+					}
 					if (!ohtCase.getCaseStatus().equals(0)) {
 						ohtCase.setBcompTime(Util.currentDateTime());
 						ohtCase.setBcompType(command.getInteger("bcompType"));
@@ -411,6 +434,11 @@ public class MessageHandle {
 					chatRecordFile.writeChatRecordFile(ohtCase.getCaseId(), JSON
 							.toJSONString(MsgTemplate.success("oht", "command", "otherComplete").add("case", ohtCase)));
 				} else if ("newTask".equals(action)) {
+					// 审计加固（IDOR）：仅业务主任可以派单
+					if (!WebSocketServer.getState().isDirector(userId)) {
+						WebSocketServer.sendMessage(MsgTemplate.success("oht", "error", "您无权派单！"), userId);
+						return;
+					}
 					this.caseTaskService.insertNewTask(command.getString("caseId"), userId,
 							command.getString("buildId"), 0);
 				} else if ("refuse".equals(action)) {

@@ -13,7 +13,6 @@ import com.cmbccd.ulms.edu.domain.QuesBank;
 import com.cmbccd.ulms.edu.service.BrushScoreService;
 import com.cmbccd.ulms.edu.service.QuesBankService;
 import com.cmbccd.ulms.sys.domain.Msg;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.annotation.Resource;
@@ -96,15 +95,10 @@ public class QuesBankController {
 
 	@PutMapping("/transfer/{libCode}")
 	@SaCheckPermission("edu:question:transfer")
-	@Transactional(rollbackFor = Exception.class)
 	public Msg updateTableTree(@PathVariable("libCode") String libCode, @RequestBody String[] questCodes) {
-		for (String quesCode : questCodes) {
-			QuesBank record = new QuesBank();
-			record.setQuesCode(quesCode);
-			record.setLibCode(libCode);
-			questionService.updateBySelective(record);
-		}
-		questionService.updateQuesNumber();
+		// 事务已下沉至 Service（transferQuestions），Controller 仅编排
+		int count = questionService.transferQuestions(libCode, questCodes);
+		if (count < 1) return Msg.error("没有需要转移的题目！");
 		return Msg.success();
 	}
 

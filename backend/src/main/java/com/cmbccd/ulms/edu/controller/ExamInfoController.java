@@ -11,7 +11,6 @@ import com.cmbccd.ulms.edu.service.BookListService;
 import com.cmbccd.ulms.edu.service.ExamInfoService;
 import com.cmbccd.ulms.edu.service.QuesTempService;
 import com.cmbccd.ulms.sys.domain.Msg;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.annotation.Resource;
@@ -73,15 +72,9 @@ public class ExamInfoController {
 	}
 	
 	@PostMapping("/config/ques/temp/{examCode}")
-	@Transactional(rollbackFor = Exception.class)
 	public Msg createExamTemp(@PathVariable("examCode") String examCode,@RequestBody List<QuesTemp> list) {
-		quesTempService.delete(examCode);
-		int quesNum = quesTempService.create(list);
-		// 更新试题数量
-		ExamInfo examInfo = new ExamInfo();
-		examInfo.setExamCode(examCode);
-		examInfo.setQuesNum(quesNum);
-		examInfoService.update(examInfo);
+		// 事务已下沉至 Service（createExamTemp），Controller 仅编排
+		int quesNum = examInfoService.createExamTemp(examCode, list);
 		if(quesNum < 1 ) return Msg.success("所有题目配置已删除！");
 		return Msg.success();
 	}
