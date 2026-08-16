@@ -96,7 +96,7 @@ public class MenuController {
 	 */
 
 	@GetMapping(value = "/menu")
-//	@SaCheckPermission("menu:list")
+	@SaCheckPermission("menu:list")
 	public Msg getfontMenu(@RequestParam Map<String, String> params) {
 		String system = params.get("system");
 		if(Util.isNullorEmpty(system))	system = "a6squre";

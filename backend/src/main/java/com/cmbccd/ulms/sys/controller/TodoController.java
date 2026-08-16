@@ -1,6 +1,7 @@
 package com.cmbccd.ulms.sys.controller;
 
 import com.cmbccd.ulms.common.annotation.MyLog;
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.cmbccd.ulms.common.util.DataPage;
 import com.cmbccd.ulms.common.util.Util;
 import com.cmbccd.ulms.sys.domain.Msg;
@@ -77,6 +78,7 @@ public class TodoController {
 	}
 
 	@PostMapping(value = "/todo/admin/add")
+	@SaCheckPermission("sys:todo:admin")
 	@MyLog(title = "[sys-todo]待办管理")
 	public Msg createNewTodoByAdmin(@RequestBody Todo record) {
 		String[] userIds = record.getUserId().split(",");
@@ -94,6 +96,7 @@ public class TodoController {
 	}
 
 	@RequestMapping(value = "/todo/list", method = RequestMethod.GET)
+	@SaCheckPermission("sys:todo:list")
 	@MyLog(title = "[sys-todo]待办管理")
 	public Msg getDayStatusJourList(@RequestParam Map<String, String> params) {
 		String userId = Util.userIdByShiro();

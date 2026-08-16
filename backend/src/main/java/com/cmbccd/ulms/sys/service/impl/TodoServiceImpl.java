@@ -1,5 +1,6 @@
 package com.cmbccd.ulms.sys.service.impl;
 
+import com.cmbccd.ulms.common.util.Util;
 import com.cmbccd.ulms.sys.dao.TodoMapper;
 import com.cmbccd.ulms.sys.domain.Todo;
 import com.cmbccd.ulms.sys.domain.TodoExample;
@@ -38,12 +39,26 @@ public class TodoServiceImpl implements TodoService {
 
 	@Override
 	public int deleteTodoList(int id) {
-		return todoMapper.deleteByPrimaryKey(id);
+		// 审计加固（IDOR）：只能删除自己的日程（按 id+userId 双重条件）
+		String userId = Util.userIdByShiro();
+		if (Util.isNullorEmpty(userId)) return 0;
+		TodoExample example = new TodoExample();
+		Criteria criteria = example.createCriteria();
+		criteria.andIdEqualTo(id);
+		criteria.andUserIdEqualTo(userId);
+		return todoMapper.deleteByExample(example);
 	}
 
 	@Override
 	public int updateTodoList(Todo record) {
-		return todoMapper.updateByPrimaryKeySelective(record);
+		// 审计加固（IDOR）：只能修改自己的日程（按 id+userId 双重条件）
+		String userId = Util.userIdByShiro();
+		if (Util.isNullorEmpty(userId) || record.getId() == null) return 0;
+		TodoExample example = new TodoExample();
+		Criteria criteria = example.createCriteria();
+		criteria.andIdEqualTo(record.getId());
+		criteria.andUserIdEqualTo(userId);
+		return todoMapper.updateByExampleSelective(record, example);
 	}
 
 	@Override
