@@ -1,18 +1,50 @@
 package com.cmbccd.ulms.common.config;
 
 
+import cn.dev33.satoken.context.SaHolder;
 import cn.dev33.satoken.interceptor.SaInterceptor;
 import cn.dev33.satoken.router.SaRouter;
 import cn.dev33.satoken.stp.StpUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class SaTokenConfigure implements WebMvcConfigurer  {
     private static final Logger log = LoggerFactory.getLogger(SaTokenConfigure.class);
+
+    /**
+     * 免登录阅读白名单（A6 有声公开阅读接口，仅 GET 有效）：
+     * 帖子/课题/调研列表与详情、调研问题、评论列表、榜单、课题成员。
+     * 注意：/api/cyt/article/* 只匹配一级路径，article/manage/{id}（编辑回显）不在白名单内。
+     * 写操作（评论/点赞/收藏/发布/答卷/加入课题）与个人数据接口
+     * （我的文章/我的收藏/消息/进度/收藏列表）仍需登录。
+     */
+    private static final String[] PUBLIC_READ_PATHS = {
+            "/api/cyt/articleList",
+            "/api/cyt/articleList/*",
+            "/api/cyt/articleList/*/*",
+            "/api/cyt/article/*",
+            "/api/cyt/questions/*",
+            "/api/cyt/comment/list/*",
+            "/api/cyt/comment/rank",
+            "/api/cyt/weekly/rank",
+            "/api/cyt/stageList",
+            "/api/cyt/member/*"
+    };
+    private static final AntPathMatcher PATH_MATCHER = new AntPathMatcher();
+
+    private static boolean isPublicReadPath(String path) {
+        for (String pattern : PUBLIC_READ_PATHS) {
+            if (PATH_MATCHER.match(pattern, path)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     // 注册 Sa-Token 拦截器，打开注解式鉴权功能
     @Override
@@ -35,7 +67,15 @@ public class SaTokenConfigure implements WebMvcConfigurer  {
                             "/api/swagger-ui/**", // API 文档（prod 已通过 springdoc.enabled=false 禁用）
                             "/api/v3/api-docs/**"
                     )
-                    .check(r -> StpUtil.checkLogin());
+                    // 免登录阅读：仅放行白名单内的 GET 只读接口（评论/点赞/收藏/发布等写操作仍需登录）
+                    .check(r -> {
+                        String reqPath = SaHolder.getRequest().getRequestPath();
+                        String reqMethod = SaHolder.getRequest().getMethod();
+                        boolean readOnlyGet = "GET".equals(reqMethod) && isPublicReadPath(reqPath);
+                        if (!readOnlyGet) {
+                            StpUtil.checkLogin();
+                        }
+                    });
         }))
                 .addPathPatterns("/**")
                 // 拦截器级排除（完全跳过拦截器，与 SaRouter.notMatch 双保险）
