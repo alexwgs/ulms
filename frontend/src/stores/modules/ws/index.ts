@@ -374,6 +374,9 @@ export const useWsStore = defineStore('websocket', {
         },
         help: () => {
           ohtStore.setWaittingCase(msg.data.cases)
+          // 审计修复：收到新的待接求助广播后立即评估接单（含延迟派单逻辑），
+          // 否则主任端不切换"请尽快接单"状态，需刷新页面（init）后才显示
+          ohtStore.ohtCasesToCurrentCase()
         },
         cancelSuccess: () => {
           ohtStore.setCurrentCase(null)
