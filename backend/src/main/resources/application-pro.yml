@@ -1,7 +1,8 @@
 server:
   ssl:
     key-store: classpath:server.p12
-    key-store-password: ${ULMS_SSL_KEYSTORE_PASSWORD:wqqlxr6130}
+    # 审计加固：移除默认口令，必须通过环境变量注入（否则启动失败即安全失败）
+    key-store-password: ${ULMS_SSL_KEYSTORE_PASSWORD}
     keyStoreType: PKCS12
     key-alias: selfsigned
   http:
@@ -10,7 +11,7 @@ server:
 ulms:
   uploadPath: d:/var/uploaded_files/
   username: ${ULMS_ADMIN_USERNAME:admin}
-  password: ${ULMS_ADMIN_PASSWORD:111111}
+  password: ${ULMS_ADMIN_PASSWORD}
   # 生产环境未配置 Redis（下方 redis 配置被注释），因此 WebSocket 采用单机内存模式，
   # 覆盖全局 application.yml 中的 multi-instance: true，避免启动后依赖不存在的 Redis。
   ws:
@@ -23,13 +24,19 @@ logging:
   level:
     root: info
     '[com.cmbccd.ulms]': info
+springdoc:
+  # 审计加固：生产禁用 API 文档，避免接口信息泄露
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
 spring:
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: oracle.jdbc.driver.OracleDriver
     url: "${ULMS_DB_URL:jdbc:oracle:thin:@10.47.4.71:1521:city}"
     username: ${ULMS_DB_USERNAME:auxsusr}
-    password: ${ULMS_DB_PASSWORD:auxsusr}
+    password: ${ULMS_DB_PASSWORD}
     druid:
       initial-size: 5
       min-idle: 5
@@ -48,8 +55,10 @@ spring:
       stat-view-servlet:
         enabled: true
         url-pattern: /druid/*
-        login-username: ${ULMS_DRUID_USERNAME:wei6130}
-        login-password: ${ULMS_DRUID_PASSWORD:wei6130}
+        # 审计加固：生产监控台限制来源 IP（通过环境变量注入，如 ULMS_DRUID_ALLOW=10.47.81.0/24）
+        allow: ${ULMS_DRUID_ALLOW:}
+        login-username: ${ULMS_DRUID_USERNAME}
+        login-password: ${ULMS_DRUID_PASSWORD}
         reset-enable: false
       web-stat-filter:
         enabled: true

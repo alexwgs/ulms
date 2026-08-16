@@ -31,6 +31,10 @@ public class SwaggerConfig {
         org.springframework.core.env.Profiles profiles =
                 org.springframework.core.env.Profiles.of("dev", "uat");
         boolean enabled = environment.acceptsProfiles(profiles);
+        // 非 dev/uat 环境（如 prod）不注册 API 文档，避免接口信息泄露
+        if (!enabled) {
+            return null;
+        }
 
         return GroupedOpenApi.builder()
                 .group("A6广场基础API")
